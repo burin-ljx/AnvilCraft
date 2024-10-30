@@ -1,0 +1,57 @@
+{
+	"credit": "Made by XeKr with Blockbench",
+	"parent": "minecraft:block/template_wall_side_tall",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "anvilcraft:block/heavy_iron_wall",
+		"1": "anvilcraft:block/heavy_iron_wall_side_tall",
+		"2": "anvilcraft:block/heavy_iron_wall_side_tall_end",
+		"particle": "anvilcraft:block/heavy_iron_wall_side_tall"
+	},
+	"elements": [
+		{
+			"name": "wall",
+			"from": [5, 13, 0],
+			"to": [11, 16, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 2, 0]},
+			"faces": {
+				"north": {"uv": [5, 0, 11, 3], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [8, 0, 16, 3], "texture": "#1"},
+				"west": {"uv": [0, 0, 8, 3], "texture": "#1"},
+				"up": {"uv": [5, 0, 11, 8], "texture": "#0", "cullface": "up"},
+				"down": {"uv": [5, 8, 11, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "wall",
+			"from": [5, 0, 0],
+			"to": [11, 3, 8],
+			"faces": {
+				"north": {"uv": [5, 13, 11, 16], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [8, 13, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 13, 8, 16], "texture": "#1"},
+				"up": {"uv": [5, 0, 11, 8], "texture": "#0"},
+				"down": {"uv": [5, 8, 11, 16], "texture": "#0", "cullface": "down"}
+			}
+		},
+		{
+			"name": "wall",
+			"from": [6, 3, 0],
+			"to": [10, 13, 8],
+			"faces": {
+				"north": {"uv": [6, 3, 10, 13], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [8, 3, 16, 13], "texture": "#1"},
+				"west": {"uv": [0, 3, 8, 13], "texture": "#1"}
+			}
+		},
+		{
+			"name": "wall inverted",
+			"from": [10, 13, 8],
+			"to": [6, 3, 0],
+			"faces": {
+				"east": {"uv": [0, 13, 8, 3], "texture": "#1"},
+				"west": {"uv": [8, 13, 16, 3], "texture": "#1"}
+			}
+		}
+	]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_right_open",
+  "textures": {
+    "bottom": "anvilcraft:block/heavy_iron_door_bottom",
+    "top": "anvilcraft:block/heavy_iron_door_top"
+  }
+}
