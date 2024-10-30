@@ -23,6 +23,9 @@ import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
 import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.DischargerBlock;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
@@ -2640,6 +2643,53 @@ public class ModBlocks {
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
+
+    public static final BlockEntry<HeavyIronWallBlock> HEAVY_IRON_WALL = REGISTRATE
+        .block("heavy_iron_wall", HeavyIronWallBlock::new)
+        .initialProperties(() -> Blocks.IRON_BLOCK)
+        .properties(properties -> properties.explosionResistance(15.0f).noOcclusion())
+        .blockstate((ctx, provider) -> {
+        }).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.WALLS)
+        .recipe((ctx, provider) -> {
+        })
+        .item()
+        .model((ctx, provide) -> provide.wallInventory(
+            "heavy_iron_wall",
+            AnvilCraft.of("block/heavy_iron_wall")
+        ))
+        .build()
+        .register();
+
+    public static final BlockEntry<HeavyIronDoorBlock> HEAVY_IRON_DOOR = REGISTRATE
+        .block("heavy_iron_door", HeavyIronDoorBlock::new)
+        .initialProperties(() -> Blocks.IRON_DOOR)
+        .properties(properties -> properties)
+        .loot((l, b) -> {
+            l.add(b, l.createDoorTable(b));
+        })
+        .blockstate((ctx, provider) -> {
+        }).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.DOORS)
+        .item()
+        .model((ctx, prov) -> {
+            prov.generated(ctx);
+        })
+        .build()
+        .register();
+
+    public static final BlockEntry<HeavyIronTrapdoorBlock> HEAVY_IRON_TRAPDOOR = REGISTRATE
+        .block("heavy_iron_trapdoor", HeavyIronTrapdoorBlock::new)
+        .initialProperties(() -> Blocks.IRON_TRAPDOOR)
+        .properties(properties -> properties)
+        .defaultLoot()
+        .blockstate((ctx, provider) -> {
+        }).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.TRAPDOORS)
+        .item()
+        .model((c, p) -> {
+            p.blockItem(c, "_bottom");
+        })
+        .build()
+        .register();
+
 
     public static final Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> CEMENT_CAULDRONS = registerAllCementCauldrons();
 
