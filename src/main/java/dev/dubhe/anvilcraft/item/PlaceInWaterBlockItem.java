@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.item;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -27,11 +28,18 @@ public class PlaceInWaterBlockItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
-            @NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
-        BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-        BlockHitResult blockHitResult2 = blockHitResult.withPosition(blockHitResult.getBlockPos());
+            @NotNull Level level,
+            @NotNull Player player,
+            @NotNull InteractionHand usedHand
+    ) {
+        BlockHitResult fluidHit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+        BlockHitResult blockHitResult2 = fluidHit.withPosition(fluidHit.getBlockPos());
         if (blockHitResult2.miss) return InteractionResultHolder.pass(player.getItemInHand(usedHand));
         InteractionResult interactionResult = super.useOn(new UseOnContext(player, usedHand, blockHitResult2));
+        if (!interactionResult.indicateItemUse()){
+            blockHitResult2 = fluidHit.withPosition(fluidHit.getBlockPos().relative(player.getDirection()));
+            interactionResult = super.useOn(new UseOnContext(player, usedHand, blockHitResult2));
+        }
         return new InteractionResultHolder<>(interactionResult, player.getItemInHand(usedHand));
     }
 }
