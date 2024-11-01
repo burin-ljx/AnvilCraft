@@ -38,8 +38,8 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
 
     public int usedGold = 0;
-    public int removeRepairCostNumber = 0;
-    public int removeCurseNumber = 0;
+    public int removedRepairCost = 0;
+    public int removedCurseCount = 0;
 
     public RoyalGrindstoneMenu(MenuType<RoyalGrindstoneMenu> type, int containerId, Inventory playerInventory) {
         this(type, containerId, playerInventory, ContainerLevelAccess.NULL);
@@ -132,39 +132,38 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
         ItemEnchantments.Mutable curses = new ItemEnchantments.Mutable(result.getEnchantments());
         curses.removeIf(it -> !it.is(EnchantmentTags.CURSE));
         Map<Holder<Enchantment>, Integer> curseMap = Maps.asMap(curses.keySet(), curses::getLevel);
-        int curseNumber = curseMap.size();
         int repairCost = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0);
-        int goldNumber = repairMaterial.getCount();
+        int goldCount = repairMaterial.getCount();
         int goldUsed = 0;
-        while ((goldNumber > 0 && repairCost > 0)) {
+        while ((goldCount > 0 && repairCost > 0)) {
             result.set(DataComponents.REPAIR_COST, repairCost - 1);
             repairCost -= 1;
-            goldNumber -= 1;
+            goldCount -= 1;
             goldUsed += 1;
         }
         if (result.getOrDefault(DataComponents.REPAIR_COST, 0) <= 0) result.remove(DataComponents.REPAIR_COST);
-        int removeCurseNumber = 0;
+        int removedCurseCount = 0;
         Iterator<Holder<Enchantment>> iterator = curseMap.keySet().iterator();
         final int needGold = 16;
-        while (goldNumber >= needGold && curseNumber > 0 && goldUsed < 64) {
+        while (goldCount >= needGold && goldUsed < 64 && iterator.hasNext()) {
+            Holder<Enchantment> holder = iterator.next();
             ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(result.getEnchantments());
-            enchantments.removeIf(it -> it == iterator.next());
+            enchantments.removeIf(it -> it == holder);
             ItemStack itemStack = result.copy();
             itemStack.remove(DataComponents.ENCHANTMENTS);
             itemStack.remove(DataComponents.STORED_ENCHANTMENTS);
             EnchantmentHelper.setEnchantments(itemStack, enchantments.toImmutable());
             result = itemStack.copy();
-            curseNumber -= 1;
             goldUsed += needGold;
-            goldNumber -= needGold;
-            removeCurseNumber += 1;
+            goldCount -= needGold;
+            removedCurseCount += 1;
         }
         if (result.is(Items.ENCHANTED_BOOK) && !EnchantmentHelper.hasAnyEnchantments(result)) {
             result = new ItemStack(Items.BOOK, result.getCount());
         }
         this.usedGold = goldUsed;
-        this.removeRepairCostNumber = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0) - repairCost;
-        this.removeCurseNumber = removeCurseNumber;
+        this.removedRepairCost = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0) - repairCost;
+        this.removedCurseCount = removedCurseCount;
         return result;
     }
 
