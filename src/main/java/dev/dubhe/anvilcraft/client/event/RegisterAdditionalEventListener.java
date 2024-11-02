@@ -20,5 +20,6 @@ public class RegisterAdditionalEventListener {
         event.register(ModelResourceLocation.standalone(AnvilCraft.of("item/crab_claw_holding_item")));
         event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/heliostats_head")));
         event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/creative_generator_cube")));
+        event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/laser")));
     }
 }

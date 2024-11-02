@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.renderer.blockentity;
 
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.RubyLaserBlockEntity;
 
@@ -42,19 +43,18 @@ public class LaserRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> 
         if (blockEntity.irradiateBlockPos == null) return;
         final TextureAtlasSprite sprite = Minecraft.getInstance()
             .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-            .apply(ResourceLocation.withDefaultNamespace("block/white_concrete"));
+            .apply(AnvilCraft.of("block/laser"));
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5);
-        float offest = 0;
+        float offset = 0;
         VertexConsumer consumer = buffer.getBuffer(RenderType.translucent());
         float length = (float) (blockEntity
             .irradiateBlockPos
             .getCenter()
-            .distanceTo(blockEntity.getBlockPos().getCenter())
-            - 0.5);
-        if (blockEntity instanceof RubyLaserBlockEntity) offest = 0.489f;
+            .distanceTo(blockEntity.getBlockPos().getCenter()) - 0.5);
+        if (blockEntity instanceof RubyLaserBlockEntity) offset = 0.489f;
         poseStack.mulPose(blockEntity.getDirection().getRotation());
-        renderBox(consumer, poseStack, -0.0625f, -offest, -0.0625f, 0.0625f, length, 0.0625f, sprite);
+        renderBox(consumer, poseStack, -0.0625f, -offset, -0.0625f, 0.0625f, length, 0.0625f, sprite);
         renderBox(consumer, poseStack, -0.0625f, length, -0.0625f, 0.0625f, length + 0.3f, 0.0625f, 0.35f, sprite);
         renderBox(
             consumer,
