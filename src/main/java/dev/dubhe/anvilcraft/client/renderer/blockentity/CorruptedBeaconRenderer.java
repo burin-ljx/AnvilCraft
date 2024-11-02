@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.client.renderer.blockentity;
 
 import dev.dubhe.anvilcraft.block.entity.CorruptedBeaconBlockEntity;
 
+import dev.dubhe.anvilcraft.init.ModRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -71,7 +72,7 @@ public class CorruptedBeaconRenderer implements BlockEntityRenderer<CorruptedBea
         BakedModel model = blockRenderer.getBlockModel(defaultLightState);
         poseStack.translate(0.005f, 0.0f, 0.005f);
         poseStack.scale(0.99f, 0.99f, 0.99f);
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.translucent());
+        VertexConsumer vertexConsumer = buffer.getBuffer(ModRenderTypes.BEACON_GLASS);
         for (Direction value : Direction.values()) {
             List<BakedQuad> quads = model.getQuads(
                 null,

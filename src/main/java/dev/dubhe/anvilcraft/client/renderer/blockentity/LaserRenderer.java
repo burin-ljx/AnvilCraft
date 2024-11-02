@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.RubyLaserBlockEntity;
 
+import dev.dubhe.anvilcraft.init.ModRenderTypes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,7 +19,6 @@ import net.minecraft.world.phys.AABB;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,15 +47,36 @@ public class LaserRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5);
         float offset = 0;
-        VertexConsumer consumer = buffer.getBuffer(RenderType.translucent());
+        VertexConsumer consumer = buffer.getBuffer(ModRenderTypes.LASER);
         float length = (float) (blockEntity
             .irradiateBlockPos
             .getCenter()
             .distanceTo(blockEntity.getBlockPos().getCenter()) - 0.5);
         if (blockEntity instanceof RubyLaserBlockEntity) offset = 0.489f;
         poseStack.mulPose(blockEntity.getDirection().getRotation());
-        renderBox(consumer, poseStack, -0.0625f, -offset, -0.0625f, 0.0625f, length, 0.0625f, sprite);
-        renderBox(consumer, poseStack, -0.0625f, length, -0.0625f, 0.0625f, length + 0.3f, 0.0625f, 0.35f, sprite);
+        renderBox(
+            consumer,
+            poseStack,
+            -0.0625f,
+            -offset,
+            -0.0625f,
+            0.0625f,
+            length,
+            0.0625f,
+            sprite
+        );
+        renderBox(
+            consumer,
+            poseStack,
+            -0.0625f,
+            length,
+            -0.0625f,
+            0.0625f,
+            length + 0.3f,
+            0.0625f,
+            0.35f,
+            sprite
+        );
         renderBox(
             consumer,
             poseStack,
@@ -66,7 +87,11 @@ public class LaserRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> 
             length + 0.57f,
             0.0625f,
             0.15f,
-            sprite);
+            sprite
+        );
+        if (buffer instanceof MultiBufferSource.BufferSource bufferSource) {
+            bufferSource.endBatch();
+        }
         poseStack.popPose();
     }
 
@@ -175,10 +200,10 @@ public class LaserRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> 
         float v,
         float a) {
         consumer.addVertex(poseStack.last().pose(), x, y, z)
-            .setColor(1f, 0.05f, 0.05f, a)
+            .setColor(1f, .2f, .2f, a)
             .setUv(u, v)
-            .setOverlay(OverlayTexture.NO_OVERLAY)
-            .setUv2(0xF000F0 & '\uffff', 0xf000f0 >> 16 & '\uffff')
+            .setUv1(0, 0)
+            .setUv2(240, 240)
             .setNormal(1, 0, 0);
     }
 
