@@ -4,19 +4,26 @@ import dev.dubhe.anvilcraft.block.entity.CorruptedBeaconBlockEntity;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -26,8 +33,12 @@ public class CorruptedBeaconRenderer implements BlockEntityRenderer<CorruptedBea
         ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
     public static final int MAX_RENDER_Y = 1024;
 
+    private final BlockRenderDispatcher blockRenderer;
+    private final BlockState defaultLightState = Blocks.WHITE_CONCRETE.defaultBlockState();
+
     @SuppressWarnings("unused")
     public CorruptedBeaconRenderer(BlockEntityRendererProvider.Context context) {
+        blockRenderer = context.getBlockRenderDispatcher();
     }
 
     @Override
@@ -37,7 +48,9 @@ public class CorruptedBeaconRenderer implements BlockEntityRenderer<CorruptedBea
         @NotNull PoseStack poseStack,
         @NotNull MultiBufferSource buffer,
         int packedLight,
-        int packedOverlay) {
+        int packedOverlay
+    ) {
+        poseStack.pushPose();
         if (blockEntity.getLevel() == null) return;
         long l = blockEntity.getLevel().getGameTime();
         List<CorruptedBeaconBlockEntity.BeaconBeamSection> list = blockEntity.getBeamSections();
@@ -54,6 +67,33 @@ public class CorruptedBeaconRenderer implements BlockEntityRenderer<CorruptedBea
                 beaconBeamSection.getColor());
             i += beaconBeamSection.getHeight();
         }
+
+        BakedModel model = blockRenderer.getBlockModel(defaultLightState);
+        poseStack.translate(0.005f, 0.0f, 0.005f);
+        poseStack.scale(0.99f, 0.99f, 0.99f);
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.translucent());
+        for (Direction value : Direction.values()) {
+            List<BakedQuad> quads = model.getQuads(
+                null,
+                value,
+                blockEntity.getLevel().random,
+                ModelData.EMPTY,
+                null
+            );
+            for (BakedQuad quad : quads) {
+                vertexConsumer.putBulkData(
+                    poseStack.last(),
+                    quad,
+                    109 / 255f,
+                    1 / 255f,
+                    206 / 255f,
+                    0.3f,
+                    packedLight,
+                    packedOverlay
+                );
+            }
+        }
+        poseStack.popPose();
     }
 
     private static void renderBeaconBeam(
