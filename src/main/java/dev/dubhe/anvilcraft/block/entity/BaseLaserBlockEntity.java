@@ -225,6 +225,10 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         irradiateBlockEntity.onCancelingIrradiation(this);
     }
 
+    public float laserOffset() {
+        return 0;
+    }
+
     /**
      * 为了适配forge中修改的渲染逻辑所添加的函数
      * 返回一个无限碰撞箱

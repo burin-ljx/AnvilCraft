@@ -7,20 +7,30 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import org.spongepowered.asm.launch.platform.CommandLineOptions;
 
 import static net.minecraft.client.renderer.RenderStateShard.BLOCK_SHEET_MIPPED;
+import static net.minecraft.client.renderer.RenderStateShard.CLOUDS_TARGET;
+import static net.minecraft.client.renderer.RenderStateShard.COLOR_DEPTH_WRITE;
 import static net.minecraft.client.renderer.RenderStateShard.COLOR_WRITE;
 import static net.minecraft.client.renderer.RenderStateShard.CULL;
+import static net.minecraft.client.renderer.RenderStateShard.DEPTH_WRITE;
+import static net.minecraft.client.renderer.RenderStateShard.GREATER_DEPTH_TEST;
+import static net.minecraft.client.renderer.RenderStateShard.ITEM_ENTITY_TARGET;
 import static net.minecraft.client.renderer.RenderStateShard.LIGHTMAP;
+import static net.minecraft.client.renderer.RenderStateShard.MAIN_TARGET;
 import static net.minecraft.client.renderer.RenderStateShard.OVERLAY;
+import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_CLOUDS_SHADER;
 import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER;
 import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER;
 import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TARGET;
 import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TRANSPARENCY;
+import static net.minecraft.client.renderer.RenderStateShard.VIEW_OFFSET_Z_LAYERING;
+import static net.minecraft.client.renderer.RenderStateShard.WEATHER_TARGET;
 
 public class ModRenderTypes {
     public static final RenderType LASER = RenderType.create(
-        "laser",
+        "anvilcraft:laser",
         DefaultVertexFormat.NEW_ENTITY,
         VertexFormat.Mode.QUADS,
         1536,
@@ -49,13 +59,52 @@ public class ModRenderTypes {
                     RenderSystem.defaultBlendFunc();
                 }
             )).setCullState(CULL)
-            .setWriteMaskState(COLOR_WRITE)
+            .setWriteMaskState(COLOR_DEPTH_WRITE)
             .setOverlayState(OVERLAY)
+            .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     );
 
+    public static RenderType laser(){
+        return RenderType.create(
+            "anvilcraft:laser",
+            DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL,
+            VertexFormat.Mode.QUADS,
+            1536,
+            true,
+            true,
+            RenderType.CompositeState.builder()
+                .setLightmapState(LIGHTMAP)
+                .setShaderState(RENDERTYPE_CLOUDS_SHADER)
+                .setTextureState(new RenderStateShard.TextureStateShard(
+                    TextureAtlas.LOCATION_BLOCKS,
+                    false,
+                    false
+                )).setTransparencyState(new RenderStateShard.TransparencyStateShard(
+                    "laser_transparency",
+                    () -> {
+                        RenderSystem.enableBlend();
+                        RenderSystem.blendFuncSeparate(
+                            GlStateManager.SourceFactor.SRC_COLOR,
+                            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                            GlStateManager.SourceFactor.ZERO,
+                            GlStateManager.DestFactor.ONE
+                        );
+                    },
+                    () -> {
+                        RenderSystem.disableBlend();
+                        RenderSystem.defaultBlendFunc();
+                    }
+                )).setCullState(CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .setOverlayState(OVERLAY)
+                .setOutputState(MAIN_TARGET)
+                .createCompositeState(true)
+        );
+    }
+
     public static final RenderType BEACON_GLASS = RenderType.create(
-        "translucent",
+        "anvilcraft:beacon_glass",
         DefaultVertexFormat.BLOCK,
         VertexFormat.Mode.QUADS,
         786432,
