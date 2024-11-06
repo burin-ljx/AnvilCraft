@@ -26,7 +26,7 @@ public class AnvilCraftConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(max = 8, min = 0)
     public int lightningStrikeRadius = 1;
 
-    @Comment("Maximum distance a magnet attracts")
+    @Comment("Maximum length a magnet attracts")
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.BoundedDiscrete(max = 16, min = 1)
     public int magnetAttractsDistance = 5;
@@ -35,13 +35,13 @@ public class AnvilCraftConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public double magnetItemAttractsRadius = 8;
 
-    @Comment("Redstone EMP distance generated per block dropped by the anvil")
+    @Comment("Redstone EMP length generated per block dropped by the anvil")
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.BoundedDiscrete(max = 64, min = 1)
     @SerializedName("Redstone EMP Radius Per Block")
     public int redstoneEmpRadius = 6;
 
-    @Comment("Maximum distance of redstone EMP")
+    @Comment("Maximum length of redstone EMP")
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.BoundedDiscrete(max = 64, min = 1)
     @SerializedName("Redstone Emp Max Radius")

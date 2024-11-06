@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.api.power;
 
+import dev.dubhe.anvilcraft.client.renderer.Line;
 import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
 
 import net.minecraft.client.Minecraft;
@@ -255,27 +256,5 @@ public class SimplePowerGrid {
             .toList();
     }
 
-    public record Line(Vec3 start, Vec3 end, float distance) {
 
-        public void render(PoseStack pose, VertexConsumer vertex, Vec3 camera, int color) {
-            float dx = (float) (this.start().x - this.end().x);
-            float dy = (float) (this.start().y - this.end().y);
-            float dz = (float) (this.start().z - this.end().z);
-            Matrix4f mat = pose.last().pose();
-            vertex.addVertex(
-                    mat,
-                    (float) (this.start().x - camera.x),
-                    (float) (this.start().y - camera.y),
-                    (float) (this.start().z - camera.z)
-                ).setColor(color)
-                .setNormal(pose.last(), dx /= this.distance(), dy /= this.distance(), dz /= this.distance());
-            vertex.addVertex(
-                    mat,
-                    (float) (this.end().x - camera.x),
-                    (float) (this.end().y - camera.y),
-                    (float) (this.end().z - camera.z)
-                ).setColor(color)
-                .setNormal(pose.last(), dx, dy, dz);
-        }
-    }
 }

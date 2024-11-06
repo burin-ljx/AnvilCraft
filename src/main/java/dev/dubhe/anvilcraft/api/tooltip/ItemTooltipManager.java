@@ -32,12 +32,12 @@ public class ItemTooltipManager {
         map.put(ModItems.TOPAZ.get(), "Containing the power of lightning");
         map.put(ModBlocks.RESIN_BLOCK.asItem(), "Use to capture friendly or weak hostile creatures LivingEntity");
         map.put(ModBlocks.CRAB_TRAP.asItem(), "Placing it in the water to help you catch aquatic products");
-        map.put(ModItems.CRAB_CLAW.get(), "Increase touch distance when holding");
+        map.put(ModItems.CRAB_CLAW.get(), "Increase touch length when holding");
         map.put(ModBlocks.ROYAL_ANVIL.asItem(), "Unbreakable and powerful compatibility");
         map.put(ModBlocks.ROYAL_GRINDSTONE.asItem(), "Creeper proof, Eliminating Curses and Punishing");
         map.put(ModBlocks.ROYAL_SMITHING_TABLE.asItem(), "Creeper proof, Saving your Smithing Template");
         map.put(ModBlocks.HEATER.asItem(), "Heating the block above, consumes 16 kW");
-        map.put(ModBlocks.TRANSMISSION_POLE.asItem(), "Build a power grid with a transmission distance of 8");
+        map.put(ModBlocks.TRANSMISSION_POLE.asItem(), "Build a power grid with a transmission length of 8");
         map.put(ModBlocks.CHARGE_COLLECTOR.asItem(), "Collecting charges to generate power");
         map.put(ModBlocks.POWER_CONVERTER_SMALL.asItem(), "Convert power into FE, consumes 1 kW");
         map.put(ModBlocks.POWER_CONVERTER_MIDDLE.asItem(), "Convert power into FE, consumes 3 kW");
@@ -62,7 +62,7 @@ public class ItemTooltipManager {
         map.put(ModBlocks.CUT_ROYAL_STEEL_STAIRS.asItem(), "Creeper proof");
         map.put(ModBlocks.CUT_ROYAL_STEEL_SLAB.asItem(), "Creeper proof");
         map.put(ModBlocks.TEMPERING_GLASS.asItem(), "Creeper proof, No tools required on collect");
-        map.put(ModBlocks.REMOTE_TRANSMISSION_POLE.asItem(), "Build a power grid with a transmission distance of 8");
+        map.put(ModBlocks.REMOTE_TRANSMISSION_POLE.asItem(), "Build a power grid with a transmission length of 8");
         map.put(ModBlocks.HEAVY_IRON_BLOCK.asItem(), "Explosion proof");
         map.put(ModBlocks.POLISHED_HEAVY_IRON_BLOCK.asItem(), "Explosion proof");
         map.put(ModBlocks.POLISHED_HEAVY_IRON_SLAB.asItem(), "Explosion proof");
