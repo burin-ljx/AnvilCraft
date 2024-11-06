@@ -29,7 +29,7 @@ public class LaserCompiler {
         LaserState state,
         Function<RenderType, BufferBuilder> bufferBuilderFunction
     ) {
-        BufferBuilder builder = bufferBuilderFunction.apply(RenderType.TRANSLUCENT);
+        BufferBuilder builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
         renderBox(
             builder,
             state.pose(),

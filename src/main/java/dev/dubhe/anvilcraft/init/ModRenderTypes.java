@@ -29,6 +29,23 @@ import static net.minecraft.client.renderer.RenderStateShard.VIEW_OFFSET_Z_LAYER
 import static net.minecraft.client.renderer.RenderStateShard.WEATHER_TARGET;
 
 public class ModRenderTypes {
+    public static final RenderStateShard.TransparencyStateShard LASER_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
+        "anvilcraft:laser_transparency",
+        () -> {
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_COLOR,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ZERO,
+                GlStateManager.DestFactor.ONE
+            );
+        },
+        () -> {
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        }
+    );
+
     public static final RenderType LASER = RenderType.create(
         "anvilcraft:laser",
         DefaultVertexFormat.NEW_ENTITY,
@@ -38,70 +55,18 @@ public class ModRenderTypes {
         true,
         RenderType.CompositeState.builder()
             .setLightmapState(LIGHTMAP)
-            .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+            .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(
                 TextureAtlas.LOCATION_BLOCKS,
                 false,
                 false
-            )).setTransparencyState(new RenderStateShard.TransparencyStateShard(
-                "laser_transparency",
-                () -> {
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(
-                        GlStateManager.SourceFactor.SRC_COLOR,
-                        GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                        GlStateManager.SourceFactor.ZERO,
-                        GlStateManager.DestFactor.ONE
-                    );
-                },
-                () -> {
-                    RenderSystem.disableBlend();
-                    RenderSystem.defaultBlendFunc();
-                }
-            )).setCullState(CULL)
+            )).setTransparencyState(LASER_TRANSPARENCY)
+            .setCullState(CULL)
             .setWriteMaskState(COLOR_DEPTH_WRITE)
             .setOverlayState(OVERLAY)
-            .setOutputState(TRANSLUCENT_TARGET)
+            .setOutputState(MAIN_TARGET)
             .createCompositeState(true)
     );
-
-    public static RenderType laser(){
-        return RenderType.create(
-            "anvilcraft:laser",
-            DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL,
-            VertexFormat.Mode.QUADS,
-            1536,
-            true,
-            true,
-            RenderType.CompositeState.builder()
-                .setLightmapState(LIGHTMAP)
-                .setShaderState(RENDERTYPE_CLOUDS_SHADER)
-                .setTextureState(new RenderStateShard.TextureStateShard(
-                    TextureAtlas.LOCATION_BLOCKS,
-                    false,
-                    false
-                )).setTransparencyState(new RenderStateShard.TransparencyStateShard(
-                    "laser_transparency",
-                    () -> {
-                        RenderSystem.enableBlend();
-                        RenderSystem.blendFuncSeparate(
-                            GlStateManager.SourceFactor.SRC_COLOR,
-                            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                            GlStateManager.SourceFactor.ZERO,
-                            GlStateManager.DestFactor.ONE
-                        );
-                    },
-                    () -> {
-                        RenderSystem.disableBlend();
-                        RenderSystem.defaultBlendFunc();
-                    }
-                )).setCullState(CULL)
-                .setWriteMaskState(COLOR_WRITE)
-                .setOverlayState(OVERLAY)
-                .setOutputState(MAIN_TARGET)
-                .createCompositeState(true)
-        );
-    }
 
     public static final RenderType BEACON_GLASS = RenderType.create(
         "anvilcraft:beacon_glass",
