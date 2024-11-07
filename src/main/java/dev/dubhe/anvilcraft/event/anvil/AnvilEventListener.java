@@ -71,13 +71,18 @@ public class AnvilEventListener {
         if (null == server) return;
         final BlockPos hitBlockPos = pos.below();
         final BlockState hitBlockState = level.getBlockState(hitBlockPos);
+        BlockPos belowPos = hitBlockPos.below();
+        BlockState hitBelowState = level.getBlockState(belowPos);
+        if (hitBelowState.is(Blocks.STONECUTTER)) {
+            brokeBlock(level, hitBlockPos, event);
+            return;
+        }
+
         handleBlockCompressRecipe(level, hitBlockPos);
         handleBlockCrushRecipe(level, hitBlockPos);
         handleItemInjectRecipe(level, hitBlockPos, hitBlockState);
         handleSqueezingRecipe(level, hitBlockPos, hitBlockState);
-        BlockPos belowPos = hitBlockPos.below();
-        BlockState hitBelowState = level.getBlockState(belowPos);
-        if (hitBelowState.is(Blocks.STONECUTTER)) brokeBlock(level, hitBlockPos, event);
+
 
         for (AnvilBehavior behavior : AnvilBehavior.findMatching(hitBlockState)) {
             if (behavior.handle(level, hitBlockPos, hitBlockState, event.getFallDistance(), event)) {

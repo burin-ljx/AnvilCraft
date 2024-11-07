@@ -46,6 +46,10 @@ public interface AnvilBehavior {
         AnvilFallOnLandEvent event
     );
 
+    default int priority() {
+        return 100;
+    }
+
     static void registerBehavior(Block matchingBlock, AnvilBehavior behavior) {
         BEHAVIORS.put(it -> it.is(matchingBlock), behavior);
     }
