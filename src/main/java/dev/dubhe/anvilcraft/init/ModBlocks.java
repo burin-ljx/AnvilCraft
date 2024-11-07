@@ -2142,7 +2142,7 @@ public class ModBlocks {
     public static final BlockEntry<ArrowBlock> ARROW = REGISTRATE
         .block("arrow", ArrowBlock::new)
         .initialProperties(() -> Blocks.STONE)
-        .properties(BlockBehaviour.Properties::noOcclusion)
+        .properties(p -> p.noOcclusion().noCollission().lightLevel(bs -> 10))
         .blockstate((ctx, provider) -> {
         })
         .simpleItem()
