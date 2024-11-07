@@ -87,6 +87,9 @@ public class ItemInjectRecipe implements Recipe<ItemInjectRecipe.Input> {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean matches(Input input, Level pLevel) {
+        if (input.inputBlock != inputBlock) {
+            return false;
+        }
         Object2IntMap<Item> contents = new Object2IntOpenHashMap<>();
         Object2BooleanMap<Ingredient> ingredientFlags = new Object2BooleanOpenHashMap<>();
         Object2BooleanMap<Item> flags = new Object2BooleanOpenHashMap<>();
