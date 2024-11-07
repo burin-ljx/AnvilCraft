@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.mixin;
 
-import dev.dubhe.anvilcraft.recipe.GenerateRecipe;
+import dev.dubhe.anvilcraft.recipe.RecipeGenerator;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
@@ -35,7 +35,7 @@ public class RecipeManagerMixin {
             CallbackInfo ci,
             @Local Recipe<?> recipe,
             @Local RecipeHolder<?> recipeHolder) {
-        GenerateRecipe.handleVanillaRecipe(recipe.getType(), recipeHolder).ifPresent(v -> {
+        RecipeGenerator.handleVanillaRecipe(recipe.getType(), recipeHolder).ifPresent(v -> {
             byTypeBuilder.put(v.value().getType(), v);
             byNameBuilder.put(v.id(), v);
         });

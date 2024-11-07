@@ -58,7 +58,7 @@ public class VanillaRecipesLoader {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.IRON_BLOCK, 9)
                 .requires(ModBlocks.HEAVY_IRON_BLOCK)
                 .unlockedBy("hasitem", RegistrateRecipeProvider.has(ModBlocks.HEAVY_IRON_BLOCK))
-                .save(provider);
+                .save(provider, AnvilCraft.of("iron_block_from_heavy_iron_block"));
 
         SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ModItemTags.DOUGH), RecipeCategory.FOOD,
                         Items.BREAD, 0.35f, 600)

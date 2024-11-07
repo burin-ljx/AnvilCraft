@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:iron_block"
+        "recipe": "anvilcraft:iron_block_from_heavy_iron_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:iron_block"
+      "anvilcraft:iron_block_from_heavy_iron_block"
     ]
   }
 }

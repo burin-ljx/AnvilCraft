@@ -3,9 +3,11 @@ package dev.dubhe.anvilcraft.util;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.AbstractItemProcessRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.input.ItemProcessInput;
-
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -18,26 +20,29 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AnvilUtil {
     public static <T extends AbstractItemProcessRecipe> boolean itemProcess(
-        RecipeType<T> recipeType, Level level, final BlockPos itemPos, final Vec3 resultPos) {
+        RecipeType<T> recipeType,
+        Level level,
+        final BlockPos itemPos,
+        final Vec3 resultPos
+    ) {
         Map<ItemEntity, ItemStack> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(itemPos)).stream()
             .map(it -> Map.entry(it, it.getItem()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Util.toMap());
 
         ItemProcessInput input = new ItemProcessInput(items.values().stream().toList());
-        Optional<RecipeHolder<T>> recipeOptional = level.getRecipeManager().getRecipeFor(recipeType, input, level);
+        Optional<RecipeHolder<T>> recipeOptional = level.getRecipeManager()
+            .getRecipesFor(recipeType, input, level)
+            .stream()
+            .max(RecipeUtil::compareRecipeHolders);
         if (recipeOptional.isPresent()) {
             RecipeHolder<T> recipe = recipeOptional.get();
             int times = recipe.value().getMaxCraftTime(input);

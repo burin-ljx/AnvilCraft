@@ -1,19 +1,28 @@
 package dev.dubhe.anvilcraft.util;
 
+import dev.dubhe.anvilcraft.recipe.anvil.AbstractItemProcessRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.input.IItemsInput;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPattern;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
-
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -28,14 +37,6 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -291,5 +292,29 @@ public class RecipeUtil {
         // levelLike.setBlockState(BlockPos.ZERO, ModBlocks.MENGER_SPONGE.getDefaultState());
 
         return levelLike;
+    }
+
+    public static <T extends AbstractItemProcessRecipe> int compareRecipeHolders(RecipeHolder<T> holderA, RecipeHolder<T> holderB) {
+        T a = holderA.value();
+        T b = holderB.value();
+        if (a.mergedIngredients.size() == b.mergedIngredients.size()) {
+            int countA = a.mergedIngredients.stream().mapToInt(Object2IntMap.Entry::getIntValue).sum();
+            int countB = b.mergedIngredients.stream().mapToInt(Object2IntMap.Entry::getIntValue).sum();
+            return countA - countB;
+        }
+        return a.mergedIngredients.size() - b.mergedIngredients.size();
+    }
+
+
+    public static boolean allIngredientEquals(NonNullList<Ingredient> ingredients) {
+        if (ingredients.size() == 1) return true;
+        for (int i = 0; i < ingredients.size(); i++) {
+            for (int j = i; j < ingredients.size(); j++) {
+                Ingredient a = ingredients.get(i);
+                Ingredient b = ingredients.get(j);
+                if (!isIngredientsEqual(a, b))return false;
+            }
+        }
+        return true;
     }
 }
