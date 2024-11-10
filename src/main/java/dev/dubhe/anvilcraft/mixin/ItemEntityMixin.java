@@ -5,6 +5,7 @@ import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -53,11 +54,13 @@ abstract class ItemEntityMixin extends Entity {
 
     @Redirect(
             method = "tick",
-            at =
-                    @At(
+            at = @At(
                             value = "INVOKE",
                             target =
-                                    "Lnet/minecraft/world/entity/item/ItemEntity;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"))
+                                    "Lnet/minecraft/world/entity/item/ItemEntity;"
+                                    + "getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"
+                    )
+    )
     private @NotNull Vec3 slowDown(ItemEntity instance) {
         Vec3 vec3 = instance.getDeltaMovement();
         double dy = 1;
@@ -97,6 +100,14 @@ abstract class ItemEntityMixin extends Entity {
                 && this.getItem().is(ModItemTags.EXPLOSION_PROOF)
                 && source.is(DamageTypeTags.IS_EXPLOSION)) {
             cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "getBlockPosBelowThatAffectsMyMovement", at = @At("HEAD"), cancellable = true)
+    private void slidingRailProgress(CallbackInfoReturnable<BlockPos> cir) {
+        BlockState blockState = this.level().getBlockState(this.getOnPos(0.1f));
+        if (blockState.is(ModBlocks.SLIDING_RAIL) || blockState.is(ModBlocks.SLIDING_RAIL_STOP)) {
+            cir.setReturnValue(this.getOnPos(0.1f));
         }
     }
 }

@@ -19,6 +19,10 @@ public final class DangerUtil {
         return () -> new ConfiguredModel[] {new ConfiguredModel(new ModelFile.UncheckedModelFile(AnvilCraft.of(path)))};
     }
 
+    public static @NotNull Supplier<ModelFile> genModModelFile(String path) {
+        return () -> new ModelFile.UncheckedModelFile(AnvilCraft.of(path));
+    }
+
     public static @NotNull Supplier<ModelFile.UncheckedModelFile> genUncheckedModelFile(String path) {
         return () -> new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace(path));
     }

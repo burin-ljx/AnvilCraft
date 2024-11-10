@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.power.IPowerComponent;
 import dev.dubhe.anvilcraft.api.power.IPowerComponent.Switch;
 import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
 import dev.dubhe.anvilcraft.block.ActiveSilencerBlock;
@@ -26,6 +25,8 @@ import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
 import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.DischargerBlock;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
@@ -145,6 +146,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
@@ -439,7 +441,7 @@ public class ModBlocks {
         .initialProperties(ModBlocks.MAGNET_BLOCK)
         .properties(properties -> properties.noOcclusion().lightLevel(state -> {
             if (state.getValue(TransmissionPoleBlock.HALF) != Vertical3PartHalf.TOP) return 0;
-            if (state.getValue(SWITCH) == IPowerComponent.Switch.OFF) return 0;
+            if (state.getValue(SWITCH) == Switch.OFF) return 0;
             if (state.getValue(OVERLOAD)) return 6;
             return 15;
         }))
@@ -474,7 +476,7 @@ public class ModBlocks {
         .loot(AbstractMultiplePartBlock::loot)
         .properties(properties -> properties.noOcclusion().lightLevel(state -> {
             if (state.getValue(RemoteTransmissionPoleBlock.HALF) != Vertical4PartHalf.TOP) return 0;
-            if (state.getValue(SWITCH) == IPowerComponent.Switch.OFF) return 0;
+            if (state.getValue(SWITCH) == Switch.OFF) return 0;
             if (state.getValue(OVERLOAD)) return 6;
             return 15;
         }))
@@ -1218,6 +1220,67 @@ public class ModBlocks {
         .model((ctx, provider) -> provider.blockItem(ctx))
         .build()
         .register();
+
+    public static BlockEntry<SlidingRailBlock> SLIDING_RAIL = REGISTRATE
+            .block("sliding_rail", SlidingRailBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(it -> it
+                    .mapColor(MapColor.COLOR_GRAY)
+                    .friction(1.0204082f)
+                    .pushReaction(PushReaction.PUSH_ONLY)
+            )
+            .blockstate((ctx, provider) -> {
+                provider.getVariantBuilder(ctx.get()).forAllStates(blockState -> switch (blockState.getValue(
+                        SlidingRailBlock.AXIS)) {
+                    case X -> new ConfiguredModel[] {
+                            ConfiguredModel.builder()
+                                    .modelFile(DangerUtil.genModModelFile("block/sliding_rail").get())
+                                    .rotationY(90)
+                                    .buildLast()};
+                    case Z, Y -> DangerUtil.genConfiguredModel("block/sliding_rail")
+                            .get();
+                });
+            })
+            .item()
+            .model((ctx, provider) -> provider.blockItem(ctx))
+            .build()
+            .recipe((ctx, provider) -> {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 1)
+                        .pattern("A A")
+                        .pattern("BAB")
+                        .pattern("BBB")
+                        .define('A', Blocks.BLUE_ICE)
+                        .define('B', Items.IRON_INGOT)
+                        .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.BLUE_ICE), AnvilCraftDatagen.has(Blocks.BLUE_ICE))
+                        .save(provider);
+            })
+            .register();
+
+    public static BlockEntry<SlidingRailStopBlock> SLIDING_RAIL_STOP = REGISTRATE
+            .block("sliding_rail_stop", SlidingRailStopBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(it -> it
+                    .mapColor(MapColor.COLOR_GRAY)
+                    .friction(0.8241758242f)
+                    .pushReaction(PushReaction.PUSH_ONLY)
+            )
+            .blockstate((ctx, provider) -> {
+                provider.simpleBlock(ctx.get(), DangerUtil.genModModelFile("block/sliding_rail_stop").get());
+            })
+            .item()
+            .model((ctx, provider) -> provider.blockItem(ctx))
+            .build()
+            .recipe((ctx, provider) -> {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 1)
+                        .pattern("A A")
+                        .pattern("BAB")
+                        .pattern("BBB")
+                        .define('A', Blocks.BLUE_ICE)
+                        .define('B', Items.IRON_INGOT)
+                        .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.BLUE_ICE), AnvilCraftDatagen.has(Blocks.BLUE_ICE))
+                        .save(provider);
+            })
+            .register();
 
     static {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_BUILD_BLOCK.getKey());

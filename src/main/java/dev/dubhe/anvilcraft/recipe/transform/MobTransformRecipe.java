@@ -199,7 +199,7 @@ public class MobTransformRecipe implements Recipe<MobTransformInput> {
 
     public static final class Serializer implements RecipeSerializer<MobTransformRecipe> {
         public static final MapCodec<MobTransformRecipe> MAP_CODEC =
-                RecordCodecBuilder.<MobTransformRecipe>mapCodec(ins -> ins.group(
+                RecordCodecBuilder.mapCodec(ins -> ins.group(
                                 CodecUtil.ENTITY_CODEC.fieldOf("input").forGetter(o -> o.input),
                                 TransformResult.CODEC
                                         .listOf()

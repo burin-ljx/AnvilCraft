@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "anvilcraft:block/sliding_rail",
+      "y": 90
+    },
+    "axis=y": {
+      "model": "anvilcraft:block/sliding_rail"
+    },
+    "axis=z": {
+      "model": "anvilcraft:block/sliding_rail"
+    }
+  }
+}

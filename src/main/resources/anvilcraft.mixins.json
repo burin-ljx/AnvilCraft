@@ -18,6 +18,7 @@
     "FlyingHitEntityMixin",
     "ItemEntityMixin",
     "PistonBaseBlockMixin",
+    "PistonMovingBlockEntityMixin",
     "PistonStructureResolverMixin",
     "PlayerHitEntityMixin",
     "RecipeManagerMixin",
