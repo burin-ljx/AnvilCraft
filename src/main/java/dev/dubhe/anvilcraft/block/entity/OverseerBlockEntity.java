@@ -50,7 +50,7 @@ public class OverseerBlockEntity extends BlockEntity {
             // 如果底座上方不是监督者，直接破坏底座，结束方法
             if (!isBaseValid()) {
                 if (LevelLoadManager.checkRegistered(pos)) {
-                    LevelLoadManager.unregister(pos, (ServerLevel) level);
+                    LevelLoadManager.unregister(pos, level);
                 }
                 return;
             }

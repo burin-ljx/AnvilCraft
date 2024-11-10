@@ -25,15 +25,14 @@ public class PistonBaseBlockMixin implements IHammerChangeable {
         if (blockState.getValue(PistonBaseBlock.EXTENDED)) {
             return false;
         }
-        BlockState state =
-                switch (blockState.getValue(DirectionalBlock.FACING)) {
-                    case UP -> blockState.setValue(DirectionalBlock.FACING, Direction.DOWN);
-                    case DOWN -> blockState.setValue(DirectionalBlock.FACING, Direction.NORTH);
-                    case NORTH -> blockState.setValue(DirectionalBlock.FACING, Direction.EAST);
-                    case EAST -> blockState.setValue(DirectionalBlock.FACING, Direction.SOUTH);
-                    case SOUTH -> blockState.setValue(DirectionalBlock.FACING, Direction.WEST);
-                    case WEST -> blockState.setValue(DirectionalBlock.FACING, Direction.UP);
-                };
+        BlockState state = switch (blockState.getValue(DirectionalBlock.FACING)) {
+            case UP -> blockState.setValue(DirectionalBlock.FACING, Direction.DOWN);
+            case DOWN -> blockState.setValue(DirectionalBlock.FACING, Direction.NORTH);
+            case NORTH -> blockState.setValue(DirectionalBlock.FACING, Direction.EAST);
+            case EAST -> blockState.setValue(DirectionalBlock.FACING, Direction.SOUTH);
+            case SOUTH -> blockState.setValue(DirectionalBlock.FACING, Direction.WEST);
+            case WEST -> blockState.setValue(DirectionalBlock.FACING, Direction.UP);
+        };
         level.setBlockAndUpdate(blockPos, state);
         return true;
     }
