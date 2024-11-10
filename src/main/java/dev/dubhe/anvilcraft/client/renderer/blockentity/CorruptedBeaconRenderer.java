@@ -70,7 +70,7 @@ public class CorruptedBeaconRenderer implements BlockEntityRenderer<CorruptedBea
         }
 
         BakedModel model = blockRenderer.getBlockModel(defaultLightState);
-        poseStack.translate(0.005f, 0.0f, 0.005f);
+        poseStack.translate(0.005f, 0.005f, 0.005f);
         poseStack.scale(0.99f, 0.99f, 0.99f);
         VertexConsumer vertexConsumer = buffer.getBuffer(ModRenderTypes.BEACON_GLASS);
         for (Direction value : Direction.values()) {
