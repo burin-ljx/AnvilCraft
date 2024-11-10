@@ -1,26 +1,17 @@
 package dev.dubhe.anvilcraft.client.renderer.laser;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.dubhe.anvilcraft.init.ModRenderTypes;
-import lombok.Getter;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.SectionBufferBuilderPack;
-import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.SectionPos;
-import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
 
-import java.util.List;
 import java.util.function.Function;
 
 public class LaserCompiler {
     public static final float[] LASER_WIDTH;
     public static final float PIXEL = 1 / 16f;
     public static final float HALF_PIXEL = PIXEL / 2f;
-
     static {
         float[] array = new float[65];
         for (int i = 1; i <= 64; i++) {
@@ -29,42 +20,34 @@ public class LaserCompiler {
         LASER_WIDTH = array;
     }
 
-    @Getter
-    private static final LaserCompiler instance = new LaserCompiler();
-
-    public void compile(
-        SectionPos sectionPos,
-        RenderChunkRegion region,
-        VertexSorting vertexSorting,
-        SectionBufferBuilderPack sectionBufferBuilderPack,
-        List<AddSectionGeometryEvent.AdditionalSectionRenderer> additionalRenderers,
+    public static void compile(
         LaserState state,
-        Function<RenderType, BufferBuilder> bufferBuilderFunction
+        Function<RenderType, VertexConsumer> bufferBuilderFunction
     ) {
-        BufferBuilder solidLayer = bufferBuilderFunction.apply(RenderType.solid());
-        float width = LASER_WIDTH[Math.clamp(state.blockEntity().laserLevel, 1, 64)];
+        VertexConsumer solidLayer = bufferBuilderFunction.apply(RenderType.solid());
+        float width = LASER_WIDTH[Math.clamp(state.blockEntity().laserLevel, 1, 64)] + 0.001f;
         renderBox(
             solidLayer,
             state.pose(),
             -width,
-            -state.offset(),
+            -state.offset() + 0.001f,
             -width,
             width,
-            state.length() + 0.5f,
+            state.length() + 0.501f,
             width,
             1f,
             state.atlasSprite()
         );
-        BufferBuilder builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
+        VertexConsumer builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
         float haloWidth = width + HALF_PIXEL;
         renderBox(
             builder,
             state.pose(),
             -haloWidth,
-            -state.offset(),
+            -state.offset()+ 0.001f,
             -haloWidth,
             haloWidth,
-            state.length() + 0.5f,
+            state.length() + 0.501f,
             haloWidth,
             state.atlasSprite()
         );

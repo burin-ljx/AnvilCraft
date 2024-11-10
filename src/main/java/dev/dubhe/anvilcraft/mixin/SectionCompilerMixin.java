@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserCompiler;
+import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderStatus;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
@@ -27,7 +28,8 @@ import java.util.Map;
 @Mixin(SectionCompiler.class)
 public abstract class SectionCompilerMixin {
 
-    @Shadow protected abstract BufferBuilder getOrBeginLayer(Map<RenderType, BufferBuilder> bufferLayers, SectionBufferBuilderPack sectionBufferBuilderPack, RenderType renderType);
+    @Shadow
+    protected abstract BufferBuilder getOrBeginLayer(Map<RenderType, BufferBuilder> bufferLayers, SectionBufferBuilderPack sectionBufferBuilderPack, RenderType renderType);
 
     @Inject(
         method = "compile(Lnet/minecraft/core/SectionPos;Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;Lcom/mojang/blaze3d/vertex/VertexSorting;Lnet/minecraft/client/renderer/SectionBufferBuilderPack;Ljava/util/List;)Lnet/minecraft/client/renderer/chunk/SectionCompiler$Results;",
@@ -44,22 +46,18 @@ public abstract class SectionCompilerMixin {
         @Local(index = 16) BlockEntity blockEntity,
         @Local(index = 11) Map<RenderType, BufferBuilder> map
     ) {
-        if (!(blockEntity instanceof BaseLaserBlockEntity baseLaserBlockEntity))return;
+        if (!LaserRenderStatus.isEnhancedRenderingAvailable()) return;
+        if (!(blockEntity instanceof BaseLaserBlockEntity baseLaserBlockEntity)) return;
         poseStack.pushPose();
         BlockPos pos = blockEntity.getBlockPos();
         poseStack.translate(
-            (float)SectionPos.sectionRelative(pos.getX()),
-            (float)SectionPos.sectionRelative(pos.getY()),
-            (float)SectionPos.sectionRelative(pos.getZ())
+            (float) SectionPos.sectionRelative(pos.getX()),
+            (float) SectionPos.sectionRelative(pos.getY()),
+            (float) SectionPos.sectionRelative(pos.getZ())
         );
         LaserState laserState = LaserState.create(baseLaserBlockEntity, poseStack);
         if (laserState != null) {
-            LaserCompiler.getInstance().compile(
-                sectionPos,
-                region,
-                vertexSorting,
-                sectionBufferBuilderPack,
-                additionalRenderers,
+            LaserCompiler.compile(
                 laserState,
                 renderType -> this.getOrBeginLayer(
                     map,
