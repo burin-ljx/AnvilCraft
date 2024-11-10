@@ -5,7 +5,7 @@ import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserCompiler;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderStatus;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserState;
-import dev.dubhe.anvilcraft.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

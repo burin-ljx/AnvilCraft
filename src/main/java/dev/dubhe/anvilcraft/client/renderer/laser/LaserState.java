@@ -7,6 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.function.Function;
 
 public record LaserState(
     BaseLaserBlockEntity blockEntity,
@@ -14,14 +17,14 @@ public record LaserState(
     float length,
     float offset,
     PoseStack.Pose pose,
-    TextureAtlasSprite atlasSprite
+    TextureAtlasSprite laserAtlasSprite,
+    TextureAtlasSprite concreteAtlasSprite
 ) {
-    public static LaserState create(BaseLaserBlockEntity blockEntity, PoseStack poseStack){
+    public static LaserState create(BaseLaserBlockEntity blockEntity, PoseStack poseStack) {
         if (blockEntity.getLevel() == null) return null;
         if (blockEntity.irradiateBlockPos == null) return null;
-        final TextureAtlasSprite sprite = Minecraft.getInstance()
-            .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-            .apply(AnvilCraft.of("block/laser"));
+        Function<ResourceLocation, TextureAtlasSprite> spriteGetter = Minecraft.getInstance()
+            .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5);
         float length = (float) (blockEntity
@@ -35,7 +38,10 @@ public record LaserState(
             length,
             blockEntity.laserOffset(),
             poseStack.last(),
-            sprite
+            spriteGetter
+                .apply(AnvilCraft.of("block/laser")),
+            spriteGetter
+                .apply(ResourceLocation.withDefaultNamespace("block/white_concrete"))
         );
         poseStack.popPose();
         return laserState;

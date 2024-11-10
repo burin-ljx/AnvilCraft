@@ -1,8 +1,11 @@
 package dev.dubhe.anvilcraft.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserCompiler;
@@ -16,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -67,5 +71,20 @@ public abstract class SectionCompilerMixin {
             );
         }
         poseStack.popPose();
+    }
+
+    @WrapOperation(
+        method = "getOrBeginLayer",
+        at = @At(
+            value = "FIELD",
+            target = "Lcom/mojang/blaze3d/vertex/DefaultVertexFormat;BLOCK:Lcom/mojang/blaze3d/vertex/VertexFormat;",
+            opcode = Opcodes.GETSTATIC
+        )
+    )
+    public VertexFormat wrapFormatBasedOnRenderType(
+        Operation<VertexFormat> original,
+        @Local(argsOnly = true) RenderType realRenderType
+    ) {
+        return realRenderType.format();
     }
 }

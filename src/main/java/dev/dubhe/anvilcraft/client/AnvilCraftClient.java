@@ -2,9 +2,11 @@ package dev.dubhe.anvilcraft.client;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.client.event.GuiLayerRegistrationEventListener;
+import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.config.AnvilCraftConfig;
 
 import dev.dubhe.anvilcraft.init.ModFluids;
+import lombok.SneakyThrows;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -16,6 +18,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 
 @Mod(value = AnvilCraft.MOD_ID, dist = Dist.CLIENT)
 public class AnvilCraftClient {
+
+
     public AnvilCraftClient(IEventBus modBus, ModContainer container) {
         modBus.addListener(GuiLayerRegistrationEventListener::onRegister);
         container.registerExtensionPoint(
@@ -23,6 +27,7 @@ public class AnvilCraftClient {
             (c, s) -> AutoConfig.getConfigScreen(AnvilCraftConfig.class, s).get()
         );
         modBus.addListener(AnvilCraftClient::registerClientFluidExtensions);
+        modBus.addListener(ModShaders::register);
         ModInspectionClient.initializeClient();
     }
 

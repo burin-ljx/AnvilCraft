@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.mixin;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import dev.dubhe.anvilcraft.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;

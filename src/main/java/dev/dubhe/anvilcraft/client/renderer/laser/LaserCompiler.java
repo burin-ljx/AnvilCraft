@@ -2,7 +2,7 @@ package dev.dubhe.anvilcraft.client.renderer.laser;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.dubhe.anvilcraft.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
@@ -12,6 +12,7 @@ public class LaserCompiler {
     public static final float[] LASER_WIDTH;
     public static final float PIXEL = 1 / 16f;
     public static final float HALF_PIXEL = PIXEL / 2f;
+
     static {
         float[] array = new float[65];
         for (int i = 1; i <= 64; i++) {
@@ -30,13 +31,14 @@ public class LaserCompiler {
             solidLayer,
             state.pose(),
             -width,
-            -state.offset() + 0.001f,
+            -state.offset() - 0.001f,
             -width,
             width,
             state.length() + 0.501f,
             width,
             1f,
-            state.atlasSprite()
+            state.laserAtlasSprite(),
+            state.concreteAtlasSprite()
         );
         VertexConsumer builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
         float haloWidth = width + HALF_PIXEL;
@@ -44,31 +46,15 @@ public class LaserCompiler {
             builder,
             state.pose(),
             -haloWidth,
-            -state.offset()+ 0.001f,
+            -state.offset(),
             -haloWidth,
             haloWidth,
-            state.length() + 0.501f,
+            state.length() + 0.5f + HALF_PIXEL,
             haloWidth,
-            state.atlasSprite()
+            0.5f,
+            state.laserAtlasSprite(),
+            state.concreteAtlasSprite()
         );
-    }
-
-    private static void renderBox(
-        VertexConsumer consumer,
-        PoseStack.Pose pose,
-        float minX,
-        float minY,
-        float minZ,
-        float maxX,
-        float maxY,
-        float maxZ,
-        TextureAtlasSprite sprite) {
-        renderQuadX(consumer, pose, maxX, maxX, minY, minZ, maxY, maxZ, 0.5f, sprite);
-        renderQuadX(consumer, pose, minX, minX, minY, maxZ, maxY, minZ, 0.5f, sprite);
-        renderQuadY(consumer, pose, maxY, maxY, minX, minZ, maxX, maxZ, 0.5f, sprite);
-        renderQuadY(consumer, pose, minY, minY, maxX, minZ, minX, maxZ, 0.5f, sprite);
-        renderQuadZ(consumer, pose, maxZ, maxZ, minX, maxY, maxX, minY, 0.5f, sprite);
-        renderQuadZ(consumer, pose, minZ, minZ, minX, minY, maxX, maxY, 0.5f, sprite);
     }
 
     private static void renderBox(
@@ -81,11 +67,12 @@ public class LaserCompiler {
         float maxY,
         float maxZ,
         float a,
-        TextureAtlasSprite sprite) {
+        TextureAtlasSprite sprite,
+        TextureAtlasSprite endSprite) {
         renderQuadX(consumer, pose, maxX, maxX, minY, minZ, maxY, maxZ, a, sprite);
         renderQuadX(consumer, pose, minX, minX, minY, maxZ, maxY, minZ, a, sprite);
-        renderQuadY(consumer, pose, maxY, maxY, minX, minZ, maxX, maxZ, a, sprite);
-        renderQuadY(consumer, pose, minY, minY, maxX, minZ, minX, maxZ, a, sprite);
+        renderQuadY(consumer, pose, maxY, maxY, minX, minZ, maxX, maxZ, a - 0.25f, endSprite);
+        //renderQuadY(consumer, pose, minY, minY, maxX, minZ, minX, maxZ, a, endSprite);
         renderQuadZ(consumer, pose, maxZ, maxZ, minX, maxY, maxX, minY, a, sprite);
         renderQuadZ(consumer, pose, minZ, minZ, minX, minY, maxX, maxY, a, sprite);
     }
@@ -151,7 +138,7 @@ public class LaserCompiler {
         float v,
         float a) {
         consumer.addVertex(pose.pose(), x, y, z)
-            .setColor(1f, .2f, .2f, a)
+            .setColor(1f, .05f, .05f, a)
             .setUv(u, v)
             .setUv1(0, 0)
             .setUv2(240, 240)

@@ -2,7 +2,7 @@ package dev.dubhe.anvilcraft.client.renderer.blockentity;
 
 import dev.dubhe.anvilcraft.block.entity.CorruptedBeaconBlockEntity;
 
-import dev.dubhe.anvilcraft.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;

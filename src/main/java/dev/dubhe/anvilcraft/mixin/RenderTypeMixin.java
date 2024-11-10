@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.mixin;
 import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import dev.dubhe.anvilcraft.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
