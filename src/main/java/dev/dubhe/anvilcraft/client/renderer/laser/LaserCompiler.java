@@ -19,6 +19,7 @@ import java.util.function.Function;
 public class LaserCompiler {
     public static final float[] LASER_WIDTH;
     public static final float PIXEL = 1 / 16f;
+    public static final float HALF_PIXEL = PIXEL / 2f;
 
     static {
         float[] array = new float[65];
@@ -40,41 +41,31 @@ public class LaserCompiler {
         LaserState state,
         Function<RenderType, BufferBuilder> bufferBuilderFunction
     ) {
-        BufferBuilder builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
+        BufferBuilder solidLayer = bufferBuilderFunction.apply(RenderType.solid());
         float width = LASER_WIDTH[Math.clamp(state.blockEntity().laserLevel, 1, 64)];
         renderBox(
-            builder,
+            solidLayer,
             state.pose(),
             -width,
             -state.offset(),
             -width,
             width,
-            state.length(),
+            state.length() + 0.5f,
             width,
+            1f,
             state.atlasSprite()
         );
+        BufferBuilder builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
+        float haloWidth = width + HALF_PIXEL;
         renderBox(
             builder,
             state.pose(),
-            -width,
-            state.length(),
-            -width,
-            width,
-            state.length() + 0.3f,
-            width,
-            0.35f,
-            state.atlasSprite()
-        );
-        renderBox(
-            builder,
-            state.pose(),
-            -width,
-            state.length() + 0.3f,
-            -width,
-            width,
-            state.length() + 0.57f,
-            width,
-            0.15f,
+            -haloWidth,
+            -state.offset(),
+            -haloWidth,
+            haloWidth,
+            state.length() + 0.5f,
+            haloWidth,
             state.atlasSprite()
         );
     }
