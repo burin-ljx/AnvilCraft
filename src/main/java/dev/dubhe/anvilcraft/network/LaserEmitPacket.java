@@ -5,6 +5,7 @@ import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -70,6 +71,10 @@ public class LaserEmitPacket implements CustomPacketPayload {
                             instanceof BaseLaserBlockEntity baseLaserBlockEntity) {
                 baseLaserBlockEntity.irradiateBlockPos = data.irradiateBlockPos;
                 baseLaserBlockEntity.laserLevel = data.lightPowerLevel;
+                Minecraft.getInstance().levelRenderer.setBlockDirty(
+                    data.laserBlockPos,
+                    false
+                );
             }
         });
     }

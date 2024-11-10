@@ -32,6 +32,9 @@
   "client": [
     "ClientLevelMixin",
     "ItemInHandRendererMixin",
+    "LevelRendererMixin",
+    "RenderTypeMixin",
+    "SectionCompilerMixin",
     "SoundEngineMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",

@@ -96,6 +96,11 @@ public class RubyLaserBlockEntity extends BaseLaserBlockEntity implements IPower
     }
 
     @Override
+    public float laserOffset() {
+        return 0.489f;
+    }
+
+    @Override
     public Direction getDirection() {
         return this.getBlockState().getValue(RubyLaserBlock.FACING);
     }

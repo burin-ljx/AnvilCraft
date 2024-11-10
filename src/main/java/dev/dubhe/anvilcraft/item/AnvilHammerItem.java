@@ -95,6 +95,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
      */
     public static boolean ableToUseAnvilHammer(Level level, BlockPos blockPos, Player player) {
         BlockState state = level.getBlockState(blockPos);
+        if (!player.getAbilities().mayBuild) return false;
         return state.getBlock() instanceof IHammerRemovable
             || state.getBlock() instanceof IHammerChangeable
             || state.is(ModBlockTags.HAMMER_REMOVABLE)
