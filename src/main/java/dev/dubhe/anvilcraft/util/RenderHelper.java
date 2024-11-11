@@ -273,6 +273,10 @@ public class RenderHelper {
         return stack.is(ItemTags.COMPASSES) || stack.is(Items.CLOCK);
     }
 
+    public static float getPartialTick(){
+        return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(Minecraft.getInstance().isPaused());
+    }
+
     @FunctionalInterface
     public interface BlockRenderFunction {
         void renderBlock(BlockState block, PoseStack poseStack, MultiBufferSource.BufferSource buffers);

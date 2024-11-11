@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.client.renderer.blockentity;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserCompiler;
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderStatus;
+import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderState;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserState;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -35,19 +35,17 @@ public class LaserRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> 
         int packedLight,
         int packedOverlay
     ) {
-        if (LaserRenderStatus.isEnhancedRenderingAvailable()) return;
+        if (LaserRenderState.isEnhancedRenderingAvailable()) return;
         poseStack.pushPose();
         LaserState laserState = LaserState.create(baseLaserBlockEntity, poseStack);
         if (laserState != null) {
             LaserCompiler.compile(
                 laserState,
-                renderType -> {
-                    if (renderType == ModRenderTypes.LASER){
-                        return buffer.getBuffer(RenderType.translucent());
-                    }
-                    return buffer.getBuffer(renderType);
-                }
+                buffer::getBuffer
             );
+        }
+        if (buffer instanceof MultiBufferSource.BufferSource bs){
+            bs.endBatch(RenderType.translucent());
         }
         poseStack.popPose();
     }

@@ -40,7 +40,8 @@ public class LaserCompiler {
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );
-        VertexConsumer builder = bufferBuilderFunction.apply(ModRenderTypes.LASER);
+        RenderType haloRenderType = LaserRenderState.isEnhancedRenderingAvailable() ? ModRenderTypes.LASER : RenderType.translucent();
+        VertexConsumer builder = bufferBuilderFunction.apply(haloRenderType);
         float haloWidth = width + HALF_PIXEL;
         renderBox(
             builder,
@@ -51,7 +52,7 @@ public class LaserCompiler {
             haloWidth,
             state.length() + 0.5f + HALF_PIXEL,
             haloWidth,
-            0.5f,
+            0.6f,
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );

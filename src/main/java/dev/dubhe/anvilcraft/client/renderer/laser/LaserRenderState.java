@@ -1,28 +1,42 @@
 package dev.dubhe.anvilcraft.client.renderer.laser;
 
 import com.mojang.logging.LogUtils;
+import lombok.Getter;
+import net.minecraft.client.Minecraft;
 import net.neoforged.fml.ModList;
 import org.slf4j.Logger;
 
-public class LaserRenderStatus {
+public class LaserRenderState {
 
-    private static boolean ENHANCED;
+    private static boolean CONTAINS_INCOMPATIBLE_MODS;
+    @Getter
+    private static boolean bloomRenderStage;
     private static final String[] INCOMPATIBLE_MODS = {
-        "sodium"
+        "sodium",
+        "embeddium",
+        "iris"
     };
     private static final Logger logger = LogUtils.getLogger();
 
     static {
-        ENHANCED = true;
+        CONTAINS_INCOMPATIBLE_MODS = false;
         for (String incompatibleMod : INCOMPATIBLE_MODS) {
             if (ModList.get().isLoaded(incompatibleMod)){
                 logger.warn("Incompatible mod {} detected, fallback laser rendering into BlockEntityRenderer.", incompatibleMod);
-                ENHANCED = false;
+                CONTAINS_INCOMPATIBLE_MODS = true;
             }
         }
     }
 
+    public static void bloomStage(){
+        bloomRenderStage = true;
+    }
+
+    public static void levelStage(){
+        bloomRenderStage = false;
+    }
+
     public static boolean isEnhancedRenderingAvailable() {
-        return ENHANCED;
+        return !(CONTAINS_INCOMPATIBLE_MODS || Minecraft.useShaderTransparency());
     }
 }

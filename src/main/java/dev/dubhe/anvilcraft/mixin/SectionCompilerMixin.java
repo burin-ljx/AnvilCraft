@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserCompiler;
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderStatus;
+import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderState;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
@@ -50,7 +50,7 @@ public abstract class SectionCompilerMixin {
         @Local(index = 16) BlockEntity blockEntity,
         @Local(index = 11) Map<RenderType, BufferBuilder> map
     ) {
-        if (!LaserRenderStatus.isEnhancedRenderingAvailable()) return;
+        if (!LaserRenderState.isEnhancedRenderingAvailable()) return;
         if (!(blockEntity instanceof BaseLaserBlockEntity baseLaserBlockEntity)) return;
         poseStack.pushPose();
         BlockPos pos = blockEntity.getBlockPos();

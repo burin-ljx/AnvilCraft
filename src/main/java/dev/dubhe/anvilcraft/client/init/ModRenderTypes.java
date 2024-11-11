@@ -8,12 +8,13 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 
+import static dev.dubhe.anvilcraft.client.init.ModRenderTargets.LASER_TARGET;
+import static dev.dubhe.anvilcraft.client.init.ModShaders.renderTypeLaserShader;
 import static net.minecraft.client.renderer.RenderStateShard.BLOCK_SHEET_MIPPED;
 import static net.minecraft.client.renderer.RenderStateShard.COLOR_DEPTH_WRITE;
 import static net.minecraft.client.renderer.RenderStateShard.COLOR_WRITE;
 import static net.minecraft.client.renderer.RenderStateShard.CULL;
 import static net.minecraft.client.renderer.RenderStateShard.LIGHTMAP;
-import static net.minecraft.client.renderer.RenderStateShard.MAIN_TARGET;
 import static net.minecraft.client.renderer.RenderStateShard.OVERLAY;
 import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER;
 import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TARGET;
@@ -37,6 +38,10 @@ public class ModRenderTypes {
         }
     );
 
+    public static RenderStateShard.ShaderStateShard RENDERTYPE_LASER_SHADER = new RenderStateShard.ShaderStateShard(
+        () -> renderTypeLaserShader
+    );
+
     public static final RenderType LASER = RenderType.create(
         "anvilcraft:laser",
         DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL,
@@ -46,7 +51,7 @@ public class ModRenderTypes {
         true,
         RenderType.CompositeState.builder()
             .setLightmapState(LIGHTMAP)
-            .setShaderState(ModShaders.RENDERTYPE_LASER_SHADER)
+            .setShaderState(RENDERTYPE_LASER_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(
                 TextureAtlas.LOCATION_BLOCKS,
                 false,
@@ -55,7 +60,7 @@ public class ModRenderTypes {
             .setCullState(CULL)
             .setWriteMaskState(COLOR_DEPTH_WRITE)
             .setOverlayState(OVERLAY)
-            .setOutputState(MAIN_TARGET)
+            .setOutputState(LASER_TARGET)
             .createCompositeState(true)
     );
 
