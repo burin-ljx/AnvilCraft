@@ -24,7 +24,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
     private static final int COOLDOWN = 40;
 
     private int cooldownCount = 40;
-    private double chargeNum = 0;
+    private double chargeCount = 0;
     private PowerGrid grid = null;
     private int power = 0;
 
@@ -83,8 +83,12 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
             return;
         }
         this.cooldownCount = COOLDOWN;
-        this.power = (int) Math.floor(this.chargeNum);
-        this.chargeNum = 0;
+        int oldPower = this.power;
+        this.power = (int) Math.floor(this.chargeCount);
+        if (power != oldPower && grid != null) {
+            grid.markChanged();
+        }
+        this.chargeCount = 0;
     }
 
     /**
@@ -94,7 +98,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
      * @return 溢出的电荷数(既未被添加至收集器的电荷数)
      */
     public double incomingCharge(double num, BlockPos srcPos) {
-        double overflow = num - (MAX_POWER_PER_INCOMING - this.chargeNum);
+        double overflow = num - (MAX_POWER_PER_INCOMING - this.chargeCount);
         if (overflow < 0) {
             overflow = 0;
         }
@@ -108,7 +112,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
                 acceptableChargeCount
             )
         );
-        this.chargeNum += acceptableChargeCount;
+        this.chargeCount += acceptableChargeCount;
         return overflow;
     }
 

@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -34,10 +35,10 @@ import java.util.Optional;
 public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerProducer, IPowerConsumer, MenuProvider {
     private PowerGrid grid = null;
 
-    @Setter
     private int power = 16;
 
     private int time = 0;
+    private boolean previousSyncFailed = false;
 
     public static @NotNull CreativeGeneratorBlockEntity createBlockEntity(
         BlockEntityType<?> type, BlockPos pos, BlockState blockState
@@ -101,7 +102,24 @@ public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerP
         return new SliderMenu(i, -8192, 8192, this::setPower);
     }
 
+    public void setPower(int power) {
+        this.power = power;
+        if (level instanceof ServerLevel serverLevel){
+            if (grid != null) {
+                this.grid.markChanged();
+                return;
+            }
+            previousSyncFailed = true;
+        }
+    }
+
     public void tick() {
+        if (level instanceof ServerLevel){
+            if (previousSyncFailed && grid != null){
+                previousSyncFailed = false;
+                grid.markChanged();
+            }
+        }
         time++;
     }
 

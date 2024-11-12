@@ -227,7 +227,7 @@ public class PowerGrid {
     }
 
     /**
-     * 移除除电网元件
+     * 移除电网元件
      *
      * @param components 元件
      */

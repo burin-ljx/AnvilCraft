@@ -38,7 +38,9 @@ public class SliderUpdatePacket implements CustomPacketPayload {
             if (!player.hasContainerOpen()) return;
             if (!(player.containerMenu instanceof SliderMenu menu)) return;
             Callback<Integer> callback = menu.getCallback();
-            if (callback != null) callback.onValueChange(data.value);
+            if (callback != null) {
+                callback.onValueChange(data.value);
+            }
         });
     }
 }
