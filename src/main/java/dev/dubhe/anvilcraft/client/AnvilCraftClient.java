@@ -6,7 +6,6 @@ import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.config.AnvilCraftConfig;
 
 import dev.dubhe.anvilcraft.init.ModFluids;
-import lombok.SneakyThrows;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

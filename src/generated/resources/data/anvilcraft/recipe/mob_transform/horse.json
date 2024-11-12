@@ -3,12 +3,12 @@
   "input": "minecraft:horse",
   "results": [
     {
-      "probability": 0.8,
-      "resultEntityType": "minecraft:stray"
+      "probability": 0.9,
+      "resultEntityType": "minecraft:skeleton_horse"
     },
     {
-      "probability": 0.2,
-      "resultEntityType": "minecraft:wither_skeleton"
+      "probability": 0.1,
+      "resultEntityType": "minecraft:zombie_horse"
     }
   ]
 }

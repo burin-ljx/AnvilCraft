@@ -26,8 +26,8 @@ public class MobTransformRecipeLoader {
         MobTransformRecipe.from(EntityType.ALLAY).to(EntityType.VEX).save(provider);
         MobTransformRecipe.from(EntityType.BAT).to(EntityType.PHANTOM).save(provider);
         MobTransformRecipe.from(EntityType.HORSE)
-                .result(EntityType.STRAY, 0.8)
-                .result(EntityType.WITHER_SKELETON, 0.2)
+                .result(EntityType.SKELETON_HORSE, 0.9)
+                .result(EntityType.ZOMBIE_HORSE, 0.1)
                 .save(provider);
         MobTransformRecipe.from(EntityType.ZOMBIE)
                 .result(EntityType.DROWNED, 0.45)
