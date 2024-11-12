@@ -2,11 +2,13 @@ package dev.dubhe.anvilcraft.client.renderer.blockentity;
 
 import dev.dubhe.anvilcraft.block.entity.HasMobBlockEntity;
 
+import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,7 +26,8 @@ public class HasMobBlockRenderer implements BlockEntityRenderer<HasMobBlockEntit
         @NotNull PoseStack poseStack,
         @NotNull MultiBufferSource buffer,
         int packedLight,
-        int packedOverlay) {
+        int packedOverlay
+    ) {
         Entity entity = blockEntity.getOrCreateDisplayEntity(blockEntity.getLevel());
         if (entity == null) return;
         poseStack.pushPose();
@@ -38,7 +41,20 @@ public class HasMobBlockRenderer implements BlockEntityRenderer<HasMobBlockEntit
         poseStack.scale(size, size, size);
         Minecraft minecraft = Minecraft.getInstance();
         EntityRenderDispatcher dispatcher = minecraft.getEntityRenderDispatcher();
-        dispatcher.render(entity, 0, 0, 0, 0, 0, poseStack, buffer, packedLight);
+        float f = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
+        dispatcher.setRenderShadow(false);
+        dispatcher.render(
+            entity,
+            0,
+            0,
+            0,
+            f,
+            partialTick,
+            poseStack,
+            buffer,
+            packedLight
+        );
+        dispatcher.setRenderShadow(Minecraft.getInstance().options.entityShadows().get());
         poseStack.popPose();
     }
 }

@@ -4,7 +4,10 @@ import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.init.ModComponents;
+import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
+import dev.dubhe.anvilcraft.item.HasMobBlockItem;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
 import dev.dubhe.anvilcraft.util.AnvilUtil;
@@ -14,6 +17,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +50,40 @@ public class TimeWarpBehavior implements AnvilBehavior {
                 .stream()
                 .map(it -> Map.entry(it, it.getItem()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+            if (items.values().stream().anyMatch(it -> it.is(ModBlocks.RESIN_BLOCK.asItem()))) {
+                items.entrySet().stream()
+                    .filter(it -> it.getValue().is(ModBlocks.RESIN_BLOCK.asItem()))
+                    .map(it -> {
+                        ItemStack itemStack = it.getValue();
+                        Entity entity = HasMobBlockItem.getMobFromItem(level, itemStack);
+                        if (entity == null) {
+                            return Map.entry(it.getKey(), new ItemStack(ModBlocks.AMBER_BLOCK));
+                        }
+                        ItemStack result = new ItemStack(
+                            entity.getType().getCategory() == MobCategory.MONSTER
+                                && level.getRandom().nextFloat() >= 0.05
+                                ? ModBlocks.RESENTFUL_AMBER_BLOCK.asItem()
+                                : ModBlocks.MOB_AMBER_BLOCK.asItem()
+                        );
+                        HasMobBlockItem.SavedEntity savedEntity = itemStack.getComponents().get(ModComponents.SAVED_ENTITY);
+                        result.set(ModComponents.SAVED_ENTITY, savedEntity);
+                        return Map.entry(it.getKey(), result);
+                    })
+                    .forEach(it -> {
+                        ItemEntity old = it.getKey();
+                        ItemEntity itemEntity = new ItemEntity(
+                            old.level(),
+                            old.getX(),
+                            old.getY(),
+                            old.getZ(),
+                            it.getValue()
+                        );
+                        old.discard();
+                        old.level().addFreshEntity(itemEntity);
+                    });
+                return true;
+            }
             TimeWarpRecipe.Input input = new TimeWarpRecipe.Input(items.values().stream().toList(), hitBlockState);
             Optional<RecipeHolder<TimeWarpRecipe>> recipeOptional = level.getRecipeManager()
                 .getRecipeFor(ModRecipeTypes.TIME_WARP_TYPE.get(), input, level);

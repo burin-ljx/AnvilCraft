@@ -1,8 +1,10 @@
 package dev.dubhe.anvilcraft.item;
 
+import dev.dubhe.anvilcraft.block.entity.HasMobBlockEntity;
 import dev.dubhe.anvilcraft.init.ModComponents;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,6 +27,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
@@ -33,10 +36,13 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class HasMobBlockItem extends BlockItem {
     public HasMobBlockItem(Block block, Properties properties) {
         super(block, properties);
@@ -44,7 +50,11 @@ public class HasMobBlockItem extends BlockItem {
 
     @Override
     public void appendHoverText(
-            ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+            ItemStack stack,
+            Item.TooltipContext context,
+            List<Component> tooltipComponents,
+            TooltipFlag isAdvanced
+    ) {
         super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (!HasMobBlockItem.hasMob(stack)) return;
         Entity entity = HasMobBlockItem.getMobFromItem(context.level(), stack);
@@ -52,6 +62,17 @@ public class HasMobBlockItem extends BlockItem {
             tooltipComponents.add(
                     Component.literal("- ").append(entity.getDisplayName()).withStyle(ChatFormatting.DARK_GRAY));
         }
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state) {
+        if (hasMob(stack)){
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof HasMobBlockEntity hmbe){
+                hmbe.setEntity(getMobFromItem(level, stack));
+            }
+        }
+        return super.updateCustomBlockEntityTag(pos, level, player, stack, state);
     }
 
     public static boolean hasMob(@NotNull ItemStack stack) {
