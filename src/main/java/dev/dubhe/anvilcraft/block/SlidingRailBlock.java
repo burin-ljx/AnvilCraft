@@ -121,10 +121,8 @@ public class SlidingRailBlock extends Block {
     ) {
         if (level.isClientSide) return;
         BlockState blockState = level.getBlockState(fromPos);
-        System.out.println(blockState.getBlock());
         if (blockState.is(Blocks.MOVING_PISTON)) return;
         if (!movingPistonMap.containsKey(fromPos)) return;
-        System.out.println(movingPistonMap);
         pushBlock(fromPos, level, movingPistonMap.get(fromPos).getMovementDirection());
     }
 

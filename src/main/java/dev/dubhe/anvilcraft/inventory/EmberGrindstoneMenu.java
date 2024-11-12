@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class EmberGrindstoneMenu extends AbstractContainerMenu {
+    public static final int GOLD_PER_CURSE = 16;
     private final Container repairToolSlots;
     private final Container resultToolSlots;
     private final Container repairMaterialSlots;
@@ -38,8 +39,8 @@ public class EmberGrindstoneMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
 
     public int usedGold = 0;
-    public int removeRepairCostNumber = 0;
-    public int removeCurseNumber = 0;
+    public int removedRepairCost = 0;
+    public int removedCurseCount = 0;
 
     public EmberGrindstoneMenu(MenuType<EmberGrindstoneMenu> type, int containerId, Inventory playerInventory) {
         this(type, containerId, playerInventory, ContainerLevelAccess.NULL);
@@ -134,19 +135,20 @@ public class EmberGrindstoneMenu extends AbstractContainerMenu {
         Map<Holder<Enchantment>, Integer> curseMap = Maps.asMap(curses.keySet(), curses::getLevel);
         int curseNumber = curseMap.size();
         int repairCost = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0);
-        int goldNumber = repairMaterial.getCount();
+        int goldCount = repairMaterial.getCount();
         int goldUsed = 0;
-        while ((goldNumber > 0 && repairCost > 0)) {
+        while (goldCount > 0 && repairCost > 0 && goldUsed <= 64) {
             result.set(DataComponents.REPAIR_COST, repairCost - 1);
             repairCost -= 1;
-            goldNumber -= 1;
+            goldCount -= 1;
             goldUsed += 1;
         }
-        if (result.getOrDefault(DataComponents.REPAIR_COST, 0) <= 0) result.remove(DataComponents.REPAIR_COST);
-        int removeCurseNumber = 0;
+        if (result.getOrDefault(DataComponents.REPAIR_COST, 0) <= 0) {
+            result.remove(DataComponents.REPAIR_COST);
+        }
+        int removedCurseCound = 0;
         Iterator<Holder<Enchantment>> iterator = curseMap.keySet().iterator();
-        final int needGold = 16;
-        while (goldNumber >= needGold && curseNumber > 0 && goldUsed < 64) {
+        while (goldCount >= GOLD_PER_CURSE && curseNumber > 0 && goldUsed < 64) {
             ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(result.getEnchantments());
             enchantments.removeIf(it -> it == iterator.next());
             ItemStack itemStack = result.copy();
@@ -155,16 +157,16 @@ public class EmberGrindstoneMenu extends AbstractContainerMenu {
             EnchantmentHelper.setEnchantments(itemStack, enchantments.toImmutable());
             result = itemStack.copy();
             curseNumber -= 1;
-            goldUsed += needGold;
-            goldNumber -= needGold;
-            removeCurseNumber += 1;
+            goldUsed += GOLD_PER_CURSE;
+            goldCount -= GOLD_PER_CURSE;
+            removedCurseCound += 1;
         }
         if (result.is(Items.ENCHANTED_BOOK) && !EnchantmentHelper.hasAnyEnchantments(result)) {
             result = new ItemStack(Items.BOOK, result.getCount());
         }
         this.usedGold = goldUsed;
-        this.removeRepairCostNumber = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0) - repairCost;
-        this.removeCurseNumber = removeCurseNumber;
+        this.removedRepairCost = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0) - repairCost;
+        this.removedCurseCount = removedCurseCound;
         return result;
     }
 
