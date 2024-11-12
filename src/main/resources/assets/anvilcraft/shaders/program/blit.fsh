@@ -6,6 +6,6 @@ in vec2 texCoord;
 
 out vec4 fragColor;
 
-void main(){
+void main() {
     fragColor = texture(DiffuseSampler, texCoord);
 }
