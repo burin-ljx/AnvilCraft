@@ -36,10 +36,6 @@ public abstract class LevelRendererMixin {
     protected abstract void renderSectionLayer(RenderType renderType, double x, double y, double z, Matrix4f frustrumMatrix, Matrix4f projectionMatrix);
 
     @Shadow
-    @Nullable
-    private RenderTarget translucentTarget;
-
-    @Shadow
     @Final
     private Minecraft minecraft;
 
@@ -134,7 +130,7 @@ public abstract class LevelRendererMixin {
         Matrix4f projectionMatrix,
         CallbackInfo ci
     ) {
-        if (!RenderState.isEnhancedRenderingAvailable())return;
+        if (!RenderState.isEnhancedRenderingAvailable()) return;
         RenderTarget mcInput = ModShaders.getLaserBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(
             FogRenderer.fogRed,
@@ -171,10 +167,6 @@ public abstract class LevelRendererMixin {
         double d0 = vec3.x();
         double d1 = vec3.y();
         double d2 = vec3.z();
-        if (this.translucentTarget != null) {
-            this.translucentTarget.clear(Minecraft.ON_OSX);
-            this.translucentTarget.copyDepthFrom(this.minecraft.getMainRenderTarget());
-        }
         if (ModRenderTargets.getLaserTarget() != null) {
             ModRenderTargets.getLaserTarget().setClearColor(0, 0, 0, 0);
             ModRenderTargets.getLaserTarget().clear(Minecraft.ON_OSX);
