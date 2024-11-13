@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.client.renderer.laser;
+package dev.dubhe.anvilcraft.client.renderer;
 
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.fml.ModList;
 import org.slf4j.Logger;
 
-public class LaserRenderState {
+public class RenderState {
 
     private static boolean CONTAINS_INCOMPATIBLE_MODS;
     @Getter

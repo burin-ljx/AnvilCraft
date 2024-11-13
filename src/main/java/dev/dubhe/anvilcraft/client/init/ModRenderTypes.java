@@ -8,17 +8,23 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 
+import java.util.OptionalDouble;
+
 import static dev.dubhe.anvilcraft.client.init.ModRenderTargets.LASER_TARGET;
+import static dev.dubhe.anvilcraft.client.init.ModRenderTargets.LINE_BLOOM_TARGET;
 import static dev.dubhe.anvilcraft.client.init.ModShaders.renderTypeLaserShader;
 import static net.minecraft.client.renderer.RenderStateShard.BLOCK_SHEET_MIPPED;
 import static net.minecraft.client.renderer.RenderStateShard.COLOR_DEPTH_WRITE;
 import static net.minecraft.client.renderer.RenderStateShard.COLOR_WRITE;
 import static net.minecraft.client.renderer.RenderStateShard.CULL;
 import static net.minecraft.client.renderer.RenderStateShard.LIGHTMAP;
+import static net.minecraft.client.renderer.RenderStateShard.NO_CULL;
 import static net.minecraft.client.renderer.RenderStateShard.OVERLAY;
+import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_LINES_SHADER;
 import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER;
 import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TARGET;
 import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TRANSPARENCY;
+import static net.minecraft.client.renderer.RenderStateShard.VIEW_OFFSET_Z_LAYERING;
 
 public class ModRenderTypes {
     public static final RenderStateShard.TransparencyStateShard LASER_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
@@ -40,6 +46,22 @@ public class ModRenderTypes {
 
     public static RenderStateShard.ShaderStateShard RENDERTYPE_LASER_SHADER = new RenderStateShard.ShaderStateShard(
         () -> renderTypeLaserShader
+    );
+
+    public static final RenderType LINE_BLOOM = RenderType.create(
+        "anvilcraft:line_bloom",
+        DefaultVertexFormat.POSITION_COLOR_NORMAL,
+        VertexFormat.Mode.LINES,
+        1536,
+        RenderType.CompositeState.builder()
+            .setShaderState(RENDERTYPE_LINES_SHADER)
+            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
+            .setLayeringState(VIEW_OFFSET_Z_LAYERING)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(LINE_BLOOM_TARGET)
+            .setWriteMaskState(COLOR_DEPTH_WRITE)
+            .setCullState(NO_CULL)
+            .createCompositeState(false)
     );
 
     public static final RenderType LASER = RenderType.create(

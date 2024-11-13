@@ -13,13 +13,20 @@ import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import java.io.IOException;
 
 public class ModShaders {
-    public static final ResourceLocation BLOOM_LOCATION = ResourceLocation.fromNamespaceAndPath(
+    public static final ResourceLocation LASER_BLOOM_LOCATION = ResourceLocation.fromNamespaceAndPath(
         "anvilcraft",
         "shaders/post/laser_bloom.json"
     );
 
+    public static final ResourceLocation LINE_BLOOM_LOCATION = ResourceLocation.fromNamespaceAndPath(
+        "anvilcraft",
+        "shaders/post/line_bloom.json"
+    );
+
     @Getter
     private static PostChain laserBloomChain;
+    @Getter
+    private static PostChain lineBloomChain;
     static final Minecraft MINECRAFT = Minecraft.getInstance();
 
     static ShaderInstance renderTypeLaserShader;
@@ -43,6 +50,9 @@ public class ModShaders {
         if (laserBloomChain != null) {
             laserBloomChain.resize(width, height);
         }
+        if (lineBloomChain != null){
+            lineBloomChain.resize(width, height);
+        }
     }
 
     public static void loadBlurEffect(ResourceProvider resourceProvider) throws IOException {
@@ -50,12 +60,25 @@ public class ModShaders {
             MINECRAFT.getTextureManager(),
             resourceProvider,
             Minecraft.getInstance().getMainRenderTarget(),
-            BLOOM_LOCATION
+            LASER_BLOOM_LOCATION
         );
         laserBloomChain.resize(
             Minecraft.getInstance().getWindow().getWidth(),
             Minecraft.getInstance().getWindow().getHeight()
         );
-        ModRenderTargets.renderTargetLoaded(laserBloomChain.getTempTarget("input"));
+        lineBloomChain = new PostChain(
+            MINECRAFT.getTextureManager(),
+            resourceProvider,
+            Minecraft.getInstance().getMainRenderTarget(),
+            LINE_BLOOM_LOCATION
+        );
+        lineBloomChain.resize(
+            Minecraft.getInstance().getWindow().getWidth(),
+            Minecraft.getInstance().getWindow().getHeight()
+        );
+        ModRenderTargets.renderTargetLoaded(
+            laserBloomChain.getTempTarget("input"),
+            lineBloomChain.getTempTarget("input")
+        );
     }
 }

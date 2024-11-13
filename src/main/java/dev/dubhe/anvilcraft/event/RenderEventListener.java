@@ -52,12 +52,13 @@ public class RenderEventListener {
         Entity entity = event.getCamera().getEntity();
         MultiBufferSource.BufferSource bufferSource =
             event.getLevelRenderer().renderBuffers.bufferSource();
-        VertexConsumer vertexConsumer3 = bufferSource.getBuffer(RenderType.lines());
+
         Vec3 vec3 = event.getCamera().getPosition();
         double camX = vec3.x();
         double camY = vec3.y();
         double camZ = vec3.z();
         PowerGridRenderer.renderTransmitterLine(event.getPoseStack(), bufferSource, vec3);
+        VertexConsumer vertexConsumer3 = bufferSource.getBuffer(RenderType.lines());
         if (entity instanceof LivingEntity livingEntity) {
             ItemStack mainHandItem = livingEntity.getItemInHand(InteractionHand.MAIN_HAND);
             ItemStack offHandItem = livingEntity.getItemInHand(InteractionHand.OFF_HAND);

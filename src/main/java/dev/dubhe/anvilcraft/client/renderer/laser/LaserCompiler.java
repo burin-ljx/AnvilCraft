@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.client.renderer.laser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
@@ -40,7 +41,7 @@ public class LaserCompiler {
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );
-        RenderType haloRenderType = LaserRenderState.isEnhancedRenderingAvailable() ? ModRenderTypes.LASER : RenderType.translucent();
+        RenderType haloRenderType = RenderState.isEnhancedRenderingAvailable() ? ModRenderTypes.LASER : RenderType.translucent();
         VertexConsumer builder = bufferBuilderFunction.apply(haloRenderType);
         float haloWidth = width + HALF_PIXEL;
         renderBox(

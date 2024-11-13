@@ -1,10 +1,13 @@
 package dev.dubhe.anvilcraft.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderState;
+import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
+import dev.dubhe.anvilcraft.client.renderer.RenderState;
 import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
@@ -13,6 +16,7 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -88,6 +92,35 @@ public abstract class LevelRendererMixin {
         at = @At(
             value = "INVOKE",
             shift = At.Shift.AFTER,
+            target = "Lnet/minecraft/client/Options;getCloudsType()Lnet/minecraft/client/CloudStatus;"
+        )
+    )
+    void renderEnhancedTransmitterLines(
+        DeltaTracker deltaTracker,
+        boolean renderBlockOutline,
+        Camera camera,
+        GameRenderer gameRenderer,
+        LightTexture lightTexture,
+        Matrix4f frustumMatrix,
+        Matrix4f projectionMatrix,
+        CallbackInfo ci,
+        @Local(index = 24) PoseStack poseStack,
+        @Local(index = 25) MultiBufferSource.BufferSource bufferSource
+        ) {
+        if (RenderState.isEnhancedRenderingAvailable()){
+            PowerGridRenderer.renderEnhancedTransmitterLine(
+                poseStack,
+                bufferSource,
+                camera.getPosition()
+            );
+        }
+    }
+
+    @Inject(
+        method = "renderLevel",
+        at = @At(
+            value = "INVOKE",
+            shift = At.Shift.AFTER,
             target = "Lnet/minecraft/client/renderer/LevelRenderer;renderDebug(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/Camera;)V"
         )
     )
@@ -101,7 +134,7 @@ public abstract class LevelRendererMixin {
         Matrix4f projectionMatrix,
         CallbackInfo ci
     ) {
-        if (!LaserRenderState.isEnhancedRenderingAvailable())return;
+        if (!RenderState.isEnhancedRenderingAvailable())return;
         RenderTarget mcInput = ModShaders.getLaserBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(
             FogRenderer.fogRed,
@@ -111,6 +144,15 @@ public abstract class LevelRendererMixin {
         );
         mcInput.clear(Minecraft.ON_OSX);
         ModShaders.getLaserBloomChain().process(RenderHelper.getPartialTick());
+        mcInput = ModShaders.getLineBloomChain().getTempTarget("mcinput");
+        mcInput.setClearColor(
+            FogRenderer.fogRed,
+            FogRenderer.fogGreen,
+            FogRenderer.fogBlue,
+            0f
+        );
+        mcInput.clear(Minecraft.ON_OSX);
+        ModShaders.getLineBloomChain().process(RenderHelper.getPartialTick());
         this.minecraft.getMainRenderTarget().bindWrite(false);
     }
 
@@ -124,7 +166,7 @@ public abstract class LevelRendererMixin {
         Matrix4f frustumMatrix,
         Matrix4f projectionMatrix
     ) {
-        if (!LaserRenderState.isEnhancedRenderingAvailable())return;
+        if (!RenderState.isEnhancedRenderingAvailable())return;
         Vec3 vec3 = camera.getPosition();
         double d0 = vec3.x();
         double d1 = vec3.y();
@@ -139,9 +181,9 @@ public abstract class LevelRendererMixin {
             ModRenderTargets.getLaserTarget().copyDepthFrom(this.minecraft.getMainRenderTarget());
         }
 
-        LaserRenderState.levelStage();
+        RenderState.levelStage();
         this.renderSectionLayer(ModRenderTypes.LASER, d0, d1, d2, frustumMatrix, projectionMatrix);
-        LaserRenderState.bloomStage();
+        RenderState.bloomStage();
         this.renderSectionLayer(ModRenderTypes.LASER, d0, d1, d2, frustumMatrix, projectionMatrix);
     }
 

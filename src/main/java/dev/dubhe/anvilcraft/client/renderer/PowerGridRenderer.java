@@ -3,6 +3,8 @@ package dev.dubhe.anvilcraft.client.renderer;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
 
+import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.util.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -55,7 +57,7 @@ public class PowerGridRenderer {
         }
     }
 
-    public static void renderTransmitterLine(
+    public static void renderEnhancedTransmitterLine(
         PoseStack poseStack,
         MultiBufferSource.BufferSource bufferSource,
         Vec3 camera
@@ -63,7 +65,29 @@ public class PowerGridRenderer {
         if (!AnvilCraft.config.renderPowerTransmitterLines) return;
         if (Minecraft.getInstance().level == null) return;
         String level = Minecraft.getInstance().level.dimension().location().toString();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
+
+        ModRenderTargets.getLineTarget().setClearColor(0, 0, 0, 0);
+        ModRenderTargets.getLineTarget().clear(Minecraft.ON_OSX);
+        ModRenderTargets.getLineTarget().copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+        VertexConsumer consumer1 = bufferSource.getBuffer(ModRenderTypes.LINE_BLOOM);
+        for (SimplePowerGrid grid : PowerGridRenderer.GRID_MAP.values()) {
+            if (!grid.shouldRender(camera)) continue;
+            if (!grid.getLevel().equals(level)) continue;
+            grid.getPowerTransmitterLines().forEach(it -> it.render(poseStack, consumer1, camera, 0x9966ccff));
+        }
+        bufferSource.endBatch();
+    }
+
+    public static void renderTransmitterLine(
+        PoseStack poseStack,
+        MultiBufferSource.BufferSource bufferSource,
+        Vec3 camera
+    ) {
+        if (RenderState.isEnhancedRenderingAvailable()) return;
+        if (!AnvilCraft.config.renderPowerTransmitterLines) return;
+        if (Minecraft.getInstance().level == null) return;
+        String level = Minecraft.getInstance().level.dimension().location().toString();
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.LINES);
         for (SimplePowerGrid grid : PowerGridRenderer.GRID_MAP.values()) {
             if (!grid.shouldRender(camera)) continue;
             if (!grid.getLevel().equals(level)) continue;
