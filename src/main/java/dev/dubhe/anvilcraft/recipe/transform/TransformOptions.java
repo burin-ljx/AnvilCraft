@@ -17,7 +17,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public enum TransformOptions implements StringRepresentable {
-    KEEP_INVENTORY("keepInventory", 1000) {
+    KEEP_INVENTORY("keepInventory", 900) {
         @Override
         public void accept(Entity oldEntity, Entity newEntity) {
             if (newEntity instanceof LivingEntity n && oldEntity instanceof LivingEntity o) {
@@ -30,7 +30,7 @@ public enum TransformOptions implements StringRepresentable {
             }
         }
     },
-    REPLACE_ANVIL("replaceAnvil", 900) {
+    REPLACE_ANVIL("replaceAnvil", 1000) {
         @Override
         public void accept(Entity oldEntity, Entity newEntity) {
             if (newEntity instanceof LivingEntity n && oldEntity instanceof LivingEntity o) {

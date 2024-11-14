@@ -2173,6 +2173,7 @@ public class ModBlocks {
         })
         .tag(BlockTags.WITHER_IMMUNE)
         .tag(BlockTags.DRAGON_IMMUNE)
+        .tag(Tags.Blocks.GLASS_BLOCKS)
         .simpleItem()
         .register();
 

@@ -29,13 +29,6 @@ public class MobTransformRecipeLoader {
                 .result(EntityType.SKELETON_HORSE, 0.9)
                 .result(EntityType.ZOMBIE_HORSE, 0.1)
                 .save(provider);
-        MobTransformRecipe.from(EntityType.ZOMBIE)
-                .result(EntityType.DROWNED, 0.45)
-                .result(EntityType.HUSK, 0.45)
-                .result(EntityType.GIANT, 0.1)
-                .option(TransformOptions.KEEP_INVENTORY)
-                .option(TransformOptions.REPLACE_ANVIL)
-                .save(provider);
         MobTransformRecipe.from(EntityType.IRON_GOLEM)
                 .to(EntityType.WARDEN)
                 .predicate(b -> b.compare(NumericTagValuePredicate.ValueFunction.EQUAL)
