@@ -34,6 +34,6 @@ public class OtherLang {
         provider.add("enchantment.anvilcraft.beheading", "Beheading");
         provider.add("enchantment.anvilcraft.felling", "Felling");
         provider.add("enchantment.anvilcraft.harvest", "Harvest");
-        provider.add("death.attatck.anvilcraft.laser", "%1$s was pierced by laser.");
+        provider.add("death.attack.anvilcraft.laser", "%1$s was pierced by laser.");
     }
 }
