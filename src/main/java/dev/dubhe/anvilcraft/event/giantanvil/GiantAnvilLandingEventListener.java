@@ -144,9 +144,6 @@ public class GiantAnvilLandingEventListener {
                         level.setBlockAndUpdate(pos, cropBlock.getStateForAge(0));
                     }
                 }
-                if (state.getBlock() instanceof CropBlock) {
-                    level.destroyBlock(pos, true);
-                }
                 if (state.getBlock() instanceof SweetBerryBushBlock) {
                     level.destroyBlock(pos, true);
                     level.setBlockAndUpdate(pos, state.setValue(SweetBerryBushBlock.AGE, 0));

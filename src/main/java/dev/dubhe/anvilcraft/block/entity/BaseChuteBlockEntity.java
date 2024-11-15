@@ -181,7 +181,16 @@ public abstract class BaseChuteBlockEntity
                                     stack.setCount(stack.getCount() - droppedItemCount);
                                     if (stack.getCount() == 0) stack = ItemStack.EMPTY;
                                     ItemEntity itemEntity = new ItemEntity(
-                                        getLevel(), center.x, center.y, center.z, droppedItemStack, 0, 0, 0);
+                                        getLevel(),
+                                        center.x,
+                                        center.y,
+                                        center.z,
+                                        droppedItemStack,
+                                        0,
+                                        0,
+                                        0
+                                    );
+                                    applySpeed(itemEntity, getOutputDirection());
                                     itemEntity.setDefaultPickUpDelay();
                                     getLevel().addFreshEntity(itemEntity);
                                     this.itemHandler.setStackInSlot(i, stack);
@@ -223,6 +232,10 @@ public abstract class BaseChuteBlockEntity
             strength++;
         }
         return strength;
+    }
+
+    protected void applySpeed(ItemEntity itemEntity, Direction direction) {
+
     }
 
     @Override
