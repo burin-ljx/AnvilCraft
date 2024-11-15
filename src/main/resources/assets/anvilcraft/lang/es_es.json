@@ -262,6 +262,7 @@
   "config.waila.plugin_anvilcraft": "Artesanía de yunque",
   "config.waila.plugin_anvilcraft.power_provider": "Poder de artesanía de yunque",
   "config.waila.plugin_anvilcraft.warning_percent": "Umbral de advertencia",
+  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "Beheading",
   "enchantment.anvilcraft.felling": "Felling",
   "enchantment.anvilcraft.harvest": "Harvest",
