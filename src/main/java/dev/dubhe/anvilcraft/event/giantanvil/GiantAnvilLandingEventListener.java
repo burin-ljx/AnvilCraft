@@ -22,10 +22,12 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CaveVines;
 import net.minecraft.world.level.block.CaveVinesBlock;
 import net.minecraft.world.level.block.ChorusPlantBlock;
+import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
@@ -157,6 +159,7 @@ public class GiantAnvilLandingEventListener {
                     level.setBlockAndUpdate(pos, state.setValue(NetherWartBlock.AGE, 0));
                 }
                 processChorus(pos, state, level);
+                processCocoaBeans(pos, state, level);
             }
         }));
         behaviorDefs.add(new ShockBehaviorDefinition.SimpleBlock(Blocks.ANVIL,
@@ -192,6 +195,30 @@ public class GiantAnvilLandingEventListener {
                             blockPos.getZ() + 0.5,
                             blockState.getBlock().asItem().getDefaultInstance());
                         level.addFreshEntity(itemEntity);
+                        return true;
+                    }
+                    return false;
+                });
+        }
+    }
+
+    private static void processCocoaBeans(BlockPos pos, BlockState state, Level level) {
+        if (state.is(BlockTags.JUNGLE_LOGS)) {
+            BlockPos.breadthFirstTraversal(
+                pos, Integer.MAX_VALUE, 1024, Util::acceptDirections, blockPos -> {
+                    BlockState blockState = level.getBlockState(blockPos);
+                    if (blockState.is(Blocks.COCOA)) {
+                        if (blockState.getValue(CocoaBlock.AGE) >= 2) {
+                            level.destroyBlock(blockPos, true);
+                            level.setBlock(
+                                blockPos,
+                                blockState.setValue(CocoaBlock.AGE, 0),
+                                Block.UPDATE_ALL_IMMEDIATE
+                            );
+                        }
+                        return true;
+                    }
+                    if (blockState.is(BlockTags.JUNGLE_LOGS)){
                         return true;
                     }
                     return false;
