@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -206,7 +207,27 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
         // 获取放置方块类型
         ItemStack placeItem = null;
         IItemHandler itemHandler = level.getCapability(
-            Capabilities.ItemHandler.BLOCK, blockPos.relative(direction.getOpposite()), direction);
+            Capabilities.ItemHandler.BLOCK,
+            blockPos.relative(direction.getOpposite()),
+            direction
+        );
+        if (itemHandler == null) {
+            AABB aabb = new AABB(blockPos.relative(direction.getOpposite()));
+            List<ContainerEntity> entities =
+                level.getEntitiesOfClass(
+                        Entity.class,
+                        aabb,
+                        e -> (e instanceof ContainerEntity ce) && !ce.isEmpty()
+                    ).stream()
+                    .map(it -> (ContainerEntity) it)
+                    .toList();
+            if (!entities.isEmpty()) {
+                itemHandler = ((Entity)entities.getFirst()).getCapability(
+                    Capabilities.ItemHandler.ENTITY,
+                    null
+                );
+            }
+        }
         int slot;
         for (slot = 0; itemHandler != null && slot < itemHandler.getSlots(); slot++) {
             ItemStack blockItemStack = itemHandler.extractItem(slot, 1, true);
@@ -215,12 +236,17 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
                 break;
             }
         }
+
         ItemEntity itemEntity = null;
         // 从放置器背后的掉落物中获取物品
         if (itemHandler == null) {
             AABB aabb = new AABB(blockPos.relative(direction.getOpposite()));
             List<ItemEntity> entities =
-                level.getEntities(EntityTypeTest.forClass(ItemEntity.class), aabb, Entity::isAlive);
+                level.getEntities(
+                    EntityTypeTest.forClass(ItemEntity.class),
+                    aabb,
+                    Entity::isAlive
+                );
             if (entities.isEmpty()) {
                 return;
             }
