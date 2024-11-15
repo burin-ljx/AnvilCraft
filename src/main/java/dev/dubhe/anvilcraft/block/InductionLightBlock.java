@@ -141,7 +141,6 @@ public class InductionLightBlock extends BetterBaseEntityBlock implements IHamme
     }
 
     @Override
-
     public InteractionResult use(
         BlockState state,
         Level level,
@@ -209,12 +208,12 @@ public class InductionLightBlock extends BetterBaseEntityBlock implements IHamme
     }
 
     @Override
-
     public void tick(
         BlockState state,
         ServerLevel level,
         BlockPos pos,
-        RandomSource random) {
+        RandomSource random
+    ) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), 2);
         }

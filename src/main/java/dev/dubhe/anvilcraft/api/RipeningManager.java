@@ -11,6 +11,8 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.NyliumBlock;
@@ -70,7 +72,8 @@ public class RipeningManager {
                         && !(growable instanceof GrassBlock)
                         && !(growable instanceof NyliumBlock)
                         && growable.isValidBonemealTarget(level, pos1, state)
-                        && level.getBrightness(LightLayer.BLOCK, pos1) >= 10) {
+                        && level.getBrightness(LightLayer.BLOCK, pos1) >= 10
+                    ) {
                         growable.performBonemeal((ServerLevel) level, level.getRandom(), pos1, state);
                         level.addParticle(
                             ParticleTypes.HAPPY_VILLAGER,
@@ -81,6 +84,15 @@ public class RipeningManager {
                             0.0,
                             0.0);
                         ripened.add(pos1);
+                    }
+                    if (state.is(Blocks.SUGAR_CANE)
+                        && !level.getBlockState(pos1.above()).is(Blocks.SUGAR_CANE)
+                    ) {
+                        level.setBlock(
+                            pos1.above(),
+                            Blocks.SUGAR_CANE.defaultBlockState(),
+                            Block.UPDATE_ALL_IMMEDIATE
+                        );
                     }
                 }
             }

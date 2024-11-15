@@ -23,7 +23,6 @@ public class InductionLightBlockEntity extends BlockEntity implements IPowerCons
     private PowerGrid grid;
 
     private int rangeSize = 5;
-    private boolean registered = false;
 
     public InductionLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -43,10 +42,7 @@ public class InductionLightBlockEntity extends BlockEntity implements IPowerCons
     public void tick(Level level1) {
         flushState(level1, getBlockPos());
         if (getBlockState().getValue(InductionLightBlock.COLOR) == LightColor.PINK) {
-            if (!registered) {
-                registered = true;
-                RipeningManager.addLightBlock(getBlockPos(), level);
-            }
+            RipeningManager.addLightBlock(getBlockPos(), level);
         }
     }
 
