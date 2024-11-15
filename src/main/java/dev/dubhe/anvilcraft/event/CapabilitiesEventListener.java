@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.event;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.api.itemhandler.InputRefusingItemHandlerWrapper;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,9 +18,12 @@ public class CapabilitiesEventListener {
             ModBlockEntities.CHARGER.get(),
             ModBlockEntities.CHUTE.get(),
             ModBlockEntities.SIMPLE_CHUTE.get(),
-            ModBlockEntities.CRAB_TRAP.get(),
             ModBlockEntities.ITEM_COLLECTOR.get(),
             ModBlockEntities.MAGNETIC_CHUTE.get()
-        ).forEach(type -> event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type,  (be, side) -> be.getItemHandler()));
+        ).forEach(type -> event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            type,
+            (be, side) -> be.getItemHandler())
+        );
     }
 }
