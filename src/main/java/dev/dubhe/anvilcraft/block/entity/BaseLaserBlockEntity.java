@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.block.entity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
+import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
 
 import net.minecraft.core.BlockPos;
@@ -112,7 +113,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         if (hurt > 0) {
             level.getEntities(EntityTypeTest.forClass(LivingEntity.class), trackBoundingBox, Entity::isAlive)
                 .forEach(livingEntity ->
-                    livingEntity.hurt(level.damageSources().generic(), hurt));
+                    livingEntity.hurt(ModDamageTypes.laser(level), hurt));
         }
         BlockState irradiateBlock = level.getBlockState(irradiateBlockPos);
         List<ItemStack> drops =

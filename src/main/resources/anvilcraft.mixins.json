@@ -10,6 +10,7 @@
     "BlockItemInvoker",
     "BlockMixin",
     "CraftingMenuMixin",
+    "DamageSourcesMixin",
     "DispenseItemEmptyBottleBehaviorMixin",
     "DispenseItemEmptyBucketBehaviorMixin",
     "DispenseItemWaterBottleBehaviorMixin",

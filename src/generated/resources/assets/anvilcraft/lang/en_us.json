@@ -262,6 +262,7 @@
   "config.waila.plugin_anvilcraft": "Anvil Craft",
   "config.waila.plugin_anvilcraft.power_provider": "Anvil Craft Power",
   "config.waila.plugin_anvilcraft.warning_percent": "Warning Threshold",
+  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "Beheading",
   "enchantment.anvilcraft.felling": "Felling",
   "enchantment.anvilcraft.harvest": "Harvest",

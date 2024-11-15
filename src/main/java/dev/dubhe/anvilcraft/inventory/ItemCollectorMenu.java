@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 public class ItemCollectorMenu extends AbstractContainerMenu implements IFilterMenu, ContainerListener {
     @Getter
     private final ItemCollectorBlockEntity blockEntity;
-
     private final Level level;
 
     /**

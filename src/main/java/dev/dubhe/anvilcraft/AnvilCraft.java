@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.init.ModBlockEntities;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModCommands;
 import dev.dubhe.anvilcraft.init.ModComponents;
+import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.init.ModDispenserBehavior;
 import dev.dubhe.anvilcraft.init.ModEnchantmentEffectComponents;
 import dev.dubhe.anvilcraft.init.ModEnchantmentEffects;
