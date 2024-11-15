@@ -262,7 +262,7 @@
   "config.waila.plugin_anvilcraft": "鐵砧匠藝",
   "config.waila.plugin_anvilcraft.power_provider": "鐵砧匠藝電域訊息",
   "config.waila.plugin_anvilcraft.warning_percent": "電力警戒之限",
-  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
+  "death.attack.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "斬首",
   "enchantment.anvilcraft.felling": "伐木",
   "enchantment.anvilcraft.harvest": "收割",

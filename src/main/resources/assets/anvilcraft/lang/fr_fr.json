@@ -262,7 +262,7 @@
   "config.waila.plugin_anvilcraft": "Artisanat de l'enclume",
   "config.waila.plugin_anvilcraft.power_provider": "Enclume Craft Power",
   "config.waila.plugin_anvilcraft.warning_percent": "Seuil d'avertissement",
-  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
+  "death.attack.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "Bordure",
   "enchantment.anvilcraft.felling": "Bûcheronne",
   "enchantment.anvilcraft.harvest": "Récolter",

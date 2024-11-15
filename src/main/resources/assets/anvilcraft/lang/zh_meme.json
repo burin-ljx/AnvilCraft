@@ -262,7 +262,7 @@
   "config.waila.plugin_anvilcraft": "哐当工艺",
   "config.waila.plugin_anvilcraft.power_provider": "哐当工艺WIFI信息",
   "config.waila.plugin_anvilcraft.warning_percent": "WIFI上火阈值",
-  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
+  "death.attack.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "杀头",
   "enchantment.anvilcraft.felling": "砍树",
   "enchantment.anvilcraft.harvest": "收割",

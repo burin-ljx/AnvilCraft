@@ -262,7 +262,7 @@
   "config.waila.plugin_anvilcraft": "铁砧工艺",
   "config.waila.plugin_anvilcraft.power_provider": "铁砧工艺电网信息",
   "config.waila.plugin_anvilcraft.warning_percent": "电力警告阈值",
-  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
+  "death.attack.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "斩首",
   "enchantment.anvilcraft.felling": "伐木",
   "enchantment.anvilcraft.harvest": "收割",
