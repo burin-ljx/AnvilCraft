@@ -117,10 +117,14 @@ public class BlockTagLoader {
                 .add(findResourceKey(Blocks.BLACKSTONE))
                 .add(findResourceKey(Blocks.END_STONE));
 
-        provider.addTag(ModBlockTags.LASE_CAN_PASS_THROUGH)
+        provider.addTag(ModBlockTags.LASER_CAN_PASS_THROUGH)
                 .addTag(Tags.Blocks.GLASS_BLOCKS)
                 .addTag(Tags.Blocks.GLASS_PANES)
                 .addTag(BlockTags.REPLACEABLE);
+
+        provider.addTag(ModBlockTags.INCORRECT_FOR_AMYTHEST_TOOL)
+            .addTag(BlockTags.NEEDS_DIAMOND_TOOL)
+            .addTag(BlockTags.NEEDS_IRON_TOOL);
 
         provider.addTag(ModBlockTags.END_PORTAL_UNABLE_CHANGE).add(findResourceKey(Blocks.DRAGON_EGG));
     }

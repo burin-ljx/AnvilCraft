@@ -20,7 +20,7 @@ public class ModBlockTags {
     public static final TagKey<Block> HAMMER_CHANGEABLE = bind("hammer_changeable");
     public static final TagKey<Block> OVERSEER_BASE = bind("overseer_base");
     public static final TagKey<Block> BLOCK_DEVOURER_PROBABILITY_DROPPING = bind("block_devourer_probability_dropping");
-    public static final TagKey<Block> LASE_CAN_PASS_THROUGH = bind("lase_can_pass_though");
+    public static final TagKey<Block> LASER_CAN_PASS_THROUGH = bind("laser_can_pass_though");
     public static final TagKey<Block> END_PORTAL_UNABLE_CHANGE = bind("end_portal_unable_change");
 
     // common tags

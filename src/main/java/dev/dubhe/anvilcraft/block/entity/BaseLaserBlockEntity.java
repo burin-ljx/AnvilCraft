@@ -53,7 +53,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
     private boolean canPassThrough(Direction direction, BlockPos blockPos) {
         if (level == null) return false;
         BlockState blockState = level.getBlockState(blockPos);
-        if (blockState.is(ModBlockTags.LASE_CAN_PASS_THROUGH)
+        if (blockState.is(ModBlockTags.LASER_CAN_PASS_THROUGH)
             || blockState.is(Tags.Blocks.GLASS_BLOCKS)
             || blockState.is(Tags.Blocks.GLASS_PANES)
             || blockState.is(BlockTags.REPLACEABLE)) return true;
