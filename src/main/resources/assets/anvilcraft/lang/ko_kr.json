@@ -262,6 +262,7 @@
   "config.waila.plugin_anvilcraft": "앤빌 크래프트",
   "config.waila.plugin_anvilcraft.power_provider": "앤빌 크래프트 파워",
   "config.waila.plugin_anvilcraft.warning_percent": "경고 임계값",
+  "death.attatck.anvilcraft.laser": "%1$s was pierced by laser.",
   "enchantment.anvilcraft.beheading": "Beheading",
   "enchantment.anvilcraft.felling": "Felling",
   "enchantment.anvilcraft.harvest": "Harvest",
