@@ -86,7 +86,7 @@ public class RipeningManager {
                         ripened.add(pos1);
                     }
                     if (state.is(Blocks.SUGAR_CANE)
-                        && !level.getBlockState(pos1.above()).is(Blocks.SUGAR_CANE)
+                        && level.getBlockState(pos1.above()).is(Blocks.AIR)
                     ) {
                         level.setBlock(
                             pos1.above(),

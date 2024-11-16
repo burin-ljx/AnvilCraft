@@ -14,19 +14,27 @@ import dev.dubhe.anvilcraft.util.AnvilUtil;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +54,7 @@ public class SuperHeatingBehavior implements AnvilBehavior {
             Map<ItemEntity, ItemStack> items =
                 level.getEntitiesOfClass(ItemEntity.class, new AABB(hitBlockPos)).stream()
                     .map(it -> Map.entry(it, it.getItem()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    .collect(Util.toMap());
 
             ItemProcessInput input = new ItemProcessInput(items.values().stream().toList());
 
@@ -109,6 +117,45 @@ public class SuperHeatingBehavior implements AnvilBehavior {
                     k.setItem(v.copy());
                 });
                 return true;
+            }
+            List<ItemStack> resultStacks = new ArrayList<>();
+            for (Map.Entry<ItemEntity, ItemStack> entry : items.entrySet()) {
+                ItemStack inputStack = entry.getValue();
+                ItemEntity itemEntity = entry.getKey();
+                SingleRecipeInput cookingInput = new SingleRecipeInput(inputStack);
+                Optional<RecipeHolder<BlastingRecipe>> blastingRecipe = level.getRecipeManager()
+                    .getRecipeFor(
+                        RecipeType.BLASTING,
+                        cookingInput,
+                        level
+                    );
+                if (blastingRecipe.isPresent()) {
+                    BlastingRecipe recipe = blastingRecipe.get().value();
+                    int count = recipe.result.getCount()
+                        * inputStack.getCount()
+                        * (RecipeUtil.ingredientMatchingTags(recipe.ingredient, ModItemTags.RAW_ORES, ModItemTags.ORES) ? 2 : 1);
+                    resultStacks.add(recipe.result.copyWithCount(count));
+                    itemEntity.discard();
+                    continue;
+                }
+                cookingInput = new SingleRecipeInput(inputStack);
+                Optional<RecipeHolder<SmeltingRecipe>> smeltingRecipe = level.getRecipeManager()
+                    .getRecipeFor(
+                        RecipeType.SMELTING,
+                        cookingInput,
+                        level
+                    );
+                if (smeltingRecipe.isPresent()) {
+                    SmeltingRecipe recipe = smeltingRecipe.get().value();
+                    int count = recipe.result.getCount()
+                        * inputStack.getCount()
+                        * (RecipeUtil.ingredientMatchingTags(recipe.ingredient, ModItemTags.RAW_ORES, ModItemTags.ORES) ? 2 : 1);
+                    resultStacks.add(recipe.result.copyWithCount(count));
+                    itemEntity.discard();
+                }
+            }
+            if (!resultStacks.isEmpty()){
+                AnvilUtil.dropItems(resultStacks, level, hitBlockPos.getCenter());
             }
         }
         return false;

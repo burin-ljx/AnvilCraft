@@ -62,7 +62,7 @@ public class TimeWarpBehavior implements AnvilBehavior {
                         }
                         ItemStack result = new ItemStack(
                             entity.getType().getCategory() == MobCategory.MONSTER
-                                && level.getRandom().nextFloat() >= 0.05
+                                && level.getRandom().nextFloat() <= 0.05
                                 ? ModBlocks.RESENTFUL_AMBER_BLOCK.asItem()
                                 : ModBlocks.MOB_AMBER_BLOCK.asItem()
                         );

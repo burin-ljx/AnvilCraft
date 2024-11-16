@@ -12,13 +12,18 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -37,12 +42,18 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RecipeUtil {
@@ -312,9 +323,46 @@ public class RecipeUtil {
             for (int j = i; j < ingredients.size(); j++) {
                 Ingredient a = ingredients.get(i);
                 Ingredient b = ingredients.get(j);
-                if (!isIngredientsEqual(a, b))return false;
+                if (!isIngredientsEqual(a, b)) return false;
             }
         }
         return true;
+    }
+
+    @SafeVarargs
+    public static boolean ingredientMatchingTags(Ingredient ingredient, TagKey<Item>... tagKey) {
+        AtomicBoolean result = new AtomicBoolean(false);
+        ICondition.IContext ctx = ServerLifecycleHooks.getCurrentServer().getServerResources().managers().getConditionContext();
+        Map<ResourceLocation, Collection<Holder<Item>>> allTags = ctx.getAllTags(Registries.ITEM);
+        for (Ingredient.Value value : ingredient.getValues()) {
+            if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
+                if (allTags.containsKey(tag.location())) {
+                    Collection<Holder<Item>> holders = allTags.get(tag.location());
+                    if (holders.stream().anyMatch(it -> Arrays.stream(tagKey)
+                        .anyMatch(tk -> it.value().getDefaultInstance().is(tk))
+                    )) {
+                        result.set(true);
+                    }
+                }
+            }
+            if (value instanceof Ingredient.ItemValue(ItemStack item)) {
+                for (TagKey<Item> itemTagKey : tagKey) {
+                    if (item.is(itemTagKey)) {
+                        result.set(true);
+                    }
+                }
+            }
+        }
+        if (ingredient.isCustom() && ingredient.getCustomIngredient() != null) {
+            ICustomIngredient customIngredient = ingredient.getCustomIngredient();
+            customIngredient.getItems().forEach(it -> {
+                for (TagKey<Item> itemTagKey : tagKey) {
+                    if (it.is(itemTagKey)) {
+                        result.set(true);
+                    }
+                }
+            });
+        }
+        return result.get();
     }
 }
