@@ -383,7 +383,10 @@ public class ChuteBlock extends BetterBaseEntityBlock implements HammerRotateBeh
                     && facingState.getValue(MagneticChuteBlock.FACING) == face.getOpposite()) {
                     return true;
                 }
-                if (facingState.getValue(FACING) == face.getOpposite()) {
+                if ((facingState.is(ModBlocks.SIMPLE_CHUTE)
+                    || facingState.is(ModBlocks.CHUTE))
+                    && facingState.getValue(FACING) == face.getOpposite()
+                ) {
                     return true;
                 }
             }
