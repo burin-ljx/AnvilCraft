@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.recipe.anvil.builder;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.AbstractItemProcessRecipe;
 
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class AbstractItemProcessBuilder<T extends AbstractItemProcessRecipe> extends AbstractRecipeBuilder<T> {
     protected NonNullList<Ingredient> ingredients = NonNullList.create();
     protected List<ChanceItemStack> results = new ArrayList<>();
+    @Getter
+    protected boolean generated = false;
 
     public AbstractItemProcessBuilder<T> requires(Ingredient ingredient, int count) {
         for (int i = 0; i < count; i++) {

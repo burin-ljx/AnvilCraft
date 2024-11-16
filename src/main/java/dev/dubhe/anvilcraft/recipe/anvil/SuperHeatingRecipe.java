@@ -39,10 +39,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SuperHeatingRecipe extends AbstractItemProcessRecipe {
 
     public final Block blockResult;
+    private final boolean generated;
 
-    public SuperHeatingRecipe(NonNullList<Ingredient> ingredients, List<ChanceItemStack> results, Block blockResult) {
+    public SuperHeatingRecipe(
+        NonNullList<Ingredient> ingredients,
+        List<ChanceItemStack> results,
+        Block blockResult,
+        boolean generated
+    ) {
         super(ingredients, results);
         this.blockResult = blockResult;
+        this.generated = generated;
+    }
+
+    public SuperHeatingRecipe(NonNullList<Ingredient> ingredients, List<ChanceItemStack> results, Block blockResult) {
+        this(ingredients, results, blockResult, false);
     }
 
     @Contract(" -> new")
@@ -163,7 +174,7 @@ public class SuperHeatingRecipe extends AbstractItemProcessRecipe {
             if (blockResult == null) {
                 blockResult = Blocks.AIR;
             }
-            return new SuperHeatingRecipe(ingredients, results, blockResult);
+            return new SuperHeatingRecipe(ingredients, results, blockResult, generated);
         }
 
         @Override

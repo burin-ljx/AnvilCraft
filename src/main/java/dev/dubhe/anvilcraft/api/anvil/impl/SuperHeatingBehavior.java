@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.HeaterBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.SuperHeatingRecipe;
@@ -60,6 +61,7 @@ public class SuperHeatingBehavior implements AnvilBehavior {
                 int times = recipe.value().getMaxCraftTime(input);
                 Object2IntMap<Item> results = new Object2IntOpenHashMap<>();
                 LootContext context;
+                boolean needDoubleResult = false;
                 if (level instanceof ServerLevel serverLevel) {
                     context = RecipeUtil.emptyLootContext(serverLevel);
                 } else {
@@ -68,6 +70,9 @@ public class SuperHeatingBehavior implements AnvilBehavior {
                 for (int i = 0; i < times; i++) {
                     for (Ingredient ingredient : recipe.value().getIngredients()) {
                         for (ItemStack stack : items.values()) {
+                            if (stack.is(ModItemTags.RAW_ORES) || stack.is(ModItemTags.ORES)){
+                                needDoubleResult = true;
+                            }
                             if (ingredient.test(stack)) {
                                 stack.shrink(1);
                                 break;
@@ -83,9 +88,15 @@ public class SuperHeatingBehavior implements AnvilBehavior {
                         results.mergeInt(stack.getStack().getItem(), amount, Integer::sum);
                     }
                 }
+                boolean finalNeedDoubleResult = needDoubleResult;
                 AnvilUtil.dropItems(
                     results.object2IntEntrySet().stream()
                         .map(entry -> new ItemStack(entry.getKey(), entry.getIntValue()))
+                        .peek(it -> {
+                            if (finalNeedDoubleResult && recipe.value().isGenerated()){
+                                it.setCount(it.getCount() * 2);
+                            }
+                        })
                         .toList(),
                     level,
                     hitBlockPos.getCenter()

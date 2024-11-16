@@ -33,7 +33,9 @@ public class RecipeGenerator {
 
 
     public static Optional<RecipeHolder<?>> handleVanillaRecipe(
-        RecipeType<?> recipeType, RecipeHolder<?> recipeHolder) {
+        RecipeType<?> recipeType,
+        RecipeHolder<?> recipeHolder
+    ) {
         logger.debug("Generating anvil recipe for {}", recipeHolder.id());
         logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType.toString());
         ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
@@ -49,27 +51,29 @@ public class RecipeGenerator {
         if (recipeType == RecipeType.BLASTING) {
             BlastingRecipe recipe = (BlastingRecipe) recipeHolder.value();
             AbstractItemProcessBuilder<SuperHeatingRecipe> builder =
-                SuperHeatingRecipe.builder().requires(recipe.ingredient);
+                SuperHeatingRecipe.builder()
+                    .requires(recipe.ingredient)
+                    .generated(true);
             ItemStack result = recipe.result.copy();
+            logger.debug("Result of new recipe {} is {}", newId, result);
             for (ItemStack item : recipe.ingredient.getItems()) {
-                if (item.is(ModItemTags.RAW_ORES) || item.is(ModItemTags.ORES)) {
-                    result.setCount(result.getCount() * 2);
-                    break;
-                }
+                logger.debug("Ingredient Item {} has following tags:", item);
+                item.getTags().forEach(it -> logger.debug("\t- {}", it.location()));
             }
             SuperHeatingRecipe newRecipe = builder.result(result).buildRecipe();
             return Optional.of(new RecipeHolder<>(newId, newRecipe));
         }
         if (recipeType == RecipeType.SMELTING) {
             SmeltingRecipe recipe = (SmeltingRecipe) recipeHolder.value();
-            AbstractItemProcessBuilder<SuperHeatingRecipe> builder = SuperHeatingRecipe.builder()
-                    .requires(recipe.ingredient);
+            AbstractItemProcessBuilder<SuperHeatingRecipe> builder =
+                SuperHeatingRecipe.builder()
+                    .requires(recipe.ingredient)
+                    .generated(true);
             ItemStack result = recipe.result.copy();
+            logger.debug("Result of new recipe {} is {}", newId, result);
             for (ItemStack item : recipe.ingredient.getItems()) {
-                if (item.is(ModItemTags.RAW_ORES) || item.is(ModItemTags.ORES)) {
-                    result.setCount(result.getCount() * 2);
-                    break;
-                }
+                logger.debug("Ingredient Item {} has following tags:", item);
+                item.getTags().forEach(it -> logger.debug("\t- {}", it.location()));
             }
             SuperHeatingRecipe newRecipe = builder.result(result)
                 .buildRecipe();
