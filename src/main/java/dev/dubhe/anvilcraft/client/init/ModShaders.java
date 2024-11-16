@@ -15,18 +15,11 @@ import java.io.IOException;
 public class ModShaders {
     public static final ResourceLocation LASER_BLOOM_LOCATION = ResourceLocation.fromNamespaceAndPath(
         "anvilcraft",
-        "shaders/post/laser_bloom.json"
-    );
-
-    public static final ResourceLocation LINE_BLOOM_LOCATION = ResourceLocation.fromNamespaceAndPath(
-        "anvilcraft",
-        "shaders/post/line_bloom.json"
+        "shaders/post/bloom.json"
     );
 
     @Getter
-    private static PostChain laserBloomChain;
-    @Getter
-    private static PostChain lineBloomChain;
+    private static PostChain bloomChain;
     static final Minecraft MINECRAFT = Minecraft.getInstance();
 
     static ShaderInstance renderTypeLaserShader;
@@ -47,38 +40,24 @@ public class ModShaders {
     }
 
     public static void resize(int width, int height) {
-        if (laserBloomChain != null) {
-            laserBloomChain.resize(width, height);
-        }
-        if (lineBloomChain != null){
-            lineBloomChain.resize(width, height);
+        if (bloomChain != null) {
+            bloomChain.resize(width, height);
         }
     }
 
-    public static void loadBlurEffect(ResourceProvider resourceProvider) throws IOException {
-        laserBloomChain = new PostChain(
+    public static void loadBloomEffect(ResourceProvider resourceProvider) throws IOException {
+        bloomChain = new PostChain(
             MINECRAFT.getTextureManager(),
             resourceProvider,
             Minecraft.getInstance().getMainRenderTarget(),
             LASER_BLOOM_LOCATION
         );
-        laserBloomChain.resize(
-            Minecraft.getInstance().getWindow().getWidth(),
-            Minecraft.getInstance().getWindow().getHeight()
-        );
-        lineBloomChain = new PostChain(
-            MINECRAFT.getTextureManager(),
-            resourceProvider,
-            Minecraft.getInstance().getMainRenderTarget(),
-            LINE_BLOOM_LOCATION
-        );
-        lineBloomChain.resize(
+        bloomChain.resize(
             Minecraft.getInstance().getWindow().getWidth(),
             Minecraft.getInstance().getWindow().getHeight()
         );
         ModRenderTargets.renderTargetLoaded(
-            laserBloomChain.getTempTarget("input"),
-            lineBloomChain.getTempTarget("input")
+            bloomChain.getTempTarget("input")
         );
     }
 }

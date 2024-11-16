@@ -66,9 +66,6 @@ public class PowerGridRenderer {
         if (Minecraft.getInstance().level == null) return;
         String level = Minecraft.getInstance().level.dimension().location().toString();
 
-        ModRenderTargets.getLineTarget().setClearColor(0, 0, 0, 0);
-        ModRenderTargets.getLineTarget().clear(Minecraft.ON_OSX);
-        ModRenderTargets.getLineTarget().copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
         VertexConsumer consumer1 = bufferSource.getBuffer(ModRenderTypes.LINE_BLOOM);
         for (SimplePowerGrid grid : PowerGridRenderer.GRID_MAP.values()) {
             if (!grid.shouldRender(camera)) continue;

@@ -1,6 +1,5 @@
 package dev.dubhe.anvilcraft.mixin;
 
-import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.server.packs.resources.ResourceProvider;
@@ -22,7 +21,7 @@ public class GameRendererMixin {
         )
     )
     void loadBloomEffect(ResourceProvider resourceProvider, CallbackInfo ci) throws IOException {
-        ModShaders.loadBlurEffect(resourceProvider);
+        ModShaders.loadBloomEffect(resourceProvider);
     }
 
     @Inject(

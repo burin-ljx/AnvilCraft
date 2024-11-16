@@ -10,22 +10,20 @@ import static dev.dubhe.anvilcraft.client.init.ModShaders.MINECRAFT;
 
 public class ModRenderTargets {
     @Getter
-    static RenderTarget laserTarget;
-    @Getter
-    static RenderTarget lineTarget;
+    static RenderTarget bloomTarget;
 
     public static final RenderStateShard.OutputStateShard LASER_TARGET = new RenderStateShard.OutputStateShard(
         "anvilcraft:laser",
         () -> {
             if (RenderState.isEnhancedRenderingAvailable() && RenderState.isBloomRenderStage()) {
-                laserTarget.bindWrite(false);
+                bloomTarget.bindWrite(false);
             } else {
                 MINECRAFT.getMainRenderTarget().bindWrite(false);
             }
         },
         () -> {
             if (RenderState.isEnhancedRenderingAvailable() && RenderState.isBloomRenderStage()) {
-                laserTarget.unbindWrite();
+                bloomTarget.unbindWrite();
             }
             MINECRAFT.getMainRenderTarget().bindWrite(false);
         }
@@ -35,29 +33,27 @@ public class ModRenderTargets {
         "anvilcraft:line_bloom",
         () -> {
             if (RenderState.isEnhancedRenderingAvailable()) {
-                lineTarget.bindWrite(false);
+                bloomTarget.bindWrite(false);
             } else {
                 MINECRAFT.getMainRenderTarget().bindWrite(false);
             }
         },
         () -> {
             if (RenderState.isEnhancedRenderingAvailable()) {
-                lineTarget.unbindWrite();
+                bloomTarget.unbindWrite();
             }
             MINECRAFT.getMainRenderTarget().bindWrite(false);
         }
     );
 
     public static void clear() {
-        laserTarget.clear(Minecraft.ON_OSX);
+        bloomTarget.clear(Minecraft.ON_OSX);
     }
 
     public static void renderTargetLoaded(
-        RenderTarget laserTarget,
-        RenderTarget lineTarget
+        RenderTarget laserTarget
     ){
-        ModRenderTargets.laserTarget = laserTarget;
-        ModRenderTargets.lineTarget = lineTarget;
+        ModRenderTargets.bloomTarget = laserTarget;
     }
 
 }

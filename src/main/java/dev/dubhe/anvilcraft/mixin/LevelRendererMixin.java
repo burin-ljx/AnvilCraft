@@ -28,8 +28,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import javax.annotation.Nullable;
-
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
     @Shadow
@@ -131,7 +129,7 @@ public abstract class LevelRendererMixin {
         CallbackInfo ci
     ) {
         if (!RenderState.isEnhancedRenderingAvailable()) return;
-        RenderTarget mcInput = ModShaders.getLaserBloomChain().getTempTarget("mcinput");
+        RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(
             FogRenderer.fogRed,
             FogRenderer.fogGreen,
@@ -139,17 +137,7 @@ public abstract class LevelRendererMixin {
             0f
         );
         mcInput.clear(Minecraft.ON_OSX);
-        ModShaders.getLaserBloomChain().process(RenderHelper.getPartialTick());
-        mcInput = ModShaders.getLineBloomChain().getTempTarget("mcinput");
-        mcInput.setClearColor(
-            FogRenderer.fogRed,
-            FogRenderer.fogGreen,
-            FogRenderer.fogBlue,
-            0f
-        );
-        mcInput.clear(Minecraft.ON_OSX);
-        ModShaders.getLineBloomChain().process(RenderHelper.getPartialTick());
-        this.minecraft.getMainRenderTarget().bindWrite(false);
+        ModShaders.getBloomChain().process(RenderHelper.getPartialTick());
     }
 
     @Unique
@@ -167,10 +155,10 @@ public abstract class LevelRendererMixin {
         double d0 = vec3.x();
         double d1 = vec3.y();
         double d2 = vec3.z();
-        if (ModRenderTargets.getLaserTarget() != null) {
-            ModRenderTargets.getLaserTarget().setClearColor(0, 0, 0, 0);
-            ModRenderTargets.getLaserTarget().clear(Minecraft.ON_OSX);
-            ModRenderTargets.getLaserTarget().copyDepthFrom(this.minecraft.getMainRenderTarget());
+        if (ModRenderTargets.getBloomTarget() != null) {
+            ModRenderTargets.getBloomTarget().setClearColor(0, 0, 0, 0);
+            ModRenderTargets.getBloomTarget().clear(Minecraft.ON_OSX);
+            ModRenderTargets.getBloomTarget().copyDepthFrom(this.minecraft.getMainRenderTarget());
         }
 
         RenderState.levelStage();
