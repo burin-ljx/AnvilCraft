@@ -19,17 +19,9 @@ void main() {
     vec2 texOffset = 1.0 / textureSize(DiffuseSampler, 0);
 
     vec3 result = texture(DiffuseSampler, texCoord).rgb * weight[0];
-    bool horizontal = BlurDir.x == 1.0;
-    if (horizontal) {
-        for (int i = 1; i < 7; ++i) {
-            result += texture(DiffuseSampler, texCoord + vec2(texOffset.x * i, 0.0)).rgb * weight[i];
-            result += texture(DiffuseSampler, texCoord - vec2(texOffset.x * i, 0.0)).rgb * weight[i];
-        }
-    } else {
-        for (int i = 1; i < 7; ++i) {
-            result += texture(DiffuseSampler, texCoord + vec2(0.0, texOffset.y * i)).rgb * weight[i];
-            result += texture(DiffuseSampler, texCoord - vec2(0.0, texOffset.y * i)).rgb * weight[i];
-        }
+    for (int i = 1; i < 7; ++i) {
+        result += texture(DiffuseSampler, texCoord + vec2(BlurDir.x * texOffset.x * i * 1.943, BlurDir.y * texOffset.y * i * 1.943)).rgb * weight[i];
+        result += texture(DiffuseSampler, texCoord - vec2(BlurDir.x * texOffset.x * i * 1.943, BlurDir.y * texOffset.y * i * 1.943)).rgb * weight[i];
     }
     vec3 color = vec3(apply(result.r), apply(result.g), apply(result.b));
     fragColor = vec4(result.rgb * 1.105, 1.0);
