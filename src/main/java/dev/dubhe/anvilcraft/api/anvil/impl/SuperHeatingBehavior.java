@@ -49,14 +49,14 @@ public class SuperHeatingBehavior implements AnvilBehavior {
 
             ItemProcessInput input = new ItemProcessInput(items.values().stream().toList());
 
-            Optional<RecipeHolder<SuperHeatingRecipe>> recipeOPtional = level.getRecipeManager()
+            Optional<RecipeHolder<SuperHeatingRecipe>> recipeOptional = level.getRecipeManager()
                 .getRecipeFor(
                     ModRecipeTypes.SUPER_HEATING_TYPE.get(),
                     input,
                     level
                 );
-            if (recipeOPtional.isPresent()) {
-                RecipeHolder<SuperHeatingRecipe> recipe = recipeOPtional.get();
+            if (recipeOptional.isPresent()) {
+                RecipeHolder<SuperHeatingRecipe> recipe = recipeOptional.get();
                 int times = recipe.value().getMaxCraftTime(input);
                 Object2IntMap<Item> results = new Object2IntOpenHashMap<>();
                 LootContext context;

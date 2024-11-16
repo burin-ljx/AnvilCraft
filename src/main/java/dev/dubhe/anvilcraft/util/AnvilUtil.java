@@ -90,7 +90,32 @@ public class AnvilUtil {
     public static void dropItems(@NotNull List<ItemStack> items, Level level, Vec3 pos) {
         for (ItemStack item : items) {
             if (item.isEmpty()) continue;
-            ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, item.copy(), 0.0d, 0.0d, 0.0d);
+            int count = item.getCount();
+            int maxStack = item.getMaxStackSize();
+            for (; count >= maxStack; count -= maxStack) {
+                ItemEntity entity = new ItemEntity(
+                    level,
+                    pos.x,
+                    pos.y,
+                    pos.z,
+                    item.copyWithCount(maxStack),
+                    0.0d,
+                    0.0d,
+                    0.0d
+                );
+                level.addFreshEntity(entity);
+            }
+            if (count <= 0)continue;
+            ItemEntity entity = new ItemEntity(
+                level,
+                pos.x,
+                pos.y,
+                pos.z,
+                item.copyWithCount(count),
+                0.0d,
+                0.0d,
+                0.0d
+            );
             level.addFreshEntity(entity);
         }
     }

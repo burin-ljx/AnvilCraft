@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import org.slf4j.Logger;
 
@@ -35,9 +36,10 @@ public class RecipeGenerator {
         RecipeType<?> recipeType, RecipeHolder<?> recipeHolder) {
         logger.debug("Generating anvil recipe for {}", recipeHolder.id());
         logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType.toString());
+        ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
+        logger.debug("New id of {} is {}", recipeHolder.id(), newId);
         if (recipeType == RecipeType.SMOKING) {
             SmokingRecipe recipe = (SmokingRecipe) recipeHolder.value();
-            ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
             CookingRecipe newRecipe = CookingRecipe.builder()
                 .requires(recipe.ingredient)
                 .result(recipe.result)
@@ -46,7 +48,6 @@ public class RecipeGenerator {
         }
         if (recipeType == RecipeType.BLASTING) {
             BlastingRecipe recipe = (BlastingRecipe) recipeHolder.value();
-            ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
             AbstractItemProcessBuilder<SuperHeatingRecipe> builder =
                 SuperHeatingRecipe.builder().requires(recipe.ingredient);
             ItemStack result = recipe.result.copy();
@@ -59,9 +60,23 @@ public class RecipeGenerator {
             SuperHeatingRecipe newRecipe = builder.result(result).buildRecipe();
             return Optional.of(new RecipeHolder<>(newId, newRecipe));
         }
+        if (recipeType == RecipeType.SMELTING) {
+            SmeltingRecipe recipe = (SmeltingRecipe) recipeHolder.value();
+            AbstractItemProcessBuilder<SuperHeatingRecipe> builder = SuperHeatingRecipe.builder()
+                    .requires(recipe.ingredient);
+            ItemStack result = recipe.result.copy();
+            for (ItemStack item : recipe.ingredient.getItems()) {
+                if (item.is(ModItemTags.RAW_ORES) || item.is(ModItemTags.ORES)) {
+                    result.setCount(result.getCount() * 2);
+                    break;
+                }
+            }
+            SuperHeatingRecipe newRecipe = builder.result(result)
+                .buildRecipe();
+            return Optional.of(new RecipeHolder<>(newId, newRecipe));
+        }
         if (recipeType == RecipeType.CRAFTING) {
             CraftingRecipe recipe = (CraftingRecipe) recipeHolder.value();
-            ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
             if (recipe instanceof ShapedRecipe shapedRecipe) {
                 ShapedRecipePattern pattern = shapedRecipe.pattern;
                 if (pattern.height() == pattern.width()
