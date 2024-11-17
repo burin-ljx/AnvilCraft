@@ -12,6 +12,13 @@
         "count": 4,
         "id": "anvilcraft:cream"
       }
+    },
+    {
+      "amount": 1.0,
+      "stack": {
+        "count": 1,
+        "id": "minecraft:bucket"
+      }
     }
   ]
 }

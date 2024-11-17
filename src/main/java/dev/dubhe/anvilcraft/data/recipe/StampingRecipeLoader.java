@@ -20,7 +20,12 @@ public class StampingRecipeLoader {
         stamping(provider, Items.GOLD_INGOT, Items.LIGHT_WEIGHTED_PRESSURE_PLATE);
         stamping(provider, Items.SNOWBALL, Items.SNOW);
         stamping(provider, ModItems.WOOD_FIBER.get(), Items.PAPER);
-        stamping(provider, Items.MILK_BUCKET, ModItems.CREAM.get(), 4);
+
+        StampingRecipe.builder()
+            .requires(Items.MILK_BUCKET)
+            .result(ModItems.CREAM.asStack(4))
+            .result(Items.BUCKET.getDefaultInstance())
+            .save(provider, AnvilCraft.of("stamping/cream"));
 
         StampingRecipe.builder()
             .requires(ModItems.GEODE)
