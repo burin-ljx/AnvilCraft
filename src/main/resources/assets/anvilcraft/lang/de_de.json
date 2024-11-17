@@ -521,6 +521,8 @@
   "text.autoconfig.anvilcraft.option.redstoneEmpRadius.@Tooltip": "Redstone EMP length generated per block dropped by the anvil",
   "text.autoconfig.anvilcraft.option.remotePowerTransmitterRange": "Reichweite des Fernstromübertragers",
   "text.autoconfig.anvilcraft.option.remotePowerTransmitterRange.@Tooltip": "Reichweite, innerhalb derer ein Fernstromübertrager andere Stromübertrager erkennen kann",
+  "text.autoconfig.anvilcraft.option.renderBloomEffect": "Render Bloom Effect",
+  "text.autoconfig.anvilcraft.option.renderBloomEffect.@Tooltip": "Bloom effect on laser and power transmitter lines.",
   "text.autoconfig.anvilcraft.option.renderPowerTransmitterLines": "Render Power Transmitter Lines",
   "text.autoconfig.anvilcraft.option.renderPowerTransmitterLines.@Tooltip": "Render lines between power transmitters",
   "text.autoconfig.anvilcraft.title": "Anvilcraft - Konfiguration",
