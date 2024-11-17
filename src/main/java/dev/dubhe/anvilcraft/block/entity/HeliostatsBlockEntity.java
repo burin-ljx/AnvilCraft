@@ -83,7 +83,7 @@ public class HeliostatsBlockEntity extends BlockEntity {
         if (level == null) return WorkResult.UNKNOWN;
         if (level.isClientSide && Minecraft.getInstance().player == null) return WorkResult.UNKNOWN;
         if (irritatePos == null) return WorkResult.UNSPECIFIED_IRRADIATION_BLOCK;
-        if (getBlockPos().getCenter().distanceTo(irritatePos.getCenter()) > 16) return WorkResult.TOO_FAR;
+        if (getBlockPos().getCenter().distanceTo(irritatePos.getCenter()) > 64) return WorkResult.TOO_FAR;
         if (level.isRainingAt(getBlockPos().above())
             || level.getBrightness(LightLayer.SKY, getBlockPos().above()) != 15) return WorkResult.NO_SUN;
         Vec3 irritateVec3 =
