@@ -100,8 +100,8 @@ public abstract class LevelRendererMixin {
         CallbackInfo ci,
         @Local(index = 24) PoseStack poseStack,
         @Local(index = 25) MultiBufferSource.BufferSource bufferSource
-        ) {
-        if (RenderState.isEnhancedRenderingAvailable()){
+    ) {
+        if (RenderState.isEnhancedRenderingAvailable()) {
             PowerGridRenderer.renderEnhancedTransmitterLine(
                 poseStack,
                 bufferSource,
@@ -118,7 +118,7 @@ public abstract class LevelRendererMixin {
             target = "Lnet/minecraft/client/renderer/LevelRenderer;renderDebug(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/Camera;)V"
         )
     )
-    void laserPostProcess(
+    void bloomPostProcess(
         DeltaTracker deltaTracker,
         boolean renderBlockOutline,
         Camera camera,
@@ -129,6 +129,7 @@ public abstract class LevelRendererMixin {
         CallbackInfo ci
     ) {
         if (!RenderState.isEnhancedRenderingAvailable()) return;
+        if (!RenderState.isBloomEffectEnabled()) return;
         RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(
             FogRenderer.fogRed,
@@ -150,12 +151,12 @@ public abstract class LevelRendererMixin {
         Matrix4f frustumMatrix,
         Matrix4f projectionMatrix
     ) {
-        if (!RenderState.isEnhancedRenderingAvailable())return;
+        if (!RenderState.isEnhancedRenderingAvailable()) return;
         Vec3 vec3 = camera.getPosition();
         double d0 = vec3.x();
         double d1 = vec3.y();
         double d2 = vec3.z();
-        if (ModRenderTargets.getBloomTarget() != null) {
+        if (ModRenderTargets.getBloomTarget() != null && RenderState.isBloomEffectEnabled()) {
             ModRenderTargets.getBloomTarget().setClearColor(0, 0, 0, 0);
             ModRenderTargets.getBloomTarget().clear(Minecraft.ON_OSX);
             ModRenderTargets.getBloomTarget().copyDepthFrom(this.minecraft.getMainRenderTarget());
@@ -163,6 +164,7 @@ public abstract class LevelRendererMixin {
 
         RenderState.levelStage();
         this.renderSectionLayer(ModRenderTypes.LASER, d0, d1, d2, frustumMatrix, projectionMatrix);
+        if (!RenderState.isBloomEffectEnabled()) return;
         RenderState.bloomStage();
         this.renderSectionLayer(ModRenderTypes.LASER, d0, d1, d2, frustumMatrix, projectionMatrix);
     }

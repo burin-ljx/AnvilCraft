@@ -127,6 +127,10 @@ public class AnvilCraftConfig implements ConfigData {
     @Comment("Render lines between power transmitters")
     public boolean renderPowerTransmitterLines = true;
 
+    @ConfigEntry.Gui.Tooltip
+    @Comment("Bloom effect on laser and power transmitter lines.")
+    public boolean renderBloomEffect = true;
+
     public static class PowerConverter implements ConfigData {
         @Comment("The working interval of power converters")
         @ConfigEntry.Gui.Tooltip

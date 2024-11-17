@@ -62,6 +62,7 @@ public class PowerGridRenderer {
         MultiBufferSource.BufferSource bufferSource,
         Vec3 camera
     ) {
+        if (!RenderState.isEnhancedRenderingAvailable() || !RenderState.isBloomEffectEnabled()) return;
         if (!AnvilCraft.config.renderPowerTransmitterLines) return;
         if (Minecraft.getInstance().level == null) return;
         String level = Minecraft.getInstance().level.dimension().location().toString();
@@ -80,7 +81,7 @@ public class PowerGridRenderer {
         MultiBufferSource.BufferSource bufferSource,
         Vec3 camera
     ) {
-        if (RenderState.isEnhancedRenderingAvailable()) return;
+        if (RenderState.isEnhancedRenderingAvailable() && RenderState.isBloomEffectEnabled()) return;
         if (!AnvilCraft.config.renderPowerTransmitterLines) return;
         if (Minecraft.getInstance().level == null) return;
         String level = Minecraft.getInstance().level.dimension().location().toString();
