@@ -17,6 +17,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -123,6 +124,7 @@ public class ActiveSilencerBlock extends BaseEntityBlock implements IHammerRemov
         }
         BlockEntity be = pLevel.getBlockEntity(pPos);
         if (be instanceof ActiveSilencerBlockEntity asbe && pPlayer instanceof ServerPlayer sp) {
+            if (sp.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) return InteractionResult.PASS;
             ModMenuTypes.open(sp, asbe, pPos);
             PacketDistributor.sendToPlayer(sp, new MutedSoundSyncPacket(new ArrayList<>(asbe.getMutedSound())));
             return InteractionResult.SUCCESS;

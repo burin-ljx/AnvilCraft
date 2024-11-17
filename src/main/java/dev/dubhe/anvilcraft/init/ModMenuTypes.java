@@ -112,7 +112,6 @@ public class ModMenuTypes {
     }
 
     public static void open(ServerPlayer player, MenuProvider provider, BlockPos pos) {
-        if (player.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) return;
         player.openMenu(provider, pos);
     }
 }

@@ -26,7 +26,13 @@ public interface IDiskCloneable {
      *
      */
     default InteractionResult useDisk(
-            Level level, @Nullable Player player, InteractionHand hand, ItemStack itemStack, BlockHitResult hitResult) {
+        Level level,
+        Player player,
+        InteractionHand hand,
+        ItemStack itemStack,
+        BlockHitResult hitResult
+    ) {
+        if (!player.getAbilities().mayBuild) return InteractionResult.PASS;
         if (itemStack.is(ModItems.DISK.get())) {
             return itemStack.useOn(new UseOnContext(level, player, hand, itemStack, hitResult));
         }
