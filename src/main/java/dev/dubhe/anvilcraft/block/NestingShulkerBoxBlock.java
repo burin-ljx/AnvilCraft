@@ -13,12 +13,16 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,9 +31,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class NestingShulkerBoxBlock extends Block {
 
     private static final int soundDelay = 8;
+    public static final BooleanProperty COOLDOWN = BooleanProperty.create("cooldown");
 
     public NestingShulkerBoxBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(COOLDOWN, false));
     }
 
     @Override
@@ -61,11 +67,27 @@ public class NestingShulkerBoxBlock extends Block {
         InteractionHand hand,
         BlockHitResult hit
     ) {
-        if (level.isClientSide) {
-            level.playSound(player, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 1.0F);
-            level.playSound(player, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 1.0F);
-        }
+        if (state.getValue(COOLDOWN)) return InteractionResult.SUCCESS;
+        level.playSound(null, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 1.0F);
+        level.playSound(null, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 1.0F);
+        level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, true));
         level.scheduleTick(pos, this, 2 * soundDelay);
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(COOLDOWN);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(COOLDOWN, false);
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, false));
     }
 }

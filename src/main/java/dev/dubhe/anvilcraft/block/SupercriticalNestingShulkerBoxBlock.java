@@ -11,9 +11,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,9 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SupercriticalNestingShulkerBoxBlock extends BetterBlock {
 
     private static final int SOUND_DELAY = 8;
-    private int soundSetId = 0;
-    private Player lastInteractionPlayer = null;
-    private boolean canBeInteracted = true;
+    public static final BooleanProperty COOLDOWN = BooleanProperty.create("cooldown");
+    public static final IntegerProperty SOUNDSETID = IntegerProperty.create("soundsetid",0,4);
 
     public SupercriticalNestingShulkerBoxBlock(Properties properties) {
         super(properties);
@@ -39,12 +44,9 @@ public class SupercriticalNestingShulkerBoxBlock extends BetterBlock {
         InteractionHand hand,
         BlockHitResult hit
     ) {
-        if (level.isClientSide && canBeInteracted) {
-            level.playSound(player, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 1.0F);
-            lastInteractionPlayer = player;
-            soundSetId = 0;
-            canBeInteracted = false;
-        }
+        if (state.getValue(COOLDOWN)) return InteractionResult.SUCCESS;
+        level.playSound(null, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 1.0F);
+        level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, true).setValue(SOUNDSETID, 0));
         level.scheduleTick(pos, this, SOUND_DELAY);
         return InteractionResult.SUCCESS;
     }
@@ -56,38 +58,49 @@ public class SupercriticalNestingShulkerBoxBlock extends BetterBlock {
         BlockPos pos,
         RandomSource random) {
         // super.tick(state, level, pos, random);
-        switch (soundSetId) {
+        switch (state.getValue(SOUNDSETID)) {
             case 0:
                 level.playSound(
-                    lastInteractionPlayer, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 0.95F);
+                    null, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 0.95F);
+                level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, true).setValue(SOUNDSETID, 1));
                 level.scheduleTick(pos, this, SOUND_DELAY);
-                soundSetId = 1;
                 break;
             case 1:
                 level.playSound(
-                    lastInteractionPlayer, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 0.9F);
+                        null, pos, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.8F, 0.9F);
                 level.playSound(
-                    lastInteractionPlayer, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 0.9F);
+                        null, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 0.9F);
+                level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, true).setValue(SOUNDSETID, 2));
                 level.scheduleTick(pos, this, SOUND_DELAY);
-                soundSetId = 2;
                 break;
             case 2:
                 level.playSound(
-                    lastInteractionPlayer, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 0.95F);
+                        null, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 0.95F);
+                level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, true).setValue(SOUNDSETID, 3));
                 level.scheduleTick(pos, this, SOUND_DELAY);
-                soundSetId = 3;
                 break;
             case 3:
                 level.playSound(
-                    lastInteractionPlayer, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 1.0F);
+                        null, pos, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.8F, 1.0F);
+                level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, true).setValue(SOUNDSETID, 4));
                 level.scheduleTick(pos, this, 2 * SOUND_DELAY);
-                soundSetId = 4;
                 break;
             case 4:
-                canBeInteracted = true;
+                level.setBlockAndUpdate(pos, state.setValue(COOLDOWN, false).setValue(SOUNDSETID, 0));
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(COOLDOWN, SOUNDSETID);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(COOLDOWN, false).setValue(SOUNDSETID, 0);
     }
 }
