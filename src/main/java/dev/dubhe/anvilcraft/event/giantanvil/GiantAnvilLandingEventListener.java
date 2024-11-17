@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.CaveVinesBlock;
 import net.minecraft.world.level.block.ChorusPlantBlock;
 import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -261,7 +262,7 @@ public class GiantAnvilLandingEventListener {
 
     private static boolean isFellingApplicableBlock(BlockState blockState) {
         return blockState.is(BlockTags.LOGS)
-            || blockState.is(BlockTags.LEAVES)
+            || (blockState.is(BlockTags.LEAVES) && !blockState.getValue(LeavesBlock.PERSISTENT))
             || blockState.is(Blocks.MANGROVE_ROOTS)
             || blockState.is(Blocks.MUSHROOM_STEM)
             || blockState.is(Blocks.BROWN_MUSHROOM_BLOCK)
