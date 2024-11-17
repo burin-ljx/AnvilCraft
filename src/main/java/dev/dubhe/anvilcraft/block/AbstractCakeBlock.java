@@ -32,21 +32,13 @@ public class AbstractCakeBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(
-        BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        if (pLevel.isClientSide) {
-            if (eat(
-                pLevel,
-                pPos,
-                pPlayer,
-                getFoodLevel(),
-                getSaturationLevel(),
-                it -> it
-            ).consumesAction()) {
-                return InteractionResult.SUCCESS;
-            }
-            return InteractionResult.CONSUME;
-        }
-        return eat(pLevel, pPos, pPlayer, getFoodLevel(), getSaturationLevel(), it -> it);
+        BlockState pState,
+        Level pLevel,
+        BlockPos pPos,
+        Player pPlayer,
+        BlockHitResult pHitResult
+    ) {
+        return InteractionResult.PASS;
     }
 
     @Override
