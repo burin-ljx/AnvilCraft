@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 
 import com.tterrag.registrate.util.entry.MenuEntry;
+import net.minecraft.world.level.GameType;
 
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 
@@ -111,6 +112,7 @@ public class ModMenuTypes {
     }
 
     public static void open(ServerPlayer player, MenuProvider provider, BlockPos pos) {
+        if (player.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) return;
         player.openMenu(provider, pos);
     }
 }
