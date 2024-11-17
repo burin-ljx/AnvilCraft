@@ -271,8 +271,7 @@ public class ModBlocks {
         .properties(p -> p.mapColor(MapColor.METAL)
             .requiresCorrectToolForDrops()
             .strength(5.0F, 1200.0F)
-            .sound(SoundType.ANVIL)
-            .pushReaction(PushReaction.BLOCK))
+            .sound(SoundType.ANVIL))
         .blockstate((ctx, provider) -> {
         })
         .simpleItem()
