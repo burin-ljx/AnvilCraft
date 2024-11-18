@@ -205,7 +205,13 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
     }
 
     public void tick(@NotNull Level level) {
-        PacketDistributor.sendToAllPlayers(new LaserEmitPacket(laserLevel, getBlockPos(), irradiateBlockPos));
+        if (level instanceof ServerLevel) {
+            PacketDistributor.sendToPlayersTrackingChunk(
+                (ServerLevel) level,
+                level.getChunkAt(getBlockPos()).getPos(),
+                new LaserEmitPacket(laserLevel, getBlockPos(), irradiateBlockPos)
+            );
+        }
         tickCount++;
     }
 
