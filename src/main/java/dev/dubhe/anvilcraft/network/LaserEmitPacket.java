@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.network;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 
+import dev.dubhe.anvilcraft.util.NetworkUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -13,6 +14,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class LaserEmitPacket implements CustomPacketPayload {
     public static final Type<LaserEmitPacket> TYPE = new Type<>(AnvilCraft.of("laser_emit"));
@@ -37,23 +40,22 @@ public class LaserEmitPacket implements CustomPacketPayload {
      * 激光照射网络包
      */
     public LaserEmitPacket(RegistryFriendlyByteBuf buf) {
-        this.lightPowerLevel = buf.readInt();
-        this.laserBlockPos = buf.readBlockPos();
-        if (buf.readBoolean()) {
-            this.irradiateBlockPos = null;
-            return;
-        }
-        this.irradiateBlockPos = buf.readBlockPos();
+        this.lightPowerLevel = buf.readVarInt();
+        this.laserBlockPos = NetworkUtil.readVarIntBlockPos(buf);
+        this.irradiateBlockPos = buf.readOptional(NetworkUtil::readVarIntBlockPos)
+            .orElse(null);
     }
 
     /**
      *
      */
     public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeInt(lightPowerLevel);
-        buf.writeBlockPos(laserBlockPos);
-        buf.writeBoolean(irradiateBlockPos == null);
-        if (irradiateBlockPos != null) buf.writeBlockPos(irradiateBlockPos);
+        buf.writeVarInt(lightPowerLevel);
+        NetworkUtil.writeVarIntBlockPos(buf, laserBlockPos);
+        buf.writeOptional(
+            Optional.ofNullable(irradiateBlockPos),
+            NetworkUtil::writeVarIntBlockPos
+        );
     }
 
     @Override

@@ -30,12 +30,17 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 public abstract class BaseLaserBlockEntity extends BlockEntity {
-    private final HashMap<Integer, Integer> levelToTimeMap = new HashMap<>();
+    public static final int[] COOLDOWNS = {
+        Integer.MAX_VALUE,
+        24 * 20,
+        6 * 20,
+        2 * 20,
+        20
+    };
     protected int maxTransmissionDistance = 128;
     protected int tickCount = 0;
 
@@ -45,10 +50,6 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
 
     public BaseLaserBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-        levelToTimeMap.put(1, 24);
-        levelToTimeMap.put(2, 6);
-        levelToTimeMap.put(3, 2);
-        levelToTimeMap.put(4, 1);
     }
 
     private boolean canPassThrough(Direction direction, BlockPos blockPos) {
@@ -118,10 +119,8 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         BlockState irradiateBlock = level.getBlockState(irradiateBlockPos);
         List<ItemStack> drops =
             Block.getDrops(irradiateBlock, serverLevel, irradiateBlockPos, level.getBlockEntity(irradiateBlockPos));
-        int coldDown = levelToTimeMap.containsKey(Math.min(16, laserLevel) / 4)
-            ? levelToTimeMap.get(Math.min(16, laserLevel) / 4) * 20
-            : Integer.MAX_VALUE;
-        if (tickCount >= coldDown) {
+        int cooldown = COOLDOWNS[Math.clamp(laserLevel / 4, 0, 4)];
+        if (tickCount >= cooldown) {
             tickCount = 0;
             if (irradiateBlock.is(Tags.Blocks.ORES)) {
                 Vec3 blockPos = getBlockPos().relative(direction.getOpposite()).getCenter();
@@ -129,7 +128,8 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
                     .getCapability(
                         Capabilities.ItemHandler.BLOCK,
                         getBlockPos().relative(getDirection().getOpposite()),
-                        getDirection());
+                        getDirection()
+                    );
                 drops.forEach(itemStack -> {
                     if (cap != null) {
                         ItemStack outItemStack = ItemHandlerHelper.insertItem(cap, itemStack, true);
