@@ -2,7 +2,9 @@ package dev.dubhe.anvilcraft.data.recipe;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
+import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -11,9 +13,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+
+import java.util.List;
 
 public class TimeWarpRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {
@@ -40,29 +45,29 @@ public class TimeWarpRecipeLoader {
         timeWarp(provider, ModItems.SEA_HEART_SHELL_SHARD, 1, ModItems.SEA_HEART_SHELL, 1);
 
         TimeWarpRecipe.builder()
-                .requires(Items.EMERALD)
-                .result(new ItemStack(Items.EMERALD_BLOCK))
-                .consumeFluid(true)
-                .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
-                .save(provider);
+            .requires(Items.EMERALD)
+            .result(new ItemStack(Items.EMERALD_BLOCK))
+            .consumeFluid(true)
+            .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
+            .save(provider);
         TimeWarpRecipe.builder()
-                .requires(ModItems.RUBY)
-                .result(new ItemStack(ModBlocks.RUBY_BLOCK))
-                .consumeFluid(true)
-                .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
-                .save(provider);
+            .requires(ModItems.RUBY)
+            .result(new ItemStack(ModBlocks.RUBY_BLOCK))
+            .consumeFluid(true)
+            .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
+            .save(provider);
         TimeWarpRecipe.builder()
-                .requires(ModItems.TOPAZ)
-                .result(new ItemStack(ModBlocks.TOPAZ_BLOCK))
-                .consumeFluid(true)
-                .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
-                .save(provider);
+            .requires(ModItems.TOPAZ)
+            .result(new ItemStack(ModBlocks.TOPAZ_BLOCK))
+            .consumeFluid(true)
+            .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
+            .save(provider);
         TimeWarpRecipe.builder()
-                .requires(ModItems.SAPPHIRE)
-                .result(new ItemStack(ModBlocks.SAPPHIRE_BLOCK))
-                .consumeFluid(true)
-                .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
-                .save(provider);
+            .requires(ModItems.SAPPHIRE)
+            .result(new ItemStack(ModBlocks.SAPPHIRE_BLOCK))
+            .consumeFluid(true)
+            .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
+            .save(provider);
 
         timeWarpToOilCauldron(provider, Items.ROTTEN_FLESH, 64);
         timeWarpToOilCauldron(provider, Items.SPIDER_EYE, 64);
@@ -72,34 +77,48 @@ public class TimeWarpRecipeLoader {
         timeWarpToOilCauldron(provider, Items.PORKCHOP, 16);
         timeWarpToOilCauldron(provider, Items.MUTTON, 16);
         timeWarpToOilCauldron(provider, Items.RABBIT, 16);
+
+        TimeWarpRecipe.builder()
+            .requires(ModItemTags.NETHERITE_BLOCK)
+            .cauldron(ModBlocks.FIRE_CAULDRON.get())
+            .results(
+                List.of(
+                    ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(4)),
+                    ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(4)).withChance(0.50f),
+                    ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(4)).withChance(0.25f)
+                )
+            )
+            .requiredFluidLevel(3)
+            .consumeFluid(true)
+            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_0"));
     }
 
     private static void timeWarp(
-            RegistrateRecipeProvider provider, ItemLike input, int inputCount, ItemLike output, int outputCount) {
+        RegistrateRecipeProvider provider, ItemLike input, int inputCount, ItemLike output, int outputCount) {
         TimeWarpRecipe.builder()
-                .requires(input, inputCount)
-                .result(new ItemStack(output, outputCount))
-                .save(provider);
+            .requires(input, inputCount)
+            .result(new ItemStack(output, outputCount))
+            .save(provider);
     }
 
     private static void timeWarpToOilCauldron(RegistrateRecipeProvider provider, ItemLike input, int inputCount) {
         TimeWarpRecipe.builder()
-                .requires(input, inputCount)
-                .produceFluid(true)
-                .cauldron(ModBlocks.OIL_CAULDRON.get())
-                .save(
-                        provider,
-                        AnvilCraft.of("time_warp/oil_from_"
-                                + BuiltInRegistries.ITEM.getKey(input.asItem()).getPath()));
+            .requires(input, inputCount)
+            .produceFluid(true)
+            .cauldron(ModBlocks.OIL_CAULDRON.get())
+            .save(
+                provider,
+                AnvilCraft.of("time_warp/oil_from_"
+                    + BuiltInRegistries.ITEM.getKey(input.asItem()).getPath()));
     }
 
     private static void timeWarpToOilCauldron(RegistrateRecipeProvider provider, TagKey<Item> input, int inputCount) {
         TimeWarpRecipe.builder()
-                .requires(input, inputCount)
-                .produceFluid(true)
-                .cauldron(ModBlocks.OIL_CAULDRON.get())
-                .save(
-                        provider,
-                        AnvilCraft.of("time_warp/oil_from_" + input.location().getPath()));
+            .requires(input, inputCount)
+            .produceFluid(true)
+            .cauldron(ModBlocks.OIL_CAULDRON.get())
+            .save(
+                provider,
+                AnvilCraft.of("time_warp/oil_from_" + input.location().getPath()));
     }
 }

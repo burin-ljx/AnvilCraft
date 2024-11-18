@@ -31,7 +31,7 @@ public class HeavyIronBeamBlock extends Block implements IHammerRemovable, Hamme
     public static final VoxelShape AABB_Z =
         Shapes.join(Block.box(0, 12, 0, 16, 16, 16), Block.box(4, 0, 0, 12, 12, 16), BooleanOp.OR);
 
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
 
     public HeavyIronBeamBlock(Properties properties) {
         super(properties);

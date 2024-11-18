@@ -119,12 +119,12 @@ public class TimeWarpBehavior implements AnvilBehavior {
                     hitBlockPos.getCenter()
                 );
                 if (recipe.value().isFromWater()) {
-                    level.setBlockAndUpdate(hitBlockPos, recipe.value().cauldron.defaultBlockState());
+                    level.setBlockAndUpdate(hitBlockPos, recipe.value().getCauldron().defaultBlockState());
                 } else {
                     if (recipe.value().isConsumeFluid()) {
                         if (hitBlockState.hasProperty(LayeredCauldronBlock.LEVEL)) {
                             int cauldronLevel = hitBlockState.getValue(LayeredCauldronBlock.LEVEL);
-                            cauldronLevel--;
+                            cauldronLevel -= Math.max(recipe.value().getRequiredFluidLevel(), 1);
                             if (cauldronLevel <= 0) {
                                 level.setBlockAndUpdate(hitBlockPos, Blocks.CAULDRON.defaultBlockState());
                             } else {

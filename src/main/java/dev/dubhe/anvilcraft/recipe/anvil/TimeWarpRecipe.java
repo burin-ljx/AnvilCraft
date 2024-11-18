@@ -48,24 +48,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
-    public final NonNullList<Ingredient> ingredients;
-    public final List<Object2IntMap.Entry<Ingredient>> mergedIngredients;
-    public final Block cauldron;
-    public final List<ChanceItemStack> results;
-    public final boolean produceFluid;
-    public final boolean consumeFluid;
-    public final boolean fromWater;
-    public final boolean isSimple;
+    private final NonNullList<Ingredient> ingredients;
+    private final List<Object2IntMap.Entry<Ingredient>> mergedIngredients;
+    private final Block cauldron;
+    private final List<ChanceItemStack> results;
+    private final boolean produceFluid;
+    private final boolean consumeFluid;
+    private final boolean fromWater;
+    private final boolean isSimple;
+    private final int requiredFluidLevel;
     private Input cacheInput;
     private int cacheMaxCraftTime;
 
     public TimeWarpRecipe(
-            NonNullList<Ingredient> ingredients,
-            Block cauldron,
-            List<ChanceItemStack> results,
-            boolean produceFluid,
-            boolean consumeFluid,
-            boolean fromWater) {
+        NonNullList<Ingredient> ingredients,
+        Block cauldron,
+        List<ChanceItemStack> results,
+        boolean produceFluid,
+        boolean consumeFluid,
+        boolean fromWater, int requiredFluidLevel) {
         this.ingredients = ingredients;
         this.mergedIngredients = RecipeUtil.mergeIngredient(ingredients);
         this.cauldron = cauldron;
@@ -74,6 +75,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
         this.consumeFluid = consumeFluid;
         this.fromWater = fromWater;
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
+        this.requiredFluidLevel = requiredFluidLevel;
     }
 
     @Contract(" -> new")
@@ -119,6 +121,11 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             if (consumeFluid) {
                 if (!input.cauldronState.is(cauldron)) {
                     return false;
+                }
+                if (input.cauldronState.hasProperty(LayeredCauldronBlock.LEVEL)) {
+                    if (input.cauldronState.getValue(LayeredCauldronBlock.LEVEL) < requiredFluidLevel) {
+                        return false;
+                    }
                 }
             }
             if (produceFluid) {
@@ -168,19 +175,21 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
 
     public static class Serializer implements RecipeSerializer<TimeWarpRecipe> {
         private static final MapCodec<TimeWarpRecipe> CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
-                        CodecUtil.createIngredientListCodec("ingredients", 64, "time_warp")
-                                .forGetter(TimeWarpRecipe::getIngredients),
-                        CodecUtil.BLOCK_CODEC.fieldOf("cauldron").forGetter(TimeWarpRecipe::getCauldron),
-                        ChanceItemStack.CODEC.listOf()
-                                .optionalFieldOf("results", List.of())
-                                .forGetter(TimeWarpRecipe::getResults),
-                        Codec.BOOL.fieldOf("produce_fluid").forGetter(TimeWarpRecipe::isProduceFluid),
-                        Codec.BOOL.fieldOf("consume_fluid").forGetter(TimeWarpRecipe::isConsumeFluid),
-                        Codec.BOOL.fieldOf("from_water").forGetter(TimeWarpRecipe::isFromWater))
-                .apply(ins, TimeWarpRecipe::new));
+                CodecUtil.createIngredientListCodec("ingredients", 64, "time_warp")
+                    .forGetter(TimeWarpRecipe::getIngredients),
+                CodecUtil.BLOCK_CODEC.fieldOf("cauldron").forGetter(TimeWarpRecipe::getCauldron),
+                ChanceItemStack.CODEC.listOf()
+                    .optionalFieldOf("results", List.of())
+                    .forGetter(TimeWarpRecipe::getResults),
+                Codec.BOOL.fieldOf("produce_fluid").forGetter(TimeWarpRecipe::isProduceFluid),
+                Codec.BOOL.fieldOf("consume_fluid").forGetter(TimeWarpRecipe::isConsumeFluid),
+                Codec.BOOL.fieldOf("from_water").forGetter(TimeWarpRecipe::isFromWater),
+                Codec.INT.optionalFieldOf("requiredFluidLevel", 0).forGetter(TimeWarpRecipe::getRequiredFluidLevel)
+            )
+            .apply(ins, TimeWarpRecipe::new));
 
         private static final StreamCodec<RegistryFriendlyByteBuf, TimeWarpRecipe> STREAM_CODEC =
-                StreamCodec.of(Serializer::encode, Serializer::decode);
+            StreamCodec.of(Serializer::encode, Serializer::decode);
 
         @Override
         public MapCodec<TimeWarpRecipe> codec() {
@@ -205,6 +214,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             buf.writeBoolean(recipe.produceFluid);
             buf.writeBoolean(recipe.consumeFluid);
             buf.writeBoolean(recipe.fromWater);
+            buf.writeInt(recipe.requiredFluidLevel);
         }
 
         private static TimeWarpRecipe decode(RegistryFriendlyByteBuf buf) {
@@ -220,7 +230,8 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             boolean produceFluid = buf.readBoolean();
             boolean consumeFluid = buf.readBoolean();
             boolean fromWater = buf.readBoolean();
-            return new TimeWarpRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater);
+            int requiredFluidLevel = buf.readInt();
+            return new TimeWarpRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater, requiredFluidLevel);
         }
     }
 
@@ -234,6 +245,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
         private boolean produceFluid = false;
         private boolean consumeFluid = false;
         private boolean fromWater = false;
+        private int requiredFluidLevel = 0;
 
         public Builder requires(Ingredient ingredient, int count) {
             for (int i = 0; i < count; i++) {
@@ -269,7 +281,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
 
         @Override
         public TimeWarpRecipe buildRecipe() {
-            return new TimeWarpRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater);
+            return new TimeWarpRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater, requiredFluidLevel);
         }
 
         @Override
@@ -282,7 +294,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             }
             if (results.isEmpty() && (!produceFluid && !fromWater)) {
                 throw new IllegalArgumentException(
-                        "Recipe results must not be null when need fluid is false, RecipeId: " + pId);
+                    "Recipe results must not be null when need fluid is false, RecipeId: " + pId);
             }
         }
 
