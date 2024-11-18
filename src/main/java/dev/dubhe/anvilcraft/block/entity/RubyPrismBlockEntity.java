@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
-    private boolean isOverload = false;
+    private boolean enabled = false;
 
     private RubyPrismBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -26,7 +26,10 @@ public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
     }
 
     public void tick(@NotNull Level level) {
-        if (isSwitch()) emitLaser(getDirection());
+        resetState();
+        if (enabled) {
+            emitLaser(getDirection());
+        }
         super.tick(level);
     }
 
@@ -36,19 +39,14 @@ public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
     }
 
     @Override
-    public boolean isSwitch() {
-        return isOverload;
-    }
-
-    @Override
     public void onCancelingIrradiation(BaseLaserBlockEntity baseLaserBlockEntity) {
-        isOverload = false;
+        enabled = false;
         super.onCancelingIrradiation(baseLaserBlockEntity);
     }
 
     @Override
     public void onIrradiated(BaseLaserBlockEntity baseLaserBlockEntity) {
-        isOverload = true;
+        enabled = true;
         super.onIrradiated(baseLaserBlockEntity);
     }
 

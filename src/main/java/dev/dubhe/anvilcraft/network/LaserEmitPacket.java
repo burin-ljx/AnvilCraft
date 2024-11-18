@@ -6,7 +6,6 @@ import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.util.NetworkUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -23,15 +22,15 @@ public class LaserEmitPacket implements CustomPacketPayload {
             StreamCodec.ofMember(LaserEmitPacket::encode, LaserEmitPacket::new);
     public static final IPayloadHandler<LaserEmitPacket> HANDLER = LaserEmitPacket::clientHandler;
 
-    private final int lightPowerLevel;
+    private final int laserLevel;
     private final BlockPos laserBlockPos;
     private final BlockPos irradiateBlockPos;
 
     /**
      * 激光照射网络包
      */
-    public LaserEmitPacket(int lightPowerLevel, BlockPos laserBlockPos, BlockPos irradiateBlockPos) {
-        this.lightPowerLevel = lightPowerLevel;
+    public LaserEmitPacket(int laserLevel, BlockPos laserBlockPos, BlockPos irradiateBlockPos) {
+        this.laserLevel = laserLevel;
         this.laserBlockPos = laserBlockPos;
         this.irradiateBlockPos = irradiateBlockPos;
     }
@@ -40,7 +39,7 @@ public class LaserEmitPacket implements CustomPacketPayload {
      * 激光照射网络包
      */
     public LaserEmitPacket(RegistryFriendlyByteBuf buf) {
-        this.lightPowerLevel = buf.readVarInt();
+        this.laserLevel = buf.readVarInt();
         this.laserBlockPos = NetworkUtil.readVarIntBlockPos(buf);
         this.irradiateBlockPos = buf.readOptional(NetworkUtil::readVarIntBlockPos)
             .orElse(null);
@@ -50,7 +49,7 @@ public class LaserEmitPacket implements CustomPacketPayload {
      *
      */
     public void encode(RegistryFriendlyByteBuf buf) {
-        buf.writeVarInt(lightPowerLevel);
+        buf.writeVarInt(laserLevel);
         NetworkUtil.writeVarIntBlockPos(buf, laserBlockPos);
         buf.writeOptional(
             Optional.ofNullable(irradiateBlockPos),
@@ -71,8 +70,10 @@ public class LaserEmitPacket implements CustomPacketPayload {
             if (Minecraft.getInstance().level != null
                     && Minecraft.getInstance().level.getBlockEntity(data.laserBlockPos)
                             instanceof BaseLaserBlockEntity baseLaserBlockEntity) {
-                baseLaserBlockEntity.irradiateBlockPos = data.irradiateBlockPos;
-                baseLaserBlockEntity.laserLevel = data.lightPowerLevel;
+                baseLaserBlockEntity.clientUpdate(
+                    data.irradiateBlockPos,
+                    data.laserLevel
+                );
                 Minecraft.getInstance().levelRenderer.setBlockDirty(
                     data.laserBlockPos,
                     false

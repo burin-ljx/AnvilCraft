@@ -28,7 +28,7 @@ public enum RubyPrismProvider implements IBlockComponentProvider, IServerDataPro
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof RubyPrismBlockEntity blockEntity) {
-            compoundTag.putInt("laser_level", blockEntity.laserLevel);
+            compoundTag.putInt("laser_level", blockEntity.getLaserLevel());
         }
     }
 

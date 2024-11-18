@@ -22,13 +22,13 @@ public record LaserState(
 ) {
     public static LaserState create(BaseLaserBlockEntity blockEntity, PoseStack poseStack) {
         if (blockEntity.getLevel() == null) return null;
-        if (blockEntity.irradiateBlockPos == null) return null;
+        if (blockEntity.getIrradiateBlockPos() == null) return null;
         Function<ResourceLocation, TextureAtlasSprite> spriteGetter = Minecraft.getInstance()
             .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5);
         float length = (float) (blockEntity
-            .irradiateBlockPos
+            .getIrradiateBlockPos()
             .getCenter()
             .distanceTo(blockEntity.getBlockPos().getCenter()) - 0.5);
         poseStack.mulPose(blockEntity.getDirection().getRotation());

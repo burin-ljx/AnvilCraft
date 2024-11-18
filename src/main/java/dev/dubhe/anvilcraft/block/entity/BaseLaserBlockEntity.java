@@ -5,9 +5,11 @@ import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
 
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,8 +47,11 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
     protected int tickCount = 0;
 
     protected HashSet<BaseLaserBlockEntity> irradiateSelfLaserBlockSet = new HashSet<>();
-    public BlockPos irradiateBlockPos = null;
-    public int laserLevel = 0;
+    private boolean changed = false;
+    @Getter
+    protected BlockPos irradiateBlockPos = null;
+    @Getter
+    protected int laserLevel = 0;
 
     public BaseLaserBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -69,6 +74,31 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         return blockState.getCollisionShape(level, blockPos).toAabbs().stream().noneMatch(laseBoundingBox::intersects);
     }
 
+    public void updateIrradiateBlockPos(BlockPos newPos) {
+        if (newPos == irradiateBlockPos) return;
+        if (irradiateBlockPos == null) {
+            irradiateBlockPos = newPos;
+            markChanged();
+            return;
+        }
+        if (newPos == null) {
+            irradiateBlockPos = null;
+            markChanged();
+            return;
+        }
+        if (irradiateBlockPos.equals(newPos)) return;
+        markChanged();
+        irradiateBlockPos = newPos;
+    }
+
+    public void resetState() {
+        changed = false;
+    }
+
+    public void markChanged() {
+        changed = true;
+    }
+
     private BlockPos getIrradiateBlockPos(int expectedLength, Direction direction, BlockPos originPos) {
         for (int length = 1; length <= expectedLength; length++) {
             if (!canPassThrough(direction, originPos.relative(direction, length)))
@@ -81,11 +111,31 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         return 1;
     }
 
-    protected int getLaserLevel() {
+    protected int calculateLaserLevel() {
         return getBaseLaserLevel()
             + irradiateSelfLaserBlockSet.stream()
-            .mapToInt(BaseLaserBlockEntity::getLaserLevel)
+            .mapToInt(BaseLaserBlockEntity::calculateLaserLevel)
             .sum();
+    }
+
+    public void syncTo(ServerPlayer player) {
+        PacketDistributor.sendToPlayer(
+            player,
+            new LaserEmitPacket(laserLevel, getBlockPos(), irradiateBlockPos)
+        );
+    }
+
+    public void tick(@NotNull Level level) {
+        if (changed) {
+            if (level instanceof ServerLevel) {
+                PacketDistributor.sendToPlayersTrackingChunk(
+                    (ServerLevel) level,
+                    level.getChunkAt(getBlockPos()).getPos(),
+                    new LaserEmitPacket(laserLevel, getBlockPos(), irradiateBlockPos)
+                );
+            }
+        }
+        tickCount++;
     }
 
     /**
@@ -103,22 +153,39 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         if (level.getBlockEntity(tempIrradiateBlockPos) instanceof BaseLaserBlockEntity irradiatedLaserBlockEntity
             && !isInIrradiateSelfLaserBlockSet(irradiatedLaserBlockEntity))
             irradiatedLaserBlockEntity.onIrradiated(this);
-        irradiateBlockPos = tempIrradiateBlockPos;
+        updateIrradiateBlockPos(tempIrradiateBlockPos);
 
         if (!(level instanceof ServerLevel serverLevel)) return;
-        laserLevel = getLaserLevel();
+        updateLaserLevel(calculateLaserLevel());
         AABB trackBoundingBox = new AABB(
-            getBlockPos().relative(direction).getCenter().add(-0.0625, -0.0625, -0.0625),
-            irradiateBlockPos.relative(direction.getOpposite()).getCenter().add(0.0625, 0.0625, 0.0625));
+            getBlockPos()
+                .relative(direction)
+                .getCenter()
+                .add(-0.0625, -0.0625, -0.0625),
+            irradiateBlockPos.relative(direction.getOpposite())
+                .getCenter()
+                .add(0.0625, 0.0625, 0.0625)
+        );
         int hurt = Math.min(16, laserLevel - 4);
         if (hurt > 0) {
-            level.getEntities(EntityTypeTest.forClass(LivingEntity.class), trackBoundingBox, Entity::isAlive)
-                .forEach(livingEntity ->
-                    livingEntity.hurt(ModDamageTypes.laser(level), hurt));
+            level.getEntities(
+                EntityTypeTest.forClass(LivingEntity.class),
+                trackBoundingBox,
+                Entity::isAlive
+            ).forEach(livingEntity ->
+                livingEntity.hurt(
+                    ModDamageTypes.laser(level),
+                    hurt
+                )
+            );
         }
         BlockState irradiateBlock = level.getBlockState(irradiateBlockPos);
-        List<ItemStack> drops =
-            Block.getDrops(irradiateBlock, serverLevel, irradiateBlockPos, level.getBlockEntity(irradiateBlockPos));
+        List<ItemStack> drops = Block.getDrops(
+            irradiateBlock,
+            serverLevel,
+            irradiateBlockPos,
+            level.getBlockEntity(irradiateBlockPos)
+        );
         int cooldown = COOLDOWNS[Math.clamp(laserLevel / 4, 0, 4)];
         if (tickCount >= cooldown) {
             tickCount = 0;
@@ -197,31 +264,14 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
     public void onCancelingIrradiation(BaseLaserBlockEntity baseLaserBlockEntity) {
         irradiateSelfLaserBlockSet.remove(baseLaserBlockEntity);
         BlockPos tempIrradiateBlockPos = irradiateBlockPos;
-        irradiateBlockPos = null;
+        updateIrradiateBlockPos(null);
         if (level == null) return;
         if (tempIrradiateBlockPos == null) return;
         if (!(level.getBlockEntity(tempIrradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity)) return;
         irradiateBlockEntity.onCancelingIrradiation(this);
     }
 
-    public void tick(@NotNull Level level) {
-        if (level instanceof ServerLevel) {
-            PacketDistributor.sendToPlayersTrackingChunk(
-                (ServerLevel) level,
-                level.getChunkAt(getBlockPos()).getPos(),
-                new LaserEmitPacket(laserLevel, getBlockPos(), irradiateBlockPos)
-            );
-        }
-        tickCount++;
-    }
-
-    public boolean isSwitch() {
-        return false;
-    }
-
-    public Direction getDirection() {
-        return Direction.UP;
-    }
+    public abstract Direction getDirection();
 
     @Override
     public void setRemoved() {
@@ -251,5 +301,17 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
             Double.POSITIVE_INFINITY,
             Double.POSITIVE_INFINITY,
             Double.POSITIVE_INFINITY);
+    }
+
+    public void updateLaserLevel(int value){
+        if (laserLevel != value){
+            markChanged();
+        }
+        laserLevel = value;
+    }
+
+    public void clientUpdate(BlockPos irradiateBlockPos, int laserLevel) {
+        this.irradiateBlockPos = irradiateBlockPos;
+        this.laserLevel = laserLevel;
     }
 }
