@@ -20,8 +20,8 @@ public class ScreenLang {
         provider.add("screen.anvilcraft.button.on", "on");
         provider.add("screen.anvilcraft.button.record", "Retention item filtering: %s");
         provider.add("screen.anvilcraft.slot.disable.tooltip", "Use item clicks to set filter");
-        provider.add("screen.anvilcraft.royal_grindstone.remove_curse_number", "Remove %i curse number");
-        provider.add("screen.anvilcraft.royal_grindstone.remove_repair_cost", "Remove %i repair cost");
+        provider.add("screen.anvilcraft.royal_grindstone.remove_curse_count", "Removed %i curse");
+        provider.add("screen.anvilcraft.royal_grindstone.remove_repair_cost", "Removed %i repair cost");
         provider.add("screen.anvilcraft.royal_grindstone.title", "Remove curse and repair cost");
         provider.add(
                 "screen.anvilcraft.royal_steel_upgrade_smithing_template", "Royal Steel Upgrade Smithing Template");

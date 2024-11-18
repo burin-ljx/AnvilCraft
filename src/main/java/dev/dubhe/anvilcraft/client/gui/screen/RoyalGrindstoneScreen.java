@@ -49,7 +49,7 @@ public class RoyalGrindstoneScreen extends AbstractContainerScreen<RoyalGrindsto
             drawLabel(
                     112,
                     19,
-                    Component.literal(Component.translatable("screen.anvilcraft.royal_grindstone.remove_curse_number")
+                    Component.literal(Component.translatable("screen.anvilcraft.royal_grindstone.remove_curse_count")
                             .getString()
                             .replace("%i", "" + this.menu.removedCurseCount)),
                     guiGraphics);
