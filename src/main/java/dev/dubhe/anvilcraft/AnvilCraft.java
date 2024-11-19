@@ -65,6 +65,7 @@ public class AnvilCraft {
         .getConfig();
 
     public static final Registrate REGISTRATE = Registrate.create(MOD_ID);
+    private final Logger logger = LoggerFactory.getLogger("AnvilCraft");
 
     public AnvilCraft(IEventBus modEventBus, ModContainer container) {
         ModItemGroups.register(modEventBus);
@@ -87,6 +88,7 @@ public class AnvilCraft {
         AnvilCraftDatagen.init();
 
         registerEvents(modEventBus);
+        logger.info("Ciallo～(∠・ω< )⌒★");
     }
 
     private static void registerEvents(IEventBus eventBus) {
