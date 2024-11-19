@@ -105,7 +105,6 @@ public class SpectralAnvilBlock extends TransparentBlock {
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        System.out.println("pos = " + pos.below(3));
         AABB checkBox = new AABB(
             pos.getX(),
             pos.getY() + 1,
