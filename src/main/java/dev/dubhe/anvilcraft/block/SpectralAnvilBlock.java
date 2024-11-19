@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -104,13 +105,27 @@ public class SpectralAnvilBlock extends TransparentBlock {
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        FallingSpectralBlockEntity.fall(
-            level,
-            pos.above(),
-            level.getBlockState(pos).setValue(POWERED, false),
-            false,
-            true
+        System.out.println("pos = " + pos.below(3));
+        AABB checkBox = new AABB(
+            pos.getX(),
+            pos.getY() + 1,
+            pos.getZ(),
+            pos.getX() + 1,
+            pos.getY() - 3,
+            pos.getZ() + 1
         );
+        if (level.getEntitiesOfClass(
+            FallingSpectralBlockEntity.class,
+            checkBox
+        ).isEmpty()) {
+            FallingSpectralBlockEntity.fall(
+                level,
+                pos.above(),
+                level.getBlockState(pos).setValue(POWERED, false),
+                false,
+                true
+            );
+        }
     }
 
     @Override
