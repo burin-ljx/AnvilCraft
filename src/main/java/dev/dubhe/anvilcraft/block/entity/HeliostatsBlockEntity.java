@@ -55,15 +55,21 @@ public class HeliostatsBlockEntity extends BlockEntity {
         if (!level.getBlockState(irritatePos.north()).isAir()
             && !level.getBlockState(irritatePos.south()).isAir()
             && !level.getBlockState(irritatePos.east()).isAir()
-            && !level.getBlockState(irritatePos.west()).isAir()) return vec31.add(0, 0, 0);
+            && !level.getBlockState(irritatePos.west()).isAir()) {
+            return vec31.add(0, 0, 0);
+        }
         Vec2 vec2 = new Vec2((float) (vec32.z - vec31.z), (float) (vec32.x - vec31.x));
         if (vec2.x == 0) return vec31.add(vec2.y > 0 ? 0.49f : -0.49f, 0, 0);
         if (vec2.y == 0) return vec31.add(0, 0, vec2.x > 0 ? 0.49f : -0.49f);
         float k = vec2.y / vec2.x;
         float x = vec2.x > 0 ? 0.49f : -0.49f;
         float y = vec2.y > 0 ? 0.49f : -0.49f;
-        if (y / k < 0.5 && y / k > -0.5) return vec31.add(y, 0, y / k);
-        if (k * x < 0.5 && k * x > -0.5) return vec31.add(k * x, 0, x);
+        if (y / k < 0.5 && y / k > -0.5) {
+            return vec31.add(y, 0, y / k);
+        }
+        if (k * x < 0.5 && k * x > -0.5) {
+            return vec31.add(k * x, 0, x);
+        }
         surfaceVec3Hash = vec31.hashCode() + vec32.hashCode();
         surfaceVec3 = vec31;
         return vec31;
@@ -83,9 +89,24 @@ public class HeliostatsBlockEntity extends BlockEntity {
         if (level == null) return WorkResult.UNKNOWN;
         if (level.isClientSide && Minecraft.getInstance().player == null) return WorkResult.UNKNOWN;
         if (irritatePos == null) return WorkResult.UNSPECIFIED_IRRADIATION_BLOCK;
-        if (getBlockPos().getCenter().distanceTo(irritatePos.getCenter()) > 64) return WorkResult.TOO_FAR;
+        if (getBlockPos().getCenter().distanceTo(irritatePos.getCenter()) > 64) {
+            return WorkResult.TOO_FAR;
+        }
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx == 0 && dz == 0) continue;
+                BlockPos pos = getBlockPos().offset(dx, 0, dz);
+                if (!level.getBlockState(pos).isAir()) {
+                    return WorkResult.OBSCURED;
+                }
+            }
+        }
         if (level.isRainingAt(getBlockPos().above())
-            || level.getBrightness(LightLayer.SKY, getBlockPos().above()) != 15) return WorkResult.NO_SUN;
+            || level.getBrightness(LightLayer.SKY, getBlockPos().above()) != 15
+        ) {
+            return WorkResult.NO_SUN;
+        }
         Vec3 irritateVec3 =
             getSurfaceVec3(irritatePos.getCenter(), getBlockPos().getCenter());
         BlockHitResult blockHitResult = level.clip(new ClipContext(
@@ -95,8 +116,11 @@ public class HeliostatsBlockEntity extends BlockEntity {
             ClipContext.Fluid.NONE,
             level.isClientSide
                 ? Objects.requireNonNull(Minecraft.getInstance().player)
-                : AnvilCraftBlockPlacer.anvilCraftBlockPlacer.getPlayer()));
-        if (!blockHitResult.getBlockPos().equals(irritatePos)) return WorkResult.OBSCURED;
+                : AnvilCraftBlockPlacer.anvilCraftBlockPlacer.getPlayer())
+        );
+        if (!blockHitResult.getBlockPos().equals(irritatePos)) {
+            return WorkResult.OBSCURED;
+        }
         double sunAngle = level.getSunAngle(1);
         sunAngle = sunAngle <= Math.PI / 2 * 3 ? sunAngle + Math.PI / 2 : sunAngle - Math.PI / 2 * 3;
         if (sunAngle > Math.PI) return WorkResult.NO_SUN;
@@ -104,10 +128,12 @@ public class HeliostatsBlockEntity extends BlockEntity {
         irritateVector3f = new Vector3f(
             (float) (irritateVec3.x - getBlockPos().getX()),
             (float) (irritateVec3.y - getBlockPos().getY()),
-            (float) (irritateVec3.z - getBlockPos().getZ()))
-            .normalize();
+            (float) (irritateVec3.z - getBlockPos().getZ())
+        ).normalize();
         normalVector3f = sunVector3f.add(irritateVector3f).div(2);
-        if (normalVector3f.y < 0) return WorkResult.NO_ROTATION_ANGLE;
+        if (normalVector3f.y < 0) {
+            return WorkResult.NO_ROTATION_ANGLE;
+        }
         return WorkResult.SUCCESS;
     }
 

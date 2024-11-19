@@ -41,15 +41,15 @@ public class HeatedBlockRecorder {
         BlockFamily emberMetalFamily =
             new BlockFamily(List.of(ModBlocks.EMBER_METAL_BLOCK.get(), ModBlocks.CUT_EMBER_METAL_BLOCK.get()));
 
-        TRANSFORMS.put(Pair.of(ModBlocks.HEATED_TUNGSTEN.get(), 2), tungstenFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.REDHOT_TUNGSTEN.get(), 8), tungstenFamily);
+        TRANSFORMS.put(Pair.of(ModBlocks.HEATED_TUNGSTEN.get(), 4), tungstenFamily);
+        TRANSFORMS.put(Pair.of(ModBlocks.REDHOT_TUNGSTEN.get(), 12), tungstenFamily);
         TRANSFORMS.put(Pair.of(ModBlocks.GLOWING_TUNGSTEN.get(), 32), tungstenFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.INCANDESCENT_TUNGSTEN.get(), 128), tungstenFamily);
+        TRANSFORMS.put(Pair.of(ModBlocks.INCANDESCENT_TUNGSTEN.get(), 80), tungstenFamily);
 
-        TRANSFORMS.put(Pair.of(ModBlocks.HEATED_NETHERITE.get(), 2), netheriteFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.REDHOT_NETHERITE.get(), 8), netheriteFamily);
+        TRANSFORMS.put(Pair.of(ModBlocks.HEATED_NETHERITE.get(), 4), netheriteFamily);
+        TRANSFORMS.put(Pair.of(ModBlocks.REDHOT_NETHERITE.get(), 12), netheriteFamily);
         TRANSFORMS.put(Pair.of(ModBlocks.GLOWING_NETHERITE.get(), 32), netheriteFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.INCANDESCENT_NETHERITE.get(), 128), netheriteFamily);
+        TRANSFORMS.put(Pair.of(ModBlocks.INCANDESCENT_NETHERITE.get(), 80), netheriteFamily);
 
         TRANSFORMS.put(Pair.of(ModBlocks.EMBER_METAL_BLOCK.get(), 8), emberMetalFamily);
         TRANSFORMS.put(Pair.of(ModBlocks.CUT_EMBER_METAL_BLOCK.get(), 2), emberMetalFamily);
