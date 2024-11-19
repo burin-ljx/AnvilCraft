@@ -1,6 +1,6 @@
 {
   "type": "anvilcraft:mineral_fountain",
   "from_block": "minecraft:deepslate",
-  "need_block": "anvilcraft:deepslate_tungsten_ore",
+  "need_block": "anvilcraft:raw_tungsten_block",
   "to_block": "anvilcraft:deepslate_tungsten_ore"
 }

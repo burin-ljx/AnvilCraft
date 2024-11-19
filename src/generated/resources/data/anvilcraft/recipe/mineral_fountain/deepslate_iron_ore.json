@@ -1,6 +1,6 @@
 {
   "type": "anvilcraft:mineral_fountain",
   "from_block": "minecraft:deepslate",
-  "need_block": "minecraft:deepslate_iron_ore",
+  "need_block": "minecraft:raw_iron_block",
   "to_block": "minecraft:deepslate_iron_ore"
 }

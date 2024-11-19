@@ -1,6 +1,6 @@
 {
   "type": "anvilcraft:mineral_fountain",
   "from_block": "minecraft:deepslate",
-  "need_block": "minecraft:deepslate_gold_ore",
+  "need_block": "minecraft:raw_gold_block",
   "to_block": "minecraft:deepslate_gold_ore"
 }
