@@ -12,9 +12,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -112,6 +114,35 @@ public abstract class BaseChuteBlockEntity
         itemHandler.deserializeNBT(provider, tag.getCompound("Inventory"));
     }
 
+    @Nullable
+    protected IItemHandler findItemHandler(BlockPos inputBlockPos, Direction context) {
+        IItemHandler input = getLevel()
+            .getCapability(
+                Capabilities.ItemHandler.BLOCK,
+                inputBlockPos,
+                context
+            );
+        if (input != null){
+            return input;
+        }
+        AABB aabb = new AABB(inputBlockPos);
+        List<ContainerEntity> entities =
+            level.getEntitiesOfClass(
+                    Entity.class,
+                    aabb,
+                    e -> e instanceof ContainerEntity
+                ).stream()
+                .map(it -> (ContainerEntity) it)
+                .toList();
+        if (!entities.isEmpty()) {
+            input = ((Entity) entities.getFirst()).getCapability(
+                Capabilities.ItemHandler.ENTITY,
+                null
+            );
+        }
+        return input;
+    }
+
     /**
      * 溜槽 tick
      */
@@ -119,11 +150,10 @@ public abstract class BaseChuteBlockEntity
         if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
-                IItemHandler source = getLevel()
-                    .getCapability(
-                        Capabilities.ItemHandler.BLOCK,
-                        getBlockPos().relative(getInputDirection()),
-                        getInputDirection().getOpposite());
+                IItemHandler source = findItemHandler(
+                    getBlockPos().relative(getInputDirection()),
+                    getInputDirection().getOpposite()
+                );
                 if (source != null) {
                     ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
                     cooldown = AnvilCraft.config.chuteMaxCooldown;
@@ -147,11 +177,11 @@ public abstract class BaseChuteBlockEntity
                     }
                 }
                 // 尝试向朝向容器输出
-                IItemHandler target = getLevel()
-                    .getCapability(
-                        Capabilities.ItemHandler.BLOCK,
-                        getBlockPos().relative(getOutputDirection()),
-                        getOutputDirection().getOpposite());
+                IItemHandler target = findItemHandler(
+                    getBlockPos().relative(getOutputDirection()),
+                    getOutputDirection().getOpposite()
+                );
+
                 if (target != null) {
                     ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
                     cooldown = AnvilCraft.config.chuteMaxCooldown;
