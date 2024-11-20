@@ -91,6 +91,45 @@ public class TimeWarpRecipeLoader {
             .requiredFluidLevel(3)
             .consumeFluid(true)
             .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_0"));
+
+        TimeWarpRecipe.builder()
+            .requires(ModItemTags.NETHERITE_BLOCK)
+            .requires(ModItems.EARTH_CORE_SHARD, 1)
+            .cauldron(ModBlocks.FIRE_CAULDRON.get())
+            .results(
+                List.of(
+                    ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(9))
+                )
+            )
+            .requiredFluidLevel(3)
+            .consumeFluid(true)
+            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_1"));
+
+        TimeWarpRecipe.builder()
+            .requires(ModItemTags.NETHERITE_BLOCK)
+            .requires(ModItems.EARTH_CORE_SHARD, 2)
+            .cauldron(ModBlocks.FIRE_CAULDRON.get())
+            .results(
+                List.of(
+                    ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(12))
+                )
+            )
+            .requiredFluidLevel(3)
+            .consumeFluid(true)
+            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_2"));
+
+        TimeWarpRecipe.builder()
+            .requires(ModItemTags.NETHERITE_BLOCK)
+            .requires(ModItems.EARTH_CORE_SHARD, 3)
+            .cauldron(ModBlocks.FIRE_CAULDRON.get())
+            .results(
+                List.of(
+                    ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(15))
+                )
+            )
+            .requiredFluidLevel(3)
+            .consumeFluid(true)
+            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_3"));
     }
 
     private static void timeWarp(

@@ -139,6 +139,7 @@ public abstract class LevelRendererMixin {
         );
         mcInput.clear(Minecraft.ON_OSX);
         ModShaders.getBloomChain().process(RenderHelper.getPartialTick());
+        minecraft.getMainRenderTarget().bindWrite(false);
     }
 
     @Unique

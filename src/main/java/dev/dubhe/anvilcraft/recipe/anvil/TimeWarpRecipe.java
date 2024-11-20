@@ -11,8 +11,10 @@ import dev.dubhe.anvilcraft.util.RecipeUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.StreamDecoder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -41,6 +43,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -49,6 +53,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
     private final NonNullList<Ingredient> ingredients;
+    private final List<Ingredient> exactIngredients;
     private final List<Object2IntMap.Entry<Ingredient>> mergedIngredients;
     private final Block cauldron;
     private final List<ChanceItemStack> results;
@@ -62,13 +67,17 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
 
     public TimeWarpRecipe(
         NonNullList<Ingredient> ingredients,
+        Optional<List<Ingredient>> exactIngredients,
         Block cauldron,
         List<ChanceItemStack> results,
         boolean produceFluid,
         boolean consumeFluid,
-        boolean fromWater, int requiredFluidLevel) {
+        boolean fromWater,
+        int requiredFluidLevel
+    ) {
         this.ingredients = ingredients;
         this.mergedIngredients = RecipeUtil.mergeIngredient(ingredients);
+        this.exactIngredients = exactIngredients.orElseGet(List::of);
         this.cauldron = cauldron;
         this.results = results;
         this.produceFluid = produceFluid;
@@ -143,7 +152,20 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
                 }
             }
         }
-        return getMaxCraftTime(input) >= 1;
+        int normalCraftCount = getMaxCraftTime(input);
+        if (exactIngredients.isEmpty()){
+            return normalCraftCount >= 1;
+        }
+        int exactCraftCount = getMaxCraftTime(input, exactIngredients);
+        return exactCraftCount >= 1 && normalCraftCount == exactCraftCount;
+    }
+
+    public int getMaxCraftTime(Input pInput, List<Ingredient> ingredient) {
+        int times = RecipeUtil.getMaxCraftTime(pInput, ingredient);
+        if (produceFluid || consumeFluid || fromWater) {
+            times = times >= 1 ? 1 : 0;
+        }
+        return times;
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -177,6 +199,10 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
         private static final MapCodec<TimeWarpRecipe> CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
                 CodecUtil.createIngredientListCodec("ingredients", 64, "time_warp")
                     .forGetter(TimeWarpRecipe::getIngredients),
+                Ingredient.CODEC_NONEMPTY
+                    .listOf()
+                    .optionalFieldOf("exactIngredients")
+                    .forGetter(o -> o.exactIngredients.isEmpty() ? Optional.empty() : Optional.of(o.exactIngredients)),
                 CodecUtil.BLOCK_CODEC.fieldOf("cauldron").forGetter(TimeWarpRecipe::getCauldron),
                 ChanceItemStack.CODEC.listOf()
                     .optionalFieldOf("results", List.of())
@@ -206,6 +232,10 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             for (Ingredient ingredient : recipe.ingredients) {
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
             }
+            buf.writeVarInt(recipe.exactIngredients.size());
+            for (Ingredient ingredient : recipe.exactIngredients) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
+            }
             CodecUtil.BLOCK_STREAM_CODEC.encode(buf, recipe.getCauldron());
             buf.writeVarInt(recipe.results.size());
             for (ChanceItemStack stack : recipe.results) {
@@ -221,6 +251,11 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             int size = buf.readVarInt();
             NonNullList<Ingredient> ingredients = NonNullList.withSize(size, Ingredient.EMPTY);
             ingredients.replaceAll(i -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+            List<Ingredient> exactIngredients = new ArrayList<>();
+            size = buf.readVarInt();
+            for (int i = 0; i < size; i++) {
+                exactIngredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+            }
             Block cauldron = CodecUtil.BLOCK_STREAM_CODEC.decode(buf);
             size = buf.readVarInt();
             List<ChanceItemStack> results = new ArrayList<>();
@@ -231,7 +266,16 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             boolean consumeFluid = buf.readBoolean();
             boolean fromWater = buf.readBoolean();
             int requiredFluidLevel = buf.readInt();
-            return new TimeWarpRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater, requiredFluidLevel);
+            return new TimeWarpRecipe(
+                ingredients,
+                Optional.of(exactIngredients),
+                cauldron,
+                results,
+                produceFluid,
+                consumeFluid,
+                fromWater,
+                requiredFluidLevel
+            );
         }
     }
 
@@ -240,6 +284,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
     public static class Builder extends AbstractRecipeBuilder<TimeWarpRecipe> {
 
         private NonNullList<Ingredient> ingredients = NonNullList.create();
+        private List<Ingredient> exactIngredients = new ArrayList<>();
         private Block cauldron = Blocks.CAULDRON;
         private List<ChanceItemStack> results = new ArrayList<>();
         private boolean produceFluid = false;
@@ -274,6 +319,31 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             return requires(pTag, 1);
         }
 
+        public Builder requiresExactly(ItemLike item, int count){
+            for (int i = 0; i < count; i++) {
+                exactIngredients.add(Ingredient.of(item));
+            }
+            return this;
+        }
+
+        public Builder requiresExactly(TagKey<Item> item, int count){
+            for (int i = 0; i < count; i++) {
+                exactIngredients.add(Ingredient.of(item));
+            }
+            return this;
+        }
+
+
+        public Builder requiresExactly(ItemLike item){
+            exactIngredients.add(Ingredient.of(item));
+            return this;
+        }
+
+        public Builder requiresExactly(TagKey<Item> item){
+            exactIngredients.add(Ingredient.of(item));
+            return this;
+        }
+
         public Builder result(ItemStack stack) {
             results.add(ChanceItemStack.of(stack));
             return this;
@@ -281,7 +351,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
 
         @Override
         public TimeWarpRecipe buildRecipe() {
-            return new TimeWarpRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater, requiredFluidLevel);
+            return new TimeWarpRecipe(ingredients, Optional.of(exactIngredients), cauldron, results, produceFluid, consumeFluid, fromWater, requiredFluidLevel);
         }
 
         @Override
