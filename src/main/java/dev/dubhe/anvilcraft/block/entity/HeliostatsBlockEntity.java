@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.block.entity;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.chargecollector.HeatedBlockRecorder;
 import dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer;
+import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.network.HeliostatsIrradiationPacket;
 
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.HalfTransparentBlock;
+import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -81,7 +84,7 @@ public class HeliostatsBlockEntity extends BlockEntity {
     public boolean setIrritatePos(BlockPos pos) {
         irritatePos = pos;
         this.setChanged();
-        return validatePos(pos).isWork();
+        return validatePos(pos).isWorking();
     }
 
     private WorkResult validatePos(BlockPos irritatePos) {
@@ -95,10 +98,21 @@ public class HeliostatsBlockEntity extends BlockEntity {
 
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
-                if (dx == 0 && dz == 0) continue;
-                BlockPos pos = getBlockPos().offset(dx, 0, dz);
-                if (!level.getBlockState(pos).isAir()) {
-                    return WorkResult.OBSCURED;
+                for (int dy = 0; dy <= 1; dy++) {
+                    if (dx == 0 && dz == 0 && dy == 0) continue;
+                    if (dy == 0){
+                        BlockPos pos = getBlockPos().offset(dx, dy, dz);
+                        if (level.getBlockState(pos).is(ModBlocks.HELIOSTATS)) {
+                            return WorkResult.ADJACENT_HELIOSTATS;
+                        }
+                    }
+                    if (dy == 1){
+                        BlockPos pos = getBlockPos().offset(dx, dy, dz);
+                        BlockState bs = level.getBlockState(pos);
+                        if (!bs.isAir() && !(bs.getBlock() instanceof HalfTransparentBlock)) {
+                            return WorkResult.OBSCURED;
+                        }
+                    }
                 }
             }
         }
@@ -163,7 +177,7 @@ public class HeliostatsBlockEntity extends BlockEntity {
         if (irritatePos == null && level.isClientSide)
             PacketDistributor.sendToServer(new HeliostatsIrradiationPacket(getBlockPos(), irritatePos));
         workResult = validatePos(irritatePos);
-        if (workResult.isWork()) {
+        if (workResult.isWorking()) {
             HeatedBlockRecorder.getInstance(getLevel()).addOrIncrease(irritatePos, this);
         } else {
             HeatedBlockRecorder.getInstance(getLevel()).remove(irritatePos, this);
@@ -184,6 +198,7 @@ public class HeliostatsBlockEntity extends BlockEntity {
         NO_ROTATION_ANGLE("tooltip.anvilcraft.heliostats.no_rotation_angle"),
         NO_SUN("tooltip.anvilcraft.heliostats.no_sun"),
         OBSCURED("tooltip.anvilcraft.heliostats.obscured"),
+        ADJACENT_HELIOSTATS("tooltip.anvilcraft.heliostats.adjacent_heliostats"),
         TOO_FAR("tooltip.anvilcraft.heliostats.too_far"),
         UNSPECIFIED_IRRADIATION_BLOCK("tooltip.anvilcraft.heliostats.unspecified_irradiation_block"),
         UNKNOWN("tooltip.anvilcraft.heliostats.unknown");
@@ -194,16 +209,12 @@ public class HeliostatsBlockEntity extends BlockEntity {
             this.key = key;
         }
 
-        public boolean equals(WorkResult workResult) {
-            return this.key.equals(workResult.key);
-        }
-
         public String getTranslateKey() {
             return this.key;
         }
 
-        public boolean isWork() {
-            return this.equals(SUCCESS);
+        public boolean isWorking() {
+            return this == SUCCESS;
         }
     }
 }

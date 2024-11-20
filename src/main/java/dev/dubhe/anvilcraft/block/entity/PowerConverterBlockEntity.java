@@ -55,10 +55,10 @@ public class PowerConverterBlockEntity extends BlockEntity implements IPowerCons
      * tick
      */
     public void tick() {
-        if (this.level != null) flushState(this.level, getBlockPos());
-        if (cooldown != 0) {
-            cooldown--;
-        } else {
+        if (this.level != null) {
+            flushState(this.level, getBlockPos());
+        }
+        if (cooldown == 0) {
             cooldown = AnvilCraft.config.powerConverter.powerConverterCountdown;
             if (getBlockState().getValue(BasePowerConverterBlock.OVERLOAD)) return;
             int amountTick = (int) (inputPower
@@ -67,6 +67,8 @@ public class PowerConverterBlockEntity extends BlockEntity implements IPowerCons
             int amount = amountTick * AnvilCraft.config.powerConverter.powerConverterCountdown;
             Direction face = getBlockState().getValue(BasePowerConverterBlock.FACING);
             EnergyHelper.insertEnergy(getLevel(), getBlockPos().relative(face), face.getOpposite(), amount);
+        } else {
+            cooldown--;
         }
     }
 

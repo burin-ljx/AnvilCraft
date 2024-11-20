@@ -16,7 +16,7 @@ public class HeliostatsTooltipProvider implements BlockEntityTooltipProvider {
     @Override
     public boolean accepts(BlockEntity entity) {
         return entity instanceof HeliostatsBlockEntity heliostatsBlockEntity
-                && !heliostatsBlockEntity.getWorkResult().isWork();
+                && !heliostatsBlockEntity.getWorkResult().isWorking();
     }
 
     @Override
