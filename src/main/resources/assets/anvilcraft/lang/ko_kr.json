@@ -537,6 +537,7 @@
   "tooltip.anvilcraft.grid_information.total_consumed": "  총 소비량: %d",
   "tooltip.anvilcraft.grid_information.total_generated": "  총 생성: %d",
   "tooltip.anvilcraft.grid_information.utilization": "  전력 사용률: %s",
+  "tooltip.anvilcraft.heliostats.adjacent_heliostats": "Adjacent heliostats detected.",
   "tooltip.anvilcraft.heliostats.no_sun": "  햇빛 없음",
   "tooltip.anvilcraft.heliostats.not_work": "헬리오스탯 작동 안함",
   "tooltip.anvilcraft.heliostats.obscured": "  조명 경로가 가려짐",

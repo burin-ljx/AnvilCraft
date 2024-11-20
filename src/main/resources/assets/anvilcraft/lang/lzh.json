@@ -537,6 +537,7 @@
   "tooltip.anvilcraft.grid_information.total_consumed": "  耗電合計：%d",
   "tooltip.anvilcraft.grid_information.total_generated": "  發電合計：%d",
   "tooltip.anvilcraft.grid_information.utilization": "  電之用度：%s",
+  "tooltip.anvilcraft.heliostats.adjacent_heliostats": "Adjacent heliostats detected.",
   "tooltip.anvilcraft.heliostats.no_sun": "無光",
   "tooltip.anvilcraft.heliostats.not_work": "定日鏡弗能運也",
   "tooltip.anvilcraft.heliostats.obscured": "光之路，有物遮之",

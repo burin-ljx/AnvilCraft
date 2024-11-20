@@ -537,6 +537,7 @@
   "tooltip.anvilcraft.grid_information.total_consumed": "  Gesamtstromverbrauch: %d",
   "tooltip.anvilcraft.grid_information.total_generated": "  Gesamterzeugte Strom: %d",
   "tooltip.anvilcraft.grid_information.utilization": "  Stromnutzung: %s",
+  "tooltip.anvilcraft.heliostats.adjacent_heliostats": "Adjacent heliostats detected.",
   "tooltip.anvilcraft.heliostats.no_sun": "Keine Sonneneinstrahlung",
   "tooltip.anvilcraft.heliostats.not_work": "Heliostat funktioniert nicht ordnungsgemäß",
   "tooltip.anvilcraft.heliostats.obscured": "Lichtweg blockiert",
