@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.mixin;
 
 import dev.dubhe.anvilcraft.client.init.ModShaders;
+import dev.dubhe.anvilcraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +22,9 @@ public class GameRendererMixin {
         )
     )
     void loadBloomEffect(ResourceProvider resourceProvider, CallbackInfo ci) throws IOException {
-        ModShaders.loadBloomEffect(resourceProvider);
+        if (!RenderState.hasIncompatibleMods()) {
+            ModShaders.loadBloomEffect(resourceProvider);
+        }
     }
 
     @Inject(
@@ -32,6 +35,8 @@ public class GameRendererMixin {
         )
     )
     void resize(int width, int height, CallbackInfo ci){
-        ModShaders.resize(width, height);
+        if (!RenderState.hasIncompatibleMods()) {
+            ModShaders.resize(width, height);
+        }
     }
 }

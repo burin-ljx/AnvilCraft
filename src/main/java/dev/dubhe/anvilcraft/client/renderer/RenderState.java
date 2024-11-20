@@ -44,4 +44,8 @@ public class RenderState {
     public static boolean isBloomEffectEnabled(){
         return AnvilCraft.config.renderBloomEffect;
     }
+
+    public static boolean hasIncompatibleMods() {
+        return CONTAINS_INCOMPATIBLE_MODS;
+    }
 }
