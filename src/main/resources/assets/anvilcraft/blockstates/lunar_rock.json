@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+	    { "model": "anvilcraft:block/lunar_rock", "weight": 7 },
+	    { "model": "anvilcraft:block/lunar_rock_1", "weight": 1 },
+	    { "model": "anvilcraft:block/lunar_rock_2", "weight": 1 },
+	    { "model": "anvilcraft:block/lunar_rock_3", "weight": 1 }
+	]
+    }
+}
