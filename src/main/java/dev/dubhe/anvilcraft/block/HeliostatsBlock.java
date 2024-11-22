@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -24,12 +25,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class HeliostatsBlock extends BaseEntityBlock implements IHammerRemovable {
     public static final VoxelShape SHAPE =
-        Shapes.or(Block.box(1, 8, 1, 15, 13, 15), Block.box(4, 0, 4, 12, 2, 12), Block.box(7, 2, 7, 9, 8, 9));
+            Stream.of(
+                    Block.box(0, 0, 0, 16, 4, 16),
+                    Block.box(4, 4, 4, 12, 6, 12),
+                    Block.box(6, 6, 6, 10, 22, 10)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     public HeliostatsBlock(Properties properties) {
         super(properties);
