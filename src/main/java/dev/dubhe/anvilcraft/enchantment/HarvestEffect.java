@@ -78,8 +78,8 @@ public record HarvestEffect(int range) implements EnchantmentEntityEffect {
             if (!(state.getBlock() instanceof CropBlock block)) continue;
             if (!block.isMaxAge(state)) continue;
             BlockState newState = block.getStateForAge(0);
-            cropBlock.playerWillDestroy(level, currentIterating, targetBlockState, player);
-            cropBlock.playerDestroy(level, player, currentIterating, targetBlockState, level.getBlockEntity(currentIterating), tool);
+            cropBlock.playerWillDestroy(level, currentIterating, state, player);
+            cropBlock.playerDestroy(level, player, currentIterating, state, level.getBlockEntity(currentIterating), tool);
             level.setBlockAndUpdate(currentIterating, newState);
             tool.hurtAndBreak(1, level, player, enchantedItemInUse.onBreak());
         }
