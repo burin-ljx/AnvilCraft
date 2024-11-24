@@ -5,11 +5,14 @@ import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -56,7 +60,7 @@ public class SlidingRailBlock extends Block {
                     Block.box(11, 6, 0, 14, 12, 16)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
-    public static HashMap<BlockPos, PistonMovingBlockEntity> movingPistonMap = new HashMap<>();
+    public static final HashMap<BlockPos, PistonPushInfo> movingPistonMap = new HashMap<>();
 
     public SlidingRailBlock(Properties properties) {
         super(properties);
@@ -104,9 +108,19 @@ public class SlidingRailBlock extends Block {
             @NotNull BlockPos neighbor
     ) {
         if (level.getBlockState(neighbor).is(Blocks.MOVING_PISTON)) {
-            Optional<PistonMovingBlockEntity> pistonMovingBlockEntity = level.getBlockEntity(neighbor, BlockEntityType.PISTON);
-            if (pistonMovingBlockEntity.isEmpty()) return;
-            movingPistonMap.put(neighbor, pistonMovingBlockEntity.get());
+
+            Direction dir = level.getBlockState(neighbor).getValue(FACING);
+            if(dir==Direction.UP || dir==Direction.DOWN) {
+                if(movingPistonMap.containsKey(pos)) movingPistonMap.remove(pos);
+                return;
+            }
+            PistonPushInfo ppi = new PistonPushInfo(neighbor, dir);
+            if(movingPistonMap.containsKey(pos)){
+                movingPistonMap.get(pos).fromPos = neighbor;
+            }
+            else movingPistonMap.put(pos, ppi);
+
+
         }
     }
 
@@ -121,9 +135,25 @@ public class SlidingRailBlock extends Block {
     ) {
         if (level.isClientSide) return;
         BlockState blockState = level.getBlockState(fromPos);
+        if (!movingPistonMap.containsKey(pos)) return;
         if (blockState.is(Blocks.MOVING_PISTON)) return;
-        if (!movingPistonMap.containsKey(fromPos)) return;
-        pushBlock(fromPos, level, movingPistonMap.get(fromPos).getMovementDirection());
+        level.scheduleTick(pos, this, 2);
+
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (!movingPistonMap.containsKey(pos)) return;
+        if (!movingPistonMap.get(pos).extending && movingPistonMap.get(pos).isSourcePiston) {
+            movingPistonMap.remove(pos);
+            return;
+        }
+        else if (!movingPistonMap.get(pos).extending){
+            movingPistonMap.get(pos).direction = movingPistonMap.get(pos).direction.getOpposite();
+        }
+        BlockPos fromPos = movingPistonMap.get(pos).fromPos;
+        pushBlock(fromPos, level, movingPistonMap.get(pos).direction);
+        movingPistonMap.remove(pos);
     }
 
     /**
@@ -152,7 +182,7 @@ public class SlidingRailBlock extends Block {
 
         List<BlockPos> list2 = pistonstructureresolver.getToDestroy();
         BlockState[] ablockstate = new BlockState[list.size() + list2.size()];
-        Direction direction = facing.getOpposite();
+        Direction direction = facing;//facing.getOpposite();
         int i = 0;
 
         for (int j = list2.size() - 1; j >= 0; j--) {
@@ -175,7 +205,7 @@ public class SlidingRailBlock extends Block {
             BlockState blockstate8 = Blocks.MOVING_PISTON.defaultBlockState().setValue(FACING, facing);
             level.setBlock(blockpos3, blockstate8, 68);
             level.setBlockEntity(
-                    MovingPistonBlock.newMovingBlockEntity(blockpos3, blockstate8, list1.get(k), facing, false, false)
+                    MovingPistonBlock.newMovingBlockEntity(blockpos3, blockstate8, list1.get(k), facing, true, false)
             );
             ablockstate[i++] = level.getBlockState(blockpos3);
         }
@@ -225,6 +255,19 @@ public class SlidingRailBlock extends Block {
                 long gameTime
         ) {
             pushBlock(pushBlockData.blockPos, pushBlockData.level, pushBlockData.direction);
+        }
+    }
+
+    public static class PistonPushInfo {
+        public BlockPos fromPos;
+        public Direction direction;
+        public boolean extending;
+        public boolean isSourcePiston;
+        public PistonPushInfo(BlockPos blockPos, Direction direction){
+            this.fromPos = blockPos;
+            this.direction = direction;
+            this.extending = false;
+            this.isSourcePiston = false;
         }
     }
 }
