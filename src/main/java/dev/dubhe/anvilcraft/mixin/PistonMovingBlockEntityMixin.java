@@ -44,11 +44,11 @@ abstract class PistonMovingBlockEntityMixin {
             BlockPos p0 = pos.below();
             SlidingRailBlock.PistonPushInfo p = new SlidingRailBlock.PistonPushInfo(pos, blockEntity.getDirection());
             p.extending = blockEntity.isExtending();
-            if(SlidingRailBlock.movingPistonMap.containsKey(p0)){
-                SlidingRailBlock.movingPistonMap.get(p0).extending = p.extending;
+            if(SlidingRailBlock.MOVING_PISTON_MAP.containsKey(p0)){
+                SlidingRailBlock.MOVING_PISTON_MAP.get(p0).extending = p.extending;
             }
-            else SlidingRailBlock.movingPistonMap.put(p0, p);
-            SlidingRailBlock.movingPistonMap.get(p0).isSourcePiston = blockEntity.isSourcePiston();
+            else SlidingRailBlock.MOVING_PISTON_MAP.put(p0, p);
+            SlidingRailBlock.MOVING_PISTON_MAP.get(p0).isSourcePiston = blockEntity.isSourcePiston();
         }
 
     }
