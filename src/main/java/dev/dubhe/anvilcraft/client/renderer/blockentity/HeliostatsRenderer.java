@@ -37,7 +37,7 @@ public class HeliostatsRenderer implements BlockEntityRenderer<HeliostatsBlockEn
         int packedLight,
         int packedOverlay) {
         poseStack.pushPose();
-        poseStack.translate(0.5, 0.5625, 0.5);
+        poseStack.translate(0.5, 1.3, 0.5);
         if (!blockEntity.getNormalVector3f().equals(new Vector3f())
             && !blockEntity.getNormalVector3f().equals(new Vector3f(Float.NaN))) {
             poseStack.mulPose(new Quaternionf()
