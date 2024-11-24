@@ -26,6 +26,7 @@ public class LaserCompiler {
         LaserState state,
         Function<RenderType, VertexConsumer> bufferBuilderFunction
     ) {
+        if (state.laserLevel() <= 0) return;
         VertexConsumer solidLayer = bufferBuilderFunction.apply(RenderType.solid());
         float width = LASER_WIDTH[Math.clamp(state.blockEntity().getLaserLevel(), 1, 64)] + 0.001f;
         renderBox(

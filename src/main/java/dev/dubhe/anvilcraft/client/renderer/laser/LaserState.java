@@ -16,6 +16,7 @@ public record LaserState(
     BlockPos pos,
     float length,
     float offset,
+    int laserLevel,
     PoseStack.Pose pose,
     TextureAtlasSprite laserAtlasSprite,
     TextureAtlasSprite concreteAtlasSprite
@@ -37,6 +38,7 @@ public record LaserState(
             blockEntity.getBlockPos(),
             length,
             blockEntity.laserOffset(),
+            blockEntity.getLaserLevel(),
             poseStack.last(),
             spriteGetter
                 .apply(AnvilCraft.of("block/laser")),
