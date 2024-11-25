@@ -13,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.HalfTransparentBlock;
-import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -124,9 +123,9 @@ public class HeliostatsBlockEntity extends BlockEntity {
         Vec3 irritateVec3 =
             getSurfaceVec3(irritatePos.getCenter(), getBlockPos().getCenter());
         BlockHitResult blockHitResult = level.clip(new ClipContext(
-            getBlockPos().getCenter().add(0f, 0.34f, 0f),
+            getBlockPos().getCenter().add(0f, 1.376f, 0f),
             irritateVec3,
-            ClipContext.Block.OUTLINE,
+            ClipContext.Block.COLLIDER,
             ClipContext.Fluid.NONE,
             level.isClientSide
                 ? Objects.requireNonNull(Minecraft.getInstance().player)
