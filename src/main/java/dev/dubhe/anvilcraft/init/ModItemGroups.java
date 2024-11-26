@@ -20,7 +20,7 @@ public class ModItemGroups {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ANVILCRAFT_TOOL =
             DF.register("tools", () -> CreativeModeTab.builder()
-                    .icon(ModItems.MAGNET::asStack)
+                    .icon(ModItems.ANVIL_HAMMER::asStack)
                     .displayItems((ctx, entries) -> {})
                     .title(REGISTRATE.addLang("itemGroup", AnvilCraft.of("tools"), "AnvilCraft: Utilities"))
                     .withTabsAfter(
@@ -41,7 +41,7 @@ public class ModItemGroups {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ANVILCRAFT_FUNCTION_BLOCK =
             DF.register("functional_block", () -> CreativeModeTab.builder()
-                    .icon(ModBlocks.MAGNET_BLOCK::asStack)
+                    .icon(ModBlocks.ROYAL_ANVIL::asStack)
                     .displayItems((ctx, entries) -> {
                         entries.accept(Items.IRON_TRAPDOOR.getDefaultInstance());
                         entries.accept(Items.CAULDRON.getDefaultInstance());
@@ -60,7 +60,7 @@ public class ModItemGroups {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ANVILCRAFT_BUILD_BLOCK =
             DF.register("building_block", () -> CreativeModeTab.builder()
-                    .icon(ModBlocks.REINFORCED_CONCRETES.get(Color.BLACK)::asStack)
+                    .icon(ModBlocks.REINFORCED_CONCRETES.get(Color.WHITE)::asStack)
                     .displayItems((ctx, entries) -> {})
                     .title(REGISTRATE.addLang(
                             "itemGroup", AnvilCraft.of("building_block"), "AnvilCraft: Building Block"))
