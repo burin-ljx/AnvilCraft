@@ -148,9 +148,10 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
         }
         int removedCurseCound = 0;
         Iterator<Holder<Enchantment>> iterator = curseMap.keySet().iterator();
-        while (goldCount >= GOLD_PER_CURSE && curseNumber > 0 && goldUsed < 64) {
+        while (iterator.hasNext() && goldCount >= GOLD_PER_CURSE && curseNumber > 0 && goldUsed < 64) {
             ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(result.getEnchantments());
-            enchantments.removeIf(it -> it == iterator.next());
+            Holder<Enchantment> curseEnchantment = iterator.next();
+            enchantments.removeIf(it -> it == curseEnchantment);
             ItemStack itemStack = result.copy();
             itemStack.remove(DataComponents.ENCHANTMENTS);
             itemStack.remove(DataComponents.STORED_ENCHANTMENTS);
