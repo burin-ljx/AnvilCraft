@@ -1,5 +1,7 @@
 package dev.dubhe.anvilcraft.init;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
@@ -37,7 +39,6 @@ import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
-
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -59,9 +60,6 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
-
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
-import com.tterrag.registrate.util.entry.ItemEntry;
 
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 
@@ -376,6 +374,7 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_anvil_hammer"));
         })
         .tag(ItemTags.MACE_ENCHANTABLE)
+        .properties(properties -> properties.durability(2031))
         .model((ctx, provider) -> {
         })
         .register();

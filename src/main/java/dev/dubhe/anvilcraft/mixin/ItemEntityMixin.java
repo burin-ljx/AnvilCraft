@@ -4,7 +4,7 @@ import dev.dubhe.anvilcraft.block.HollowMagnetBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
-
+import dev.dubhe.anvilcraft.item.IFireReforging;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -15,9 +15,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,6 +30,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Mixin(ItemEntity.class)
@@ -92,6 +95,27 @@ abstract class ItemEntityMixin extends Entity {
         if (this.getServer() == null) return;
         if (this.getItem().is(ModItemTags.VOID_RESISTANT)
                 && this.getY() < this.level().getMinBuildHeight()) this.setDeltaMovement(0, 0.6f, 0);
+    }
+
+    @Unique private static final Map<Block, Integer> REPAIR_EFFICIENCY = new HashMap<>();
+
+    static {
+        REPAIR_EFFICIENCY.put(Blocks.FIRE, 2);
+        REPAIR_EFFICIENCY.put(Blocks.SOUL_FIRE, 5);
+        REPAIR_EFFICIENCY.put(Blocks.LAVA, 10);
+        REPAIR_EFFICIENCY.put(Blocks.LAVA_CAULDRON, 10);
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void fireReforging(CallbackInfo ci) {
+        ItemStack item = this.getItem();
+        if (!item.isEmpty() && item.getItem() instanceof IFireReforging) {
+            if (!this.getItem().isDamaged()) return;
+            Block block = this.level().getBlockState(this.blockPosition()).getBlock();
+            if (REPAIR_EFFICIENCY.containsKey(block)) {
+                this.getItem().setDamageValue(this.getItem().getDamageValue() - REPAIR_EFFICIENCY.get(block));
+            }
+        }
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)

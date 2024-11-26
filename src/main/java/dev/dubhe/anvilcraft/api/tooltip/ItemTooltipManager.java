@@ -1,17 +1,16 @@
 package dev.dubhe.anvilcraft.api.tooltip;
 
+import com.google.common.collect.Maps;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
-
+import dev.dubhe.anvilcraft.item.IFireReforging;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import com.google.common.collect.Maps;
 
 import java.util.Collections;
 import java.util.List;
@@ -89,6 +88,9 @@ public class ItemTooltipManager {
      */
     public static void addTooltip(ItemStack stack, List<Component> tooltip) {
         Item item = stack.getItem();
+        if (item instanceof IFireReforging) {
+            reforgingTooltip(tooltip);
+        }
         if (NEED_TOOLTIP_ITEM.containsKey(item)) {
             tooltip.add(1, getItemTooltip(item));
         }
@@ -108,5 +110,19 @@ public class ItemTooltipManager {
     public static String getTranslationKey(Item item) {
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
         return "tooltip.%s.item.%s".formatted(key.getNamespace(), key.getPath());
+    }
+
+    private static void reforgingTooltip(List<Component> tooltip) {
+        int i = 0;
+        for (int j = 0; j < tooltip.size(); j++) {
+            if (tooltip.get(j).toString().contains("enchantment") && !tooltip.get(j + 1).toString().contains("enchantment")) {
+                i = j;
+                break;
+            }
+        }
+        tooltip.add(
+            1 + i,
+            Component.translatable("item.anvilcraft.fire_reforging.tooltip").withStyle(ChatFormatting.GOLD)
+        );
     }
 }

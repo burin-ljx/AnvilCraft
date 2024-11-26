@@ -13,6 +13,7 @@ public class OtherLang {
         provider.add("item.anvilcraft.inherent_enchantment.tooltip", "Inherent enchantments:");
         provider.add(
                 "item.anvilcraft.amethyst_pickaxe.tooltip", "Stone pickaxe quality, can mine iron ore, not diamonds!");
+        provider.add("item.anvilcraft.fire_reforging.tooltip", "Reforging: mending in fire or lava");
 
         provider.add("item.anvilcraft.geode.find", "Suspected amethyst geode, located %s");
         provider.add("item.anvilcraft.disk.stored_from", "Stored from: %s");

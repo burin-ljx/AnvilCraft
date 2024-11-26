@@ -345,6 +345,7 @@
   "item.anvilcraft.ember_metal_shovel": "余烬金属锹",
   "item.anvilcraft.ember_metal_sword": "余烬金属剑",
   "item.anvilcraft.ember_metal_upgrade_smithing_template": "锻造模板",
+  "item.anvilcraft.fire_reforging.tooltip": "重铸：在火或熔岩中自动修复",
   "item.anvilcraft.flour": "面粉",
   "item.anvilcraft.geode": "晶洞",
   "item.anvilcraft.geode.find": "找到疑似紫晶洞（地物），位于 %s",

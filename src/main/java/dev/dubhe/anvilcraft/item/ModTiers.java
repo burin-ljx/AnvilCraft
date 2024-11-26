@@ -1,15 +1,13 @@
 package dev.dubhe.anvilcraft.item;
 
+import com.google.common.base.Suppliers;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModItems;
-
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-
-import com.google.common.base.Suppliers;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -24,7 +22,7 @@ public enum ModTiers implements Tier {
         ModBlockTags.INCORRECT_FOR_AMYTHEST_TOOL
     ),
     EMBER_METAL(
-            0,
+        2031,
         10.0f,
         1.0f,
         22,
