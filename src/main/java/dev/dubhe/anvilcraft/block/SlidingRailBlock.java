@@ -109,7 +109,7 @@ public class SlidingRailBlock extends Block {
         if (level.getBlockState(neighbor).is(Blocks.MOVING_PISTON)) {
 
             Direction dir = level.getBlockState(neighbor).getValue(FACING);
-            if (dir == Direction.UP || dir == Direction.DOWN) {
+            if (dir == Direction.UP || dir == Direction.DOWN || neighbor.getY() <= pos.getY()) {
                 if (MOVING_PISTON_MAP.containsKey(pos)) MOVING_PISTON_MAP.remove(pos);
                 return;
             }
