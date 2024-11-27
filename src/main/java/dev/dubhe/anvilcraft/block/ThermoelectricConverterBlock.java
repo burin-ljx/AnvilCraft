@@ -27,7 +27,7 @@ import java.util.Arrays;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ThermoelectricConverterBlock extends BaseEntityBlock implements IHammerRemovable {
-    public static final Direction[] DIRECTIONS = {Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST};
+    public static final Direction[] DIRECTIONS = Direction.values();
 
     public ThermoelectricConverterBlock(Properties properties) {
         super(properties);
@@ -69,6 +69,7 @@ public class ThermoelectricConverterBlock extends BaseEntityBlock implements IHa
         BlockState newState,
         boolean movedByPiston) {
         Arrays.stream(DIRECTIONS).map(pos::relative).forEach(ThermoManager.getInstance(level)::removeThermalBlock);
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Nullable
