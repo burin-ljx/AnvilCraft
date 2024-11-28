@@ -74,7 +74,7 @@ public class ItemCollectorBlockEntity extends BlockEntity
         15,
         60
     );
-    private int cd = rangeRadius.get();
+    private int cd = cooldown.get();
 
     private final FilteredItemStackHandler itemHandler = new FilteredItemStackHandler(9) {
         @Override
@@ -156,7 +156,7 @@ public class ItemCollectorBlockEntity extends BlockEntity
         if (level == null || level.isClientSide) return;
         BlockState state = level.getBlockState(getBlockPos());
         if (state.hasProperty(ItemCollectorBlock.POWERED) && state.getValue(ItemCollectorBlock.POWERED)) return;
-        if (cd - 1 != 0) {
+        if (cd > 1) {
             cd--;
             return;
         }
