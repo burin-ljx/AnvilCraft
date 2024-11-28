@@ -117,14 +117,15 @@ public class ThermoManager {
             BlockPos blockPos = block.pos;
             BlockState state = this.level.getBlockState(blockPos);
             Optional<ThermoEntry> optional =
-                thermoEntries.stream().filter(it -> it.accepts(state) > 0).findFirst();
+                    thermoEntries.stream().filter(it -> it.accepts(state) > 0).findFirst();
             if (optional.isPresent()) {
                 ThermoEntry entry = optional.get();
                 if (block.ttl % 2 == 0) {
                     charge(entry.accepts(state), blockPos);
                 }
-                if (entry.isCanIrritated()) {
-                    if (HeatedBlockRecorder.getInstance(level).requireLightLevel(blockPos, entry.getCharge() / 2)) {
+                if (entry.isCanIrritated() && (HeatedBlockRecorder.TRANSFORMS.get(state.getBlock())) != null) {
+                    int requiredLevel = HeatedBlockRecorder.TRANSFORMS.get(state.getBlock()).remainCurrentTier();
+                    if (HeatedBlockRecorder.getInstance(level).requireLightLevel(blockPos, requiredLevel)) {
                         if (block.ttl % 2 == 0) {
                             block.ttl = Mth.clamp(block.ttl - 1, 0, 2);
                         } else {
