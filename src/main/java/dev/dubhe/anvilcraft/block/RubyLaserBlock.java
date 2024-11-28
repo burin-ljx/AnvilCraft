@@ -62,8 +62,8 @@ public class RubyLaserBlock extends BaseEntityBlock implements IHammerRemovable,
         this.registerDefaultState(this.stateDefinition
             .any()
             .setValue(FACING, Direction.DOWN)
-            .setValue(OVERLOAD, false)
-            .setValue(SWITCH, Switch.OFF));
+            .setValue(OVERLOAD, true)
+            .setValue(SWITCH, Switch.ON));
     }
 
     @Override

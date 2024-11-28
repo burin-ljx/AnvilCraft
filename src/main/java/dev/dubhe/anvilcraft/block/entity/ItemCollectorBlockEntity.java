@@ -120,6 +120,7 @@ public class ItemCollectorBlockEntity extends BlockEntity
         itemHandler.deserializeNBT(provider, tag.getCompound("Inventory"));
         cooldown.fromIndex(tag.getInt("Cooldown"));
         rangeRadius.fromIndex(tag.getInt("RangeRadius"));
+        cd = tag.getInt("cd");
     }
 
     @Override
@@ -128,6 +129,7 @@ public class ItemCollectorBlockEntity extends BlockEntity
         tag.put("Inventory", this.itemHandler.serializeNBT(provider));
         tag.putInt("Cooldown", cooldown.index());
         tag.putInt("RangeRadius", rangeRadius.index());
+        tag.putInt("cd", cd);
     }
 
     @Nullable
