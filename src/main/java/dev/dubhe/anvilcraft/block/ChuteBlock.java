@@ -120,9 +120,18 @@ public class ChuteBlock extends BetterBaseEntityBlock implements HammerRotateBeh
     @Override
     public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
         Direction direction = context.getClickedFace().getOpposite();
-        return this.defaultBlockState()
+        BlockPos pos = context.getClickedPos().relative(direction);
+        Level level = context.getLevel();
+        BlockState blockState = level.getBlockState(pos);
+        BlockState result = this.defaultBlockState()
             .setValue(FACING, (direction.getAxis() == Direction.Axis.Y ? Direction.DOWN : direction))
             .setValue(ENABLED, !context.getLevel().hasNeighborSignal(context.getClickedPos()));
+        if (blockState.is(ModBlocks.CHUTE) || blockState.is(ModBlocks.SIMPLE_CHUTE)){
+            if (blockState.getValue(FACING) == context.getClickedFace()){
+                result = result.setValue(FACING, context.getClickedFace());
+            }
+        }
+        return result;
     }
 
 
