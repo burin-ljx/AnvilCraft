@@ -27,7 +27,7 @@ import java.util.Map;
 @ParametersAreNonnullByDefault
 public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int RADIUS = 80;
-    public static final int DELAY = 50;//ms
+    public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
 
     private final Minecraft minecraft = Minecraft.getInstance();
