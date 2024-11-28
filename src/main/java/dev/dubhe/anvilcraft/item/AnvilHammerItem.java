@@ -32,12 +32,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.FACING;
+import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.FACING_HOPPER;
+import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.HORIZONTAL_FACING;
 
 public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles {
     private final ItemAttributeModifiers modifiers;
@@ -102,6 +107,32 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
             || player.getOffhandItem().is(Items.FIREWORK_ROCKET);
     }
 
+    public static boolean possibleToUseEnhancedHammerChange(BlockState state) {
+        return state.getBlock() instanceof IHammerChangeable || state.is(ModBlockTags.HAMMER_CHANGEABLE);
+    }
+
+    public static Property<?> findChangeableProperty(BlockState state) {
+        Property<?> result = null;
+        if (state.getBlock() instanceof IHammerChangeable changeable) {
+            result = changeable.getChangeableProperty(state);
+        }
+        if (result != null) {
+            return result;
+        }
+        if (state.hasProperty(FACING)) {
+            return FACING;
+        } else {
+            if (state.hasProperty(FACING_HOPPER)) {
+                return FACING_HOPPER;
+            } else {
+                if (state.hasProperty(HORIZONTAL_FACING)) {
+                    return HORIZONTAL_FACING;
+                }
+            }
+        }
+        return null;
+    }
+
     public static boolean dropAnvil(Player player, Level level, BlockPos blockPos) {
         if (player == null || level.isClientSide) return false;
         ItemStack itemStack = player.getItemInHand(player.getUsedItemHand());
@@ -125,7 +156,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
     public static void useBlock(
         @NotNull ServerPlayer player, BlockPos blockPos, @NotNull ServerLevel level, ItemStack anvilHammer) {
         if (rocketJump(player, level, blockPos)) return;
-        if (!player.getAbilities().mayBuild)return;
+        if (!player.getAbilities().mayBuild) return;
         if (player.isShiftKeyDown()) {
             breakBlock(player, blockPos, level, anvilHammer);
             return;

@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -70,5 +72,21 @@ public interface HammerRotateBehavior extends IHammerChangeable {
             HORIZONTAL_FACING,
             state.getValue(HORIZONTAL_FACING).getClockWise()
         );
+    }
+
+    @Override
+    default Property<?> getChangeableProperty(BlockState state){
+        if (state.hasProperty(FACING)) {
+            return FACING;
+        } else {
+            if (state.hasProperty(FACING_HOPPER)) {
+                return FACING_HOPPER;
+            } else {
+                if (state.hasProperty(HORIZONTAL_FACING)) {
+                    return HORIZONTAL_FACING;
+                }
+            }
+        }
+        return null;
     }
 }

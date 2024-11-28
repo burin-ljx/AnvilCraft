@@ -5,12 +5,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 可被锤子改变的
  */
-@FunctionalInterface
 public interface IHammerChangeable {
     /**
      * 改变状态
@@ -22,4 +24,7 @@ public interface IHammerChangeable {
      * @return 是否改变成功
      */
     boolean change(Player player, BlockPos blockPos, @NotNull Level level, ItemStack anvilHammer);
+
+    @Nullable
+    Property<?> getChangeableProperty(BlockState blockState);
 }

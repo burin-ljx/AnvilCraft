@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.init;
 import dev.dubhe.anvilcraft.network.AddMutedSoundPacket;
 import dev.dubhe.anvilcraft.network.ChargeCollectorIncomingChargePacket;
 import dev.dubhe.anvilcraft.network.CyclingValueSyncPacket;
+import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
 import dev.dubhe.anvilcraft.network.HammerUsePacket;
 import dev.dubhe.anvilcraft.network.HeliostatsIrradiationPacket;
 import dev.dubhe.anvilcraft.network.InspectionStateChangedPacket;
@@ -71,6 +72,11 @@ public class ModNetworks {
             HammerUsePacket.TYPE,
             HammerUsePacket.STREAM_CODEC,
             HammerUsePacket.HANDLER
+        );
+        registrar.playToServer(
+            HammerChangeBlockPacket.TYPE,
+            HammerChangeBlockPacket.STREAM_CODEC,
+            HammerChangeBlockPacket::handle
         );
         registrar.playToServer(
             CyclingValueSyncPacket.TYPE,

@@ -3,19 +3,25 @@ package dev.dubhe.anvilcraft.event;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
+import dev.dubhe.anvilcraft.client.gui.screen.AnvilHammerScreen;
 import dev.dubhe.anvilcraft.item.AnvilHammerItem;
 import dev.dubhe.anvilcraft.network.HammerUsePacket;
 
+import dev.dubhe.anvilcraft.util.StateUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @EventBusSubscriber(modid = AnvilCraft.MOD_ID)
 public class BlockEventListener {
@@ -51,8 +57,25 @@ public class BlockEventListener {
                 ) {
                     return;
                 }
+                BlockState targetBlockState = event.getLevel().getBlockState(event.getPos());
                 if (event.getLevel().isClientSide()) {
-                    PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
+                    Property<?> property = AnvilHammerItem.findChangeableProperty(targetBlockState);
+                    if (AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState) && property != null) {
+                        List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
+                        if (possibleStates.isEmpty()) {
+                            PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
+                        } else {
+                            Minecraft.getInstance().setScreen(new AnvilHammerScreen(
+                                event.getPos(),
+                                targetBlockState,
+                                property,
+                                possibleStates
+                            ));
+                        }
+                    } else {
+                        PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
+                    }
+
                 }
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);

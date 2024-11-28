@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.util;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,6 +17,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Optional;
 
@@ -100,4 +102,10 @@ public class CodecUtil {
     public static final StreamCodec<RegistryFriendlyByteBuf, Character> CHAR_STREAM_CODEC =
             StreamCodec.of((buf, character) -> buf.writeUtf(character.toString()), buf -> buf.readUtf()
                     .charAt(0));
+
+    public static final StreamCodec<? super ByteBuf,BlockState> BLOCK_STATE_STREAM_CODEC =
+        StreamCodec.of(
+            (buf, blockState) -> buf.writeInt(Block.getId(blockState)),
+            (buf) -> Block.stateById(buf.readInt())
+        );
 }

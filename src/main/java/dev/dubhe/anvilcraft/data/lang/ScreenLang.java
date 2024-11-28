@@ -84,5 +84,7 @@ public class ScreenLang {
         provider.add("screen.anvilcraft.structure_tool.to_data_gen", "To Data Gen");
         provider.add("screen.anvilcraft.structure_tool.to_kubejs", "To KubeJS");
         provider.add("screen.anvilcraft.structure_tool.to_json", "To JSON");
+
+        provider.add("screen.anvilcraft.anvil_hammer.title", "Modifying Block");
     }
 }

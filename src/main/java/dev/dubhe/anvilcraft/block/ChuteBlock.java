@@ -168,6 +168,22 @@ public class ChuteBlock extends BetterBaseEntityBlock implements HammerRotateBeh
         }
         if (!neighborPos.equals(pos.relative(state.getValue(FACING)))) return;
         BlockState blockState = level.getBlockState(neighborPos);
+        if (blockState.is(ModBlocks.CHUTE.get())
+            || blockState.is(ModBlocks.MAGNETIC_CHUTE.get())
+            || blockState.is(ModBlocks.SIMPLE_CHUTE.get())
+        ) {
+            Direction neighbourFacing;
+            if (neighborBlock == ModBlocks.MAGNETIC_CHUTE.get()) {
+                neighbourFacing = blockState.getValue(MagneticChuteBlock.FACING);
+            } else {
+                neighbourFacing = blockState.getValue(FACING);
+            }
+            if (neighbourFacing == state.getValue(FACING).getOpposite()) {
+                level.destroyBlock(neighborPos, true);
+                level.setBlock(neighborPos, level.getFluidState(neighborPos).createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
+                return;
+            }
+        }
         if (!blockState.is(ModBlocks.CHUTE.get()) || !blockState.is(ModBlocks.MAGNETIC_CHUTE)) return;
         if (hasChuteFacing(level, neighborPos)) {
             BlockState newState = ModBlocks.SIMPLE_CHUTE.getDefaultState();

@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.HitResult;
@@ -118,6 +119,22 @@ public class SimpleChuteBlock
         }
         if (!neighborPos.equals(pos.relative(state.getValue(FACING)))) return;
         BlockState blockState = level.getBlockState(neighborPos);
+        if (blockState.is(ModBlocks.CHUTE.get())
+            || blockState.is(ModBlocks.MAGNETIC_CHUTE.get())
+            || blockState.is(ModBlocks.SIMPLE_CHUTE.get())
+        ) {
+            Direction neighbourFacing;
+            if (neighborBlock == ModBlocks.MAGNETIC_CHUTE.get()) {
+                neighbourFacing = blockState.getValue(MagneticChuteBlock.FACING);
+            } else {
+                neighbourFacing = blockState.getValue(FACING);
+            }
+            if (neighbourFacing == state.getValue(FACING).getOpposite()) {
+                level.destroyBlock(neighborPos, true);
+                level.setBlock(neighborPos, level.getFluidState(neighborPos).createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
+                return;
+            }
+        }
         if (!blockState.is(ModBlocks.CHUTE.get())) return;
         if (ChuteBlock.hasChuteFacing(level, neighborPos)) {
             BlockState newState = ModBlocks.SIMPLE_CHUTE.getDefaultState();
@@ -268,5 +285,10 @@ public class SimpleChuteBlock
             }
         }
         return true;
+    }
+
+    @Override
+    public @Nullable Property<?> getChangeableProperty(BlockState blockState) {
+        return FACING;
     }
 }

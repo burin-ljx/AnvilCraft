@@ -23,6 +23,7 @@ public class ModShaders {
     static final Minecraft MINECRAFT = Minecraft.getInstance();
 
     static ShaderInstance renderTypeLaserShader;
+    static ShaderInstance renderTypeColoredOverlayShader;
 
 
     public static void register(RegisterShadersEvent event) {
@@ -33,6 +34,14 @@ public class ModShaders {
                     DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL
                 ),
                 it -> renderTypeLaserShader = it
+            );
+            event.registerShader(
+                new ShaderInstance(
+                    event.getResourceProvider(),
+                    AnvilCraft.of("rendertype_translucent_colored_overlay"),
+                    DefaultVertexFormat.BLOCK
+                ),
+                it -> renderTypeColoredOverlayShader = it
             );
         } catch (Exception e) {
             throw new RuntimeException(e);
