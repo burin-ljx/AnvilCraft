@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
@@ -10,6 +9,7 @@ import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -19,15 +19,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector2f;
-import org.slf4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @ParametersAreNonnullByDefault
 public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
@@ -41,6 +39,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int BACKGROUND_SELECTED_NO_ALPHA = 0x00ff00;
     public static final int BACKGROUND_UNSELECTED = 0x55ffffff;
     public static final int BACKGROUND_UNSELECTED_NO_ALPHA = 0xffffff;
+    public static final int IGNORE_CURSOR_MOVE_LENGTH = 20;
     private static final MethodHandle PROPERTY_TOSTRING;
 
     static {
@@ -61,13 +60,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     }
 
     private final Minecraft minecraft = Minecraft.getInstance();
-    private final Logger logger = LogUtils.getLogger();
     private final BlockPos targetBlockPos;
     private final Property<?> property;
     private final List<BlockState> possibleStates;
 
+    private Rect2i ignoreMoveRect;
     private BlockState currentBlockState;
-    private final Map<Vector2f, SelectionItem> itemMap = new HashMap<>();
+    private final List<SelectionItem> itemMap = new ArrayList<>();
     private long displayTime = System.currentTimeMillis();
     private boolean animationStarted = false;
 
@@ -84,24 +83,31 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         itemMap.clear();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
+        ignoreMoveRect = new Rect2i(
+            (int) Math.floor(centerX - IGNORE_CURSOR_MOVE_LENGTH),
+            (int) Math.floor(centerY - IGNORE_CURSOR_MOVE_LENGTH),
+            IGNORE_CURSOR_MOVE_LENGTH * 2,
+            IGNORE_CURSOR_MOVE_LENGTH * 2
+        );
         Vector2f vector2f = new Vector2f(0, 1);
         float degreeEachRotation = 360f / possibleStates.size();
         for (int i = 0; i < possibleStates.size(); i++) {
             BlockState state = possibleStates.get(i);
-            Vector2f rotated = MathUtil.rotationDegrees(vector2f, -degreeEachRotation * i)
+            float rotation = degreeEachRotation * i;
+            Vector2f rotated = MathUtil.rotationDegrees(vector2f, rotation)
+                .mul(-1, 1)
                 .mul(RADIUS)
                 .add(centerX, centerY);
-            Rect2i detectionRect = new Rect2i(
-                (int) (Math.floor(rotated.x) - 20),
-                (int) (Math.floor(rotated.y) - 20),
-                40,
-                40
-            );
             try {
-                itemMap.put(rotated,
+                float detectionStart = ((rotation - degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
+                float detectionEnd = ((rotation + degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
+                detectionStart = detectionStart % (float) (Math.PI * 2);
+                detectionEnd = detectionEnd % (float) (Math.PI * 2);
+                itemMap.add(
                     new SelectionItem(
                         rotated,
-                        detectionRect,
+                        detectionStart,
+                        detectionEnd,
                         state,
                         Component.literal(
                             "%s: %s".formatted(
@@ -117,12 +123,28 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             } catch (Throwable ignored) {
             }
         }
+
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        itemMap.values().stream()
-            .filter(it -> it.detectionRect.contains((int) Math.floor(mouseX), (int) Math.floor(mouseY)))
+        if (ignoreMoveRect.contains((int) mouseX, (int) mouseY)) return true;
+        float screenCenterX = width / 2f;
+        float screenCenterY = height / 2f;
+        Vector2f rotationStart = new Vector2f(0, 1);
+        Vector2f cursorVec2 = new Vector2f(
+            (float) mouseX - screenCenterX,
+            (float) mouseY - screenCenterY
+        ).normalize();
+        double rot = Math.acos(rotationStart.dot(cursorVec2) / (rotationStart.length() * cursorVec2.length()));
+        double rotation = cursorVec2.x < 0 ? Math.PI - rot : Math.PI + rot;
+        itemMap.stream()
+            .filter(it -> {
+                if (it.detectionAngleStart > it.detectionAngleEnd) {
+                    return rotation >= it.detectionAngleStart;
+                }
+                return rotation >= it.detectionAngleStart && rotation <= it.detectionAngleEnd;
+            })
             .findFirst()
             .ifPresent(it -> currentBlockState = it.state);
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
@@ -138,7 +160,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             displayTime = System.currentTimeMillis();
         }
         float delta = displayTime + ANIMATION_T - System.currentTimeMillis();
-
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        PoseStack poseStack = guiGraphics.pose();
         if (delta > 0) {
             float centerX = this.width / 2f;
             float centerY = this.height / 2f;
@@ -146,7 +169,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             progress = (float) (-Math.pow(progress, 2) + 2 * progress);
             if (progress == 0) return;
             int transparency = ((int) (progress * BACKGROUND_ALPHA)) << 24;
-            for (SelectionItem value : itemMap.values()) {
+            for (SelectionItem value : itemMap) {
                 Vector2f center = new Vector2f(
                     (value.center.x - centerX) / RADIUS,
                     (value.center.y - centerY) / RADIUS
@@ -154,16 +177,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                     .add(centerX, centerY);
                 float x = center.x;
                 float y = center.y;
-                Rect2i detectionRect = value.detectionRect;
                 boolean selected = value.state == currentBlockState;
-                guiGraphics.fill(
-                    (int) (x - 20),
-                    (int) (y - 20),
-                    (int) (x - 20) + detectionRect.getWidth(),
-                    (int) (y - 20) + detectionRect.getHeight(),
-                    selected
-                        ? transparency | BACKGROUND_SELECTED_NO_ALPHA
-                        : transparency | BACKGROUND_UNSELECTED_NO_ALPHA
+                renderItemBackground(
+                    poseStack,
+                    selected,
+                    transparency,
+                    center,
+                    bufferSource
                 );
                 RenderHelper.renderBlock(
                     guiGraphics,
@@ -175,7 +195,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                     RenderHelper.SINGLE_BLOCK
                 );
                 int textAlpha = (int) (progress * 0xff) << 24;
-                PoseStack poseStack = guiGraphics.pose();
                 poseStack.pushPose();
                 float offsetX = 0.1f * this.width;
                 float offsetY = 0.1f * this.height;
@@ -194,17 +213,16 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             }
             return;
         }
-        for (SelectionItem value : itemMap.values()) {
+        for (SelectionItem value : itemMap) {
             float x = value.center.x;
             float y = value.center.y;
-            Rect2i detectionRect = value.detectionRect;
             boolean selected = value.state == currentBlockState;
-            guiGraphics.fill(
-                detectionRect.getX(),
-                detectionRect.getY(),
-                detectionRect.getX() + detectionRect.getWidth(),
-                detectionRect.getY() + detectionRect.getHeight(),
-                selected ? BACKGROUND_SELECTED : BACKGROUND_UNSELECTED
+            renderItemBackground(
+                poseStack,
+                selected,
+                0x55000000,
+                value.center,
+                bufferSource
             );
             RenderHelper.renderBlock(
                 guiGraphics,
@@ -215,7 +233,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 selected ? ZOOM_SELECTED : ZOOM_UNSELECTED,
                 RenderHelper.SINGLE_BLOCK
             );
-            PoseStack poseStack = guiGraphics.pose();
             poseStack.pushPose();
             float offsetX = 0.1f * this.width;
             float offsetY = 0.1f * this.height;
@@ -283,9 +300,21 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         return ModRenderTypes.TRANSLUCENT_COLORED_OVERLAY;
     }
 
+    private void renderItemBackground(
+        PoseStack poseStack,
+        boolean selected,
+        int alpha,
+        Vector2f center,
+        MultiBufferSource.BufferSource bufferSource
+    ) {
+        if (!selected) return;
+
+    }
+
     private record SelectionItem(
         Vector2f center,
-        Rect2i detectionRect,
+        float detectionAngleStart,
+        float detectionAngleEnd,
         BlockState state,
         Component description
     ) {
