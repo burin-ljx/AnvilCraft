@@ -58,27 +58,9 @@ public class RenderHelper {
     private static final Vector3f L1 = new Vector3f(0.4F, 0.0F, 1.0F).normalize();
     private static final Vector3f L2 = new Vector3f(-0.4F, 1.0F, -0.2F).normalize();
 
-    public static final BlockRenderFunction SINGLE_BLOCK = (blockState, poseStack, buffers) -> {
-        BlockRenderDispatcher dispatcher = Minecraft.getInstance()
-            .getBlockRenderer();
-        if (blockState.getRenderShape() == RenderShape.INVISIBLE) return;
-        BakedModel model = dispatcher.getBlockModel(blockState);
-        for (RenderType type : model.getRenderTypes(blockState, RANDOM, ModelData.EMPTY)) {
-            VertexConsumer consumer = buffers.getBuffer(type);
-            dispatcher.getModelRenderer()
-                .renderModel(
-                    poseStack.last(),
-                    consumer,
-                    blockState,
-                    model,
-                    1f,
-                    1f,
-                    1f,
-                    LightTexture.FULL_BLOCK,
-                    OverlayTexture.NO_OVERLAY
-                );
-        }
-    };
+    public static final BlockRenderFunction SINGLE_BLOCK = (block, poseStack, buffers) -> Minecraft.getInstance()
+        .getBlockRenderer()
+        .renderSingleBlock(block, poseStack, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 
     private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("trident"));
     private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("spyglass"));
@@ -107,7 +89,7 @@ public class RenderHelper {
             RenderSystem.setupGui3DDiffuseLighting(L1, L2);
             fn.renderBlock(block, poseStack, buffers);
 
-            buffers.endBatch();
+            buffers.endLastBatch();
         }
 
         poseStack.popPose();

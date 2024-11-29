@@ -1,6 +1,8 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
@@ -9,11 +11,11 @@ import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -32,14 +34,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int RADIUS = 80;
     public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
-    public static final float ZOOM_SELECTED = 15f;
-    public static final float ZOOM_UNSELECTED = 13.5f;
-    public static final int BACKGROUND_ALPHA = 0x55;
-    public static final int BACKGROUND_SELECTED = 0x5500ff00;
-    public static final int BACKGROUND_SELECTED_NO_ALPHA = 0x00ff00;
-    public static final int BACKGROUND_UNSELECTED = 0x55ffffff;
-    public static final int BACKGROUND_UNSELECTED_NO_ALPHA = 0xffffff;
+    public static final float ZOOM = 13.5f;
     public static final int IGNORE_CURSOR_MOVE_LENGTH = 20;
+    public static final int BACKGROUND_WIDTH = 256;
+
+    public static final ResourceLocation BACKGROUND = AnvilCraft.of("textures/gui/selector/select_ring.png");
+    public static final ResourceLocation SELECTION = AnvilCraft.of("textures/gui/selector/selected_part.png");
+
     private static final MethodHandle PROPERTY_TOSTRING;
 
     static {
@@ -66,7 +67,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     private Rect2i ignoreMoveRect;
     private BlockState currentBlockState;
-    private final List<SelectionItem> itemMap = new ArrayList<>();
+    private final List<SelectionItem> items = new ArrayList<>();
     private long displayTime = System.currentTimeMillis();
     private boolean animationStarted = false;
 
@@ -80,7 +81,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     protected void init() {
-        itemMap.clear();
+        items.clear();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
         ignoreMoveRect = new Rect2i(
@@ -103,7 +104,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 float detectionEnd = ((rotation + degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
                 detectionStart = detectionStart % (float) (Math.PI * 2);
                 detectionEnd = detectionEnd % (float) (Math.PI * 2);
-                itemMap.add(
+                items.add(
                     new SelectionItem(
                         rotated,
                         detectionStart,
@@ -138,7 +139,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         ).normalize();
         double rot = Math.acos(rotationStart.dot(cursorVec2) / (rotationStart.length() * cursorVec2.length()));
         double rotation = cursorVec2.x < 0 ? Math.PI - rot : Math.PI + rot;
-        itemMap.stream()
+        items.stream()
             .filter(it -> {
                 if (it.detectionAngleStart > it.detectionAngleEnd) {
                     return rotation >= it.detectionAngleStart;
@@ -152,6 +153,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         if (!shouldRender()) {
             return;
         }
@@ -159,17 +161,52 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             animationStarted = true;
             displayTime = System.currentTimeMillis();
         }
-        float delta = displayTime + ANIMATION_T - System.currentTimeMillis();
-        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         PoseStack poseStack = guiGraphics.pose();
+        float delta = displayTime + ANIMATION_T - System.currentTimeMillis();
         if (delta > 0) {
             float centerX = this.width / 2f;
             float centerY = this.height / 2f;
             float progress = 1 - (delta / ANIMATION_T);
             progress = (float) (-Math.pow(progress, 2) + 2 * progress);
             if (progress == 0) return;
-            int transparency = ((int) (progress * BACKGROUND_ALPHA)) << 24;
-            for (SelectionItem value : itemMap) {
+            poseStack.pushPose();
+            poseStack.translate(centerX, centerY, 0);
+            poseStack.scale(progress, progress, 1);
+            poseStack.translate(-128, -128, 0);
+            guiGraphics.blit(
+                BACKGROUND,
+                0,
+                0,
+                0,
+                0,
+                256,
+                256
+            );
+            poseStack.popPose();
+            float finalProgress = progress;
+            items.stream()
+                .filter(it -> it.state == currentBlockState)
+                .findFirst()
+                .ifPresent(it -> {
+                    Vector2f center = new Vector2f(
+                        (it.center.x - centerX) / RADIUS,
+                        (it.center.y - centerY) / RADIUS
+                    ).mul(RADIUS * finalProgress)
+                        .add(centerX, centerY);
+                    guiGraphics.blit(
+                        SELECTION,
+                        (int) (center.x - 32),
+                        (int) (center.y - 32),
+                        -100,
+                        0,
+                        0,
+                        64,
+                        64,
+                        64,
+                        64
+                    );
+                });
+            for (SelectionItem value : items) {
                 Vector2f center = new Vector2f(
                     (value.center.x - centerX) / RADIUS,
                     (value.center.y - centerY) / RADIUS
@@ -177,79 +214,106 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                     .add(centerX, centerY);
                 float x = center.x;
                 float y = center.y;
-                boolean selected = value.state == currentBlockState;
-                renderItemBackground(
-                    poseStack,
-                    selected,
-                    transparency,
-                    center,
-                    bufferSource
-                );
                 RenderHelper.renderBlock(
                     guiGraphics,
                     value.state,
                     x,
                     y - 4f,
                     100,
-                    selected ? ZOOM_SELECTED : ZOOM_UNSELECTED,
+                    ZOOM,
                     RenderHelper.SINGLE_BLOCK
                 );
                 int textAlpha = (int) (progress * 0xff) << 24;
                 poseStack.pushPose();
+                float coordinateScale = 0.7f;
+                float textScale = 0.8f;
                 float offsetX = 0.1f * this.width;
                 float offsetY = 0.1f * this.height;
+                float adjustedX = (x - offsetX) / coordinateScale;
+                float adjustedY = (y - offsetY - 20) / coordinateScale;
                 poseStack.translate(offsetX, offsetY, 0);
-                poseStack.scale(0.8f, 0.8f, 0.8f);
-                float adjustedX = (x - offsetX) / 0.8f;
-                float adjustedY = (y - offsetY - 30) / 0.8f;
+                poseStack.scale(coordinateScale, coordinateScale, coordinateScale);
+                poseStack.translate(adjustedX, adjustedY, 0);
+                poseStack.scale(textScale / coordinateScale, textScale / coordinateScale, textScale / coordinateScale);
                 guiGraphics.drawCenteredString(
                     minecraft.font,
                     value.description,
-                    (int) adjustedX,
-                    (int) adjustedY,
+                    0,
+                    0,
                     textAlpha | 0xfdfdfd
                 );
                 poseStack.popPose();
             }
             return;
         }
-        for (SelectionItem value : itemMap) {
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        guiGraphics.blit(
+            BACKGROUND,
+            (this.width - BACKGROUND_WIDTH) / 2,
+            (this.height - BACKGROUND_WIDTH) / 2,
+            0,
+            0,
+            256,
+            256
+        );
+        renderSelection(guiGraphics);
+        for (SelectionItem value : items) {
             float x = value.center.x;
             float y = value.center.y;
-            boolean selected = value.state == currentBlockState;
-            renderItemBackground(
-                poseStack,
-                selected,
-                0x55000000,
-                value.center,
-                bufferSource
-            );
             RenderHelper.renderBlock(
                 guiGraphics,
                 value.state,
                 x,
                 y - 4f,
                 100,
-                selected ? ZOOM_SELECTED : ZOOM_UNSELECTED,
+                ZOOM,
                 RenderHelper.SINGLE_BLOCK
             );
             poseStack.pushPose();
+            float coordinateScale = 0.7f;
+            float textScale = 0.8f;
             float offsetX = 0.1f * this.width;
             float offsetY = 0.1f * this.height;
+            float adjustedX = (x - offsetX) / coordinateScale;
+            float adjustedY = (y - offsetY - 20) / coordinateScale;
+
             poseStack.translate(offsetX, offsetY, 0);
-            poseStack.scale(0.8f, 0.8f, 0.8f);
-            float adjustedX = (x - offsetX) / 0.8f;
-            float adjustedY = (y - offsetY - 30) / 0.8f;
+            poseStack.scale(coordinateScale, coordinateScale, coordinateScale);
+            poseStack.translate(adjustedX, adjustedY, 0);
+            poseStack.scale(textScale / coordinateScale, textScale / coordinateScale, textScale / coordinateScale);
             guiGraphics.drawCenteredString(
                 minecraft.font,
                 value.description,
-                (int) adjustedX,
-                (int) adjustedY,
+                0,
+                0,
                 0xfffdfdfd
             );
             poseStack.popPose();
         }
     }
+
+    private void renderSelection(GuiGraphics guiGraphics) {
+        items.stream()
+            .filter(it -> it.state == currentBlockState)
+            .findFirst()
+            .ifPresent(it -> {
+                float x = it.center.x;
+                float y = it.center.y;
+                guiGraphics.blit(
+                    SELECTION,
+                    (int) (x - 32),
+                    (int) (y - 32),
+                    -100,
+                    0,
+                    0,
+                    64,
+                    64,
+                    64,
+                    64
+                );
+            });
+    }
+
 
     @Override
     public boolean isPauseScreen() {
@@ -298,17 +362,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     @Override
     public RenderType renderType() {
         return ModRenderTypes.TRANSLUCENT_COLORED_OVERLAY;
-    }
-
-    private void renderItemBackground(
-        PoseStack poseStack,
-        boolean selected,
-        int alpha,
-        Vector2f center,
-        MultiBufferSource.BufferSource bufferSource
-    ) {
-        if (!selected) return;
-
     }
 
     private record SelectionItem(
