@@ -10,15 +10,18 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -32,6 +35,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -41,6 +45,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -49,12 +54,31 @@ import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RenderHelper {
+    private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
     private static final Vector3f L1 = new Vector3f(0.4F, 0.0F, 1.0F).normalize();
     private static final Vector3f L2 = new Vector3f(-0.4F, 1.0F, -0.2F).normalize();
 
-    public static final BlockRenderFunction SINGLE_BLOCK = (block, poseStack, buffers) -> Minecraft.getInstance()
-        .getBlockRenderer()
-        .renderSingleBlock(block, poseStack, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+    public static final BlockRenderFunction SINGLE_BLOCK = (blockState, poseStack, buffers) -> {
+        BlockRenderDispatcher dispatcher = Minecraft.getInstance()
+            .getBlockRenderer();
+        if (blockState.getRenderShape() == RenderShape.INVISIBLE) return;
+        BakedModel model = dispatcher.getBlockModel(blockState);
+        for (RenderType type : model.getRenderTypes(blockState, RANDOM, ModelData.EMPTY)) {
+            VertexConsumer consumer = buffers.getBuffer(type);
+            dispatcher.getModelRenderer()
+                .renderModel(
+                    poseStack.last(),
+                    consumer,
+                    blockState,
+                    model,
+                    1f,
+                    1f,
+                    1f,
+                    LightTexture.FULL_BLOCK,
+                    OverlayTexture.NO_OVERLAY
+                );
+        }
+    };
 
     private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("trident"));
     private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("spyglass"));
@@ -273,7 +297,7 @@ public class RenderHelper {
         return stack.is(ItemTags.COMPASSES) || stack.is(Items.CLOCK);
     }
 
-    public static float getPartialTick(){
+    public static float getPartialTick() {
         return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(Minecraft.getInstance().isPaused());
     }
 

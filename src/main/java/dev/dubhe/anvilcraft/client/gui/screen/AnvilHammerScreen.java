@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -20,6 +22,9 @@ import org.joml.Vector2f;
 import org.slf4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +34,31 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int RADIUS = 80;
     public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
+    public static final float ZOOM_SELECTED = 15f;
+    public static final float ZOOM_UNSELECTED = 13.5f;
+    public static final int BACKGROUND_ALPHA = 0x55;
+    public static final int BACKGROUND_SELECTED = 0x5500ff00;
+    public static final int BACKGROUND_SELECTED_NO_ALPHA = 0x00ff00;
+    public static final int BACKGROUND_UNSELECTED = 0x55ffffff;
+    public static final int BACKGROUND_UNSELECTED_NO_ALPHA = 0xffffff;
+    private static final MethodHandle PROPERTY_TOSTRING;
+
+    static {
+        MethodType mt = MethodType.methodType(
+            String.class,
+            Comparable.class
+        );
+        try {
+            PROPERTY_TOSTRING = MethodHandles.lookup()
+                .findVirtual(
+                    Property.class,
+                    "getName",
+                    mt
+                );
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final Minecraft minecraft = Minecraft.getInstance();
     private final Logger logger = LogUtils.getLogger();
@@ -58,7 +88,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         float degreeEachRotation = 360f / possibleStates.size();
         for (int i = 0; i < possibleStates.size(); i++) {
             BlockState state = possibleStates.get(i);
-            Vector2f rotated = MathUtil.rotationDegrees(vector2f, degreeEachRotation * i)
+            Vector2f rotated = MathUtil.rotationDegrees(vector2f, -degreeEachRotation * i)
                 .mul(RADIUS)
                 .add(centerX, centerY);
             Rect2i detectionRect = new Rect2i(
@@ -67,7 +97,25 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 40,
                 40
             );
-            itemMap.put(rotated, new SelectionItem(rotated, detectionRect, state));
+            try {
+                itemMap.put(rotated,
+                    new SelectionItem(
+                        rotated,
+                        detectionRect,
+                        state,
+                        Component.literal(
+                            "%s: %s".formatted(
+                                property.getName(),
+                                PROPERTY_TOSTRING.invokeWithArguments(
+                                    property,
+                                    state.getValue(property)
+                                )
+                            )
+                        )
+                    )
+                );
+            } catch (Throwable ignored) {
+            }
         }
     }
 
@@ -97,7 +145,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             float progress = 1 - (delta / ANIMATION_T);
             progress = (float) (-Math.pow(progress, 2) + 2 * progress);
             if (progress == 0) return;
-            int transparency = ((int) (progress * 0x55)) << 24;
+            int transparency = ((int) (progress * BACKGROUND_ALPHA)) << 24;
             for (SelectionItem value : itemMap.values()) {
                 Vector2f center = new Vector2f(
                     (value.center.x - centerX) / RADIUS,
@@ -113,7 +161,9 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                     (int) (y - 20),
                     (int) (x - 20) + detectionRect.getWidth(),
                     (int) (y - 20) + detectionRect.getHeight(),
-                    selected ? transparency | 0x00ff00 : transparency | 0xffffff
+                    selected
+                        ? transparency | BACKGROUND_SELECTED_NO_ALPHA
+                        : transparency | BACKGROUND_UNSELECTED_NO_ALPHA
                 );
                 RenderHelper.renderBlock(
                     guiGraphics,
@@ -121,9 +171,26 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                     x,
                     y - 4f,
                     100,
-                    selected ? 15f : 13.5f,
+                    selected ? ZOOM_SELECTED : ZOOM_UNSELECTED,
                     RenderHelper.SINGLE_BLOCK
                 );
+                int textAlpha = (int) (progress * 0xff) << 24;
+                PoseStack poseStack = guiGraphics.pose();
+                poseStack.pushPose();
+                float offsetX = 0.1f * this.width;
+                float offsetY = 0.1f * this.height;
+                poseStack.translate(offsetX, offsetY, 0);
+                poseStack.scale(0.8f, 0.8f, 0.8f);
+                float adjustedX = (x - offsetX) / 0.8f;
+                float adjustedY = (y - offsetY - 30) / 0.8f;
+                guiGraphics.drawCenteredString(
+                    minecraft.font,
+                    value.description,
+                    (int) adjustedX,
+                    (int) adjustedY,
+                    textAlpha | 0xfdfdfd
+                );
+                poseStack.popPose();
             }
             return;
         }
@@ -137,7 +204,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 detectionRect.getY(),
                 detectionRect.getX() + detectionRect.getWidth(),
                 detectionRect.getY() + detectionRect.getHeight(),
-                selected ? 0x5500ff00 : 0x55ffffff
+                selected ? BACKGROUND_SELECTED : BACKGROUND_UNSELECTED
             );
             RenderHelper.renderBlock(
                 guiGraphics,
@@ -145,9 +212,25 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 x,
                 y - 4f,
                 100,
-                selected ? 15f : 13.5f,
+                selected ? ZOOM_SELECTED : ZOOM_UNSELECTED,
                 RenderHelper.SINGLE_BLOCK
             );
+            PoseStack poseStack = guiGraphics.pose();
+            poseStack.pushPose();
+            float offsetX = 0.1f * this.width;
+            float offsetY = 0.1f * this.height;
+            poseStack.translate(offsetX, offsetY, 0);
+            poseStack.scale(0.8f, 0.8f, 0.8f);
+            float adjustedX = (x - offsetX) / 0.8f;
+            float adjustedY = (y - offsetY - 30) / 0.8f;
+            guiGraphics.drawCenteredString(
+                minecraft.font,
+                value.description,
+                (int) adjustedX,
+                (int) adjustedY,
+                0xfffdfdfd
+            );
+            poseStack.popPose();
         }
     }
 
@@ -158,6 +241,12 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     public void removed() {
+        Minecraft.getInstance().level.setBlock(
+            targetBlockPos,
+            currentBlockState,
+            Block.UPDATE_CLIENTS,
+            0
+        );
         PacketDistributor.sendToServer(
             new HammerChangeBlockPacket(
                 targetBlockPos,
@@ -197,7 +286,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private record SelectionItem(
         Vector2f center,
         Rect2i detectionRect,
-        BlockState state
+        BlockState state,
+        Component description
     ) {
     }
 }

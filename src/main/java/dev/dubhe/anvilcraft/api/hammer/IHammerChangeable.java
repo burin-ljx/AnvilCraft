@@ -25,6 +25,10 @@ public interface IHammerChangeable {
      */
     boolean change(Player player, BlockPos blockPos, @NotNull Level level, ItemStack anvilHammer);
 
+    default boolean checkBlockState(BlockState blockState){
+        return true;
+    }
+
     @Nullable
     Property<?> getChangeableProperty(BlockState blockState);
 }

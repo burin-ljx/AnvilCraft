@@ -191,7 +191,7 @@ public class BatchCrafterBlock extends BetterBaseEntityBlock implements HammerRo
 
     @Override
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
-        return RenderShape.INVISIBLE;
+        return RenderShape.MODEL;
     }
 
     @Override

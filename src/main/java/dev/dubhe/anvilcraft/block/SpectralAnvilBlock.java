@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.block;
 
+import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.entity.FallingSpectralBlockEntity;
 
 import net.minecraft.core.BlockPos;
@@ -38,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class SpectralAnvilBlock extends TransparentBlock {
+public class SpectralAnvilBlock extends TransparentBlock implements IHammerRemovable {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     private static final Component CONTAINER_TITLE = Component.translatable("container.repair");

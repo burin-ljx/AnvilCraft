@@ -32,12 +32,10 @@ public class BatchCrafterRenderer implements BlockEntityRenderer<BatchCrafterBlo
     private static final float FLAT_ITEM_BUNDLE_OFFSET_X = 0.0F;
     private static final float FLAT_ITEM_BUNDLE_OFFSET_Y = 0.0F;
     private static final float FLAT_ITEM_BUNDLE_OFFSET_Z = 0.09375F;
-    private final BlockRenderDispatcher blockRenderDispatcher;
     private final ItemRenderer itemRenderer;
     private final RandomSource random = RandomSource.create();
 
     public BatchCrafterRenderer(BlockEntityRendererProvider.Context context) {
-        blockRenderDispatcher = context.getBlockRenderDispatcher();
         itemRenderer = context.getItemRenderer();
     }
 
@@ -64,26 +62,7 @@ public class BatchCrafterRenderer implements BlockEntityRenderer<BatchCrafterBlo
         int packedLight,
         int packedOverlay) {
         BlockState state = blockEntity.getBlockState();
-        BakedModel blockModel = blockRenderDispatcher.getBlockModel(state);
         Level level = blockEntity.getLevel();
-        int packed = LightTexture.FULL_BLOCK;
-        if (level != null) {
-            int skyLight = level.getBrightness(LightLayer.SKY, blockEntity.getBlockPos());
-            int blockLight = level.getBrightness(LightLayer.BLOCK, blockEntity.getBlockPos());
-            packed = LightTexture.pack(blockLight, skyLight);
-        }
-        blockRenderDispatcher
-            .getModelRenderer()
-            .renderModel(
-                poseStack.last(),
-                buffer.getBuffer(RenderType.cutout()),
-                state,
-                blockModel,
-                0,
-                0,
-                0,
-                packed,
-                OverlayTexture.NO_OVERLAY);
         ItemStack itemStack = blockEntity.getDisplayItemStack();
         if (itemStack == null || itemStack.isEmpty()) return;
         int seed = itemStack.isEmpty() ? 187 : Item.getId(itemStack.getItem()) + itemStack.getDamageValue();

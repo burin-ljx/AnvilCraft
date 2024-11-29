@@ -15,7 +15,7 @@ public class MathUtil {
     public static Vector2f rotate(Vector2f v, float d){
         return new Vector2f(
             (float) (v.x * cos(d) - v.y * sin(d)),
-            (float) (v.x * sin(d) - v.y * cos(d))
+            (float) (v.x * sin(d) + v.y * cos(d))
         );
     }
 }

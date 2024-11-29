@@ -16,7 +16,10 @@ public class StateUtil {
             result.add(currentIterating);
             currentIterating = currentIterating.cycle(property);
         }
-        result.sort(Comparator.comparing(it -> it.getValue(property)));
+        result.sort(
+            Comparator.<T, E>comparing(it -> it.getValue(property))
+                .reversed()
+        );
         return result;
     }
 }

@@ -60,17 +60,22 @@ public class BlockEventListener {
                 BlockState targetBlockState = event.getLevel().getBlockState(event.getPos());
                 if (event.getLevel().isClientSide()) {
                     Property<?> property = AnvilHammerItem.findChangeableProperty(targetBlockState);
-                    if (AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState) && property != null) {
-                        List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
-                        if (possibleStates.isEmpty()) {
-                            PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
-                        } else {
-                            Minecraft.getInstance().setScreen(new AnvilHammerScreen(
-                                event.getPos(),
-                                targetBlockState,
-                                property,
-                                possibleStates
-                            ));
+                    if (!event.getEntity().isShiftKeyDown()
+                        && AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState)
+                        && property != null
+                    ) {
+                        if (targetBlockState.getBlock() instanceof IHammerChangeable ihc && ihc.checkBlockState(targetBlockState)) {
+                            List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
+                            if (possibleStates.isEmpty()) {
+                                PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
+                            } else {
+                                Minecraft.getInstance().setScreen(new AnvilHammerScreen(
+                                    event.getPos(),
+                                    targetBlockState,
+                                    property,
+                                    possibleStates
+                                ));
+                            }
                         }
                     } else {
                         PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));

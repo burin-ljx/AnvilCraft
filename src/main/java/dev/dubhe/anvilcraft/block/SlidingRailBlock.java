@@ -2,6 +2,8 @@ package dev.dubhe.anvilcraft.block;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
+import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,6 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.timers.TimerCallback;
 import net.minecraft.world.level.timers.TimerQueue;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -41,7 +46,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class SlidingRailBlock extends Block {
+public class SlidingRailBlock extends Block implements IHammerChangeable, IHammerRemovable {
     public static final VoxelShape OUTSIDE = Block.box(0, 0, 0, 16, 16, 16);
     public static final VoxelShape AABB_X = Stream.of(
         Block.box(0, 6, 11, 16, 12, 14),
@@ -241,6 +246,18 @@ public class SlidingRailBlock extends Block {
             level.updateNeighborsAt(list.get(i1), ablockstate[i++].getBlock());
         }
 
+    }
+
+    @Override
+    public boolean change(Player player, BlockPos blockPos, @NotNull Level level, ItemStack anvilHammer) {
+        BlockState bs = level.getBlockState(blockPos);
+        level.setBlockAndUpdate(blockPos, bs.cycle(AXIS));
+        return true;
+    }
+
+    @Override
+    public @Nullable Property<?> getChangeableProperty(BlockState blockState) {
+        return AXIS;
     }
 
     public record PushBlockData(BlockPos blockPos, Level level, Direction direction) {
