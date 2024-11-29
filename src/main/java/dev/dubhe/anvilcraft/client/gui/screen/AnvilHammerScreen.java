@@ -11,7 +11,6 @@ import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -35,7 +34,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
     public static final float ZOOM = 13.5f;
-    public static final int IGNORE_CURSOR_MOVE_LENGTH = 20;
+    public static final int IGNORE_CURSOR_MOVE_LENGTH = 15;
     public static final int BACKGROUND_WIDTH = 256;
 
     public static final ResourceLocation BACKGROUND = AnvilCraft.of("textures/gui/selector/select_ring.png");
@@ -65,7 +64,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private final Property<?> property;
     private final List<BlockState> possibleStates;
 
-    private Rect2i ignoreMoveRect;
     private BlockState currentBlockState;
     private final List<SelectionItem> items = new ArrayList<>();
     private long displayTime = System.currentTimeMillis();
@@ -84,12 +82,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         items.clear();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
-        ignoreMoveRect = new Rect2i(
-            (int) Math.floor(centerX - IGNORE_CURSOR_MOVE_LENGTH),
-            (int) Math.floor(centerY - IGNORE_CURSOR_MOVE_LENGTH),
-            IGNORE_CURSOR_MOVE_LENGTH * 2,
-            IGNORE_CURSOR_MOVE_LENGTH * 2
-        );
         Vector2f vector2f = new Vector2f(0, 1);
         float degreeEachRotation = 360f / possibleStates.size();
         for (int i = 0; i < possibleStates.size(); i++) {
@@ -129,14 +121,17 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (ignoreMoveRect.contains((int) mouseX, (int) mouseY)) return true;
         float screenCenterX = width / 2f;
         float screenCenterY = height / 2f;
-        Vector2f rotationStart = new Vector2f(0, 1);
         Vector2f cursorVec2 = new Vector2f(
             (float) mouseX - screenCenterX,
             (float) mouseY - screenCenterY
-        ).normalize();
+        );
+        if (cursorVec2.length() < IGNORE_CURSOR_MOVE_LENGTH) {
+            return true;
+        }
+        Vector2f rotationStart = new Vector2f(0, 1);
+        cursorVec2.normalize();
         double rot = Math.acos(rotationStart.dot(cursorVec2) / (rotationStart.length() * cursorVec2.length()));
         double rotation = cursorVec2.x < 0 ? Math.PI - rot : Math.PI + rot;
         items.stream()
