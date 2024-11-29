@@ -11,48 +11,28 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.Pair;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class HeatedBlockRecorder {
     private static final Map<LevelAccessor, HeatedBlockRecorder> INSTANCES = new HashMap<>();
-    private static final Map<Pair<Block, Integer>, BlockFamily> TRANSFORMS = new HashMap<>();
+    public static final Map<Block, HeatingInfo> TRANSFORMS = new HashMap<>();
 
     static {
-        BlockFamily tungstenFamily = new BlockFamily(List.of(
-            ModBlocks.TUNGSTEN_BLOCK.get(),
-            ModBlocks.HEATED_TUNGSTEN.get(),
-            ModBlocks.REDHOT_TUNGSTEN.get(),
-            ModBlocks.GLOWING_TUNGSTEN.get(),
-            ModBlocks.INCANDESCENT_TUNGSTEN.get()));
-        BlockFamily netheriteFamily = new BlockFamily(List.of(
-            Blocks.NETHERITE_BLOCK,
-            ModBlocks.HEATED_NETHERITE.get(),
-            ModBlocks.REDHOT_NETHERITE.get(),
-            ModBlocks.GLOWING_NETHERITE.get(),
-            ModBlocks.INCANDESCENT_NETHERITE.get()));
+        TRANSFORMS.put(Blocks.NETHERITE_BLOCK, new HeatingInfo(ModBlocks.HEATED_NETHERITE.get(), 4, 0));
+        TRANSFORMS.put(ModBlocks.HEATED_NETHERITE.get(), new HeatingInfo(ModBlocks.REDHOT_NETHERITE.get(), 12, 4));
+        TRANSFORMS.put(ModBlocks.REDHOT_NETHERITE.get(), new HeatingInfo(ModBlocks.GLOWING_NETHERITE.get(), 32, 12));
+        TRANSFORMS.put(ModBlocks.GLOWING_NETHERITE.get(), new HeatingInfo(ModBlocks.INCANDESCENT_NETHERITE.get(), 80, 32));
+        TRANSFORMS.put(ModBlocks.INCANDESCENT_NETHERITE.get(), new HeatingInfo(null, Integer.MAX_VALUE, 80));
 
-        BlockFamily emberMetalFamily =
-            new BlockFamily(List.of(ModBlocks.EMBER_METAL_BLOCK.get(), ModBlocks.CUT_EMBER_METAL_BLOCK.get()));
-
-        TRANSFORMS.put(Pair.of(ModBlocks.HEATED_TUNGSTEN.get(), 4), tungstenFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.REDHOT_TUNGSTEN.get(), 12), tungstenFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.GLOWING_TUNGSTEN.get(), 32), tungstenFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.INCANDESCENT_TUNGSTEN.get(), 80), tungstenFamily);
-
-        TRANSFORMS.put(Pair.of(ModBlocks.HEATED_NETHERITE.get(), 4), netheriteFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.REDHOT_NETHERITE.get(), 12), netheriteFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.GLOWING_NETHERITE.get(), 32), netheriteFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.INCANDESCENT_NETHERITE.get(), 80), netheriteFamily);
-
-        TRANSFORMS.put(Pair.of(ModBlocks.EMBER_METAL_BLOCK.get(), 8), emberMetalFamily);
-        TRANSFORMS.put(Pair.of(ModBlocks.CUT_EMBER_METAL_BLOCK.get(), 2), emberMetalFamily);
+        TRANSFORMS.put(ModBlocks.TUNGSTEN_BLOCK.get(), new HeatingInfo(ModBlocks.HEATED_TUNGSTEN.get(), 4, 0));
+        TRANSFORMS.put(ModBlocks.HEATED_TUNGSTEN.get(), new HeatingInfo(ModBlocks.REDHOT_TUNGSTEN.get(), 12, 4));
+        TRANSFORMS.put(ModBlocks.REDHOT_TUNGSTEN.get(), new HeatingInfo(ModBlocks.GLOWING_TUNGSTEN.get(), 32, 12));
+        TRANSFORMS.put(ModBlocks.GLOWING_TUNGSTEN.get(), new HeatingInfo(ModBlocks.INCANDESCENT_TUNGSTEN.get(), 80, 32));
+        TRANSFORMS.put(ModBlocks.INCANDESCENT_TUNGSTEN.get(), new HeatingInfo(null, Integer.MAX_VALUE, 80));
     }
 
     private final LevelAccessor level;
@@ -84,16 +64,13 @@ public class HeatedBlockRecorder {
         }
         int level = record.get(pos).addAndGet(1);
         irritateEntity.add(entity);
-        List<Block> blocks = TRANSFORMS.entrySet().stream()
-            .filter(it -> it.getValue().anyMatch(this.level.getBlockState(pos).getBlock()))
-            .map(Map.Entry::getKey)
-            .sorted(Comparator.comparingInt(Pair::right))
-            .filter(it -> it.right() <= level)
-            .map(Pair::left)
-            .collect(Collectors.toCollection(ArrayList::new));
-        if (blocks.isEmpty()) return;
-        Block block = blocks.getLast();
-        this.level.setBlock(pos, block.defaultBlockState(), 3);
+        Block heatedBlock = this.level.getBlockState(pos).getBlock();
+        while(true) {
+            HeatingInfo info = TRANSFORMS.get(heatedBlock);
+            if (info == null || info.nextTier == null || level < info.toNextTier) break;
+            heatedBlock = info.nextTier;
+        }
+        this.level.setBlock(pos, heatedBlock.defaultBlockState(), 3);
     }
 
     /**
@@ -120,16 +97,13 @@ public class HeatedBlockRecorder {
     public void onBlockStateChange(BlockPos pos, BlockState blockState, BlockState newState) {
         if (record.containsKey(pos)) {
             int level = record.get(pos).get();
-            List<Block> blocks = TRANSFORMS.entrySet().stream()
-                .filter(it -> it.getValue().anyMatch(newState.getBlock()))
-                .map(Map.Entry::getKey)
-                .sorted(Comparator.comparingInt(Pair::right))
-                .filter(it -> it.right() <= level)
-                .map(Pair::left)
-                .collect(Collectors.toCollection(ArrayList::new));
-            if (blocks.isEmpty()) return;
-            Block block = blocks.getLast();
-            this.level.setBlock(pos, block.defaultBlockState(), 3);
+            Block heatedBlock = newState.getBlock();
+            while(true) {
+                HeatingInfo info = TRANSFORMS.get(heatedBlock);
+                if (info == null || info.nextTier == null || level < info.toNextTier) break;
+                heatedBlock = info.nextTier;
+            }
+            this.level.setBlock(pos, heatedBlock.defaultBlockState(), 3);
         }
     }
 
@@ -147,9 +121,7 @@ public class HeatedBlockRecorder {
         INSTANCES.clear();
     }
 
-    public record BlockFamily(List<Block> blocks) {
-        public boolean anyMatch(Block block) {
-            return blocks.stream().anyMatch(it -> it == block);
-        }
+    public record HeatingInfo(@Nullable Block nextTier, int toNextTier, int remainCurrentTier){
+
     }
 }

@@ -7,6 +7,8 @@ import dev.dubhe.anvilcraft.init.ModBlockEntities;
 
 import dev.dubhe.anvilcraft.network.ChargeCollectorIncomingChargePacket;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -74,11 +76,27 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
         return this.power;
     }
 
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.cooldownCount = tag.getInt("cooldownCount");
+        this.chargeCount = tag.getDouble("chargeCount");
+        this.power = tag.getInt("power");
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        tag.putInt("cooldownCount", this.cooldownCount);
+        tag.putDouble("chargeCount", this.chargeCount);
+        tag.putInt("power", this.power);
+    }
+
     /**
      * 方块实体tick
      */
     public void tick() {
-        if (this.cooldownCount > 0) {
+        if (this.cooldownCount > 1) {
             this.cooldownCount -= 1;
             return;
         }
