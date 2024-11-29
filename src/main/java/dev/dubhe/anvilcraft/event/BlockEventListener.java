@@ -14,6 +14,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -59,32 +61,36 @@ public class BlockEventListener {
                 }
                 BlockState targetBlockState = event.getLevel().getBlockState(event.getPos());
                 if (event.getLevel().isClientSide()) {
-                    Property<?> property = AnvilHammerItem.findChangeableProperty(targetBlockState);
-                    if (!event.getEntity().isShiftKeyDown()
-                        && AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState)
-                        && property != null
-                    ) {
-                        if (targetBlockState.getBlock() instanceof IHammerChangeable ihc && ihc.checkBlockState(targetBlockState)) {
-                            List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
-                            if (possibleStates.isEmpty()) {
-                                PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
-                            } else {
-                                Minecraft.getInstance().setScreen(new AnvilHammerScreen(
-                                    event.getPos(),
-                                    targetBlockState,
-                                    property,
-                                    possibleStates
-                                ));
-                            }
-                        }
-                    } else {
-                        PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
-                    }
-
+                    clientHandle(event, targetBlockState, hand);
                 }
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
             }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void clientHandle(PlayerInteractEvent.@NotNull RightClickBlock event, BlockState targetBlockState, InteractionHand hand) {
+        Property<?> property = AnvilHammerItem.findChangeableProperty(targetBlockState);
+        if (!event.getEntity().isShiftKeyDown()
+            && AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState)
+            && property != null
+        ) {
+            if (targetBlockState.getBlock() instanceof IHammerChangeable ihc && ihc.checkBlockState(targetBlockState)) {
+                List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
+                if (possibleStates.isEmpty()) {
+                    PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
+                } else {
+                    Minecraft.getInstance().setScreen(new AnvilHammerScreen(
+                        event.getPos(),
+                        targetBlockState,
+                        property,
+                        possibleStates
+                    ));
+                }
+            }
+        } else {
+            PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
         }
     }
 }

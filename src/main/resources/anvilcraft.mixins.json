@@ -35,6 +35,7 @@
     "GameRendererMixin",
     "ItemInHandRendererMixin",
     "LevelRendererMixin",
+    "MouseHandlerMixin",
     "RenderTypeMixin",
     "SectionCompilerMixin",
     "SoundEngineMixin"
