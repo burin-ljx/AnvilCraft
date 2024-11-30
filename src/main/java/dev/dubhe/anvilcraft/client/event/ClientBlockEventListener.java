@@ -1,6 +1,5 @@
 package dev.dubhe.anvilcraft.client.event;
 
-import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.client.gui.screen.AnvilHammerScreen;
@@ -23,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientBlockEventListener {
 
@@ -54,7 +54,7 @@ public class ClientBlockEventListener {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+
     private static void clientHandle(PlayerInteractEvent.@NotNull RightClickBlock event, BlockState targetBlockState, InteractionHand hand) {
         Property<?> property = AnvilHammerItem.findChangeableProperty(targetBlockState);
         if (!event.getEntity().isShiftKeyDown()
