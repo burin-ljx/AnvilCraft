@@ -72,7 +72,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
     private long displayTime = System.currentTimeMillis();
     private boolean animationStarted = false;
     private boolean closingAnimationStarted = false;
-    private boolean shouldClose = false;
 
     public AnvilHammerScreen(BlockPos targetBlockPos, BlockState initialBlockState, Property<?> property, List<BlockState> possibleStates) {
         super(Component.translatable("screen.anvilcraft.anvil_hammer.title"));
