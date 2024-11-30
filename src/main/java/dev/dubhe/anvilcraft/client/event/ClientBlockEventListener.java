@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientBlockEventListener {
 
