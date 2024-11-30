@@ -30,8 +30,6 @@ public class AnvilCraftClient {
         );
         modBus.addListener(AnvilCraftClient::registerClientFluidExtensions);
         modBus.addListener(ModShaders::register);
-        NeoForge.EVENT_BUS.addListener(ClientBlockEventListener::anvilHammerUse);
-        NeoForge.EVENT_BUS.addListener(HammerEffectRenderEventListener::onRender);
         ModInspectionClient.initializeClient();
     }
 
