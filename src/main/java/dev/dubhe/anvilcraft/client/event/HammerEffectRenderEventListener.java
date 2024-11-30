@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.client.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import net.minecraft.client.Camera;
@@ -22,6 +23,10 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME, modid = AnvilCraft.MOD_ID)
 public class HammerEffectRenderEventListener {
+
+    static {
+        LogUtils.getLogger().error("WTF");
+    }
 
     @SubscribeEvent
     public static void onRender(RenderLevelStageEvent event) {

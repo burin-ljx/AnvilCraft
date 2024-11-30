@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.event;
 
+import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
@@ -25,7 +26,9 @@ import java.util.List;
 @EventBusSubscriber(modid = AnvilCraft.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class ClientBlockEventListener {
 
-
+    static {
+        LogUtils.getLogger().error("WTF");
+    }
     /**
      * 侦听右键方块事件
      *

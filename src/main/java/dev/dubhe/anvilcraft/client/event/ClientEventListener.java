@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.event;
 
+import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.sound.SoundHelper;
 import dev.dubhe.anvilcraft.util.BlockHighlightUtil;
@@ -26,6 +27,10 @@ public class ClientEventListener {
             event.getPoseStack(),
             event.getCamera()
         );
+    }
+
+    static {
+        LogUtils.getLogger().error("WTF");
     }
 
     @SubscribeEvent

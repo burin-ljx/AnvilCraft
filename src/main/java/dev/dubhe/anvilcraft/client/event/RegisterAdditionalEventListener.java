@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.event;
 
+import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -10,7 +11,9 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD, modid = AnvilCraft.MOD_ID)
 public class RegisterAdditionalEventListener {
-
+    static {
+        LogUtils.getLogger().error("WTF");
+    }
     /**
      * 注册模型
      */

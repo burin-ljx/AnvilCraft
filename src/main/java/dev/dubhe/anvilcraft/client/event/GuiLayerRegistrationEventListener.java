@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.event;
 
+import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.tooltip.HudTooltipManager;
 import dev.dubhe.anvilcraft.item.IEngineerGoggles;
@@ -19,6 +20,10 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import com.mojang.blaze3d.platform.Window;
 
 public class GuiLayerRegistrationEventListener {
+
+    static {
+        LogUtils.getLogger().error("WTF");
+    }
 
     public static void onRegister(RegisterGuiLayersEvent event) {
         event.registerAboveAll(AnvilCraft.of("power"), (guiGraphics, pDeltaTracker) -> {
