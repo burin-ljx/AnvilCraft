@@ -76,7 +76,10 @@ public class BlockEventListener {
             && AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState)
             && property != null
         ) {
-            if (targetBlockState.getBlock() instanceof IHammerChangeable ihc && ihc.checkBlockState(targetBlockState)) {
+            if (targetBlockState.getBlock() instanceof IHammerChangeable ihc
+                && ihc.checkBlockState(targetBlockState)
+                && event.getEntity().getAbilities().mayBuild
+            ) {
                 List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
                 if (possibleStates.isEmpty()) {
                     PacketDistributor.sendToServer(new HammerUsePacket(event.getPos(), hand));
