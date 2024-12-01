@@ -24,18 +24,32 @@ public abstract class TeslaFilter {
         }
     };
     private static final HashMap<String, TeslaFilter> FILTER_MAP = new HashMap<>();
+
     public static void register(TeslaFilter filter) {
         FILTER_MAP.put(filter.getId(), filter);
     }
+
     public static TeslaFilter getFilter(String id) {
         return FILTER_MAP.getOrDefault(id, emptyFilter);
     }
-    public static Collection<TeslaFilter> all() { return FILTER_MAP.values(); }
+
+    public static Collection<TeslaFilter> all() {
+        return FILTER_MAP.values();
+    }
+
     abstract public String getId();
+
     abstract public boolean match(LivingEntity entity, String arg);
-    public boolean needArg() { return false; }
+
+    public boolean needArg() {
+        return false;
+    }
+
     abstract public Component title();
-    public String tooltip(String arg) { return ""; }
+
+    public String tooltip(String arg) {
+        return "";
+    }
 
     public static void init() {
         FILTER_MAP.clear();
