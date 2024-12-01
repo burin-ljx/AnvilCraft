@@ -18,7 +18,7 @@ if (System.getenv("CI_BUILD") == 'false') {
     }
     buildNumber = System.getenv("GITHUB_RUN_NUMBER")
 }
-version = "${mod_version}" + (buildNumber != null ? "+${buildType}.${buildNumber}" : "")
+version = "${mod_version}" + (buildNumber != null ? "-${buildType}.${buildNumber}" : "")
 group = maven_group
 
 apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
