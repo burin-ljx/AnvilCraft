@@ -17,15 +17,6 @@
       ]
     },
     {
-      "name": "FramebufferSize",
-      "type": "float",
-      "count": 2,
-      "values": [
-        0.0,
-        0.0
-      ]
-    },
-    {
       "name": "InnerDiameter",
       "type": "float",
       "count": 1,
@@ -46,7 +37,7 @@
       "type": "float",
       "count": 1,
       "values": [
-        1.5
+        1.25
       ]
     }
   ]
