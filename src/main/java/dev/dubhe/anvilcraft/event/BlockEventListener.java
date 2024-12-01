@@ -30,28 +30,4 @@ public class BlockEventListener {
             }
         }
     }
-
-    /**
-     * 侦听右键方块事件
-     *
-     * @param event 右键方块事件
-     */
-    @SubscribeEvent
-    public static void anvilHammerUse(@NotNull PlayerInteractEvent.RightClickBlock event) {
-        if (event.getEntity().level().isClientSide) return;
-        InteractionHand hand = event.getHand();
-        if (event.getEntity().getItemInHand(hand).getItem() instanceof AnvilHammerItem) {
-            if (AnvilHammerItem.ableToUseAnvilHammer(event.getLevel(), event.getPos(), event.getEntity())) {
-                Block b = event.getLevel().getBlockState(event.getPos()).getBlock();
-                if (b instanceof IHammerRemovable
-                    && !(b instanceof IHammerChangeable)
-                    && !event.getEntity().isShiftKeyDown()
-                ) {
-                    return;
-                }
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                event.setCanceled(true);
-            }
-        }
-    }
 }
