@@ -38,6 +38,7 @@ public class BlockEventListener {
      */
     @SubscribeEvent
     public static void anvilHammerUse(@NotNull PlayerInteractEvent.RightClickBlock event) {
+        if (event.getEntity().level().isClientSide) return;
         InteractionHand hand = event.getHand();
         if (event.getEntity().getItemInHand(hand).getItem() instanceof AnvilHammerItem) {
             if (AnvilHammerItem.ableToUseAnvilHammer(event.getLevel(), event.getPos(), event.getEntity())) {
