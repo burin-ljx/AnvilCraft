@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class TeslaTowerButton extends Button {
 
@@ -77,10 +78,10 @@ public class TeslaTowerButton extends Button {
         this.renderString(guiGraphics, Minecraft.getInstance().font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
         if (this.isHovered()) {
             Component filterText = highlighted(
-                    id, searchText.replaceFirst("#", ""), ChatFormatting.GRAY);
+                id, searchText.replaceFirst("#", ""), ChatFormatting.GRAY);
             guiGraphics.renderTooltip(
                 Minecraft.getInstance().font,
-                filterText.getString().isEmpty() ?  List.of(message.getVisualOrderText()) : List.of(message.getVisualOrderText(), filterText.getVisualOrderText()),
+                filterText.getString().isEmpty() ? List.of(message.getVisualOrderText()) : List.of(message.getVisualOrderText(), filterText.getVisualOrderText()),
                 mouseX,
                 mouseY);
         }
@@ -91,13 +92,17 @@ public class TeslaTowerButton extends Button {
         String hightlighted,
         ChatFormatting originalFormatting
     ) {
-        String[] parts = original.split(hightlighted);
-        List<Component> components = new ArrayList<>();
-        for (String s : parts) {
-            components.add(Component.literal(s).copy().setStyle(Style.EMPTY.applyFormat(originalFormatting)));
+        try {
+            String[] parts = original.split(Pattern.quote(hightlighted));
+            List<Component> components = new ArrayList<>();
+            for (String s : parts) {
+                components.add(Component.literal(s).copy().setStyle(Style.EMPTY.applyFormat(originalFormatting)));
+            }
+            return ComponentUtils.formatList(
+                components, Component.literal(hightlighted).withStyle(ChatFormatting.YELLOW));
+        } catch (Throwable e) {
+            return Component.literal(original);
         }
-        return ComponentUtils.formatList(
-            components, Component.literal(hightlighted).withStyle(ChatFormatting.YELLOW));
     }
 
     public void renderTexture(

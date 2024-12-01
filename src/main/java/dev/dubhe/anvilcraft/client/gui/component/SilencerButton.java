@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class SilencerButton extends Button {
 
@@ -86,7 +87,8 @@ public class SilencerButton extends Button {
                 Minecraft.getInstance().font,
                 List.of(message.getVisualOrderText(), soundIdText.getVisualOrderText()),
                 mouseX,
-                mouseY);
+                mouseY
+            );
         }
     }
 
@@ -96,13 +98,17 @@ public class SilencerButton extends Button {
         ChatFormatting originalFormatting,
         ChatFormatting highlightFormatting
     ) {
-        String[] parts = original.split(hightlighted);
-        List<Component> components = new ArrayList<>();
-        for (String s : parts) {
-            components.add(Component.literal(s).copy().setStyle(Style.EMPTY.applyFormat(originalFormatting)));
+        try {
+            String[] parts = original.split(Pattern.quote(hightlighted));
+            List<Component> components = new ArrayList<>();
+            for (String s : parts) {
+                components.add(Component.literal(s).copy().setStyle(Style.EMPTY.applyFormat(originalFormatting)));
+            }
+            return ComponentUtils.formatList(
+                components, Component.literal(hightlighted).withStyle(highlightFormatting));
+        } catch (Throwable e) {
+            return Component.literal(original);
         }
-        return ComponentUtils.formatList(
-            components, Component.literal(hightlighted).withStyle(highlightFormatting));
     }
 
     public void renderTexture(
