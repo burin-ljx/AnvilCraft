@@ -8,9 +8,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
+import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
 import dev.dubhe.anvilcraft.api.input.KeyboardInputActionIgnorable;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
@@ -23,7 +22,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -46,12 +44,18 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
     public static final int CLOSING_ANIMATION_T = 150;//ms
     public static final float ZOOM = 13.5f;
     public static final int IGNORE_CURSOR_MOVE_LENGTH = 15;
-    public static final int BACKGROUND_WIDTH = 256;
-
-    public static final ResourceLocation BACKGROUND = AnvilCraft.of("textures/gui/selector/select_ring.png");
-    public static final ResourceLocation SELECTION = AnvilCraft.of("textures/gui/selector/selected_part.png");
 
     private static final MethodHandle PROPERTY_TOSTRING;
+
+    private static final int RING_COLOR = 0x88000000;
+    private static final int RING_INNER_DIAMETER = 55;
+    private static final int RING_OUTER_DIAMETER = 105;
+
+    private static final int SELECTION_EFFECT_COLOR = 0xddFFFF00;
+    private static final int SELECTION_EFFECT_RADIUS = 20;
+
+    private static final float TEXT_SCALE = 1f;
+    private static final int TEXT_COLOR = 0xfdfdfd;
 
     static {
         MethodType mt = MethodType.methodType(
@@ -115,8 +119,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                         detectionEnd,
                         state,
                         Component.literal(
-                            "%s: %s".formatted(
-                                property.getName(),
+                            "%s".formatted(
                                 PROPERTY_TOSTRING.invokeWithArguments(
                                     property,
                                     state.getValue(property)
@@ -180,9 +183,9 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             guiGraphics,
             this.width / 2f,
             this.height / 2f,
-            0x88000000,
-            55 * progress,
-            105 * progress
+            RING_COLOR,
+            RING_INNER_DIAMETER * progress,
+            RING_OUTER_DIAMETER * progress
         );
         poseStack.popPose();
         float finalProgress = progress;
@@ -199,8 +202,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                     guiGraphics,
                     center.x,
                     center.y,
-                    0xddFFFF00,
-                    20
+                    SELECTION_EFFECT_COLOR,
+                    SELECTION_EFFECT_RADIUS
                 );
             });
         for (SelectionItem value : items) {
@@ -223,7 +226,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             int textAlpha = (int) (progress * 0xff) << 24;
             poseStack.pushPose();
             float coordinateScale = 0.7f;
-            float textScale = 0.8f;
             float offsetX = 0.1f * this.width;
             float offsetY = 0.1f * this.height;
             float adjustedX = (x - offsetX) / coordinateScale;
@@ -231,7 +233,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             poseStack.translate(offsetX, offsetY, 0);
             poseStack.scale(coordinateScale, coordinateScale, coordinateScale);
             poseStack.translate(adjustedX, adjustedY, 0);
-            poseStack.scale(textScale / coordinateScale, textScale / coordinateScale, textScale / coordinateScale);
+            poseStack.scale(TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale);
             guiGraphics.drawCenteredString(
                 minecraft.font,
                 value.description,
@@ -265,22 +267,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             renderProgressAnimation(guiGraphics, progress, centerX, centerY);
             return;
         }
-//        guiGraphics.blit(
-//            BACKGROUND,
-//            (this.width - BACKGROUND_WIDTH) / 2,
-//            (this.height - BACKGROUND_WIDTH) / 2,
-//            0,
-//            0,
-//            256,
-//            256
-//        );
         renderRing(
             guiGraphics,
             this.width / 2f,
             this.height / 2f,
-            0x88000000,
-            55,
-            105
+            RING_COLOR,
+            RING_INNER_DIAMETER,
+            RING_OUTER_DIAMETER
         );
         renderSelection(guiGraphics);
         for (SelectionItem value : items) {
@@ -297,7 +290,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             );
             poseStack.pushPose();
             float coordinateScale = 0.7f;
-            float textScale = 0.8f;
             float offsetX = 0.1f * this.width;
             float offsetY = 0.1f * this.height;
             float adjustedX = (x - offsetX) / coordinateScale;
@@ -306,13 +298,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             poseStack.translate(offsetX, offsetY, 0);
             poseStack.scale(coordinateScale, coordinateScale, coordinateScale);
             poseStack.translate(adjustedX, adjustedY, 0);
-            poseStack.scale(textScale / coordinateScale, textScale / coordinateScale, textScale / coordinateScale);
+            poseStack.scale(TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale);
             guiGraphics.drawCenteredString(
                 minecraft.font,
                 value.description,
                 0,
                 0,
-                0xfffdfdfd
+                (0xff << 24) | TEXT_COLOR
             );
             poseStack.popPose();
         }
@@ -327,8 +319,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                     guiGraphics,
                     it.center.x,
                     it.center.y,
-                    0xddFFFF00,
-                    20
+                    SELECTION_EFFECT_COLOR,
+                    SELECTION_EFFECT_RADIUS
                 );
             });
     }

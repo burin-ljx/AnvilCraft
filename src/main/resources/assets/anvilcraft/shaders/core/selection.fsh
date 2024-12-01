@@ -16,7 +16,7 @@ void main() {
     vec4 color = vec4(0, 0, 0, 0);
     if (distance <= Radius) {
         color = vertexColor;
-        color.a = 1 - smoothstep(0f, Radius, distance);
+        color.a = smoothstep(Radius, 0f, distance);
     }
 
     fragColor = color * ColorModulator;
