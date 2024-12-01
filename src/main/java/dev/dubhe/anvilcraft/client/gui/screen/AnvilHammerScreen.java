@@ -1,12 +1,19 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.api.input.KeyboardInputActionIgnorable;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
 import dev.dubhe.anvilcraft.util.MathUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
@@ -21,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -168,17 +176,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
         if (progress == 0) return;
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
-        poseStack.translate(centerX, centerY, 0);
-        poseStack.scale(progress, progress, 1);
-        poseStack.translate(-128, -128, 0);
-        guiGraphics.blit(
-            BACKGROUND,
-            0,
-            0,
-            0,
-            0,
-            256,
-            256
+        renderRing(
+            guiGraphics,
+            this.width / 2f,
+            this.height / 2f,
+            0x88000000,
+            55 * progress,
+            105 * progress
         );
         poseStack.popPose();
         float finalProgress = progress;
@@ -191,17 +195,12 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                     (it.center.y - centerY) / RADIUS
                 ).mul(RADIUS * finalProgress)
                     .add(centerX, centerY);
-                guiGraphics.blit(
-                    SELECTION,
-                    (int) (center.x - 32),
-                    (int) (center.y - 32),
-                    -100,
-                    0,
-                    0,
-                    64,
-                    64,
-                    64,
-                    64
+                renderSelectionEffect(
+                    guiGraphics,
+                    center.x,
+                    center.y,
+                    0xddFFFF00,
+                    20
                 );
             });
         for (SelectionItem value : items) {
@@ -266,14 +265,22 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             renderProgressAnimation(guiGraphics, progress, centerX, centerY);
             return;
         }
-        guiGraphics.blit(
-            BACKGROUND,
-            (this.width - BACKGROUND_WIDTH) / 2,
-            (this.height - BACKGROUND_WIDTH) / 2,
-            0,
-            0,
-            256,
-            256
+//        guiGraphics.blit(
+//            BACKGROUND,
+//            (this.width - BACKGROUND_WIDTH) / 2,
+//            (this.height - BACKGROUND_WIDTH) / 2,
+//            0,
+//            0,
+//            256,
+//            256
+//        );
+        renderRing(
+            guiGraphics,
+            this.width / 2f,
+            this.height / 2f,
+            0x88000000,
+            55,
+            105
         );
         renderSelection(guiGraphics);
         for (SelectionItem value : items) {
@@ -316,21 +323,55 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             .filter(it -> it.state == currentBlockState)
             .findFirst()
             .ifPresent(it -> {
-                float x = it.center.x;
-                float y = it.center.y;
-                guiGraphics.blit(
-                    SELECTION,
-                    (int) (x - 32),
-                    (int) (y - 32),
-                    -100,
-                    0,
-                    0,
-                    64,
-                    64,
-                    64,
-                    64
+                renderSelectionEffect(
+                    guiGraphics,
+                    it.center.x,
+                    it.center.y,
+                    0xddFFFF00,
+                    20
                 );
             });
+    }
+
+    private static void renderSelectionEffect(
+        GuiGraphics guiGraphics,
+        float centerX,
+        float centerY,
+        int color,
+        float radius
+    ) {
+        PoseStack poseStack = guiGraphics.pose();
+        Matrix4f matrix4f = poseStack.last().pose();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tesselator.begin(
+            VertexFormat.Mode.QUADS,
+            DefaultVertexFormat.POSITION_COLOR
+        );
+        float x1 = centerX - radius - 5;
+        float y1 = centerY - radius - 5;
+        float x2 = centerX + radius + 5;
+        float y2 = centerY + radius + 5;
+        bufferBuilder.addVertex(matrix4f, x1, y1, -100).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y2, -100).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y2, -100).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y1, -100).setColor(color);
+
+        Window window = Minecraft.getInstance().getWindow();
+        float guiScale = (float) window.getGuiScale();
+        RenderSystem.setShader(ModShaders::getSelectionShader);
+
+        ModShaders.getSelectionShader()
+            .safeGetUniform("Center")
+            .set(centerX * guiScale, centerY * guiScale);
+        ModShaders.getSelectionShader()
+            .safeGetUniform("FramebufferSize")
+            .set((float) window.getWidth(), (float) window.getHeight());
+        ModShaders.getSelectionShader()
+            .safeGetUniform("Radius")
+            .set(radius * guiScale);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        BufferUploader.drawWithShader(bufferBuilder.build());
     }
 
 
@@ -358,7 +399,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
 
     @Override
     public void tick() {
-        if (closingAnimationStarted){
+        if (closingAnimationStarted) {
             minecraft.handleKeybinds();
         }
     }
@@ -379,6 +420,51 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
     public boolean shouldRender() {
         if (animationStarted) return true;
         return (displayTime + DELAY) <= System.currentTimeMillis();
+    }
+
+    private static void renderRing(
+        GuiGraphics guiGraphics,
+        float centerX,
+        float centerY,
+        int color,
+        float innerDiameter,
+        float outerDiameter
+    ) {
+        PoseStack poseStack = guiGraphics.pose();
+        Matrix4f matrix4f = poseStack.last().pose();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tesselator.begin(
+            VertexFormat.Mode.QUADS,
+            DefaultVertexFormat.POSITION_COLOR
+        );
+        float x1 = centerX - outerDiameter - 5;
+        float y1 = centerY - outerDiameter - 5;
+        float x2 = centerX + outerDiameter + 5;
+        float y2 = centerY + outerDiameter + 5;
+        bufferBuilder.addVertex(matrix4f, x1, y1, 5).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y2, 5).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y2, 5).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y1, 5).setColor(color);
+
+        Window window = Minecraft.getInstance().getWindow();
+        float guiScale = (float) window.getGuiScale();
+        RenderSystem.setShader(ModShaders::getRingShader);
+
+        ModShaders.getRingShader()
+            .safeGetUniform("Center")
+            .set(centerX * guiScale, centerY * guiScale);
+        ModShaders.getRingShader()
+            .safeGetUniform("FramebufferSize")
+            .set((float) window.getWidth(), (float) window.getHeight());
+        ModShaders.getRingShader()
+            .safeGetUniform("InnerDiameter")
+            .set(innerDiameter * guiScale);
+        ModShaders.getRingShader()
+            .safeGetUniform("OuterDiameter")
+            .set(outerDiameter * guiScale);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        BufferUploader.drawWithShader(bufferBuilder.build());
     }
 
     @Override

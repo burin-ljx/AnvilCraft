@@ -24,6 +24,10 @@ public class ModShaders {
 
     static ShaderInstance renderTypeLaserShader;
     static ShaderInstance renderTypeColoredOverlayShader;
+    @Getter
+    static ShaderInstance ringShader;
+    @Getter
+    static ShaderInstance selectionShader;
 
 
     public static void register(RegisterShadersEvent event) {
@@ -42,6 +46,23 @@ public class ModShaders {
                     DefaultVertexFormat.BLOCK
                 ),
                 it -> renderTypeColoredOverlayShader = it
+            );
+
+            event.registerShader(
+                new ShaderInstance(
+                    event.getResourceProvider(),
+                    AnvilCraft.of("ring"),
+                    DefaultVertexFormat.POSITION_COLOR
+                ),
+                it -> ringShader = it
+            );
+            event.registerShader(
+                new ShaderInstance(
+                    event.getResourceProvider(),
+                    AnvilCraft.of("selection"),
+                    DefaultVertexFormat.POSITION_COLOR
+                ),
+                it -> selectionShader = it
             );
         } catch (Exception e) {
             throw new RuntimeException(e);
