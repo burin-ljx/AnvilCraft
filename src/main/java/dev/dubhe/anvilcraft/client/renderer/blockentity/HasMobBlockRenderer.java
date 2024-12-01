@@ -49,7 +49,7 @@ public class HasMobBlockRenderer implements BlockEntityRenderer<HasMobBlockEntit
             0,
             0,
             f,
-            partialTick,
+            0,
             poseStack,
             buffer,
             packedLight

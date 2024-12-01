@@ -93,6 +93,7 @@ public abstract class HasMobBlockEntity extends BlockEntity {
         Entity entity = type.create(level);
         if (entity == null) return;
         entity.load(this.entity);
+        entity.setYRot(0);
         this.displayEntity = entity;
         this.displayEntity.noPhysics = true;
     }
