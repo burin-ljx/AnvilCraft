@@ -10,7 +10,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
-import dev.dubhe.anvilcraft.api.input.KeyboardInputActionIgnorable;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class AnvilHammerScreen extends Screen implements IHasHammerEffect, KeyboardInputActionIgnorable {
+public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int RADIUS = 80;
     public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
@@ -473,11 +472,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
     @Override
     public RenderType renderType() {
         return ModRenderTypes.TRANSLUCENT_COLORED_OVERLAY;
-    }
-
-    @Override
-    public boolean shouldIgnoreInput() {
-        return closingAnimationStarted;
     }
 
     private record SelectionItem(
