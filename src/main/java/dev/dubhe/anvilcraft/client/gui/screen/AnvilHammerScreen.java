@@ -247,6 +247,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
         renderClosingAnimation(guiGraphics, mouseX, mouseY, partialTick);
@@ -284,7 +286,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                 value.state,
                 x,
                 y - 4f,
-                100,
+                -100,
                 ZOOM,
                 RenderHelper.SINGLE_BLOCK
             );
@@ -308,6 +310,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             );
             poseStack.popPose();
         }
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
     }
 
     private void renderSelection(GuiGraphics guiGraphics) {
@@ -343,10 +347,10 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
         float y1 = centerY - radius - 5;
         float x2 = centerX + radius + 5;
         float y2 = centerY + radius + 5;
-        bufferBuilder.addVertex(matrix4f, x1, y1, -100).setColor(color);
-        bufferBuilder.addVertex(matrix4f, x1, y2, -100).setColor(color);
-        bufferBuilder.addVertex(matrix4f, x2, y2, -100).setColor(color);
-        bufferBuilder.addVertex(matrix4f, x2, y1, -100).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y1, -200).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y2, -200).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y2, -200).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y1, -200).setColor(color);
 
         Window window = Minecraft.getInstance().getWindow();
         float guiScale = (float) window.getGuiScale();
@@ -433,10 +437,10 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
         float y1 = centerY - outerDiameter - 5;
         float x2 = centerX + outerDiameter + 5;
         float y2 = centerY + outerDiameter + 5;
-        bufferBuilder.addVertex(matrix4f, x1, y1, 5).setColor(color);
-        bufferBuilder.addVertex(matrix4f, x1, y2, 5).setColor(color);
-        bufferBuilder.addVertex(matrix4f, x2, y2, 5).setColor(color);
-        bufferBuilder.addVertex(matrix4f, x2, y1, 5).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y1, -300).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y2, -300).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y2, -300).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y1, -300).setColor(color);
 
         Window window = Minecraft.getInstance().getWindow();
         float guiScale = (float) window.getGuiScale();
