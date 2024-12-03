@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.function.Supplier;
 
 @Mixin(ClientLevel.class)
-public class ClientLevelMixin {
+abstract class ClientLevelMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     void onLevelLoad(
             ClientPacketListener connection,

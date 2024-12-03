@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(PistonBaseBlock.class)
-public class PistonBaseBlockMixin implements IHammerChangeable {
+abstract class PistonBaseBlockMixin implements IHammerChangeable {
 
     @Override
     public boolean change(Player player, BlockPos blockPos, @NotNull Level level, ItemStack anvilHammer) {

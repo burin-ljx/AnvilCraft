@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(PistonStructureResolver.class)
-public class PistonStructureResolverMixin {
+abstract class PistonStructureResolverMixin {
     @Shadow
     @Final
     private List<BlockPos> toPush;

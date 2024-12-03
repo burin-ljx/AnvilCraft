@@ -12,13 +12,14 @@ import net.neoforged.neoforge.common.conditions.WithConditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.llamalad7.mixinextras.sugar.Local;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RecipeManager.class)
-public class RecipeManagerMixin {
+abstract class RecipeManagerMixin {
 
     @Inject(
         method = "lambda$apply$0",
@@ -34,7 +35,7 @@ public class RecipeManagerMixin {
         ImmutableMap.Builder<ResourceLocation, RecipeHolder<?>> byNameBuilder,
         WithConditions<Recipe<?>> r,
         CallbackInfo ci,
-        @Local Recipe<?> recipe,
+        @Local @NotNull Recipe<?> recipe,
         @Local RecipeHolder<?> recipeHolder) {
         RecipeGenerator.handleVanillaRecipe(recipe.getType(), recipeHolder)
             .ifPresent(v -> {
