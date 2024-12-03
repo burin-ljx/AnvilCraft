@@ -30,22 +30,10 @@ jobs:
           path: gradle.properties
           properties: 'ci_version'
 
-      - name: ls .
-        run: ls .
-
-      - name: ls ./.github
-        run: ls ./.github
-
-      - name: ls ./.github/workflows
-        run: ls ./.github/workflows
-
-      - name: ls ./.github/workflows/20
-        run: ls ./.github/workflows/20
-
       - name: build-20
         if: ${{ steps.properties.outputs.ci_version == '20' }}
-        uses: ./.github/workflows/20/ci.yml
+        uses: './.github/workflows/20/ci.yml'
 
       - name: build-21
         if: ${{ steps.properties.outputs.ci_version == '21' }}
-        uses: ./.github/workflows/21/ci.yml
+        uses: './.github/workflows/21/ci.yml'
