@@ -62,4 +62,4 @@ jobs:
         uses: Anvil-Dev/dedicated-server-launch-test@1.21-neoforge
         with:
           mod: build/libs/anvilcraft-neoforge-${{ steps.version.outputs.version }}.jar
-          extra-mods: patchouli:1.21-87-neoforge
+          extra-mods: patchouli:1.21-87-neoforge cloth-config:15.0.140+neoforge
