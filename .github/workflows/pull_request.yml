@@ -1,0 +1,39 @@
+name: Pull Request Check
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - releases/**
+    paths:
+      - src/**
+      - common/**
+      - fabric/**
+      - forge/**
+      - build.gradle
+      - gradle.properties
+      - settings.gradle
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Read Properties
+        id: 'properties'
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: gradle.properties
+          properties: 'ci_version'
+
+      - name: build-20
+        if: ${{ steps.properties.outputs.ci_version == '20' }}
+        uses: ./.github/workflows/20/ci.yml
+
+      - name: build-21
+        if: ${{ steps.properties.outputs.ci_version == '21' }}
+        uses: ./.github/workflows/21/ci.yml
