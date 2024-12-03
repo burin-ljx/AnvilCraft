@@ -35,7 +35,9 @@ public record HammerChangeBlockPacket(
     public void handle(IPayloadContext context) {
         context.enqueueWork(() -> {
             Level level = context.player().level();
-            level.setBlock(pos, state, Block.UPDATE_ALL_IMMEDIATE);
+            if (level.isLoaded(pos)) {
+                level.setBlock(pos, state, Block.UPDATE_ALL_IMMEDIATE);
+            }
         });
     }
 }

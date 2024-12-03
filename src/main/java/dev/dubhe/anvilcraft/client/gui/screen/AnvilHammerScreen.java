@@ -1,12 +1,17 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
-import dev.dubhe.anvilcraft.api.input.KeyboardInputActionIgnorable;
+import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
 import dev.dubhe.anvilcraft.util.MathUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
@@ -16,11 +21,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,19 +36,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class AnvilHammerScreen extends Screen implements IHasHammerEffect, KeyboardInputActionIgnorable {
+public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int RADIUS = 80;
     public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
     public static final int CLOSING_ANIMATION_T = 150;//ms
     public static final float ZOOM = 13.5f;
     public static final int IGNORE_CURSOR_MOVE_LENGTH = 15;
-    public static final int BACKGROUND_WIDTH = 256;
-
-    public static final ResourceLocation BACKGROUND = AnvilCraft.of("textures/gui/selector/select_ring.png");
-    public static final ResourceLocation SELECTION = AnvilCraft.of("textures/gui/selector/selected_part.png");
 
     private static final MethodHandle PROPERTY_TOSTRING;
+
+    private static final int RING_COLOR = 0x88000000;
+    private static final int RING_INNER_DIAMETER = 55;
+    private static final int RING_OUTER_DIAMETER = 105;
+
+    private static final int SELECTION_EFFECT_COLOR = 0xddFFFF00;
+    private static final int SELECTION_EFFECT_RADIUS = 20;
+
+    private static final float TEXT_SCALE = 1f;
+    private static final int TEXT_COLOR = 0xfdfdfd;
 
     static {
         MethodType mt = MethodType.methodType(
@@ -107,8 +118,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                         detectionEnd,
                         state,
                         Component.literal(
-                            "%s: %s".formatted(
-                                property.getName(),
+                            "%s".formatted(
                                 PROPERTY_TOSTRING.invokeWithArguments(
                                     property,
                                     state.getValue(property)
@@ -168,17 +178,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
         if (progress == 0) return;
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
-        poseStack.translate(centerX, centerY, 0);
-        poseStack.scale(progress, progress, 1);
-        poseStack.translate(-128, -128, 0);
-        guiGraphics.blit(
-            BACKGROUND,
-            0,
-            0,
-            0,
-            0,
-            256,
-            256
+        renderRing(
+            guiGraphics,
+            this.width / 2f,
+            this.height / 2f,
+            RING_COLOR,
+            RING_INNER_DIAMETER * progress,
+            RING_OUTER_DIAMETER * progress
         );
         poseStack.popPose();
         float finalProgress = progress;
@@ -191,17 +197,12 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                     (it.center.y - centerY) / RADIUS
                 ).mul(RADIUS * finalProgress)
                     .add(centerX, centerY);
-                guiGraphics.blit(
-                    SELECTION,
-                    (int) (center.x - 32),
-                    (int) (center.y - 32),
-                    -100,
-                    0,
-                    0,
-                    64,
-                    64,
-                    64,
-                    64
+                renderSelectionEffect(
+                    guiGraphics,
+                    center.x,
+                    center.y,
+                    SELECTION_EFFECT_COLOR,
+                    SELECTION_EFFECT_RADIUS
                 );
             });
         for (SelectionItem value : items) {
@@ -224,7 +225,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             int textAlpha = (int) (progress * 0xff) << 24;
             poseStack.pushPose();
             float coordinateScale = 0.7f;
-            float textScale = 0.8f;
             float offsetX = 0.1f * this.width;
             float offsetY = 0.1f * this.height;
             float adjustedX = (x - offsetX) / coordinateScale;
@@ -232,7 +232,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             poseStack.translate(offsetX, offsetY, 0);
             poseStack.scale(coordinateScale, coordinateScale, coordinateScale);
             poseStack.translate(adjustedX, adjustedY, 0);
-            poseStack.scale(textScale / coordinateScale, textScale / coordinateScale, textScale / coordinateScale);
+            poseStack.scale(TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale);
             guiGraphics.drawCenteredString(
                 minecraft.font,
                 value.description,
@@ -246,6 +246,8 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
         renderClosingAnimation(guiGraphics, mouseX, mouseY, partialTick);
@@ -266,14 +268,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             renderProgressAnimation(guiGraphics, progress, centerX, centerY);
             return;
         }
-        guiGraphics.blit(
-            BACKGROUND,
-            (this.width - BACKGROUND_WIDTH) / 2,
-            (this.height - BACKGROUND_WIDTH) / 2,
-            0,
-            0,
-            256,
-            256
+        renderRing(
+            guiGraphics,
+            this.width / 2f,
+            this.height / 2f,
+            RING_COLOR,
+            RING_INNER_DIAMETER,
+            RING_OUTER_DIAMETER
         );
         renderSelection(guiGraphics);
         for (SelectionItem value : items) {
@@ -284,13 +285,12 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
                 value.state,
                 x,
                 y - 4f,
-                100,
+                -100,
                 ZOOM,
                 RenderHelper.SINGLE_BLOCK
             );
             poseStack.pushPose();
             float coordinateScale = 0.7f;
-            float textScale = 0.8f;
             float offsetX = 0.1f * this.width;
             float offsetY = 0.1f * this.height;
             float adjustedX = (x - offsetX) / coordinateScale;
@@ -299,16 +299,18 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             poseStack.translate(offsetX, offsetY, 0);
             poseStack.scale(coordinateScale, coordinateScale, coordinateScale);
             poseStack.translate(adjustedX, adjustedY, 0);
-            poseStack.scale(textScale / coordinateScale, textScale / coordinateScale, textScale / coordinateScale);
+            poseStack.scale(TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale, TEXT_SCALE / coordinateScale);
             guiGraphics.drawCenteredString(
                 minecraft.font,
                 value.description,
                 0,
                 0,
-                0xfffdfdfd
+                (0xff << 24) | TEXT_COLOR
             );
             poseStack.popPose();
         }
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
     }
 
     private void renderSelection(GuiGraphics guiGraphics) {
@@ -316,21 +318,55 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
             .filter(it -> it.state == currentBlockState)
             .findFirst()
             .ifPresent(it -> {
-                float x = it.center.x;
-                float y = it.center.y;
-                guiGraphics.blit(
-                    SELECTION,
-                    (int) (x - 32),
-                    (int) (y - 32),
-                    -100,
-                    0,
-                    0,
-                    64,
-                    64,
-                    64,
-                    64
+                renderSelectionEffect(
+                    guiGraphics,
+                    it.center.x,
+                    it.center.y,
+                    SELECTION_EFFECT_COLOR,
+                    SELECTION_EFFECT_RADIUS
                 );
             });
+    }
+
+    private static void renderSelectionEffect(
+        GuiGraphics guiGraphics,
+        float centerX,
+        float centerY,
+        int color,
+        float radius
+    ) {
+        PoseStack poseStack = guiGraphics.pose();
+        Matrix4f matrix4f = poseStack.last().pose();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tesselator.begin(
+            VertexFormat.Mode.QUADS,
+            DefaultVertexFormat.POSITION_COLOR
+        );
+        float x1 = centerX - radius - 5;
+        float y1 = centerY - radius - 5;
+        float x2 = centerX + radius + 5;
+        float y2 = centerY + radius + 5;
+        bufferBuilder.addVertex(matrix4f, x1, y1, -200).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y2, -200).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y2, -200).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y1, -200).setColor(color);
+
+        Window window = Minecraft.getInstance().getWindow();
+        float guiScale = (float) window.getGuiScale();
+        RenderSystem.setShader(ModShaders::getSelectionShader);
+
+        ModShaders.getSelectionShader()
+            .safeGetUniform("Center")
+            .set(centerX * guiScale, centerY * guiScale);
+        ModShaders.getSelectionShader()
+            .safeGetUniform("FramebufferSize")
+            .set((float) window.getWidth(), (float) window.getHeight());
+        ModShaders.getSelectionShader()
+            .safeGetUniform("Radius")
+            .set(radius * guiScale);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        BufferUploader.drawWithShader(bufferBuilder.build());
     }
 
 
@@ -358,7 +394,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
 
     @Override
     public void tick() {
-        if (closingAnimationStarted){
+        if (closingAnimationStarted) {
             minecraft.handleKeybinds();
         }
     }
@@ -381,6 +417,48 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
         return (displayTime + DELAY) <= System.currentTimeMillis();
     }
 
+    private static void renderRing(
+        GuiGraphics guiGraphics,
+        float centerX,
+        float centerY,
+        int color,
+        float innerDiameter,
+        float outerDiameter
+    ) {
+        PoseStack poseStack = guiGraphics.pose();
+        Matrix4f matrix4f = poseStack.last().pose();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tesselator.begin(
+            VertexFormat.Mode.QUADS,
+            DefaultVertexFormat.POSITION_COLOR
+        );
+        float x1 = centerX - outerDiameter - 5;
+        float y1 = centerY - outerDiameter - 5;
+        float x2 = centerX + outerDiameter + 5;
+        float y2 = centerY + outerDiameter + 5;
+        bufferBuilder.addVertex(matrix4f, x1, y1, -300).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x1, y2, -300).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y2, -300).setColor(color);
+        bufferBuilder.addVertex(matrix4f, x2, y1, -300).setColor(color);
+
+        Window window = Minecraft.getInstance().getWindow();
+        float guiScale = (float) window.getGuiScale();
+        RenderSystem.setShader(ModShaders::getRingShader);
+
+        ModShaders.getRingShader()
+            .safeGetUniform("Center")
+            .set(centerX * guiScale, centerY * guiScale);
+        ModShaders.getRingShader()
+            .safeGetUniform("InnerDiameter")
+            .set(innerDiameter * guiScale);
+        ModShaders.getRingShader()
+            .safeGetUniform("OuterDiameter")
+            .set(outerDiameter * guiScale);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        BufferUploader.drawWithShader(bufferBuilder.build());
+    }
+
     @Override
     public BlockPos renderingBlockPos() {
         return targetBlockPos;
@@ -394,11 +472,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect, Keybo
     @Override
     public RenderType renderType() {
         return ModRenderTypes.TRANSLUCENT_COLORED_OVERLAY;
-    }
-
-    @Override
-    public boolean shouldIgnoreInput() {
-        return closingAnimationStarted;
     }
 
     private record SelectionItem(
