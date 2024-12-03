@@ -1,14 +1,16 @@
-name: CI for AnvilCraftMod 1.21.1+
+name: CI for AnvilCraftMod 1.20.1-
 on: workflow_call
 
+
 jobs:
+  gametest:
+    secrets: inherit
+    uses: ./.github/workflows/20_gametest.yml
   build:
-    permissions: write-all
     runs-on: ubuntu-latest
     env:
-      CI_BUILD: false
+      CI_BUILD: true
       PR_BUILD: false
-      VERSION_TYPE: ${{ github.event.release.prerelease && 'alpha' || 'release' }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -42,43 +44,21 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F '${{ steps.properties.outputs.mod_id }}-neoforge-|.jar' '{print $2}')
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F '${{ steps.properties.outputs.mod_id }}-forge-|.jar' '{print $2}')
           echo "version=$MESSAGE" >> $GITHUB_OUTPUT
 
       - name: capture build artifacts
         uses: actions/upload-artifact@v4.3.3
         with:
           name: "${{ steps.properties.outputs.mod_name }} ${{ steps.version.outputs.version }}"
-          path: build/libs/anvilcraft-neoforge-${{ steps.version.outputs.version }}.jar
+          path: |
+            fabric/build/libs/anvilcraft-fabric-${{ steps.version.outputs.version }}.jar
+            forge/build/libs/anvilcraft-forge-${{ steps.version.outputs.version }}.jar
 
       - name: Publish to maven
-        if: ${{ github.event.inputs.publish == 'true' }}
         run: ./gradlew publish
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         continue-on-error: true
-
-      - name: publish neoforge mc mod
-        uses: Kir-Antipov/mc-publish@v3.3
-        continue-on-error: true
-        with:
-          name: "${{ steps.properties.outputs.mod_name }} For NeoForge v${{ steps.version.outputs.version }}"
-          version: ${{ steps.version.outputs.version }}
-          game-versions: 1.21.1
-          version-type: ${{ env.VERSION_TYPE }}
-          java: 21
-          fail-mode: skip
-          changelog: ${{ github.event.release.body }}
-
-          modrinth-id: vuISAWPc
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          modrinth-featured: true
-
-          curseforge-id: 986251
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
-            build/libs/anvilcraft-forge-${{ steps.version.outputs.version }}.jar
-            build/libs/anvilcraft-forge-${{ steps.version.outputs.version }}-sources.jar

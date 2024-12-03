@@ -1,4 +1,4 @@
-name: GameTest
+name: GameTest for AnvilCraftMod 1.21.1+
 on: workflow_call
 
 jobs:

@@ -16,6 +16,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      ci_version: ${{ steps.properties.outputs.ci_version }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -30,10 +32,12 @@ jobs:
           path: gradle.properties
           properties: 'ci_version'
 
-      - name: build-20
-        if: ${{ steps.properties.outputs.ci_version == '20' }}
-        uses: ./.github/workflows/20/pull_request
+  build-20:
+    needs: build
+    if: ${{ needs.build.outputs.ci_version == '20' }}
+    uses: ./.github/workflows/20_pull_request.yml
 
-      - name: build-21
-        if: ${{ steps.properties.outputs.ci_version == '21' }}
-        uses: ./.github/workflows/21/pull_request
+  build-21:
+    needs: build
+    if: ${{ needs.build.outputs.ci_version == '21' }}
+    uses: ./.github/workflows/21_pull_request.yml

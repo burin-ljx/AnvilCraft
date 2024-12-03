@@ -1,4 +1,4 @@
-name: CI for AnvilCraftMod 1.21.1+
+name: Upload Release Asset for AnvilCraftMod 1.21.1+
 on: workflow_call
 
 jobs:
