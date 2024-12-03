@@ -1,10 +1,10 @@
-name: CI for AnvilCraftMod 1.21.1+
+name: Pull Request Check for AnvilCraftMod 1.21.1+
 on: workflow_call
 
 jobs:
   gametest:
     secrets: inherit
-    uses: ./.github/workflows/21/gametest
+    uses: ./.github/workflows/21_gametest.yml
   build:
     runs-on: ubuntu-latest
     env:

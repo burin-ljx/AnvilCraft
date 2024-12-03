@@ -1,4 +1,4 @@
-name: Upload Release Asset
+name: Upload Release Asset for AnvilCraftMod 1.20.1-
 on: workflow_call
 
 jobs:

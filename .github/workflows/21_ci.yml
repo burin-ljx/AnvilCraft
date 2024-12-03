@@ -4,7 +4,7 @@ on: workflow_call
 jobs:
   gametest:
     secrets: inherit
-    uses: ./.github/workflows/21/gametest
+    uses: ./.github/workflows/21_gametest.yml
   build:
     runs-on: ubuntu-latest
     env:

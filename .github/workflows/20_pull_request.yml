@@ -1,16 +1,15 @@
-name: CI for AnvilCraftMod 1.20.1-
+name: Pull Request Check for AnvilCraftMod 1.20.1-
 on: workflow_call
-
 
 jobs:
   gametest:
     secrets: inherit
-    uses: ./.github/workflows/20/gametest.yml
+    uses: ./.github/workflows/20_gametest.yml
   build:
     runs-on: ubuntu-latest
     env:
       CI_BUILD: true
-      PR_BUILD: false
+      PR_BUILD: true
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -54,11 +53,3 @@ jobs:
           path: |
             fabric/build/libs/anvilcraft-fabric-${{ steps.version.outputs.version }}.jar
             forge/build/libs/anvilcraft-forge-${{ steps.version.outputs.version }}.jar
-
-      - name: Publish to maven
-        run: ./gradlew publish
-        env:
-          MAVEN_URL: ${{ secrets.MAVEN_URL }}
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-        continue-on-error: true

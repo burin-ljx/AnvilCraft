@@ -1,4 +1,4 @@
-name: GameTest
+name: GameTest for AnvilCraftMod 1.20.1-
 on: workflow_call
 
 jobs:
@@ -32,5 +32,8 @@ jobs:
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Run GameTest
-        run: ./gradlew runGameTestServer
+      - name: Run Fabric GameTest
+        run: ./gradlew anvilcraft-fabric:runGameTestServer
+
+      - name: Run Forge GameTest
+        run: ./gradlew anvilcraft-forge:runGameTestServer
