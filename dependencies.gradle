@@ -1,32 +1,31 @@
 dependencies {
-    // Registrate
-    api("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
-    jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
+    api("com.tterrag.registrate:Registrate:${libs.versions.registrate.get()}")
+    jarJar("com.tterrag.registrate:Registrate:${libs.versions.registrate.get()}")
 
-    implementation(forge.clothConfig)
+    implementation(libs.clothConfig)
 
     // JEI
-    compileOnlyApi(forge.jei.common.api) { transitive = false }
-    compileOnlyApi(forge.jei.forge.api) { transitive = false }
-    implementation(forge.jei.forge.impl) { transitive = false }
+    compileOnlyApi(libs.jeiCommonApi) { transitive = false }
+    compileOnlyApi(libs.jeiForgeApi) { transitive = false }
+    implementation(libs.jeiForgeImpl) { transitive = false }
 
     // REI
-    compileOnlyApi(forge.rei.plugin)
-    compileOnlyApi(forge.rei.api)
-    compileOnly(forge.rei.forge)
+    compileOnlyApi(libs.reiPlugin)
+    compileOnlyApi(libs.reiApi)
+    compileOnly(libs.reiForge)
 
     // EMI
-    compileOnlyApi("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    implementation(forge.emi)
+    compileOnlyApi("dev.emi:emi-neoforge:${libs.versions.emi.get()}:api")
+    compileOnly(libs.emi)
 
     // Patchouli
-    compileOnlyApi("vazkii.patchouli:Patchouli:${forge.versions.patchouli.get()}:api")
-    runtimeOnly(forge.patchouli)
+    compileOnlyApi("vazkii.patchouli:Patchouli:${libs.versions.patchouli.get()}:api")
+    runtimeOnly(libs.patchouli)
 
-    implementation(forge.jade)
-    implementation(forge.theoneprobe)
-
-    implementation(forge.kubejs)
+    implementation(libs.jade)
+    implementation(libs.theoneprobe)
+    implementation(libs.kubejs)
+}
 
 //    compileOnly("maven.modrinth:sodium:mc1.21.1-0.6.0-beta.4-neoforge")
 //    compileOnly("maven.modrinth:iris:1.8.0-beta.5+1.21-neoforge")
