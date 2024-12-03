@@ -17,7 +17,7 @@ dependencies {
 
     // EMI
     compileOnlyApi("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    compileOnly(forge.emi)
+    implementation(forge.emi)
 
     // Patchouli
     compileOnlyApi("vazkii.patchouli:Patchouli:${forge.versions.patchouli.get()}:api")
