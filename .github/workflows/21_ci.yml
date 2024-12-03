@@ -50,7 +50,6 @@ jobs:
           path: build/libs/anvilcraft-neoforge-${{ steps.version.outputs.version }}.jar
 
       - name: Publish to maven
-        if: ${{ github.event.inputs.publish == 'true' }}
         run: ./gradlew publish
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
