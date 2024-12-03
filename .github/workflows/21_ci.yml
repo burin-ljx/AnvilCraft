@@ -2,9 +2,6 @@ name: CI for AnvilCraftMod 1.21.1+
 on: workflow_call
 
 jobs:
-  gametest:
-    secrets: inherit
-    uses: ./.github/workflows/21_gametest.yml
   build:
     runs-on: ubuntu-latest
     env:
@@ -60,3 +57,9 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         continue-on-error: true
+
+      - name: gametest
+        uses: Anvil-Dev/dedicated-server-launch-test@1.21-neoforge
+        with:
+          mod: build/libs/anvilcraft-neoforge-${{ steps.version.outputs.version }}.jar
+          extra-mods: patchouli:1.21-87-neoforge cloth-config:15.0.140+neoforge
