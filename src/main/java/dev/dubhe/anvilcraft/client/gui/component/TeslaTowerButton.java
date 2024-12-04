@@ -93,7 +93,7 @@ public class TeslaTowerButton extends Button {
         ChatFormatting originalFormatting
     ) {
         try {
-            String[] parts = original.split(Pattern.quote(hightlighted));
+            String[] parts = original.split(Pattern.quote(hightlighted), -1);
             List<Component> components = new ArrayList<>();
             for (String s : parts) {
                 components.add(Component.literal(s).copy().setStyle(Style.EMPTY.applyFormat(originalFormatting)));
