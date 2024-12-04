@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=east,precise=false,powered=false": {
+      "model": "anvilcraft:block/block_comparator",
+      "y": 90
+    },
+    "facing=north,precise=false,powered=false": {
+      "model": "anvilcraft:block/block_comparator"
+    },
+    "facing=south,precise=false,powered=false": {
+      "model": "anvilcraft:block/block_comparator",
+      "y": 180
+    },
+    "facing=west,precise=false,powered=false": {
+      "model": "anvilcraft:block/block_comparator",
+      "y": 270
+    },
+    "facing=east,precise=true,powered=false": {
+      "model": "anvilcraft:block/block_comparator_precise",
+      "y": 90
+    },
+    "facing=north,precise=true,powered=false": {
+      "model": "anvilcraft:block/block_comparator_precise"
+    },
+    "facing=south,precise=true,powered=false": {
+      "model": "anvilcraft:block/block_comparator_precise",
+      "y": 180
+    },
+    "facing=west,precise=true,powered=false": {
+      "model": "anvilcraft:block/block_comparator_precise",
+      "y": 270
+    },
+    "facing=east,precise=false,powered=true": {
+      "model": "anvilcraft:block/block_comparator_on",
+      "y": 90
+    },
+    "facing=north,precise=false,powered=true": {
+      "model": "anvilcraft:block/block_comparator_on"
+    },
+    "facing=south,precise=false,powered=true": {
+      "model": "anvilcraft:block/block_comparator_on",
+      "y": 180
+    },
+    "facing=west,precise=false,powered=true": {
+      "model": "anvilcraft:block/block_comparator_on",
+      "y": 270
+    },
+    "facing=east,precise=true,powered=true": {
+      "model": "anvilcraft:block/block_comparator_precise_on",
+      "y": 90
+    },
+    "facing=north,precise=true,powered=true": {
+      "model": "anvilcraft:block/block_comparator_precise_on"
+    },
+    "facing=south,precise=true,powered=true": {
+      "model": "anvilcraft:block/block_comparator_precise_on",
+      "y": 180
+    },
+    "facing=west,precise=true,powered=true": {
+      "model": "anvilcraft:block/block_comparator_precise_on",
+      "y": 270
+    }
+  }
+}
