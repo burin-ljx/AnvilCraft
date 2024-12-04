@@ -1063,7 +1063,6 @@ public class ModBlocks {
         .initialProperties(() -> Blocks.OBSERVER)
         .properties(p -> p.noOcclusion())
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
-//        .model((ctx, provider) -> provider.blockItem(ctx))
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
                 .pattern("ABA")
@@ -3166,6 +3165,7 @@ public class ModBlocks {
         .recipe((ctx, provider) -> {
         })
         .register();
+
     public static final BlockEntry<LiquidBlock> OIL = REGISTRATE
         .block("oil", p -> new LiquidBlock(ModFluids.OIL.get(), p))
         .properties(it -> it
@@ -3224,7 +3224,6 @@ public class ModBlocks {
         )
         .blockstate(ModelProviderUtil::liquid)
         .register();
-
 
     static {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_FUNCTION_BLOCK.getKey());
