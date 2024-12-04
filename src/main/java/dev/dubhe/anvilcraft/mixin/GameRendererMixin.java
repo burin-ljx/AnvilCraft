@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.IOException;
 
 @Mixin(GameRenderer.class)
-public class GameRendererMixin {
+abstract class GameRendererMixin {
 
     @Inject(
         method = "reloadShaders",

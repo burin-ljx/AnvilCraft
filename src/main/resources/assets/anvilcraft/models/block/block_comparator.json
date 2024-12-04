@@ -1,0 +1,44 @@
+{
+	"credit": "Made by XeKr with Blockbench",
+	"parent": "minecraft:block/cube",
+	"textures": {
+		"particle": "anvilcraft:block/block_comparator",
+		"switch": "anvilcraft:block/block_comparator",
+		"body": "anvilcraft:block/block_comparator_body",
+		"eyes": "anvilcraft:block/block_comparator_eyes"
+	},
+	"elements": [
+		{
+			"from": [4, 0, 3],
+			"to": [12, 8, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 8], "texture": "#switch"},
+				"east": {"uv": [16, 8, 3, 16], "texture": "#switch"},
+				"south": {"uv": [8, 0, 16, 8], "texture": "#switch", "cullface": "south"},
+				"west": {"uv": [3, 8, 16, 16], "texture": "#switch"},
+				"up": {"uv": [0, 3, 8, 16], "texture": "#body"},
+				"down": {"uv": [8, 0, 16, 13], "texture": "#body", "cullface": "down"}
+			}
+		},
+		{
+			"from": [0, 4, 0],
+			"to": [16, 7, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 5, 16, 8], "texture": "#eyes", "cullface": "north"},
+				"east": {"uv": [6, 13, 0, 16], "texture": "#eyes", "cullface": "east"},
+				"south": {"uv": [0, 5, 16, 8], "texture": "#eyes"},
+				"west": {"uv": [0, 13, 6, 16], "texture": "#eyes", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 6], "texture": "#eyes"},
+				"down": {"uv": [0, 7, 16, 13], "texture": "#eyes"}
+			}
+		}
+	],
+	"display": {
+		"head": {
+			"translation": [0, 6, 0],
+			"scale": [1.5, 1.5, 1.5]
+		}
+	}
+}

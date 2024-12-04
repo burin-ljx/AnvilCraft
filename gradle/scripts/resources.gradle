@@ -13,7 +13,7 @@ tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             minecraft_version      : libs.versions.minecraft.get(),
             minecraft_version_range: minecraft_version_range,
-            neo_version            : forge.versions.neoForge.get(),
+            neo_version            : libs.versions.neoForge.get(),
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
             mod_id                 : mod_id,

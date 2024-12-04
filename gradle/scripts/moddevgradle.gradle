@@ -1,5 +1,5 @@
 neoForge {
-    version = forge.versions.neoForge.get()
+    version = libs.versions.neoForge.get()
 
     parchment {
         minecraftVersion = "1.21"
