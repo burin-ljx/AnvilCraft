@@ -25,6 +25,7 @@ import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
+import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
 import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
@@ -2686,6 +2687,31 @@ public class ModBlocks {
             BlockTags.NEEDS_DIAMOND_TOOL,
             ModBlockTags.STORAGE_BLOCKS_EARTH_CORE_SHARD)
         .register();
+
+    public static final BlockEntry<NegativeMatterBlock> NEGATIVE_MATTER_BLOCK = REGISTRATE
+            .block("negative_matter_block", NegativeMatterBlock::new)
+            .initialProperties(VOID_MATTER_BLOCK::get)
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .properties(properties -> properties.lightLevel(state -> 0).noOcclusion())
+            .blockstate((context, provider) -> provider.simpleBlock(
+                    context.get(),
+                    DangerUtil.genConfiguredModel("block/negative_matter_block").get()))
+            .item()
+            .initialProperties(Item.Properties::new)
+            .build()
+            .recipe((ctx, provider) -> {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                        .pattern("AAA")
+                        .pattern("AAA")
+                        .pattern("AAA")
+                        .define('A', ModItems.NEGATIVE_MATTER)
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(ModItems.NEGATIVE_MATTER),
+                                RegistrateRecipeProvider.has(ModItems.NEGATIVE_MATTER))
+                        .save(provider);
+            })
+            .defaultLoot()
+            .register();
 
     public static final BlockEntry<? extends Block> LAVA_CAULDRON = REGISTRATE
         .block("lava_cauldron", LavaCauldronBlock::new)

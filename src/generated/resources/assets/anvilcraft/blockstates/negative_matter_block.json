@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "anvilcraft:block/negative_matter_block"
+    }
+  }
+}

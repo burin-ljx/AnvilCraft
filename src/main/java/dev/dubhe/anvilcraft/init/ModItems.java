@@ -1411,6 +1411,41 @@ public class ModItems {
         })
         .register();
 
+    public static final ItemEntry<Item> NEGATIVE_MATTER = REGISTRATE
+            .item("negative_matter", Item::new)
+            .initialProperties(Item.Properties::new)
+            .recipe((ctx, provider) -> {
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
+                        .requires(ModBlocks.NEGATIVE_MATTER_BLOCK)
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(ModBlocks.NEGATIVE_MATTER_BLOCK.asItem()),
+                                AnvilCraftDatagen.has(ModBlocks.NEGATIVE_MATTER_BLOCK))
+                        .save(provider, AnvilCraft.of(BuiltInRegistries.ITEM.getKey(ctx.get()).getPath() + "_from_block"));
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                        .pattern("AAA")
+                        .pattern("AAA")
+                        .pattern("AAA")
+                        .define('A', ModItems.NEGATIVE_MATTER_NUGGET)
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(ModItems.NEGATIVE_MATTER_NUGGET),
+                                RegistrateRecipeProvider.has(ModItems.NEGATIVE_MATTER_NUGGET))
+                        .save(provider);
+            })
+            .register();
+
+    public static final ItemEntry<Item> NEGATIVE_MATTER_NUGGET = REGISTRATE
+            .item("negative_matter_nugget", Item::new)
+            .initialProperties(Item.Properties::new)
+            .recipe((ctx, provider) -> {
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
+                        .requires(ModItems.NEGATIVE_MATTER)
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(ModItems.NEGATIVE_MATTER),
+                                AnvilCraftDatagen.has(ModItems.NEGATIVE_MATTER))
+                        .save(provider, AnvilCraft.of(BuiltInRegistries.ITEM.getKey(ctx.get()).getPath() + "_from_ingot"));
+            })
+            .register();
+
     public static final ItemEntry<BucketItem> OIL_BUCKET = REGISTRATE
         .item("oil_bucket", p -> new BucketItem(ModFluids.OIL.get(), p))
         .initialProperties(() -> new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET))
