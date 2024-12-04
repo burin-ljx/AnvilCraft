@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.block.ArrowBlock;
 import dev.dubhe.anvilcraft.block.BatchCrafterBlock;
 import dev.dubhe.anvilcraft.block.BerryCakeBlock;
 import dev.dubhe.anvilcraft.block.BerryCreamBlock;
+import dev.dubhe.anvilcraft.block.BlockComparatorBlock;
 import dev.dubhe.anvilcraft.block.BlockDevourerBlock;
 import dev.dubhe.anvilcraft.block.BlockPlacerBlock;
 import dev.dubhe.anvilcraft.block.CakeBaseBlock;
@@ -1057,6 +1058,29 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
+    public static final BlockEntry<BlockComparatorBlock> BLOCK_COMPARATOR_BLOCK = REGISTRATE
+        .block("block_comparator", BlockComparatorBlock::new)
+        .initialProperties(() -> Blocks.OBSERVER)
+        .properties(p -> p.noOcclusion())
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+//        .model((ctx, provider) -> provider.blockItem(ctx))
+        .recipe((ctx, provider) -> {
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+                .pattern("ABA")
+                .pattern(" C ")
+                .pattern(" D ")
+                .define('A', Blocks.OBSERVER)
+                .define('B', Blocks.REPEATER)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .define('D', Tags.Items.DUSTS_REDSTONE)
+                .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.CIRCUIT_BOARD), AnvilCraftDatagen.has(ModItems.CIRCUIT_BOARD))
+                .save(provider);
+        })
+        .blockstate((ctx, provider) -> {
+        })
+        .simpleItem()
+        .register();
+
     public static final BlockEntry<ImpactPileBlock> IMPACT_PILE = REGISTRATE
         .block("impact_pile", ImpactPileBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -3142,7 +3166,6 @@ public class ModBlocks {
         .recipe((ctx, provider) -> {
         })
         .register();
-
     public static final BlockEntry<LiquidBlock> OIL = REGISTRATE
         .block("oil", p -> new LiquidBlock(ModFluids.OIL.get(), p))
         .properties(it -> it
@@ -3201,6 +3224,7 @@ public class ModBlocks {
         )
         .blockstate(ModelProviderUtil::liquid)
         .register();
+
 
     static {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_FUNCTION_BLOCK.getKey());

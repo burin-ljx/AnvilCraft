@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_circuit_board": {
+      "conditions": {
+        "items": [
+          {
+            "items": "anvilcraft:circuit_board"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "anvilcraft:block_comparator"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_circuit_board"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "anvilcraft:block_comparator"
+    ]
+  }
+}
