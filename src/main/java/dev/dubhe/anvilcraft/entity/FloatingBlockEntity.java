@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Fallable;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
@@ -31,6 +32,7 @@ public class FloatingBlockEntity extends FallingBlockEntity {
     private boolean underCeiling = false;
 
     /**
+     *
      */
     public FloatingBlockEntity(EntityType<? extends FallingBlockEntity> entityType, Level level) {
         super(entityType, level);
@@ -51,20 +53,26 @@ public class FloatingBlockEntity extends FallingBlockEntity {
     }
 
     /**
-     * @param level 世界
-     * @param pos 方块坐标
+     * @param level      世界
+     * @param pos        方块坐标
      * @param blockState 方块状态
      */
-    public static FloatingBlockEntity _float(Level level, BlockPos pos, BlockState blockState) {
+    public static FloatingBlockEntity _float(Level level, BlockPos pos, BlockState blockState, boolean isWater) {
         FloatingBlockEntity floatingBlockEntity = new FloatingBlockEntity(
-                level,
-                (double) pos.getX() + 0.5,
-                pos.getY(),
-                (double) pos.getZ() + 0.5,
-                blockState.hasProperty(BlockStateProperties.WATERLOGGED)
-                        ? blockState.setValue(BlockStateProperties.WATERLOGGED, false)
-                        : blockState);
-        level.setBlock(pos, Fluids.WATER.defaultFluidState().createLegacyBlock(), 3);
+            level,
+            (double) pos.getX() + 0.5,
+            pos.getY(),
+            (double) pos.getZ() + 0.5,
+            blockState.hasProperty(BlockStateProperties.WATERLOGGED)
+                ? blockState.setValue(BlockStateProperties.WATERLOGGED, false)
+                : blockState
+        );
+        level.setBlock(
+            pos,
+            isWater ? Fluids.WATER.defaultFluidState().createLegacyBlock()
+                : Blocks.AIR.defaultBlockState(),
+            3
+        );
         level.addFreshEntity(floatingBlockEntity);
         return floatingBlockEntity;
     }
@@ -78,7 +86,10 @@ public class FloatingBlockEntity extends FallingBlockEntity {
             ++this.time;
             BlockPos blockPos = this.blockPosition();
 
-            if (this.level().getFluidState(blockPos.above()).is(FluidTags.WATER) && !underCeiling) {
+            if (
+                (this.level().getFluidState(blockPos.above()).is(FluidTags.WATER) && !underCeiling)
+                    || this.level().getBlockState(blockPos.above()).getBlock() instanceof FallingBlock
+            ) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0, 0.04, 0.0));
             } else {
                 if (!this.level().isClientSide) {
@@ -91,34 +102,34 @@ public class FloatingBlockEntity extends FallingBlockEntity {
                         if (!blockState.is(Blocks.MOVING_PISTON)) {
                             if (!this.cancelDrop) {
                                 boolean bl3 = blockState.canBeReplaced(new DirectionalPlaceContext(
-                                        this.level(), blockPos, Direction.DOWN, ItemStack.EMPTY, Direction.UP));
+                                    this.level(), blockPos, Direction.DOWN, ItemStack.EMPTY, Direction.UP));
                                 boolean bl5 = this.blockState.canSurvive(this.level(), blockPos);
                                 if (bl3 && bl5) {
                                     if (this.blockState.hasProperty(BlockStateProperties.WATERLOGGED)
-                                            && this.level()
-                                                            .getFluidState(blockPos)
-                                                            .getType()
-                                                    == Fluids.WATER) {
+                                        && this.level()
+                                        .getFluidState(blockPos)
+                                        .getType()
+                                        == Fluids.WATER) {
                                         this.blockState =
-                                                this.blockState.setValue(BlockStateProperties.WATERLOGGED, true);
+                                            this.blockState.setValue(BlockStateProperties.WATERLOGGED, true);
                                     }
 
                                     if (this.level().setBlock(blockPos, this.blockState, 3)) {
                                         ((ServerLevel) this.level())
-                                                .getChunkSource()
-                                                .chunkMap
-                                                .broadcast(
-                                                        this,
-                                                        new ClientboundBlockUpdatePacket(
-                                                                blockPos,
-                                                                this.level().getBlockState(blockPos)));
+                                            .getChunkSource()
+                                            .chunkMap
+                                            .broadcast(
+                                                this,
+                                                new ClientboundBlockUpdatePacket(
+                                                    blockPos,
+                                                    this.level().getBlockState(blockPos)));
                                         this.discard();
                                         if (block instanceof Fallable) {
                                             ((Fallable) block)
-                                                    .onLand(this.level(), blockPos, this.blockState, blockState, this);
+                                                .onLand(this.level(), blockPos, this.blockState, blockState, this);
                                         }
                                     } else if (this.dropItem
-                                            && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                                        && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                                         this.discard();
                                         this.callOnBrokenAfterFall(block, blockPos);
                                         this.spawnAtLocation(block);
@@ -126,7 +137,7 @@ public class FloatingBlockEntity extends FallingBlockEntity {
                                 } else {
                                     this.discard();
                                     if (this.dropItem
-                                            && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                                        && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                                         this.callOnBrokenAfterFall(block, blockPos);
                                         this.spawnAtLocation(block);
                                     }
