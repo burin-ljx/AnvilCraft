@@ -42,9 +42,13 @@ public class EndDustBlock extends Block {
         BlockPos pos,
         RandomSource random
     ) {
-        if (!level.getFluidState(pos.above()).is(FluidTags.WATER)) return;
-        if (!FallingBlock.isFree(level.getBlockState(pos.above()))) return;
-        FloatingBlockEntity._float(level, pos, state);
+        boolean isWater = level.getFluidState(pos.above()).is(FluidTags.WATER);
+        if (
+            (isWater && FallingBlock.isFree(level.getBlockState(pos.above())))
+                || level.getBlockState(pos.above()).getBlock() instanceof FallingBlock
+        ) {
+            FloatingBlockEntity._float(level, pos, state, isWater);
+        }
     }
 
     @Override
@@ -56,12 +60,17 @@ public class EndDustBlock extends Block {
         BlockPos neighborPos,
         boolean movedByPiston
     ) {
-        if (level.getFluidState(neighborPos).is(FluidTags.WATER)) {
+        if (isEligible(level, pos, neighborPos)) {
             level.scheduleTick(pos, this, this.getDelayAfterPlace());
         }
     }
 
     protected int getDelayAfterPlace() {
         return 2;
+    }
+
+    public static boolean isEligible(Level level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
+        return level.getFluidState(neighborPos).is(FluidTags.WATER)
+            || level.getBlockState(pos.above()).getBlock() instanceof FallingBlock;
     }
 }
