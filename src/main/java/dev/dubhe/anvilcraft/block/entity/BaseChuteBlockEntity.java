@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.block.entity;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.item.IDiskCloneable;
 import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
-import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerHolder;
+import dev.dubhe.anvilcraft.api.itemhandler.IItemHandlerHolder;
 import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class BaseChuteBlockEntity
     extends BaseMachineBlockEntity
-    implements IFilterBlockEntity, IDiskCloneable, ItemHandlerHolder {
+    implements IFilterBlockEntity, IDiskCloneable, IItemHandlerHolder {
 
     private int cooldown = 0;
     private final FilteredItemStackHandler itemHandler = new FilteredItemStackHandler(9) {

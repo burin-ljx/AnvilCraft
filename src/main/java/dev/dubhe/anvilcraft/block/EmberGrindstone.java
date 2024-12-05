@@ -24,7 +24,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Getter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmberGrindstone extends BetterGrindstoneBlock implements IHammerRemovable, EmberBlock {
+public class EmberGrindstone extends BetterGrindstoneBlock implements IHammerRemovable, IEmberBlock {
 
     private static final Component CONTAINER_TITLE = Component.translatable("container.grindstone_title");
     private BlockState checkBlockState;

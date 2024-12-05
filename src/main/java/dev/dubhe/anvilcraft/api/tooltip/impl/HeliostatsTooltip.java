@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.api.tooltip.impl;
 
 import dev.dubhe.anvilcraft.api.tooltip.TooltipRenderHelper;
-import dev.dubhe.anvilcraft.api.tooltip.providers.HandHeldItemTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IHandHeldItemTooltipProvider;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.item.HeliostatsItem;
 
@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-public class HeliostatsTooltip implements HandHeldItemTooltipProvider {
+public class HeliostatsTooltip implements IHandHeldItemTooltipProvider {
     @Override
     public boolean accepts(ItemStack itemStack) {
         return itemStack.is(ModBlocks.HELIOSTATS.asItem());

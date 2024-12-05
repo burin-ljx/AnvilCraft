@@ -2,7 +2,7 @@ package dev.dubhe.anvilcraft.event.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.IHasMultiBlock;
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilHurtEntityEvent;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
@@ -52,7 +52,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static dev.dubhe.anvilcraft.util.AnvilUtil.dropItems;
@@ -70,7 +69,7 @@ public class AnvilEventListener {
     @SubscribeEvent
     public static void onLand(@NotNull AnvilFallOnLandEvent event) {
         if (!behaviorRegistered) {
-            AnvilBehavior.register();
+            IAnvilBehavior.register();
             behaviorRegistered = true;
         }
         Level level = event.getLevel();
@@ -92,7 +91,7 @@ public class AnvilEventListener {
         handleSqueezingRecipe(level, hitBlockPos, hitBlockState);
 
 
-        for (AnvilBehavior behavior : AnvilBehavior.findMatching(hitBlockState)) {
+        for (IAnvilBehavior behavior : IAnvilBehavior.findMatching(hitBlockState)) {
             if (behavior.handle(level, hitBlockPos, hitBlockState, event.getFallDistance(), event)) {
                 return;
             }

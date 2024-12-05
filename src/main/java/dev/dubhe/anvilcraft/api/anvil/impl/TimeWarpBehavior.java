@@ -1,11 +1,10 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModComponents;
-import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.item.HasMobBlockItem;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -35,7 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TimeWarpBehavior implements AnvilBehavior {
+public class TimeWarpBehavior implements IAnvilBehavior {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean handle(

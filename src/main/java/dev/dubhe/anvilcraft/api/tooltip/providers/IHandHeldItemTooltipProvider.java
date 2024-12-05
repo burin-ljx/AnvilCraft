@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 /**
  * 手持物品的tooltip
  */
-public interface HandHeldItemTooltipProvider {
+public interface IHandHeldItemTooltipProvider {
     boolean accepts(ItemStack itemStack);
 
     void render(

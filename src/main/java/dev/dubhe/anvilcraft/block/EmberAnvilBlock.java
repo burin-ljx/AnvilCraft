@@ -31,17 +31,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @Setter
 @Getter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmberAnvilBlock extends BetterAnvilBlock implements IHammerRemovable, EmberBlock {
+public class EmberAnvilBlock extends BetterAnvilBlock implements IHammerRemovable, IEmberBlock {
     private static final VoxelShape BASE = Block.box(2.0, 0.0, 2.0, 14.0, 4.0, 14.0);
     private static final VoxelShape X_LEG1 = Block.box(4.0, 4.0, 5.0, 12.0, 10.0, 11.0);
     private static final VoxelShape X_TOP = Block.box(0.0, 10.0, 3.0, 16.0, 16.0, 13.0);

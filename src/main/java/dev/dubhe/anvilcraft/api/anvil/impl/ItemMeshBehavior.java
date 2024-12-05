@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.recipe.anvil.MeshRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.cache.RecipeCaches;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ItemMeshBehavior implements AnvilBehavior {
+public class ItemMeshBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
         Level level,

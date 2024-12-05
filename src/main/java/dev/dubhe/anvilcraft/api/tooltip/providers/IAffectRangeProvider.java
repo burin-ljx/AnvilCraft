@@ -6,7 +6,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * 作用范围提供器
  */
-public interface AffectRangeProvider {
+public interface IAffectRangeProvider {
     boolean accepts(BlockEntity entity);
 
     VoxelShape affectRange(BlockEntity entity);

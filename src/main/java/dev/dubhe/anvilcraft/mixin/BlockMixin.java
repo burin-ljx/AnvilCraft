@@ -1,8 +1,6 @@
 package dev.dubhe.anvilcraft.mixin;
 
-import dev.dubhe.anvilcraft.block.EmberBlock;
-
-import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
+import dev.dubhe.anvilcraft.block.INegativeShapeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -13,6 +11,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,40 +29,38 @@ abstract class BlockMixin {
     private static ThreadLocal<Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>> OCCLUSION_CACHE;
 
     @Inject(
-            method = "shouldRenderFace",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;canOcclude()Z"),
-            cancellable = true)
+        method = "shouldRenderFace",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;canOcclude()Z"),
+        cancellable = true)
     private static void emberMetalBlockFaceSkip(
-            BlockState state,
-            BlockGetter level,
-            BlockPos offset,
-            Direction face,
-            BlockPos pos,
-            CallbackInfoReturnable<Boolean> cir) {
-        if (state.getBlock() instanceof EmberBlock)
-            anvilcraft_neoforge$NegativeShapeFaceSkip(
-                    t -> t.getBlock() instanceof EmberBlock,
-                    state, level, offset, face, pos, cir);
-        if (state.getBlock() instanceof NegativeMatterBlock)
-            anvilcraft_neoforge$NegativeShapeFaceSkip(
-                t -> t.getBlock() instanceof NegativeMatterBlock,
-                state, level, offset, face, pos, cir);
+        @NotNull BlockState state,
+        BlockGetter level,
+        BlockPos offset,
+        Direction face,
+        BlockPos pos,
+        CallbackInfoReturnable<Boolean> cir) {
+        if (state.getBlock() instanceof INegativeShapeBlock<?> block)
+            anvilcraft$NegativeShapeFaceSkip(
+                t -> block.getBlockType().isInstance(t.getBlock()),
+                state, level, offset, face, pos, cir
+            );
     }
 
     @Unique
-    private static void anvilcraft_neoforge$NegativeShapeFaceSkip(
-            Predicate<BlockState> predicate,
-            BlockState state,
-            BlockGetter level,
-            BlockPos offset,
-            Direction face,
-            BlockPos pos,
-            CallbackInfoReturnable<Boolean> cir){
+    private static void anvilcraft$NegativeShapeFaceSkip(
+        Predicate<BlockState> predicate,
+        BlockState state,
+        @NotNull BlockGetter level,
+        BlockPos offset,
+        Direction face,
+        BlockPos pos,
+        CallbackInfoReturnable<Boolean> cir
+    ) {
         BlockState blockstate = level.getBlockState(pos);
         if (blockstate.canOcclude() || predicate.test(blockstate)) {
             Block.BlockStatePairKey blockstatepairkey = new Block.BlockStatePairKey(state, blockstate, face);
             Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
-                    OCCLUSION_CACHE.get();
+                OCCLUSION_CACHE.get();
             byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(blockstatepairkey);
             if (b0 != 127) {
                 cir.setReturnValue(b0 != 0 || !predicate.test(blockstate));
@@ -71,7 +68,7 @@ abstract class BlockMixin {
             }
             VoxelShape voxelshape = state.getFaceOcclusionShape(level, offset, face);
             if (voxelshape.isEmpty()) {
-                cir.setReturnValue(!(blockstate.getBlock() instanceof NegativeMatterBlock));
+                cir.setReturnValue(!predicate.test(blockstate));
                 return;
             }
             VoxelShape voxelshape1 = blockstate.getFaceOcclusionShape(level, pos, face.getOpposite());

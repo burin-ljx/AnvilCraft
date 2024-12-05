@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.HeaterBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ItemCompressBehavior implements AnvilBehavior {
+public class ItemCompressBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
         Level level,

@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-interface ShockBehaviorDefinition {
+interface IShockBehaviorDefinition {
     boolean cornerMatches(BlockPos centerPos, Level level);
 
     default int priority() {
@@ -19,7 +19,7 @@ interface ShockBehaviorDefinition {
     void acceptRanges(List<BlockPos> blockPosList, Level level);
 
     // spotless:off
-    abstract class Simple<T> implements ShockBehaviorDefinition {
+    abstract class Simple<T> implements IShockBehaviorDefinition {
         private final int[] dt = {-1, 1};
         final BiConsumer<List<BlockPos>, Level> rangeAcceptor;
         final T cornerBlock;
@@ -75,7 +75,7 @@ interface ShockBehaviorDefinition {
         }
     }
 
-    class MatchAll implements ShockBehaviorDefinition {
+    class MatchAll implements IShockBehaviorDefinition {
 
         final BiConsumer<List<BlockPos>, Level> rangeAcceptor;
 

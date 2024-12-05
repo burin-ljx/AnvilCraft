@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Getter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmberMetalPillarBlock extends RotatedPillarBlock implements EmberBlock {
+public class EmberMetalPillarBlock extends RotatedPillarBlock implements IEmberBlock {
     private BlockState checkBlockState;
 
     public EmberMetalPillarBlock(Properties properties) {

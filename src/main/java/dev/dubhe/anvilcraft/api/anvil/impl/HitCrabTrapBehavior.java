@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.entity.CrabTrapBlockEntity;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public class HitCrabTrapBehavior implements AnvilBehavior {
+public class HitCrabTrapBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
         Level level,

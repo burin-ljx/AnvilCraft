@@ -5,9 +5,9 @@ import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltip;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.PowerComponentTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.RubyPrismTooltipProvider;
-import dev.dubhe.anvilcraft.api.tooltip.providers.AffectRangeProvider;
-import dev.dubhe.anvilcraft.api.tooltip.providers.BlockEntityTooltipProvider;
-import dev.dubhe.anvilcraft.api.tooltip.providers.HandHeldItemTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IAffectRangeProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IBlockEntityTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IHandHeldItemTooltipProvider;
 import dev.dubhe.anvilcraft.init.ModItems;
 
 import net.minecraft.client.Minecraft;
@@ -35,9 +35,9 @@ public class HudTooltipManager {
     private static final int BACKGROUND_COLOR = 0xCC100010;
     private static final int BORDER_COLOR_TOP = 0x505000ff;
     private static final int BORDER_COLOR_BOTTOM = 0x5028007f;
-    private final List<BlockEntityTooltipProvider> blockEntityProviders = new ArrayList<>();
-    private final List<AffectRangeProvider> affectRangeProviders = new ArrayList<>();
-    private final List<HandHeldItemTooltipProvider> handItemProviders = new ArrayList<>();
+    private final List<IBlockEntityTooltipProvider> blockEntityProviders = new ArrayList<>();
+    private final List<IAffectRangeProvider> affectRangeProviders = new ArrayList<>();
+    private final List<IHandHeldItemTooltipProvider> handItemProviders = new ArrayList<>();
 
     static {
         INSTANCE.registerBlockEntityTooltip(new PowerComponentTooltipProvider());
@@ -52,11 +52,11 @@ public class HudTooltipManager {
         affectRangeProviders.add(affectRangeProvider);
     }
 
-    private void registerBlockEntityTooltip(BlockEntityTooltipProvider provider) {
+    private void registerBlockEntityTooltip(IBlockEntityTooltipProvider provider) {
         blockEntityProviders.add(provider);
     }
 
-    private void registerHandHeldItemTooltip(HandHeldItemTooltipProvider provider) {
+    private void registerHandHeldItemTooltip(IHandHeldItemTooltipProvider provider) {
         handItemProviders.add(provider);
     }
 
@@ -74,7 +74,7 @@ public class HudTooltipManager {
         final int tooltipPosX = screenWidth / 2 + 10;
         final int tooltipPosY = screenHeight / 2 + 10;
         Font font = Minecraft.getInstance().font;
-        BlockEntityTooltipProvider currentProvider = determineBlockEntityTooltipProvider(entity);
+        IBlockEntityTooltipProvider currentProvider = determineBlockEntityTooltipProvider(entity);
         if (currentProvider == null) return;
         List<Component> tooltip = currentProvider.tooltip(entity);
         if (tooltip == null || tooltip.isEmpty()) return;
@@ -101,7 +101,7 @@ public class HudTooltipManager {
         double camY,
         double camZ
     ) {
-        HandHeldItemTooltipProvider pv = determineHandHeldItemTooltipProvider(itemStack);
+        IHandHeldItemTooltipProvider pv = determineHandHeldItemTooltipProvider(itemStack);
         if (pv == null) return;
         pv.render(poseStack, consumer, itemStack, camX, camY, camZ);
     }
@@ -116,7 +116,7 @@ public class HudTooltipManager {
         int screenWidth,
         int screenHeight
     ) {
-        HandHeldItemTooltipProvider pv = determineHandHeldItemTooltipProvider(itemStack);
+        IHandHeldItemTooltipProvider pv = determineHandHeldItemTooltipProvider(itemStack);
         if (pv == null) return;
         pv.renderTooltip(guiGraphics, screenWidth, screenHeight);
     }
@@ -132,38 +132,38 @@ public class HudTooltipManager {
         double camY,
         double camZ
     ) {
-        AffectRangeProvider currentProvider = determineAffectRangeProvider(entity);
+        IAffectRangeProvider currentProvider = determineAffectRangeProvider(entity);
         if (currentProvider == null) return;
         VoxelShape shape = currentProvider.affectRange(entity);
         if (shape == null) return;
         renderOutline(poseStack, consumer, camX, camY, camZ, BlockPos.ZERO, shape, 0xff00ffcc);
     }
 
-    private HandHeldItemTooltipProvider determineHandHeldItemTooltipProvider(ItemStack itemStack) {
+    private IHandHeldItemTooltipProvider determineHandHeldItemTooltipProvider(ItemStack itemStack) {
         if (itemStack == null || itemStack.isEmpty()) return null;
-        ArrayList<HandHeldItemTooltipProvider> pv = handItemProviders.stream()
+        ArrayList<IHandHeldItemTooltipProvider> pv = handItemProviders.stream()
             .filter(it -> it.accepts(itemStack))
-            .sorted(Comparator.comparingInt(HandHeldItemTooltipProvider::priority))
+            .sorted(Comparator.comparingInt(IHandHeldItemTooltipProvider::priority))
             .collect(Collectors.toCollection(ArrayList::new));
         if (pv.isEmpty()) return null;
         return pv.getFirst();
     }
 
-    private BlockEntityTooltipProvider determineBlockEntityTooltipProvider(BlockEntity entity) {
+    private IBlockEntityTooltipProvider determineBlockEntityTooltipProvider(BlockEntity entity) {
         if (entity == null) return null;
-        ArrayList<BlockEntityTooltipProvider> blockEntityTooltipProviders = blockEntityProviders.stream()
+        ArrayList<IBlockEntityTooltipProvider> blockEntityTooltipProviders = blockEntityProviders.stream()
             .filter(it -> it.accepts(entity))
-            .sorted(Comparator.comparingInt(BlockEntityTooltipProvider::priority))
+            .sorted(Comparator.comparingInt(IBlockEntityTooltipProvider::priority))
             .collect(Collectors.toCollection(ArrayList::new));
         if (blockEntityTooltipProviders.isEmpty()) return null;
         return blockEntityTooltipProviders.getFirst();
     }
 
-    private AffectRangeProvider determineAffectRangeProvider(BlockEntity entity) {
+    private IAffectRangeProvider determineAffectRangeProvider(BlockEntity entity) {
         if (entity == null) return null;
-        ArrayList<AffectRangeProvider> pv = affectRangeProviders.stream()
+        ArrayList<IAffectRangeProvider> pv = affectRangeProviders.stream()
             .filter(it -> it.accepts(entity))
-            .sorted(Comparator.comparingInt(AffectRangeProvider::priority))
+            .sorted(Comparator.comparingInt(IAffectRangeProvider::priority))
             .collect(Collectors.toCollection(ArrayList::new));
         if (pv.isEmpty()) return null;
         return pv.getFirst();

@@ -9,13 +9,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmberMetalBlock extends Block implements EmberBlock {
+public class EmberMetalBlock extends Block implements IEmberBlock {
     private final double waterAbsorptionChance;
 
     @Getter
