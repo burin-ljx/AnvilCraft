@@ -61,11 +61,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     /// Nonlinear, should bigger than 1, 1 means no animation
     private static final float SELECTION_ANIMATION_SPEED_FACTOR = 10f;
 
-    private Vector2f centerPos;
-    private Vector2f selectionEffectPosFromCenter = MathUtil.copy(ROTATION_START).mul(RADIUS);
-    /// *rad*
-    private float targetAngle = 0f;
-
     static {
         MethodType mt = MethodType.methodType(
             String.class,
@@ -93,6 +88,10 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private long displayTime = System.currentTimeMillis();
     private boolean animationStarted = false;
     private boolean closingAnimationStarted = false;
+    private Vector2f centerPos;
+    private Vector2f selectionEffectPosFromCenter = MathUtil.copy(ROTATION_START).mul(RADIUS);
+    /// *rad*
+    private float targetAngle = 0f;
 
     public AnvilHammerScreen(BlockPos targetBlockPos, BlockState initialBlockState, Property<?> property, List<BlockState> possibleStates) {
         super(Component.translatable("screen.anvilcraft.anvil_hammer.title"));
@@ -141,7 +140,16 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             } catch (Throwable ignored) {
             }
         }
-
+        SelectionItem selected = items.stream()
+            .filter(it -> it.state == currentBlockState)
+            .findFirst()
+            .orElseThrow();
+        targetAngle = selected.angle;
+        selectionEffectPosFromCenter = MathUtil.rotate(
+            MathUtil.copy(ROTATION_START)
+                .mul(RADIUS),
+            -targetAngle
+        ).mul(1, -1);
     }
 
     @Override
@@ -330,27 +338,27 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private void renderSelection(GuiGraphics guiGraphics) {
 
         float selectionEffectAngle =
-                MathUtil.angle(
-                    MathUtil.copy(ROTATION_START).negate(),
-                    selectionEffectPosFromCenter
-                );
+            MathUtil.angle(
+                MathUtil.copy(ROTATION_START).negate(),
+                selectionEffectPosFromCenter
+            );
 
         float diffAngle = targetAngle - selectionEffectAngle;
 
         if (diffAngle > Math.PI) {
-            diffAngle -= (float) (Math.PI*2);
+            diffAngle -= (float) (Math.PI * 2);
         } else if (diffAngle < -Math.PI) {
-            diffAngle += (float) (Math.PI*2);
+            diffAngle += (float) (Math.PI * 2);
         }
 
         selectionEffectPosFromCenter =
-                MathUtil.rotate(
-                        selectionEffectPosFromCenter,
-                        diffAngle / SELECTION_ANIMATION_SPEED_FACTOR
-                );
+            MathUtil.rotate(
+                selectionEffectPosFromCenter,
+                diffAngle / SELECTION_ANIMATION_SPEED_FACTOR
+            );
 
         Vector2f pos =
-                MathUtil.copy(selectionEffectPosFromCenter)
+            MathUtil.copy(selectionEffectPosFromCenter)
                 .mul(1, -1)
                 .add(centerPos);
 
