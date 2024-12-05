@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.mixin;
 
 import dev.dubhe.anvilcraft.block.EmberBlock;
 
+import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -59,6 +60,33 @@ abstract class BlockMixin {
                 }
                 object2bytelinkedopenhashmap.putAndMoveToFirst(blockstatepairkey, (byte) (flag ? 1 : 0));
                 cir.setReturnValue(flag || !(blockstate.getBlock() instanceof EmberBlock));
+                return;
+            }
+            cir.setReturnValue(true);
+        }
+        if (state.getBlock() instanceof NegativeMatterBlock) {
+            BlockState blockstate = level.getBlockState(pos);
+            if (blockstate.canOcclude() || blockstate.getBlock() instanceof NegativeMatterBlock) {
+                Block.BlockStatePairKey blockstatepairkey = new Block.BlockStatePairKey(state, blockstate, face);
+                Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
+                        OCCLUSION_CACHE.get();
+                byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(blockstatepairkey);
+                if (b0 != 127) {
+                    cir.setReturnValue(b0 != 0 || !(blockstate.getBlock() instanceof NegativeMatterBlock));
+                    return;
+                }
+                VoxelShape voxelshape = state.getFaceOcclusionShape(level, offset, face);
+                if (voxelshape.isEmpty()) {
+                    cir.setReturnValue(!(blockstate.getBlock() instanceof NegativeMatterBlock));
+                    return;
+                }
+                VoxelShape voxelshape1 = blockstate.getFaceOcclusionShape(level, pos, face.getOpposite());
+                boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
+                if (object2bytelinkedopenhashmap.size() == 2048) {
+                    object2bytelinkedopenhashmap.removeLastByte();
+                }
+                object2bytelinkedopenhashmap.putAndMoveToFirst(blockstatepairkey, (byte) (flag ? 1 : 0));
+                cir.setReturnValue(flag || !(blockstate.getBlock() instanceof NegativeMatterBlock));
                 return;
             }
             cir.setReturnValue(true);
