@@ -16,9 +16,12 @@ import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.function.Predicate;
 
 @Mixin(Block.class)
 abstract class BlockMixin {
@@ -37,59 +40,49 @@ abstract class BlockMixin {
             Direction face,
             BlockPos pos,
             CallbackInfoReturnable<Boolean> cir) {
-        if (state.getBlock() instanceof EmberBlock) {
-            BlockState blockstate = level.getBlockState(pos);
-            if (blockstate.canOcclude() || blockstate.getBlock() instanceof EmberBlock) {
-                Block.BlockStatePairKey blockstatepairkey = new Block.BlockStatePairKey(state, blockstate, face);
-                Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
-                        OCCLUSION_CACHE.get();
-                byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(blockstatepairkey);
-                if (b0 != 127) {
-                    cir.setReturnValue(b0 != 0 || !(blockstate.getBlock() instanceof EmberBlock));
-                    return;
-                }
-                VoxelShape voxelshape = state.getFaceOcclusionShape(level, offset, face);
-                if (voxelshape.isEmpty()) {
-                    cir.setReturnValue(!(blockstate.getBlock() instanceof EmberBlock));
-                    return;
-                }
-                VoxelShape voxelshape1 = blockstate.getFaceOcclusionShape(level, pos, face.getOpposite());
-                boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
-                if (object2bytelinkedopenhashmap.size() == 2048) {
-                    object2bytelinkedopenhashmap.removeLastByte();
-                }
-                object2bytelinkedopenhashmap.putAndMoveToFirst(blockstatepairkey, (byte) (flag ? 1 : 0));
-                cir.setReturnValue(flag || !(blockstate.getBlock() instanceof EmberBlock));
+        if (state.getBlock() instanceof EmberBlock)
+            anvilcraft_neoforge$NegativeShapeFaceSkip(
+                    t -> t.getBlock() instanceof EmberBlock,
+                    state, level, offset, face, pos, cir);
+        if (state.getBlock() instanceof NegativeMatterBlock)
+            anvilcraft_neoforge$NegativeShapeFaceSkip(
+                t -> t.getBlock() instanceof NegativeMatterBlock,
+                state, level, offset, face, pos, cir);
+    }
+
+    @Unique
+    private static void anvilcraft_neoforge$NegativeShapeFaceSkip(
+            Predicate<BlockState> predicate,
+            BlockState state,
+            BlockGetter level,
+            BlockPos offset,
+            Direction face,
+            BlockPos pos,
+            CallbackInfoReturnable<Boolean> cir){
+        BlockState blockstate = level.getBlockState(pos);
+        if (blockstate.canOcclude() || predicate.test(blockstate)) {
+            Block.BlockStatePairKey blockstatepairkey = new Block.BlockStatePairKey(state, blockstate, face);
+            Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
+                    OCCLUSION_CACHE.get();
+            byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(blockstatepairkey);
+            if (b0 != 127) {
+                cir.setReturnValue(b0 != 0 || !predicate.test(blockstate));
                 return;
             }
-            cir.setReturnValue(true);
-        }
-        if (state.getBlock() instanceof NegativeMatterBlock) {
-            BlockState blockstate = level.getBlockState(pos);
-            if (blockstate.canOcclude() || blockstate.getBlock() instanceof NegativeMatterBlock) {
-                Block.BlockStatePairKey blockstatepairkey = new Block.BlockStatePairKey(state, blockstate, face);
-                Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
-                        OCCLUSION_CACHE.get();
-                byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(blockstatepairkey);
-                if (b0 != 127) {
-                    cir.setReturnValue(b0 != 0 || !(blockstate.getBlock() instanceof NegativeMatterBlock));
-                    return;
-                }
-                VoxelShape voxelshape = state.getFaceOcclusionShape(level, offset, face);
-                if (voxelshape.isEmpty()) {
-                    cir.setReturnValue(!(blockstate.getBlock() instanceof NegativeMatterBlock));
-                    return;
-                }
-                VoxelShape voxelshape1 = blockstate.getFaceOcclusionShape(level, pos, face.getOpposite());
-                boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
-                if (object2bytelinkedopenhashmap.size() == 2048) {
-                    object2bytelinkedopenhashmap.removeLastByte();
-                }
-                object2bytelinkedopenhashmap.putAndMoveToFirst(blockstatepairkey, (byte) (flag ? 1 : 0));
-                cir.setReturnValue(flag || !(blockstate.getBlock() instanceof NegativeMatterBlock));
+            VoxelShape voxelshape = state.getFaceOcclusionShape(level, offset, face);
+            if (voxelshape.isEmpty()) {
+                cir.setReturnValue(!(blockstate.getBlock() instanceof NegativeMatterBlock));
                 return;
             }
-            cir.setReturnValue(true);
+            VoxelShape voxelshape1 = blockstate.getFaceOcclusionShape(level, pos, face.getOpposite());
+            boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
+            if (object2bytelinkedopenhashmap.size() == 2048) {
+                object2bytelinkedopenhashmap.removeLastByte();
+            }
+            object2bytelinkedopenhashmap.putAndMoveToFirst(blockstatepairkey, (byte) (flag ? 1 : 0));
+            cir.setReturnValue(flag || !predicate.test(blockstate));
+            return;
         }
+        cir.setReturnValue(true);
     }
 }
