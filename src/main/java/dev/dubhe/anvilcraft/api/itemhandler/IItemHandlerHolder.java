@@ -5,7 +5,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 /**
  * 持有ItemHandler的
  */
-public interface ItemHandlerHolder {
+public interface IItemHandlerHolder {
 
     IItemHandler getItemHandler();
 }

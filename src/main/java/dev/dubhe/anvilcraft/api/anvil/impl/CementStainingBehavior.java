@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.state.Color;
 
@@ -16,7 +16,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CementStainingBehavior implements AnvilBehavior {
+public class CementStainingBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
         Level level,

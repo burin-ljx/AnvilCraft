@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -19,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Setter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmberMetalSlabBlock extends SlabBlock implements EmberBlock {
+public class EmberMetalSlabBlock extends SlabBlock implements IEmberBlock {
     private BlockState checkBlockState;
 
     public EmberMetalSlabBlock(Properties properties) {

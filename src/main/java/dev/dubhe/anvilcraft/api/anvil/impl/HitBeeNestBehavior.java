@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static dev.dubhe.anvilcraft.util.AnvilUtil.returnItems;
 
-public class HitBeeNestBehavior implements AnvilBehavior {
+public class HitBeeNestBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
         Level level,

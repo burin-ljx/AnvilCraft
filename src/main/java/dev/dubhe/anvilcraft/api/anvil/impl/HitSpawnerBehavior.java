@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.mixin.accessor.BaseSpawnerAccessor;
 
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class HitSpawnerBehavior implements AnvilBehavior {
+public class HitSpawnerBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
         Level level,

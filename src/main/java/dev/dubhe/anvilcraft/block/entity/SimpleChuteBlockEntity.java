@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.block.entity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerHolder;
+import dev.dubhe.anvilcraft.api.itemhandler.IItemHandlerHolder;
 import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil;
 import dev.dubhe.anvilcraft.block.SimpleChuteBlock;
 
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Getter
-public class SimpleChuteBlockEntity extends BlockEntity implements ItemHandlerHolder {
+public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerHolder {
     private int cooldown = 0;
     private final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override

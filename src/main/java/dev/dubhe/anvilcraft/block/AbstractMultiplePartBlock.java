@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.block;
 
-import dev.dubhe.anvilcraft.block.state.MultiplePartBlockState;
+import dev.dubhe.anvilcraft.block.state.IMultiplePartBlockState;
 import dev.dubhe.anvilcraft.util.Util;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -25,14 +25,13 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class AbstractMultiplePartBlock<P extends Enum<P> & MultiplePartBlockState<P>> extends Block {
+public abstract class AbstractMultiplePartBlock<P extends Enum<P> & IMultiplePartBlockState<P>> extends Block {
     public AbstractMultiplePartBlock(Properties properties) {
         super(properties);
     }
@@ -77,7 +76,7 @@ public abstract class AbstractMultiplePartBlock<P extends Enum<P> & MultiplePart
         if (!state.hasProperty(this.getPart())) {
             return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
         }
-        MultiplePartBlockState<P> state1 = state.getValue(this.getPart());
+        IMultiplePartBlockState<P> state1 = state.getValue(this.getPart());
         for (P part : getParts()) {
             Vec3i offset = neighborPos.subtract(pos).offset(state1.getOffset()); // 更新来源偏移值
             if (offset.distSqr(part.getOffset()) != 0) continue;
@@ -130,7 +129,7 @@ public abstract class AbstractMultiplePartBlock<P extends Enum<P> & MultiplePart
      * @param provider 提供器
      * @param block    方块
      */
-    public static <T extends Enum<T> & MultiplePartBlockState<T>> void loot(
+    public static <T extends Enum<T> & IMultiplePartBlockState<T>> void loot(
         BlockLootSubProvider provider, AbstractMultiplePartBlock<T> block
     ) {
         for (T part : block.getParts()) {

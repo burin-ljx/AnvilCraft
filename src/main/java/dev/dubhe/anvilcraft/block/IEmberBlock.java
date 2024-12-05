@@ -20,10 +20,15 @@ import org.jetbrains.annotations.NotNull;
 /**
  * 余烬金属系方块
  */
-public interface EmberBlock {
+public interface IEmberBlock extends INegativeShapeBlock<IEmberBlock> {
     BlockState getCheckBlockState();
 
     void setCheckBlockState(BlockState blockState);
+
+    @Override
+    default Class<IEmberBlock> getBlockType() {
+        return IEmberBlock.class;
+    }
 
     /**
      * 尝试吸水

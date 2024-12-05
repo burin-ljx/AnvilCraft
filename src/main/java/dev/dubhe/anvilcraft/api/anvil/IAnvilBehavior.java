@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 @FunctionalInterface
-public interface AnvilBehavior {
-    Map<Predicate<BlockState>, AnvilBehavior> BEHAVIORS = new LinkedHashMap<>();
+public interface IAnvilBehavior {
+    Map<Predicate<BlockState>, IAnvilBehavior> BEHAVIORS = new LinkedHashMap<>();
 
     boolean handle(
         Level level,
@@ -50,15 +50,15 @@ public interface AnvilBehavior {
         return 100;
     }
 
-    static void registerBehavior(Block matchingBlock, AnvilBehavior behavior) {
+    static void registerBehavior(Block matchingBlock, IAnvilBehavior behavior) {
         BEHAVIORS.put(it -> it.is(matchingBlock), behavior);
     }
 
-    static void registerBehavior(Predicate<BlockState> pred, AnvilBehavior behavior) {
+    static void registerBehavior(Predicate<BlockState> pred, IAnvilBehavior behavior) {
         BEHAVIORS.put(pred, behavior);
     }
 
-    static List<AnvilBehavior> findMatching(BlockState state) {
+    static List<IAnvilBehavior> findMatching(BlockState state) {
         return BEHAVIORS.keySet().stream()
             .filter(it -> it.test(state))
             .map(BEHAVIORS::get)

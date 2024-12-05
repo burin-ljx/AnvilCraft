@@ -6,6 +6,6 @@ import net.minecraft.world.phys.Vec3;
 /**
  * 声音事件监听器
  */
-public interface SoundEventListener {
+public interface ISoundEventListener {
     boolean shouldPlay(ResourceLocation sound, Vec3 pos);
 }

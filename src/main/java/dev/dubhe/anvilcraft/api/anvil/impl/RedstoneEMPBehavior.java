@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.NotNull;
 
-public class RedstoneEMPBehavior implements AnvilBehavior {
+public class RedstoneEMPBehavior implements IAnvilBehavior {
     @Override
     public boolean handle(
             Level level,

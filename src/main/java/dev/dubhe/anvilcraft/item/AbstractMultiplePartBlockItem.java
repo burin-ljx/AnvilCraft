@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.item;
 
 import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
-import dev.dubhe.anvilcraft.block.state.MultiplePartBlockState;
+import dev.dubhe.anvilcraft.block.state.IMultiplePartBlockState;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
 
-public class AbstractMultiplePartBlockItem<P extends Enum<P> & MultiplePartBlockState<P>> extends BlockItem {
+public class AbstractMultiplePartBlockItem<P extends Enum<P> & IMultiplePartBlockState<P>> extends BlockItem {
     private final AbstractMultiplePartBlock<P> block;
 
     public AbstractMultiplePartBlockItem(AbstractMultiplePartBlock<P> block, Properties properties) {
