@@ -9,7 +9,7 @@ on:
     branches:
       - releases/1.21
   schedule:
-    - cron: 0 * * * *
+    - cron: 0 0 * * *
 
 jobs:
   update:
@@ -27,7 +27,7 @@ jobs:
         with:
           upload_sources: true
           download_translations: true
-          localization_branch_name: releases/1.21
+          localization_branch_name: i18n
           push_translations: true
           create_pull_request: true
           download_translations_args: --all
