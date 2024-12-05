@@ -121,14 +121,10 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         }
         if (state.hasProperty(FACING)) {
             return FACING;
-        } else {
-            if (state.hasProperty(FACING_HOPPER)) {
-                return FACING_HOPPER;
-            } else {
-                if (state.hasProperty(HORIZONTAL_FACING)) {
-                    return HORIZONTAL_FACING;
-                }
-            }
+        } else if (state.hasProperty(FACING_HOPPER)) {
+            return FACING_HOPPER;
+        } else if (state.hasProperty(HORIZONTAL_FACING)) {
+            return HORIZONTAL_FACING;
         }
         return null;
     }
@@ -186,7 +182,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
                 0.5,
                 0,
                 0.05);
-            level.playSound(null, blockPos, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS);
+            level.playSound(null, blockPos, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.AMBIENT, 3.0f, 1.0f);
             return true;
         }
         return false;

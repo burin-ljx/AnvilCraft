@@ -78,14 +78,10 @@ public interface HammerRotateBehavior extends IHammerChangeable {
     default Property<?> getChangeableProperty(BlockState state){
         if (state.hasProperty(FACING)) {
             return FACING;
-        } else {
-            if (state.hasProperty(FACING_HOPPER)) {
-                return FACING_HOPPER;
-            } else {
-                if (state.hasProperty(HORIZONTAL_FACING)) {
-                    return HORIZONTAL_FACING;
-                }
-            }
+        } else if (state.hasProperty(FACING_HOPPER)) {
+            return FACING_HOPPER;
+        } else if (state.hasProperty(HORIZONTAL_FACING)) {
+            return HORIZONTAL_FACING;
         }
         return null;
     }
