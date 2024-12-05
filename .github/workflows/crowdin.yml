@@ -29,5 +29,5 @@ jobs:
           download_translations: true
           localization_branch_name: releases/1.21
           push_translations: true
-          create_pull_request: false
+          create_pull_request: true
           download_translations_args: --all
