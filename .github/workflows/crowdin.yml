@@ -10,15 +10,13 @@ on:
       - releases/1.21
   schedule:
     - cron: 0 0 * * *
-permissions:
-  pull-requests: read
-  statuses: write
-  contents: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
+      pull-requests: write
+      statuses: write
       contents: write
     steps:
       - name: checkout
