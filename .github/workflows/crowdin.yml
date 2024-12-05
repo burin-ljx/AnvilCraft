@@ -30,4 +30,5 @@ jobs:
           localization_branch_name: i18n
           push_translations: true
           create_pull_request: true
+          pull_request_base_branch_name: releases/1.21
           download_translations_args: --all
