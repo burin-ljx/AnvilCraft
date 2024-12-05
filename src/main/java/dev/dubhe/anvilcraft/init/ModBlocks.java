@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.block.ArrowBlock;
 import dev.dubhe.anvilcraft.block.BatchCrafterBlock;
 import dev.dubhe.anvilcraft.block.BerryCakeBlock;
 import dev.dubhe.anvilcraft.block.BerryCreamBlock;
+import dev.dubhe.anvilcraft.block.BlockComparatorBlock;
 import dev.dubhe.anvilcraft.block.BlockDevourerBlock;
 import dev.dubhe.anvilcraft.block.BlockPlacerBlock;
 import dev.dubhe.anvilcraft.block.CakeBaseBlock;
@@ -1058,6 +1059,28 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
+    public static final BlockEntry<BlockComparatorBlock> BLOCK_COMPARATOR_BLOCK = REGISTRATE
+        .block("block_comparator", BlockComparatorBlock::new)
+        .initialProperties(() -> Blocks.OBSERVER)
+        .properties(p -> p.noOcclusion())
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .recipe((ctx, provider) -> {
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+                .pattern("ABA")
+                .pattern(" C ")
+                .pattern(" D ")
+                .define('A', Blocks.OBSERVER)
+                .define('B', Blocks.REPEATER)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .define('D', Tags.Items.DUSTS_REDSTONE)
+                .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.CIRCUIT_BOARD), AnvilCraftDatagen.has(ModItems.CIRCUIT_BOARD))
+                .save(provider);
+        })
+        .blockstate((ctx, provider) -> {
+        })
+        .simpleItem()
+        .register();
+
     public static final BlockEntry<ImpactPileBlock> IMPACT_PILE = REGISTRATE
         .block("impact_pile", ImpactPileBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)

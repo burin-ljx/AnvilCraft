@@ -34,7 +34,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
@@ -42,7 +41,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int DELAY = 80;//ms
     public static final int ANIMATION_T = 300;//ms
     public static final int CLOSING_ANIMATION_T = 150;//ms
-    public static final int SELECTION_TRANSFORMATION = 80;
     public static final float ZOOM = 13.5f;
     public static final int IGNORE_CURSOR_MOVE_LENGTH = 15;
 
@@ -52,12 +50,21 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private static final int RING_INNER_DIAMETER = 55;
     private static final int RING_OUTER_DIAMETER = 105;
 
-    private static final int SELECTION_EFFECT_ALPHA = 0xdd;
-    private static final int SELECTION_EFFECT_COLOR = 0xffFFFF00;
+    private static final int SELECTION_EFFECT_COLOR = 0xddFFFF00;
     private static final int SELECTION_EFFECT_RADIUS = 20;
 
     private static final float TEXT_SCALE = 1f;
     private static final int TEXT_COLOR = 0xfdfdfd;
+
+    private static final Vector2f ROTATION_START = new Vector2f(0, 1);
+
+    /// Nonlinear, should bigger than 1, 1 means no animation
+    private static final float SELECTION_ANIMATION_SPEED_FACTOR = 10f;
+
+    private Vector2f centerPos;
+    private Vector2f selectionEffectPosFromCenter = MathUtil.copy(ROTATION_START).mul(RADIUS);
+    /// *rad*
+    private float targetAngle = 0f;
 
     static {
         MethodType mt = MethodType.methodType(
@@ -82,7 +89,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private final List<BlockState> possibleStates;
 
     private BlockState currentBlockState;
-    private SelectionItem currentSelection;
     private final List<SelectionItem> items = new ArrayList<>();
     private long displayTime = System.currentTimeMillis();
     private boolean animationStarted = false;
@@ -101,23 +107,24 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         items.clear();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
-        Vector2f vector2f = new Vector2f(0, 1);
+        this.centerPos = new Vector2f(centerX, centerY);
         float degreeEachRotation = 360f / possibleStates.size();
         for (int i = 0; i < possibleStates.size(); i++) {
             BlockState state = possibleStates.get(i);
             float rotation = degreeEachRotation * i;
-            Vector2f rotated = MathUtil.rotationDegrees(vector2f, rotation)
+            Vector2f rotated = MathUtil.rotationDegrees(ROTATION_START, rotation)
                 .mul(-1, 1)
                 .mul(RADIUS)
                 .add(centerX, centerY);
             try {
-                float detectionStart = ((rotation - degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
-                float detectionEnd = ((rotation + degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
+                float detectionStart = (float) (Math.toRadians(rotation - degreeEachRotation / 2f) + Math.PI);
+                float detectionEnd = (float) (Math.toRadians(rotation + degreeEachRotation / 2f) + Math.PI);
                 detectionStart = detectionStart % (float) (Math.PI * 2);
                 detectionEnd = detectionEnd % (float) (Math.PI * 2);
                 items.add(
                     new SelectionItem(
                         rotated,
+                        (float) (Math.toRadians(rotation) % (Math.PI * 2)),
                         detectionStart,
                         detectionEnd,
                         state,
@@ -134,11 +141,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             } catch (Throwable ignored) {
             }
         }
-        this.currentSelection = items.stream()
-            .filter(it -> it.state == currentBlockState)
-            .findFirst()
-            .orElseThrow();
-        this.currentSelection.selected = true;
+
     }
 
     @Override
@@ -166,20 +169,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             })
             .findFirst()
             .ifPresent(it -> {
-                SelectionItem oldSelection = currentSelection;
-                currentSelection = it;
-                if (!currentSelection.equals(oldSelection)) {
-                    if (oldSelection != null) {
-                        oldSelection.transformation = TransformationType.EXTINGUISH;
-                        oldSelection.transformationStartTime = System.currentTimeMillis();
-                    }
-                    currentSelection.transformation = TransformationType.LIT;
-                    currentSelection.transformationStartTime = System.currentTimeMillis();
-                }
-                if (oldSelection != null) {
-                    oldSelection.selected = false;
-                }
-                currentSelection.selected = true;
+                targetAngle = it.angle;
                 currentBlockState = it.state;
             });
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
@@ -211,42 +201,24 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             RING_OUTER_DIAMETER * progress
         );
         poseStack.popPose();
-        for (SelectionItem value : items) {
-            Vector2f center = new Vector2f(
-                (value.center.x - centerX) / RADIUS,
-                (value.center.y - centerY) / RADIUS
-            ).mul(RADIUS * progress)
-                .add(centerX, centerY);
-            float x = center.x;
-            float y = center.y;
-            if (value.shouldRenderTransformation()) {
-                float selectionTrProgress = switch (value.transformation) {
-                    case LIT -> value.getTransformationProgress();
-                    case EXTINGUISH -> 1 - value.getTransformationProgress();
-                };
-                if (selectionTrProgress != 0) {
-                    int alpha = ((int) (0xff * selectionTrProgress)) << 24;
-                    int color = alpha | 0xFFFF00;
-                    renderSelectionEffect(
-                        guiGraphics,
-                        x,
-                        y,
-                        color,
-                        SELECTION_EFFECT_RADIUS
-                    );
-                }
-            } else {
-                if (value.selected) {
-                    renderSelectionEffect(
-                        guiGraphics,
-                        x,
-                        y,
-                        SELECTION_EFFECT_COLOR,
-                        SELECTION_EFFECT_RADIUS
-                    );
-                }
-            }
-        }
+        float finalProgress = progress;
+        items.stream()
+            .filter(it -> it.state == currentBlockState)
+            .findFirst()
+            .ifPresent(it -> {
+                Vector2f center = new Vector2f(
+                    (it.center.x - centerX) / RADIUS,
+                    (it.center.y - centerY) / RADIUS
+                ).mul(RADIUS * finalProgress)
+                    .add(centerX, centerY);
+                renderSelectionEffect(
+                    guiGraphics,
+                    center.x,
+                    center.y,
+                    SELECTION_EFFECT_COLOR,
+                    SELECTION_EFFECT_RADIUS
+                );
+            });
         for (SelectionItem value : items) {
             Vector2f center = new Vector2f(
                 (value.center.x - centerX) / RADIUS,
@@ -290,7 +262,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
         renderClosingAnimation(guiGraphics, mouseX, mouseY, partialTick);
@@ -319,38 +290,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             RING_INNER_DIAMETER,
             RING_OUTER_DIAMETER
         );
-        //renderSelection(guiGraphics);
-        for (SelectionItem value : items) {
-            float x = value.center.x;
-            float y = value.center.y;
-            if (value.shouldRenderTransformation()) {
-                float selectionTrProgress = switch (value.transformation) {
-                    case LIT -> value.getTransformationProgress();
-                    case EXTINGUISH -> 1 - value.getTransformationProgress();
-                };
-                if (selectionTrProgress != 0) {
-                    int alpha = ((int) (0xff * selectionTrProgress)) << 24;
-                    int color = alpha | 0xFFFF00;
-                    renderSelectionEffect(
-                        guiGraphics,
-                        x,
-                        y,
-                        color,
-                        SELECTION_EFFECT_RADIUS
-                    );
-                }
-            } else {
-                if (value.selected) {
-                    renderSelectionEffect(
-                        guiGraphics,
-                        x,
-                        y,
-                        SELECTION_EFFECT_COLOR,
-                        SELECTION_EFFECT_RADIUS
-                    );
-                }
-            }
-        }
+        renderSelection(guiGraphics);
         for (SelectionItem value : items) {
             float x = value.center.x;
             float y = value.center.y;
@@ -385,6 +325,42 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         }
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
+    }
+
+    private void renderSelection(GuiGraphics guiGraphics) {
+
+        float selectionEffectAngle =
+                MathUtil.angle(
+                    MathUtil.copy(ROTATION_START).negate(),
+                    selectionEffectPosFromCenter
+                );
+
+        float diffAngle = targetAngle - selectionEffectAngle;
+
+        if (diffAngle > Math.PI) {
+            diffAngle -= (float) (Math.PI*2);
+        } else if (diffAngle < -Math.PI) {
+            diffAngle += (float) (Math.PI*2);
+        }
+
+        selectionEffectPosFromCenter =
+                MathUtil.rotate(
+                        selectionEffectPosFromCenter,
+                        diffAngle / SELECTION_ANIMATION_SPEED_FACTOR
+                );
+
+        Vector2f pos =
+                MathUtil.copy(selectionEffectPosFromCenter)
+                .mul(1, -1)
+                .add(centerPos);
+
+        renderSelectionEffect(
+            guiGraphics,
+            pos.x,
+            pos.y,
+            SELECTION_EFFECT_COLOR,
+            SELECTION_EFFECT_RADIUS
+        );
     }
 
     private static void renderSelectionEffect(
@@ -533,63 +509,13 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         return ModRenderTypes.TRANSLUCENT_COLORED_OVERLAY;
     }
 
-    private static final class SelectionItem {
-        private final Vector2f center;
-        private final float detectionAngleStart;
-        private final float detectionAngleEnd;
-        private final BlockState state;
-        private final Component description;
-        private TransformationType transformation = TransformationType.LIT;
-        private long transformationStartTime = 0;
-        private boolean selected = false;
-
-        private SelectionItem(
-            Vector2f center,
-            float detectionAngleStart,
-            float detectionAngleEnd,
-            BlockState state,
-            Component description
-        ) {
-            this.center = center;
-            this.detectionAngleStart = detectionAngleStart;
-            this.detectionAngleEnd = detectionAngleEnd;
-            this.state = state;
-            this.description = description;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
-            var that = (SelectionItem) obj;
-            return Objects.equals(this.center, that.center) &&
-                Float.floatToIntBits(this.detectionAngleStart) == Float.floatToIntBits(that.detectionAngleStart) &&
-                Float.floatToIntBits(this.detectionAngleEnd) == Float.floatToIntBits(that.detectionAngleEnd) &&
-                Objects.equals(this.state, that.state) &&
-                Objects.equals(this.description, that.description);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(center, detectionAngleStart, detectionAngleEnd, state, description);
-        }
-
-        public boolean shouldRenderTransformation() {
-            if (transformationStartTime == 0) return false;
-            return System.currentTimeMillis() - transformationStartTime <= SELECTION_TRANSFORMATION;
-        }
-
-        public float getTransformationProgress() {
-            if (!shouldRenderTransformation()) return 1;
-            return Math.clamp(
-                (System.currentTimeMillis() - transformationStartTime) / (float) SELECTION_TRANSFORMATION,
-                0f,
-                1f
-            );
-        }
-    }
-
-    enum TransformationType {
-        LIT, EXTINGUISH
+    private record SelectionItem(
+        Vector2f center,
+        float angle,
+        float detectionAngleStart,
+        float detectionAngleEnd,
+        BlockState state,
+        Component description
+    ) {
     }
 }
