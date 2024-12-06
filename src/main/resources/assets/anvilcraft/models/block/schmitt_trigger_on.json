@@ -3,12 +3,12 @@
 	"parent": "minecraft:block/cube",
 	"ambientocclusion": false,
 	"textures": {
-		"0": "anvilcraft:block/schmitt_trigger_on",
+		"0": "anvilcraft:block/schmitt_trigger",
 		"1": "anvilcraft:block/schmitt_trigger_indicator",
 		"2": "anvilcraft:block/schmitt_trigger_top",
 		"3": "anvilcraft:block/redstone_torch_unified",
 		"4": "anvilcraft:block/diode_unified",
-		"particle": "anvilcraft:block/schmitt_trigger_on"
+		"particle": "anvilcraft:block/schmitt_trigger"
 	},
 	"elements": [
 		{
