@@ -1,6 +1,5 @@
 {
   "values": [
-    "#minecraft:needs_diamond_tool",
-    "#minecraft:needs_iron_tool"
+    "#minecraft:incorrect_for_stone_tool"
   ]
 }
