@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.client.event;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.client.gui.screen.AnvilHammerScreen;
+import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.item.AnvilHammerItem;
 import dev.dubhe.anvilcraft.network.HammerUsePacket;
 import dev.dubhe.anvilcraft.util.StateUtil;
@@ -59,9 +60,11 @@ public class ClientBlockEventListener {
             && AnvilHammerItem.possibleToUseEnhancedHammerChange(targetBlockState)
             && property != null
         ) {
-            if (targetBlockState.getBlock() instanceof IHammerChangeable ihc
-                && ihc.checkBlockState(targetBlockState)
-                && event.getEntity().getAbilities().mayBuild
+            if (
+                (targetBlockState.getBlock() instanceof IHammerChangeable ihc
+                    && ihc.checkBlockState(targetBlockState)
+                ) || (targetBlockState.is(ModBlockTags.HAMMER_CHANGEABLE))
+                    && event.getEntity().getAbilities().mayBuild
             ) {
                 List<BlockState> possibleStates = StateUtil.findPossibleStatesForProperty(targetBlockState, property);
                 if (possibleStates.isEmpty()) {
