@@ -59,7 +59,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private static final Vector2f ROTATION_START = new Vector2f(0, 1);
 
     /// Nonlinear, should bigger than 1, 1 means no animation
-    private static final float SELECTION_ANIMATION_SPEED_FACTOR = 10f;
+    private static final float SELECTION_ANIMATION_SPEED_FACTOR = 5.0f;
 
     static {
         MethodType mt = MethodType.methodType(
