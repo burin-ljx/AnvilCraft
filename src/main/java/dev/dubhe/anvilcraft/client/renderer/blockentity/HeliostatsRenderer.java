@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.client.renderer.blockentity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeliostatsBlockEntity;
 
 import net.minecraft.client.Minecraft;
