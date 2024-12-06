@@ -154,6 +154,14 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         JewelCraftingCategory.registerRecipeCatalysts(registration);
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
+
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ROYAL_ANVIL), RecipeTypes.ANVIL);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.EMBER_ANVIL), RecipeTypes.ANVIL);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.GIANT_ANVIL), RecipeTypes.ANVIL);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.SPECTRAL_ANVIL), RecipeTypes.ANVIL);
+
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ROYAL_SMITHING_TABLE), RecipeTypes.SMITHING);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.EMBER_SMITHING_TABLE), RecipeTypes.SMITHING);
     }
 
     @Override
