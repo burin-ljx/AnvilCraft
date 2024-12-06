@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.client.renderer.blockentity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeliostatsBlockEntity;
 
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -62,5 +64,10 @@ public class HeliostatsRenderer implements BlockEntityRenderer<HeliostatsBlockEn
                 packedOverlay
             );
         poseStack.popPose();
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(HeliostatsBlockEntity blockEntity) {
+        return AABB.ofSize(blockEntity.getBlockPos().getCenter().add(0, 0.5f, 0), 3, 2, 3);
     }
 }
