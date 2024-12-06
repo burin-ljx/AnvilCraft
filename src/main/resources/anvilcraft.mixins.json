@@ -22,7 +22,6 @@
     "PistonMovingBlockEntityMixin",
     "PistonStructureResolverMixin",
     "PlayerHitEntityMixin",
-    "PluginCallerMixin",
     "RecipeManagerMixin",
     "ServerLevelMixin",
     "accessor.BaseSpawnerAccessor",
