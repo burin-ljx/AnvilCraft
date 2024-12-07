@@ -31,7 +31,6 @@
     "forge.PistonMovingBlockEntityMixin"
   ],
   "client": [
-    "BlockColorsMixin",
     "ClientLevelMixin",
     "GameRendererMixin",
     "ItemInHandRendererMixin",
