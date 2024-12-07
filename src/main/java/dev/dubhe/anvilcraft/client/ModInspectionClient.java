@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.sound.SoundEventListener;
+import dev.dubhe.anvilcraft.api.sound.ISoundEventListener;
 import dev.dubhe.anvilcraft.api.sound.SoundHelper;
 import dev.dubhe.anvilcraft.api.tooltip.TooltipRenderHelper;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IHasAffectRange;
@@ -34,8 +34,8 @@ public class ModInspectionClient {
 
     public static void initializeClient() {
         INSTANCE.registerActionClient(AnvilCraft.of("silencer"), (p, r, c, d) -> {
-            Map<ClientLevel, List<SoundEventListener>> map = SoundHelper.INSTANCE.getEventListeners();
-            List<SoundEventListener> listeners = map.get(Minecraft.getInstance().level);
+            Map<ClientLevel, List<ISoundEventListener>> map = SoundHelper.INSTANCE.getEventListeners();
+            List<ISoundEventListener> listeners = map.get(Minecraft.getInstance().level);
             MultiBufferSource.BufferSource buf = r.renderBuffers.bufferSource();
             VertexConsumer vertex = buf.getBuffer(RenderType.LINES);
             if (listeners == null || listeners.isEmpty()) return;

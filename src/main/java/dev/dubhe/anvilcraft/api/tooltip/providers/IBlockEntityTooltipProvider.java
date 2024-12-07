@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 头戴铁砧锤时显示的tooltip
  */
-public interface BlockEntityTooltipProvider {
+public interface IBlockEntityTooltipProvider {
     boolean accepts(BlockEntity entity);
 
     List<Component> tooltip(BlockEntity e);

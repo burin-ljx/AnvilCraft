@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-public class EmberMetalStairBlock extends StairBlock implements EmberBlock {
+public class EmberMetalStairBlock extends StairBlock implements IEmberBlock {
     @Getter
     @Setter
     private BlockState checkBlockState;

@@ -69,6 +69,12 @@ abstract class ItemEntityMixin extends Entity {
         double dy = 1;
         if (this.getItem().is(ModItems.LEVITATION_POWDER.get())) dy *= -0.005;
         if (this.level().getBlockState(this.blockPosition()).is(ModBlocks.HOLLOW_MAGNET_BLOCK.get())) dy *= 0.2;
+        if (this.getItem().is(ModItems.NEGATIVE_MATTER_NUGGET.get()) ||
+                this.getItem().is(ModItems.NEGATIVE_MATTER.get()) ||
+                this.getItem().is(ModBlocks.NEGATIVE_MATTER_BLOCK.asItem())){
+            if (this.position().y <= this.level().getMaxBuildHeight())
+                if (vec3.y < 0) dy *= -1;
+        }
         return new Vec3(vec3.x, vec3.y * dy, vec3.z);
     }
 

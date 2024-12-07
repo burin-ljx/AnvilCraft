@@ -35,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Getter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmberSmithingTableBlock extends SmithingTableBlock implements IHammerRemovable, EmberBlock {
+public class EmberSmithingTableBlock extends SmithingTableBlock implements IHammerRemovable, IEmberBlock {
     private static final Component CONTAINER_TITLE = Component.translatable("container.upgrade");
 
     private BlockState checkBlockState;

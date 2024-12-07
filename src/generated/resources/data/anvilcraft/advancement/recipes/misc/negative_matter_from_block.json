@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_negative_matter_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "anvilcraft:negative_matter_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "anvilcraft:negative_matter_from_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_negative_matter_block"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "anvilcraft:negative_matter_from_block"
+    ]
+  }
+}

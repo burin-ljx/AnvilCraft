@@ -77,7 +77,7 @@ public class TeslaTowerScreen extends AbstractContainerScreen<TeslaTowerMenu> {
             String search = text.replaceFirst("#", "");
             allFilter.stream()
                     .filter(it -> it.right().contains(search))
-                    .filter(it -> whiteFilters.stream().anyMatch(it2 -> it.left().getId().equals(it2.left().getId()) && it.right().equals(it2.right())))
+                    .filter(it -> whiteFilters.stream().noneMatch(it2 -> it.left().getId().equals(it2.left().getId()) && it.right().equals(it2.right())))
                     .forEach(filteredFilters::add);
         } else {
             if (text.startsWith("~")) {
@@ -85,7 +85,6 @@ public class TeslaTowerScreen extends AbstractContainerScreen<TeslaTowerMenu> {
                     Pattern search = Pattern.compile(text.replaceFirst("~", ""));
                     allFilter.stream()
                             .filter(it -> search.matcher(it.left().getId()).matches())
-                            .filter(it -> whiteFilters.stream().anyMatch(it2 -> it.left().getId().equals(it2.left().getId()) && it.right().equals(it2.right())))
                             .forEach(filteredFilters::add);
                 } catch (Exception ignored) {
                     // intentionally empty
@@ -94,7 +93,7 @@ public class TeslaTowerScreen extends AbstractContainerScreen<TeslaTowerMenu> {
             allFilter.stream()
                     .filter(it -> it.left().title().getString().contains(filterText))
                     .filter(it ->
-                            whiteFilters.stream().noneMatch(it1 -> it1.left().equals(it.first())))
+                            whiteFilters.stream().noneMatch(it2 -> it.left().getId().equals(it2.left().getId()) && it.right().equals(it2.right())))
                     .forEach(filteredFilters::add);
         }
     }

@@ -30,7 +30,7 @@ public class HollowMagnetBlock extends MagnetBlock implements SimpleWaterloggedB
 
     public HollowMagnetBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(LIT, false));
     }
 
     @Override

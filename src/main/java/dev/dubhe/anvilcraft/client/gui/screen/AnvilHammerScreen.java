@@ -56,6 +56,16 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private static final float TEXT_SCALE = 1f;
     private static final int TEXT_COLOR = 0xfdfdfd;
 
+    private static final Vector2f ROTATION_START = new Vector2f(0, 1);
+
+    /// Nonlinear, should bigger than 1, 1 means no animation
+    private static final float SELECTION_ANIMATION_SPEED_FACTOR = 10f;
+
+    private Vector2f centerPos;
+    private Vector2f selectionEffectPosFromCenter = MathUtil.copy(ROTATION_START).mul(RADIUS);
+    /// *rad*
+    private float targetAngle = 0f;
+
     static {
         MethodType mt = MethodType.methodType(
             String.class,
@@ -97,23 +107,24 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         items.clear();
         float centerX = this.width / 2f;
         float centerY = this.height / 2f;
-        Vector2f vector2f = new Vector2f(0, 1);
+        this.centerPos = new Vector2f(centerX, centerY);
         float degreeEachRotation = 360f / possibleStates.size();
         for (int i = 0; i < possibleStates.size(); i++) {
             BlockState state = possibleStates.get(i);
             float rotation = degreeEachRotation * i;
-            Vector2f rotated = MathUtil.rotationDegrees(vector2f, rotation)
+            Vector2f rotated = MathUtil.rotationDegrees(ROTATION_START, rotation)
                 .mul(-1, 1)
                 .mul(RADIUS)
                 .add(centerX, centerY);
             try {
-                float detectionStart = ((rotation - degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
-                float detectionEnd = ((rotation + degreeEachRotation / 2f) * MathUtil.DEGREE_CONVERT + (float) Math.PI);
+                float detectionStart = (float) (Math.toRadians(rotation - degreeEachRotation / 2f) + Math.PI);
+                float detectionEnd = (float) (Math.toRadians(rotation + degreeEachRotation / 2f) + Math.PI);
                 detectionStart = detectionStart % (float) (Math.PI * 2);
                 detectionEnd = detectionEnd % (float) (Math.PI * 2);
                 items.add(
                     new SelectionItem(
                         rotated,
+                        (float) (Math.toRadians(rotation) % (Math.PI * 2)),
                         detectionStart,
                         detectionEnd,
                         state,
@@ -157,7 +168,10 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 return rotation >= it.detectionAngleStart && rotation <= it.detectionAngleEnd;
             })
             .findFirst()
-            .ifPresent(it -> currentBlockState = it.state);
+            .ifPresent(it -> {
+                targetAngle = it.angle;
+                currentBlockState = it.state;
+            });
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
@@ -314,18 +328,39 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     }
 
     private void renderSelection(GuiGraphics guiGraphics) {
-        items.stream()
-            .filter(it -> it.state == currentBlockState)
-            .findFirst()
-            .ifPresent(it -> {
-                renderSelectionEffect(
-                    guiGraphics,
-                    it.center.x,
-                    it.center.y,
-                    SELECTION_EFFECT_COLOR,
-                    SELECTION_EFFECT_RADIUS
+
+        float selectionEffectAngle =
+                MathUtil.angle(
+                    MathUtil.copy(ROTATION_START).negate(),
+                    selectionEffectPosFromCenter
                 );
-            });
+
+        float diffAngle = targetAngle - selectionEffectAngle;
+
+        if (diffAngle > Math.PI) {
+            diffAngle -= (float) (Math.PI*2);
+        } else if (diffAngle < -Math.PI) {
+            diffAngle += (float) (Math.PI*2);
+        }
+
+        selectionEffectPosFromCenter =
+                MathUtil.rotate(
+                        selectionEffectPosFromCenter,
+                        diffAngle / SELECTION_ANIMATION_SPEED_FACTOR
+                );
+
+        Vector2f pos =
+                MathUtil.copy(selectionEffectPosFromCenter)
+                .mul(1, -1)
+                .add(centerPos);
+
+        renderSelectionEffect(
+            guiGraphics,
+            pos.x,
+            pos.y,
+            SELECTION_EFFECT_COLOR,
+            SELECTION_EFFECT_RADIUS
+        );
     }
 
     private static void renderSelectionEffect(
@@ -476,6 +511,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     private record SelectionItem(
         Vector2f center,
+        float angle,
         float detectionAngleStart,
         float detectionAngleEnd,
         BlockState state,

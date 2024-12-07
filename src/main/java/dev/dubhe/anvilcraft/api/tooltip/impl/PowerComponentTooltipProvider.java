@@ -5,7 +5,7 @@ import dev.dubhe.anvilcraft.api.power.IPowerComponent;
 import dev.dubhe.anvilcraft.api.power.PowerComponentInfo;
 import dev.dubhe.anvilcraft.api.power.PowerComponentType;
 import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
-import dev.dubhe.anvilcraft.api.tooltip.providers.BlockEntityTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IBlockEntityTooltipProvider;
 import dev.dubhe.anvilcraft.util.Util;
 
 import net.minecraft.ChatFormatting;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class PowerComponentTooltipProvider implements BlockEntityTooltipProvider {
+public class PowerComponentTooltipProvider implements IBlockEntityTooltipProvider {
 
     public PowerComponentTooltipProvider() {
     }

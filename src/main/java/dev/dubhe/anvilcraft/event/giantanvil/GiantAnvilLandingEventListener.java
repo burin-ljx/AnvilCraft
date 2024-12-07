@@ -51,10 +51,10 @@ import static dev.dubhe.anvilcraft.util.Util.HORIZONTAL_DIRECTIONS;
 
 @EventBusSubscriber(modid = AnvilCraft.MOD_ID)
 public class GiantAnvilLandingEventListener {
-    private static final List<ShockBehaviorDefinition> behaviorDefs = new ArrayList<>();
+    private static final List<IShockBehaviorDefinition> behaviorDefs = new ArrayList<>();
 
     static {
-        behaviorDefs.add(new ShockBehaviorDefinition.MatchAll((blockPosList, level) -> {
+        behaviorDefs.add(new IShockBehaviorDefinition.MatchAll((blockPosList, level) -> {
             for (BlockPos pos : blockPosList) {
                 BlockState state = level.getBlockState(pos);
                 if (state.is(BlockTags.LEAVES)
@@ -83,7 +83,7 @@ public class GiantAnvilLandingEventListener {
                 }
             }
         }));
-        behaviorDefs.add(new ShockBehaviorDefinition.SimpleTag(BlockTags.WOOL, (blockPosList, level) -> {
+        behaviorDefs.add(new IShockBehaviorDefinition.SimpleTag(BlockTags.WOOL, (blockPosList, level) -> {
             for (BlockPos pos : blockPosList) {
                 BlockState state = level.getBlockState(pos);
                 if (state.is(BlockTags.LEAVES)
@@ -107,7 +107,7 @@ public class GiantAnvilLandingEventListener {
                 }
             }
         }));
-        behaviorDefs.add(new ShockBehaviorDefinition.SimpleTag(BlockTags.LOGS, (blockPosList, level) -> {
+        behaviorDefs.add(new IShockBehaviorDefinition.SimpleTag(BlockTags.LOGS, (blockPosList, level) -> {
             for (BlockPos pos : blockPosList) {
                 BlockState state = level.getBlockState(pos);
                 if (state.is(Blocks.SUGAR_CANE)
@@ -138,7 +138,7 @@ public class GiantAnvilLandingEventListener {
                 }
             }
         }));
-        behaviorDefs.add(new ShockBehaviorDefinition.SimpleBlock(Blocks.HAY_BLOCK, (blockPosList, level) -> {
+        behaviorDefs.add(new IShockBehaviorDefinition.SimpleBlock(Blocks.HAY_BLOCK, (blockPosList, level) -> {
             for (BlockPos pos : blockPosList) {
                 BlockState state = level.getBlockState(pos);
                 if (state.getBlock() instanceof CropBlock cropBlock) {
@@ -163,7 +163,7 @@ public class GiantAnvilLandingEventListener {
                 processCocoaBeans(pos, state, level);
             }
         }));
-        behaviorDefs.add(new ShockBehaviorDefinition.SimpleBlock(Blocks.ANVIL,
+        behaviorDefs.add(new IShockBehaviorDefinition.SimpleBlock(Blocks.ANVIL,
             (blockPosList, level) -> {
                 for (BlockPos pos : blockPosList) {
                     BlockState state = level.getBlockState(pos);
@@ -288,11 +288,11 @@ public class GiantAnvilLandingEventListener {
     public static void onLand(@NotNull GiantAnvilFallOnLandEvent event) {
         BlockPos groundPos = event.getPos().below(2);
         if (isValidShockBaseBlock(groundPos, event.getLevel())) {
-            Optional<ShockBehaviorDefinition> definitionOpt = behaviorDefs.stream()
+            Optional<IShockBehaviorDefinition> definitionOpt = behaviorDefs.stream()
                 .filter(it -> it.cornerMatches(groundPos, event.getLevel()))
                 .min((a, b) -> b.priority() - a.priority());
             if (definitionOpt.isEmpty()) return;
-            final ShockBehaviorDefinition def = definitionOpt.get();
+            final IShockBehaviorDefinition def = definitionOpt.get();
             int radius = (int) Math.ceil(event.getFallDistance());
             BlockPos ground = groundPos.above();
             AABB aabb = AABB.ofSize(Vec3.atCenterOf(ground), radius * 2 + 1, 1, radius * 2 + 1);

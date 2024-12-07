@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.block.entity;
 import dev.dubhe.anvilcraft.api.item.IChargerChargeable;
 import dev.dubhe.anvilcraft.api.item.IChargerDischargeable;
 import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
-import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerHolder;
+import dev.dubhe.anvilcraft.api.itemhandler.IItemHandlerHolder;
 import dev.dubhe.anvilcraft.api.power.IPowerConsumer;
 import dev.dubhe.anvilcraft.api.power.IPowerProducer;
 import dev.dubhe.anvilcraft.api.power.PowerComponentType;
@@ -28,7 +28,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public class ChargerBlockEntity extends BlockEntity
-        implements IPowerConsumer, IPowerProducer, IFilterBlockEntity, StateListener<Boolean>, ItemHandlerHolder
+        implements IPowerConsumer, IPowerProducer, IFilterBlockEntity, StateListener<Boolean>, IItemHandlerHolder
 {
 
     @Setter

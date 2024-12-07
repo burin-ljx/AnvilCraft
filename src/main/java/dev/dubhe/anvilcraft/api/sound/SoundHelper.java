@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SoundHelper {
     public static SoundHelper INSTANCE = new SoundHelper();
 
-    private final Map<ClientLevel, List<SoundEventListener>> eventListeners = new HashMap<>();
+    private final Map<ClientLevel, List<ISoundEventListener>> eventListeners = new HashMap<>();
 
     public boolean shouldPlay(ResourceLocation sound, Vec3 pos) {
         ClientLevel level = Minecraft.getInstance().level;
@@ -25,14 +25,14 @@ public class SoundHelper {
             .allMatch(it -> it.shouldPlay(sound, pos));
     }
 
-    public void register(SoundEventListener eventListener) {
+    public void register(ISoundEventListener eventListener) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
         eventListeners.computeIfAbsent(level, k -> new CopyOnWriteArrayList<>())
             .add(eventListener);
     }
 
-    public void unregister(SoundEventListener eventListener) {
+    public void unregister(ISoundEventListener eventListener) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) {
             eventListeners.values().forEach(list -> list.remove(eventListener));

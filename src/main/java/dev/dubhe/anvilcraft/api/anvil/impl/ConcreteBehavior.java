@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.api.anvil.impl;
 
-import dev.dubhe.anvilcraft.api.anvil.AnvilBehavior;
+import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.CementCauldronBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ConcreteBehavior implements AnvilBehavior {
+public class ConcreteBehavior implements IAnvilBehavior {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean handle(
