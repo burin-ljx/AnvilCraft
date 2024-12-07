@@ -17,6 +17,7 @@ import net.minecraft.world.level.material.FluidState;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -145,6 +146,23 @@ public class LevelLike implements BlockAndTintGetter {
             currentVisibleLayer = verticalSize() - 1;
         } else {
             currentVisibleLayer--;
+        }
+    }
+
+    public static class AirLevelLike extends LevelLike{
+
+        public AirLevelLike(ClientLevel parent) {
+            super(parent);
+        }
+
+        @Override
+        public BlockState getBlockState(BlockPos pos) {
+            return Blocks.AIR.defaultBlockState();
+        }
+
+        @Override
+        public FluidState getFluidState(BlockPos blockPos) {
+            return Fluids.EMPTY.defaultFluidState();
         }
     }
 }

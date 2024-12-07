@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.util;
 
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexMultiConsumer;
@@ -10,12 +11,15 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -35,9 +39,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -45,6 +52,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Vector3f;
 
@@ -58,15 +66,47 @@ public class RenderHelper {
     private static final Vector3f L1 = new Vector3f(0.4F, 0.0F, 1.0F).normalize();
     private static final Vector3f L2 = new Vector3f(-0.4F, 1.0F, -0.2F).normalize();
 
-    public static final BlockRenderFunction SINGLE_BLOCK = (block, poseStack, buffers) -> Minecraft.getInstance()
-        .getBlockRenderer()
-        .renderSingleBlock(block, poseStack, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 
     private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("trident"));
     private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("spyglass"));
+    private static ClientLevel currentClientLevel = null;
+    private static LevelLike.AirLevelLike airLevelLike = null;
+
+    public static final BlockRenderFunction SINGLE_BLOCK = (blockState, poseStack, buffers) -> {
+        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
+        for (RenderType renderType : model.getRenderTypes(blockState, RANDOM, ModelData.EMPTY)) {
+            VertexConsumer bufferBuilder = buffers.getBuffer(renderType);
+            blockRenderDispatcher.renderBatched(
+                blockState,
+                BlockPos.ZERO,
+                airLevelLike,
+                poseStack,
+                bufferBuilder,
+                true,
+                RANDOM,
+                ModelData.EMPTY,
+                renderType
+            );
+        }
+    };
 
     public static void renderBlock(
-        GuiGraphics guiGraphics, BlockState block, float x, float y, float z, float scale, BlockRenderFunction fn) {
+        GuiGraphics guiGraphics,
+        BlockState block,
+        float x,
+        float y,
+        float z,
+        float scale,
+        BlockRenderFunction fn
+    ) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (currentClientLevel != level) {
+            airLevelLike = new LevelLike.AirLevelLike(level);
+            currentClientLevel = level;
+        }
         PoseStack poseStack = guiGraphics.pose();
 
         poseStack.pushPose();
@@ -82,13 +122,28 @@ public class RenderHelper {
         poseStack.translate(0, 0, -1);
 
         FluidState fluidState = block.getFluidState();
-        if (fluidState.isEmpty()) {
-            MultiBufferSource.BufferSource buffers =
-                Minecraft.getInstance().renderBuffers().bufferSource();
+        MultiBufferSource.BufferSource buffers =
+            Minecraft.getInstance().renderBuffers().bufferSource();
 
-            RenderSystem.setupGui3DDiffuseLighting(L1, L2);
-            fn.renderBlock(block, poseStack, buffers);
-
+        RenderSystem.setupGui3DDiffuseLighting(L1, L2);
+        fn.renderBlock(block, poseStack, buffers);
+        buffers.endLastBatch();
+        if (!fluidState.isEmpty()) {
+            if (block.getBlock() instanceof LiquidBlock) {
+                block = block.setValue(LiquidBlock.LEVEL, block.getFluidState().getAmount());
+            }
+            BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+            blockRenderDispatcher.renderLiquid(
+                BlockPos.ZERO,
+                airLevelLike,
+                new VertexConsumerWithPose(
+                    buffers.getBuffer(ItemBlockRenderTypes.getRenderLayer(fluidState)),
+                    poseStack.last(),
+                    BlockPos.ZERO
+                ),
+                block,
+                fluidState
+            );
             buffers.endLastBatch();
         }
 
@@ -282,6 +337,7 @@ public class RenderHelper {
     public static float getPartialTick() {
         return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(Minecraft.getInstance().isPaused());
     }
+
 
     @FunctionalInterface
     public interface BlockRenderFunction {
