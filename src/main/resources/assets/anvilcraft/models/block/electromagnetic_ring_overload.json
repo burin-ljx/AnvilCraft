@@ -1,0 +1,13 @@
+{
+	"parent": "anvilcraft:block/electromagnetic_ring",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "anvilcraft:block/electromagnetic_ring_in",
+		"1": "anvilcraft:block/electromagnetic_ring_out",
+		"2": "anvilcraft:block/electromagnetic_ring_inner",
+		"3": "anvilcraft:block/electromagnetic_ring_outer",
+		"4": "anvilcraft:block/electromagnetic_ring_pipe",
+		"particle": "anvilcraft:block/electromagnetic_ring_outer",
+		"state": "anvilcraft:block/electromagnetic_ring_overload"
+	}
+}
