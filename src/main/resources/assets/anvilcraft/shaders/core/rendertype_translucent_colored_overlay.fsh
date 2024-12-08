@@ -18,6 +18,6 @@ out vec4 fragColor;
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0) * vertexColor * ColorModulator;
-    color = mix(linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor), OverlayColor, 0.5);
+    color = mix(linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor), OverlayColor, 0.3);
     fragColor = color;
 }

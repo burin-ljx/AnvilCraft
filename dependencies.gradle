@@ -22,6 +22,10 @@ dependencies {
     compileOnlyApi("vazkii.patchouli:Patchouli:${libs.versions.patchouli.get()}:api")
     runtimeOnly(libs.patchouli)
 
+    compileOnly("maven.modrinth:sodium:mc1.21.1-0.6.3-neoforge")
+    compileOnly("maven.modrinth:embeddium:1.0.11+mc1.21.1")
+    compileOnly("maven.modrinth:iris:1.8.1+1.21.1-neoforge")
+
     implementation(libs.jade)
     implementation(libs.theoneprobe)
     implementation(libs.kubejs)

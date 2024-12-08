@@ -38,7 +38,9 @@
     "MouseHandlerMixin",
     "RenderTypeMixin",
     "SectionCompilerMixin",
-    "SoundEngineMixin"
+    "SoundEngineMixin",
+    "compat.EmbChunkBuilderMeshingTaskMixin",
+    "compat.SodiumChunkBuilderMeshingTaskMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",
   "injectors": {

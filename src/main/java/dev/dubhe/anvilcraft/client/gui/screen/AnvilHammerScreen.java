@@ -12,6 +12,8 @@ import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
+import dev.dubhe.anvilcraft.client.renderer.RenderState;
+import dev.dubhe.anvilcraft.integration.iris.IrisState;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
 import dev.dubhe.anvilcraft.util.MathUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
@@ -38,7 +40,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public static final int RADIUS = 80;
-    public static final int DELAY = 80;//ms
+    public static final int DELAY = 150;//ms
     public static final int ANIMATION_T = 300;//ms
     public static final int CLOSING_ANIMATION_T = 150;//ms
     public static final float ZOOM = 13.5f;
@@ -92,11 +94,12 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private Vector2f selectionEffectPosFromCenter = MathUtil.copy(ROTATION_START).mul(RADIUS);
     /// *rad*
     private float targetAngle = 0f;
+    private boolean shouldRebuildChunk = true;
 
     public AnvilHammerScreen(BlockPos targetBlockPos, BlockState initialBlockState, Property<?> property, List<BlockState> possibleStates) {
         super(Component.translatable("screen.anvilcraft.anvil_hammer.title"));
         this.targetBlockPos = targetBlockPos;
-        this.currentBlockState = initialBlockState.cycle(property);
+        this.currentBlockState = initialBlockState;
         this.property = property;
         this.possibleStates = possibleStates;
     }
@@ -284,6 +287,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         PoseStack poseStack = guiGraphics.pose();
         float delta = displayTime + ANIMATION_T - System.currentTimeMillis();
         if (delta > 0) {
+            triggerChunkRebuild();
             float progress = 1 - (delta / ANIMATION_T);
             progress = (float) (-Math.pow(progress, 2) + 2 * progress);
             if (progress == 0) return;
@@ -371,6 +375,15 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         );
     }
 
+    private void triggerChunkRebuild() {
+        if (!shouldRebuildChunk) return;
+        shouldRebuildChunk = false;
+        Minecraft.getInstance().levelRenderer.setBlockDirty(
+            targetBlockPos,
+            false
+        );
+    }
+
     private static void renderSelectionEffect(
         GuiGraphics guiGraphics,
         float centerX,
@@ -432,6 +445,10 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 currentBlockState
             )
         );
+        Minecraft.getInstance().levelRenderer.setBlockDirty(
+            targetBlockPos,
+            false
+        );
         super.removed();
     }
 
@@ -458,6 +475,11 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     public boolean shouldRender() {
         if (animationStarted) return true;
         return (displayTime + DELAY) <= System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean shouldSkipRebuildBlock() {
+        return !shouldRebuildChunk;
     }
 
     private static void renderRing(
@@ -514,6 +536,9 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     public RenderType renderType() {
+        if (IrisState.isShaderEnabled()) {
+            return RenderType.translucent();
+        }
         return ModRenderTypes.TRANSLUCENT_COLORED_OVERLAY;
     }
 
