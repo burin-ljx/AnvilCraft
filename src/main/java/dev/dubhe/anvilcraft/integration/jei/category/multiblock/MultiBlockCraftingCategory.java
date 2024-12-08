@@ -11,6 +11,7 @@ import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
 import dev.dubhe.anvilcraft.util.LevelLike;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
 
+import dev.dubhe.anvilcraft.util.VertexConsumerWithPose;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -232,7 +233,7 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
             if (!fluid.isEmpty()) {
                 RenderType renderType = ItemBlockRenderTypes.getRenderLayer(fluid);
                 VertexConsumer vertex = buffers.getBuffer(renderType);
-                blockRenderer.renderLiquid(pos, level, vertex, state, fluid);
+                blockRenderer.renderLiquid(pos, level, new VertexConsumerWithPose(vertex, pose.last(), pos), state, fluid);
             }
             if (state.getRenderShape() != RenderShape.INVISIBLE) {
                 BakedModel bakedModel = blockRenderer.getBlockModel(state);
