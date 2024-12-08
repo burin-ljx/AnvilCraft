@@ -3,8 +3,11 @@ package dev.dubhe.anvilcraft.client.event;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -12,6 +15,7 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -19,6 +23,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
+@Slf4j
 @EventBusSubscriber(Dist.CLIENT)
 public class HammerEffectRenderEventListener {
 
@@ -26,7 +31,7 @@ public class HammerEffectRenderEventListener {
     public static void onRender(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
         Minecraft mc = Minecraft.getInstance();
-        if (!(mc.screen instanceof IHasHammerEffect hasHammerEffect))return;
+        if (!(mc.screen instanceof IHasHammerEffect hasHammerEffect)) return;
         if (!hasHammerEffect.shouldRender()) return;
         BlockPos pos = hasHammerEffect.renderingBlockPos();
         BlockState state = hasHammerEffect.renderingBlockState();

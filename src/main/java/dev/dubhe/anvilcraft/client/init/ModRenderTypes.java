@@ -89,7 +89,7 @@ public class ModRenderTypes {
         true,
         RenderType.CompositeState.builder()
             .setLightmapState(LIGHTMAP)
-            .setShaderState(createRenderTypeColoredOverlayShader(0x5566CCFF))
+            .setShaderState(createRenderTypeColoredOverlayShader(0xDD66CCFF))
             .setTextureState(BLOCK_SHEET_MIPPED)
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(TRANSLUCENT_TARGET)

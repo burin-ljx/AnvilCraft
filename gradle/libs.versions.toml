@@ -20,23 +20,18 @@ machete = "1.+"
 neoForge = { group = "net.neoforged", name = "neoforge", version.ref = "neoForge" }
 registrate = { group = "com.tterrag.registrate", name = "Registrate", version.ref = "registrate" }
 clothConfig = { group = "me.shedaniel.cloth", name = "cloth-config-neoforge", version.ref = "clothConfig" }
-
 jeiCommonApi = { group = "mezz.jei", name = "jei-1.21.1-common-api", version.ref = "jei" }
 jeiForgeApi = { group = "mezz.jei", name = "jei-1.21.1-neoforge-api", version.ref = "jei" }
 jeiForgeImpl = { group = "mezz.jei", name = "jei-1.21.1-neoforge", version.ref = "jei" }
-
 reiPlugin = { group = "me.shedaniel", name = "RoughlyEnoughItems-default-plugin-neoforge", version.ref = "rei" }
 reiApi = { group = "me.shedaniel", name = "RoughlyEnoughItems-api-neoforge", version.ref = "rei" }
 reiForge = { group = "me.shedaniel", name = "RoughlyEnoughItems-neoforge", version.ref = "rei" }
-
 emi = { group = "dev.emi", name = "emi-neoforge", version.ref = "emi" }
-
 jade = { group = "maven.modrinth", name = "jade", version.ref = "jade" }
 theoneprobe = { group = "mcjty.theoneprobe", name = "theoneprobe", version.ref = "theoneprobe" }
-
 kubejs = { group = "dev.latvian.mods", name = "kubejs-neoforge", version.ref = "kubejs" }
-
 patchouli = { group = "vazkii.patchouli", name = "Patchouli", version.ref = "patchouli" }
+
 
 [plugins]
 modDevGradle = { id = "net.neoforged.moddev", version.ref = "modDevGradle" }

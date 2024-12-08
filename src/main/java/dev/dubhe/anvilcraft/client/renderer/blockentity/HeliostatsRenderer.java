@@ -53,7 +53,7 @@ public class HeliostatsRenderer implements BlockEntityRenderer<HeliostatsBlockEn
             .getModelRenderer()
             .renderModel(
                 poseStack.last(),
-                buffer.getBuffer(RenderType.solid()),
+                buffer.getBuffer(RenderType.cutout()),
                 null,
                 Minecraft.getInstance().getModelManager().getModel(HELIOSTATS_HEAD),
                 0,

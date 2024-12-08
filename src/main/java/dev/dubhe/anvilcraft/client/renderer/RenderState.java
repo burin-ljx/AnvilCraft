@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 public class RenderState {
 
     private static boolean CONTAINS_INCOMPATIBLE_MODS;
+    private static boolean IRIS_PRESENT;
     @Getter
     private static boolean bloomRenderStage;
     private static final String[] INCOMPATIBLE_MODS = {
@@ -27,6 +28,11 @@ public class RenderState {
                 CONTAINS_INCOMPATIBLE_MODS = true;
             }
         }
+        IRIS_PRESENT = ModList.get().isLoaded("iris");
+    }
+
+    public static boolean isIrisPresent() {
+        return IRIS_PRESENT;
     }
 
     public static void bloomStage(){
