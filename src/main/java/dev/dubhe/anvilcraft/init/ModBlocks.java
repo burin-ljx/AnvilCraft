@@ -1946,7 +1946,7 @@ public class ModBlocks {
     public static final BlockEntry<HeavyIronWallBlock> HEAVY_IRON_WALL = REGISTRATE
         .block("heavy_iron_wall", HeavyIronWallBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
-        .properties(properties -> properties.explosionResistance(15.0f).noOcclusion())
+        .properties(properties -> properties.explosionResistance(1200f).noOcclusion())
         .blockstate((ctx, provider) -> {
         })
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
@@ -1964,7 +1964,7 @@ public class ModBlocks {
     public static final BlockEntry<HeavyIronDoorBlock> HEAVY_IRON_DOOR = REGISTRATE
         .block("heavy_iron_door", HeavyIronDoorBlock::new)
         .initialProperties(() -> Blocks.IRON_DOOR)
-        .properties(properties -> properties)
+        .properties(properties -> properties.explosionResistance(1200f))
         .loot((l, b) -> {
             l.add(b, l.createDoorTable(b));
         })
@@ -1982,7 +1982,7 @@ public class ModBlocks {
     public static final BlockEntry<HeavyIronTrapdoorBlock> HEAVY_IRON_TRAPDOOR = REGISTRATE
         .block("heavy_iron_trapdoor", HeavyIronTrapdoorBlock::new)
         .initialProperties(() -> Blocks.IRON_TRAPDOOR)
-        .properties(properties -> properties)
+        .properties(properties -> properties.explosionResistance(1200f))
         .defaultLoot()
         .blockstate((ctx, provider) -> {
         })
