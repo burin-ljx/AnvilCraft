@@ -2508,8 +2508,7 @@ public class ModBlocks {
         .initialProperties(() -> new Item.Properties().fireResistant())
         .build()
         .loot((tables, block) -> tables.dropOther(block, ModBlocks.TUNGSTEN_BLOCK))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
-            BlockTags.NEEDS_DIAMOND_TOOL)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
 
     public static final BlockEntry<RedhotMetalBlock> REDHOT_NETHERITE = REGISTRATE
@@ -2543,7 +2542,8 @@ public class ModBlocks {
         .initialProperties(() -> new Item.Properties().fireResistant())
         .build()
         .loot((tables, block) -> tables.dropOther(block, ModBlocks.HEATED_NETHERITE))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.NEEDS_DIAMOND_TOOL)
         .register();
 
     public static final BlockEntry<GlowingMetalBlock> GLOWING_TUNGSTEN = REGISTRATE
@@ -2565,7 +2565,8 @@ public class ModBlocks {
         .initialProperties(() -> new Item.Properties().fireResistant())
         .build()
         .loot((tables, block) -> tables.dropOther(block, ModBlocks.REDHOT_NETHERITE))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.NEEDS_DIAMOND_TOOL)
         .register();
 
     public static final BlockEntry<IncandescentMetalBlock> INCANDESCENT_TUNGSTEN = REGISTRATE
