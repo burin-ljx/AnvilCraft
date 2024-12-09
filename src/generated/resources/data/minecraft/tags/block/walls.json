@@ -1,5 +1,6 @@
 {
   "values": [
+    "anvilcraft:heavy_iron_wall",
     "anvilcraft:reinforced_concrete_black_wall",
     "anvilcraft:reinforced_concrete_blue_wall",
     "anvilcraft:reinforced_concrete_brown_wall",
@@ -15,7 +16,6 @@
     "anvilcraft:reinforced_concrete_purple_wall",
     "anvilcraft:reinforced_concrete_red_wall",
     "anvilcraft:reinforced_concrete_white_wall",
-    "anvilcraft:reinforced_concrete_yellow_wall",
-    "anvilcraft:heavy_iron_wall"
+    "anvilcraft:reinforced_concrete_yellow_wall"
   ]
 }
