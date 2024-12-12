@@ -2337,7 +2337,7 @@ public class ModBlocks {
         .block("tempering_glass", TransparentBlock::new)
         .initialProperties(() -> Blocks.GLASS)
         .properties(properties -> properties
-            .explosionResistance(1200.0F)
+            .explosionResistance(1200.0f)
             .noOcclusion()
             .isValidSpawn(ModBlocks::never)
             .isRedstoneConductor(ModBlocks::never)
