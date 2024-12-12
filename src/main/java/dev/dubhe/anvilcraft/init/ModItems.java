@@ -384,7 +384,7 @@ public class ModItems {
         .model((ctx, provider) -> {
         })
         .register();
-    // 升级模板
+    // 升级锻造模板
     public static final ItemEntry<RoyalUpgradeTemplateItem> ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE = REGISTRATE
         .item("royal_steel_upgrade_smithing_template", RoyalUpgradeTemplateItem::new)
         .register();
