@@ -1,8 +1,11 @@
 package dev.dubhe.anvilcraft.data.recipe;
 
+import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -31,6 +34,16 @@ public class BlockCompressRecipeLoader {
                 ModBlocks.CHOCOLATE_CAKE_BLOCK.get());
         blockCompress(provider, Blocks.MOSS_BLOCK, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE);
         blockCompress(provider, Blocks.MOSS_BLOCK, Blocks.STONE_BRICKS, Blocks.MOSSY_STONE_BRICKS);
+        BlockCompressRecipe.builder()
+            .input(BlockTags.LEAVES)
+            .input(Blocks.DIRT)
+            .result(Blocks.PODZOL)
+            .save(provider);
+        BlockCompressRecipe.builder()
+            .input(ModBlockTags.MUSHROOM_BLOCK)
+            .input(Blocks.DIRT)
+            .result(Blocks.MYCELIUM)
+            .save(provider);
     }
 
     private static void blockCompress(RegistrateRecipeProvider provider, Block block1, Block block2, Block result) {
