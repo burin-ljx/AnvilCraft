@@ -1,0 +1,8 @@
+{
+  "type": "anvilcraft:block_compress",
+  "inputs": [
+    "#minecraft:leaves",
+    "minecraft:dirt"
+  ],
+  "result": "minecraft:podzol"
+}

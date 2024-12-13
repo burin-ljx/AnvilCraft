@@ -1,15 +1,23 @@
 package dev.dubhe.anvilcraft.recipe.anvil;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -34,10 +42,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BlockCompressRecipe implements Recipe<BlockCompressRecipe.Input> {
-    public final List<Block> inputs;
+    public final List<Either<TagKey<Block>, Block>> inputs;
     public final Block result;
 
-    public BlockCompressRecipe(List<Block> inputs, Block result) {
+    public BlockCompressRecipe(List<Either<TagKey<Block>, Block>> inputs, Block result) {
         this.inputs = inputs;
         this.result = result;
     }
@@ -72,7 +80,20 @@ public class BlockCompressRecipe implements Recipe<BlockCompressRecipe.Input> {
             return false;
         }
         for (int i = 0; i < inputs.size(); i++) {
-            if (!inputs.get(i).equals(pInput.inputs.get(i))) {
+            Either<TagKey<Block>, Block> either = inputs.get(i);
+            boolean[] result = new boolean[]{true};
+            int finalI = i;
+            either.ifLeft(tag -> {
+                    if (!pInput.inputs.get(finalI).defaultBlockState().is(tag)){
+                        result[0] = false;
+                    }
+                })
+                .ifRight(block -> {
+                    if (!block.equals(pInput.inputs.get(finalI))){
+                        result[0] = false;
+                    }
+                });
+            if (!result[0]) {
                 return false;
             }
         }
@@ -105,19 +126,27 @@ public class BlockCompressRecipe implements Recipe<BlockCompressRecipe.Input> {
         }
     }
 
+    public BlockCompressRecipe self(){
+        return this;
+    }
+
     public static class Serializer implements RecipeSerializer<BlockCompressRecipe> {
         private static final MapCodec<BlockCompressRecipe> CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
-                        CodecUtil.BLOCK_CODEC.listOf(1, 2).fieldOf("inputs").forGetter(BlockCompressRecipe::getInputs),
-                        CodecUtil.BLOCK_CODEC.fieldOf("result").forGetter(BlockCompressRecipe::getResult))
-                .apply(ins, BlockCompressRecipe::new));
+                Codec.xor(TagKey.hashedCodec(Registries.BLOCK), CodecUtil.BLOCK_CODEC)
+                    .listOf(1, 9)
+                    .fieldOf("inputs")
+                    .forGetter(BlockCompressRecipe::getInputs),
+                CodecUtil.BLOCK_CODEC.fieldOf("result").forGetter(BlockCompressRecipe::getResult))
+            .apply(ins, BlockCompressRecipe::new));
+
+        public static final Codec<BlockCompressRecipe> CODEC_NOT_MAP = CODEC.codec();
 
         private static final StreamCodec<RegistryFriendlyByteBuf, BlockCompressRecipe> STREAM_CODEC =
-                StreamCodec.composite(
-                        CodecUtil.BLOCK_STREAM_CODEC.apply(ByteBufCodecs.list(9)),
-                        BlockCompressRecipe::getInputs,
-                        CodecUtil.BLOCK_STREAM_CODEC,
-                        BlockCompressRecipe::getResult,
-                        BlockCompressRecipe::new);
+            StreamCodec.composite(
+                CodecUtil.nbtWrapped(CODEC_NOT_MAP),
+                BlockCompressRecipe::self,
+                tag -> tag
+            );
 
         @Override
         public MapCodec<BlockCompressRecipe> codec() {
@@ -134,11 +163,16 @@ public class BlockCompressRecipe implements Recipe<BlockCompressRecipe.Input> {
     @Accessors(fluent = true, chain = true)
     public static class Builder extends AbstractRecipeBuilder<BlockCompressRecipe> {
 
-        private List<Block> inputs = new ArrayList<>();
+        private List<Either<TagKey<Block>,Block>> inputs = new ArrayList<>();
         private Block result;
 
         public Builder input(Block block) {
-            this.inputs.add(block);
+            this.inputs.add(Either.right(block));
+            return this;
+        }
+
+        public Builder input(TagKey<Block> block) {
+            this.inputs.add(Either.left(block));
             return this;
         }
 
