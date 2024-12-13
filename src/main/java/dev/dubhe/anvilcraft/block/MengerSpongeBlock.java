@@ -34,7 +34,7 @@ public class MengerSpongeBlock extends SpongeBlock {
         .reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
         .get();
 
-    private static final VoxelShape AABB = Shapes.join(Shapes.block(), REDUCE_AABB, BooleanOp.NOT_SAME);
+    private static final VoxelShape AABB = Shapes.join(Shapes.block(), REDUCE_AABB, BooleanOp.ONLY_FIRST);
 
     private static final Direction[] ALL_DIRECTIONS = Direction.values();
 
