@@ -34,7 +34,7 @@ public class StampingPlatformBlock extends Block implements SimpleWaterloggedBlo
         Block.box(2.0, 0.0, 2.0, 14.0, 10.0, 14.0),
         Block.box(4.0, 0.0, 0.0, 12.0, 10.0, 16.0),
         Block.box(0.0, 0.0, 4.0, 16.0, 10.0, 12.0));
-    private static final VoxelShape AABB = Shapes.join(Shapes.block(), REDUCE_AABB, BooleanOp.NOT_SAME);
+    private static final VoxelShape AABB = Shapes.join(Shapes.block(), REDUCE_AABB, BooleanOp.ONLY_FIRST);
 
     public StampingPlatformBlock(Properties properties) {
         super(properties);
