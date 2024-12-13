@@ -1,8 +1,22 @@
 {
   "values": [
+    "anvilcraft:ember_anvil",
+    "anvilcraft:ember_grindstone",
+    "anvilcraft:ember_smithing_table",
+    "anvilcraft:impact_pile",
+    "anvilcraft:ember_metal_block",
+    "anvilcraft:cut_ember_metal_block",
+    "anvilcraft:cut_ember_metal_pillar",
+    "anvilcraft:cut_ember_metal_slab",
+    "anvilcraft:cut_ember_metal_stairs",
+    "anvilcraft:heated_netherite_block",
+    "anvilcraft:redhot_netherite_block",
+    "anvilcraft:glowing_netherite_block",
+    "anvilcraft:incandescent_netherite_block",
     "anvilcraft:void_stone",
     "anvilcraft:earth_core_shard_ore",
     "anvilcraft:void_matter_block",
-    "anvilcraft:earth_core_shard_block"
+    "anvilcraft:earth_core_shard_block",
+    "anvilcraft:negative_matter_block"
   ]
 }

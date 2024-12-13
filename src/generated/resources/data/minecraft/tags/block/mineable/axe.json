@@ -1,9 +1,5 @@
 {
   "values": [
-    "anvilcraft:batch_crafter",
-    "anvilcraft:crab_trap",
-    "anvilcraft:chute",
-    "anvilcraft:magnetic_chute",
-    "anvilcraft:simple_chute"
+    "anvilcraft:crab_trap"
   ]
 }

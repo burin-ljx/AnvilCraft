@@ -1,0 +1,30 @@
+{
+  "values": [
+    "anvilcraft:royal_anvil",
+    "anvilcraft:royal_grindstone",
+    "anvilcraft:royal_smithing_table",
+    "anvilcraft:royal_steel_block",
+    "anvilcraft:smooth_royal_steel_block",
+    "anvilcraft:cut_royal_steel_block",
+    "anvilcraft:cut_royal_steel_pillar",
+    "anvilcraft:cut_royal_steel_slab",
+    "anvilcraft:cut_royal_steel_stairs",
+    "anvilcraft:heavy_iron_block",
+    "anvilcraft:polished_heavy_iron_block",
+    "anvilcraft:polished_heavy_iron_slab",
+    "anvilcraft:polished_heavy_iron_stairs",
+    "anvilcraft:cut_heavy_iron_block",
+    "anvilcraft:cut_heavy_iron_slab",
+    "anvilcraft:cut_heavy_iron_stairs",
+    "anvilcraft:heavy_iron_plate",
+    "anvilcraft:heavy_iron_column",
+    "anvilcraft:heavy_iron_beam",
+    "anvilcraft:heavy_iron_wall",
+    "anvilcraft:heavy_iron_door",
+    "anvilcraft:heavy_iron_trapdoor",
+    "anvilcraft:cursed_gold_block",
+    "anvilcraft:topaz_block",
+    "anvilcraft:ruby_block",
+    "anvilcraft:sapphire_block"
+  ]
+}
