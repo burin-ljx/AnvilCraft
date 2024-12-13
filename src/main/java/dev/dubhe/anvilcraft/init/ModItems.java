@@ -37,6 +37,7 @@ import dev.dubhe.anvilcraft.item.RoyalSwordItem;
 import dev.dubhe.anvilcraft.item.RoyalUpgradeTemplateItem;
 import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
+import dev.dubhe.anvilcraft.item.SuperHeavyItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
@@ -1452,6 +1453,13 @@ public class ModItems {
                     AnvilCraftDatagen.has(ModItems.NEGATIVE_MATTER))
                 .save(provider, AnvilCraft.of(BuiltInRegistries.ITEM.getKey(ctx.get()).getPath() + "_from_ingot"));
         })
+        .register();
+
+
+    public static final ItemEntry<SuperHeavyItem> NEUTRONIUM_INGOT = REGISTRATE
+        .item("neutronium_ingot", SuperHeavyItem::new)
+        .initialProperties(() -> new Item.Properties().fireResistant())
+        .tag(ModItemTags.EXPLOSION_PROOF)
         .register();
 
     public static final ItemEntry<BucketItem> OIL_BUCKET = REGISTRATE

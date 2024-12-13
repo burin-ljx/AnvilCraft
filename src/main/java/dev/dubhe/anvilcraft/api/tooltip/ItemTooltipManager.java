@@ -107,8 +107,7 @@ public class ItemTooltipManager {
         }
         if (stack.is(ModItemTags.REINFORCED_CONCRETE)) {
             ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
-            tooltip.add(
-                1,
+            tooltip.add(1,
                 Component.translatable("tooltip.%s.item.reinforced_concrete".formatted(key.getNamespace()))
                     .withStyle(ChatFormatting.GRAY));
         }

@@ -128,5 +128,11 @@ public class BlockTagLoader {
         provider.addTag(ModBlockTags.INCORRECT_FOR_EMBER_TOOL);
 
         provider.addTag(ModBlockTags.END_PORTAL_UNABLE_CHANGE).add(findResourceKey(Blocks.DRAGON_EGG));
+
+        provider.addTag(ModBlockTags.NEUTRONIUM_CANNOT_PASS_THROUGH)
+            .add(findResourceKey(Blocks.END_STONE))
+            .add(findResourceKey(Blocks.BEDROCK))
+            .add(findResourceKey(ModBlocks.END_DUST.get()))
+            .add(findResourceKey(ModBlocks.NEGATIVE_MATTER_BLOCK.get()));
     }
 }

@@ -7,13 +7,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
  * 诅咒物品
  */
-public interface ICursed {
+public interface ISuperHeavy {
     /**
      * 执行效果
      *
@@ -26,31 +25,27 @@ public interface ICursed {
     default void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
         if (player.getAbilities().instabuild || player.getAbilities().invulnerable) return;
-        MobEffectInstance weakness = new MobEffectInstance(MobEffects.WEAKNESS, 200, 1, false, true);
-        MobEffectInstance slowness = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1, false, true);
-        MobEffectInstance hungry = new MobEffectInstance(MobEffects.HUNGER, 200, 1, false, true);
-        player.addEffect((weakness));
-        int curedNumber = ICursed.hasCursedNumber(player);
-        if (curedNumber > 8) {
-            player.addEffect((slowness));
-        }
-        if (curedNumber > 64) {
-            player.addEffect((hungry));
-        }
+        int superHeavyItemCount = hasSuperHeavyNumber(player);
+        int amplifier = 0;
+        if(superHeavyItemCount > 64) amplifier = 3;
+        else if(superHeavyItemCount > 16) amplifier = 2;
+        else if(superHeavyItemCount > 4) amplifier = 1;
+        MobEffectInstance slowness = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, amplifier, false, true);
+        player.addEffect(slowness);
     }
 
     /**
-     * 统计诅咒物品数量
+     * 统计超重物品数量
      *
      * @param player 玩家
-     * @return 诅咒物品数量
+     * @return 超重物品数量
      */
-    static int hasCursedNumber(@NotNull Player player) {
+    static int hasSuperHeavyNumber(@NotNull Player player) {
         Inventory inventory = player.getInventory();
         int i = 0;
         for (int j = 0; j < inventory.getContainerSize(); ++j) {
             ItemStack itemStack = inventory.getItem(j);
-            if (!(itemStack.getItem() instanceof ICursed)) continue;
+            if (!(itemStack.getItem() instanceof ISuperHeavy)) continue;
             i += itemStack.getCount();
         }
         return i;
