@@ -96,7 +96,7 @@ public class TeslaTowerBlockEntity extends BlockEntity
     public @NotNull PowerComponentType getComponentType() {
         if (this.getLevel() == null) return PowerComponentType.INVALID;
         if (!this.getBlockState().is(ModBlocks.TESLA_TOWER.get())) return PowerComponentType.INVALID;
-        if (this.getBlockState().getValue(TeslaTowerBlock.HALF) != Vertical3PartHalf.BOTTOM)
+        if (this.getBlockState().getValue(TeslaTowerBlock.HALF) != Vertical4PartHalf.BOTTOM)
             return PowerComponentType.INVALID;
         return PowerComponentType.TRANSMITTER;
     }
