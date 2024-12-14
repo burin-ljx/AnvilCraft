@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.block.entity;
 
 import dev.dubhe.anvilcraft.api.power.IPowerConsumer;
+import dev.dubhe.anvilcraft.api.power.PowerComponentType;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
 import dev.dubhe.anvilcraft.api.taslatower.HasCustomNameFilter;
 import dev.dubhe.anvilcraft.api.taslatower.IsEntityIdFilter;
@@ -91,6 +92,15 @@ public class TeslaTowerBlockEntity extends BlockEntity
         return new TeslaTowerBlockEntity(type, pos, blockState);
     }
 
+    @Override
+    public @NotNull PowerComponentType getComponentType() {
+        if (this.getLevel() == null) return PowerComponentType.INVALID;
+        if (!this.getBlockState().is(ModBlocks.TESLA_TOWER.get())) return PowerComponentType.INVALID;
+        if (this.getBlockState().getValue(TeslaTowerBlock.HALF) != Vertical3PartHalf.BOTTOM)
+            return PowerComponentType.INVALID;
+        return PowerComponentType.TRANSMITTER;
+    }
+                                 
     @Override
     public int getInputPower() {
         if (level == null) return 0;
