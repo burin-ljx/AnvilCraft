@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -60,6 +61,21 @@ abstract class ItemEntityMixin extends Entity {
 
     @Shadow
     protected abstract void setUnderwaterMovement();
+
+    @Shadow
+    public abstract boolean isMergable();
+
+    @Shadow
+    public abstract void mergeWithNeighbours();
+
+    @Shadow
+    private int pickupDelay;
+
+    @Shadow
+    private int age;
+
+    @Shadow
+    public int lifespan;
 
     public ItemEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -137,33 +153,107 @@ abstract class ItemEntityMixin extends Entity {
         }
     }
 
-    @Redirect(method = "tick", at = @At(
-        value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/item/ItemEntity;" +
-            "moveTowardsClosestSpace(DDD)V")
-    )
-    private void neutroniumNoBouncingOut(ItemEntity instance, double x, double y, double z) {
-        ItemStack item = this.getItem();
-        if (item.is(ModItems.NEUTRONIUM_INGOT)){
-            return;
+    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
+    private void explosionProof(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (!this.getItem().isEmpty()
+                && this.getItem().is(ModItemTags.EXPLOSION_PROOF)
+                && source.is(DamageTypeTags.IS_EXPLOSION)) {
+            cir.setReturnValue(false);
         }
-        this.moveTowardsClosestSpace(x, y, z);
     }
 
-    @Redirect(method = "tick", at = @At(
-        value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/item/ItemEntity;" +
-            "move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V")
-    )
-    private void neutroniumMove(ItemEntity instance, MoverType moverType, Vec3 motion) {
+    @Inject(method = "getBlockPosBelowThatAffectsMyMovement", at = @At("HEAD"), cancellable = true)
+    private void slidingRailProgress(CallbackInfoReturnable<BlockPos> cir) {
+        BlockState blockState = this.level().getBlockState(this.getOnPos(0.1f));
+        if (blockState.is(ModBlocks.SLIDING_RAIL) || blockState.is(ModBlocks.SLIDING_RAIL_STOP)) {
+            cir.setReturnValue(this.getOnPos(0.1f));
+        }
+    }
+
+    // 以下是中子锭运动相关mixin
+
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    private void neutroniumTick(CallbackInfo ci){
         ItemStack item = this.getItem();
-        if (!item.is(ModItems.NEUTRONIUM_INGOT)){
-            instance.move(moverType, motion);
+        if (!item.is(ModItems.NEUTRONIUM_INGOT)) return;
+        if (item.onEntityItemUpdate((ItemEntity) (Object) this)) {
+            ci.cancel();
             return;
         }
 
-        AnvilCraft.LOGGER.debug("timestamp: {} onGround:{} yPos: {} motion: {}", this.level().getGameTime(),
-            this.onGround() ,this.position().y, this.getDeltaMovement());
+        this.level().getProfiler().push("entityBaseTick");
+
+        this.inBlockState = null;
+        if (this.isPassenger() && this.getVehicle().isRemoved()) {
+            this.stopRiding();
+        }
+        if (this.boardingCooldown > 0) {
+            this.boardingCooldown--;
+        }
+        this.walkDistO = this.walkDist;
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
+        this.handlePortal();
+        this.wasInPowderSnow = this.isInPowderSnow;
+        this.isInPowderSnow = false;
+        this.checkBelowWorld();
+
+        this.level().getProfiler().pop();
+
+        if (this.pickupDelay > 0 && this.pickupDelay != 32767) {
+            --this.pickupDelay;
+        }
+
+        this.xo = this.getX();
+        this.yo = this.getY();
+        this.zo = this.getZ();
+        Vec3 vec3 = this.getDeltaMovement();
+        this.applyGravity();
+        this.noPhysics = false;
+        if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > (double)1.0E-5F || (this.tickCount + this.getId()) % 4 == 0) {
+            this.neutroniumMove(MoverType.SELF, this.getDeltaMovement());
+            float f = 0.98F;
+            if (this.onGround()) {
+                BlockPos groundPos = this.getBlockPosBelowThatAffectsMyMovement();
+                f = this.level().getBlockState(groundPos).getFriction(this.level(), groundPos, this) * 0.98F;
+            }
+            this.setDeltaMovement(this.getDeltaMovement().multiply(f, 0.98, f));
+            if (this.onGround()) {
+                Vec3 vec31 = this.getDeltaMovement();
+                if (vec31.y < (double)0.0F) {
+                    this.setDeltaMovement(vec31.multiply(1.0, -0.5, 1.0));
+                }
+            }
+        }
+        boolean flag = Mth.floor(this.xo) != Mth.floor(this.getX()) || Mth.floor(this.yo) != Mth.floor(this.getY()) || Mth.floor(this.zo) != Mth.floor(this.getZ());
+        int i = flag ? 2 : 40;
+        if (this.tickCount % i == 0 && !this.level().isClientSide && this.isMergable()) {
+            this.mergeWithNeighbours();
+        }
+        if (this.age != -32768) {
+            ++this.age;
+        }
+        if (!this.level().isClientSide) {
+            double d0 = this.getDeltaMovement().subtract(vec3).lengthSqr();
+            if (d0 > 0.01) {
+                this.hasImpulse = true;
+            }
+        }
+        item = this.getItem();
+        if (!this.level().isClientSide && this.age >= this.lifespan) {
+            this.lifespan = Mth.clamp(this.lifespan + EventHooks.onItemExpire((ItemEntity) (Object)this), 0, 32766);
+            if (this.age >= this.lifespan) {
+                this.discard();
+            }
+        }
+        if (item.isEmpty() && !this.isRemoved()) {
+            this.discard();
+        }
+        ci.cancel();
+    }
+
+    @Unique
+    private void neutroniumMove(MoverType moverType, Vec3 motion) {
 
         this.level().getProfiler().push("move");
         //代替原版move方法中的collide调用
@@ -188,14 +278,10 @@ abstract class ItemEntityMixin extends Entity {
                 }
             }
         }
-        AnvilCraft.LOGGER.debug("size: {}", shapes.size());
-        Vec3 motion2 = collideWithShapes(motion, this.getBoundingBox(), shapes);
+        Vec3 motion2 = Entity.collideWithShapes(motion, this.getBoundingBox(), shapes);
         if (motion2.lengthSqr() > 1.0E-7) {
             this.setPos(this.getX() + motion2.x, this.getY() + motion2.y, this.getZ() + motion2.z);
         }
-
-//        AnvilCraft.LOGGER.debug("Motion before collide: {}, Motion after collide: {}",
-//            motion, motion2);
 
         this.level().getProfiler().popPush("rest");
         // 处理一些原版move方法中，对ItemEntity有必要的后续操作
@@ -204,6 +290,7 @@ abstract class ItemEntityMixin extends Entity {
         this.horizontalCollision = collisionX || collisionZ;
         this.verticalCollision = motion2.y != motion.y;
         this.verticalCollisionBelow = this.verticalCollision && motion.y < (double)0.0F;
+        this.minorHorizontalCollision = false;
         this.setOnGroundWithMovement(this.verticalCollisionBelow, motion2);
         BlockPos blockpos = this.getOnPosLegacy();
         BlockState blockState = this.level().getBlockState(blockpos);
@@ -219,63 +306,7 @@ abstract class ItemEntityMixin extends Entity {
             block.stepOn(this.level(), blockpos, blockState, this);
         }
         this.tryCheckInsideBlocks();
-        float f = this.getBlockSpeedFactor();
-        this.setDeltaMovement(this.getDeltaMovement().multiply(f, 1.0, f));
 
         this.level().getProfiler().pop();
-    }
-
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
-    private void explosionProof(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (!this.getItem().isEmpty()
-                && this.getItem().is(ModItemTags.EXPLOSION_PROOF)
-                && source.is(DamageTypeTags.IS_EXPLOSION)) {
-            cir.setReturnValue(false);
-        }
-    }
-
-    @Inject(method = "getBlockPosBelowThatAffectsMyMovement", at = @At("HEAD"), cancellable = true)
-    private void slidingRailProgress(CallbackInfoReturnable<BlockPos> cir) {
-        BlockState blockState = this.level().getBlockState(this.getOnPos(0.1f));
-        if (blockState.is(ModBlocks.SLIDING_RAIL) || blockState.is(ModBlocks.SLIDING_RAIL_STOP)) {
-            cir.setReturnValue(this.getOnPos(0.1f));
-        }
-    }
-
-    private static Vec3 collideWithShapes(Vec3 deltaMovement, AABB entityBB, List<VoxelShape> shapes) {
-        if (shapes.isEmpty()) {
-            return deltaMovement;
-        } else {
-            double d0 = deltaMovement.x;
-            double d1 = deltaMovement.y;
-            double d2 = deltaMovement.z;
-            if (d1 != (double)0.0F) {
-                d1 = Shapes.collide(Direction.Axis.Y, entityBB, shapes, d1);
-                if (d1 != (double)0.0F) {
-                    entityBB = entityBB.move((double)0.0F, d1, (double)0.0F);
-                }
-            }
-
-            boolean flag = Math.abs(d0) < Math.abs(d2);
-            if (flag && d2 != (double)0.0F) {
-                d2 = Shapes.collide(Direction.Axis.Z, entityBB, shapes, d2);
-                if (d2 != (double)0.0F) {
-                    entityBB = entityBB.move((double)0.0F, (double)0.0F, d2);
-                }
-            }
-
-            if (d0 != (double)0.0F) {
-                d0 = Shapes.collide(Direction.Axis.X, entityBB, shapes, d0);
-                if (!flag && d0 != (double)0.0F) {
-                    entityBB = entityBB.move(d0, (double)0.0F, (double)0.0F);
-                }
-            }
-
-            if (!flag && d2 != (double)0.0F) {
-                d2 = Shapes.collide(Direction.Axis.Z, entityBB, shapes, d2);
-            }
-
-            return new Vec3(d0, d1, d2);
-        }
     }
 }
