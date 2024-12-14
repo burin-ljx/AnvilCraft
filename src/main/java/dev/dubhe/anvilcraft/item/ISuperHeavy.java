@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 诅咒物品
+ * 超重物品
  */
 public interface ISuperHeavy {
     /**
