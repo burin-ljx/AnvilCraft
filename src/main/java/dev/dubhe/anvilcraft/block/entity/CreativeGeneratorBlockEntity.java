@@ -68,7 +68,7 @@ public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerP
 
     @Override
     public int getOutputPower() {
-        return this.power > 0 ? this.power : 0;
+        return Math.max(this.power, 0);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerP
     }
 
     public void tick() {
-        if (level instanceof ServerLevel){
+        if (level instanceof ServerLevel) {
             if (previousSyncFailed && grid != null){
                 previousSyncFailed = false;
                 grid.markChanged();
@@ -133,23 +133,5 @@ public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerP
         return 2;
     }
 
-    /**
-     * 实际电量
-     */
-    public int getServerPower() {
-        Optional<SimplePowerGrid> s =
-            SimplePowerGrid.findPowerGrid(getPos()).stream().findAny();
-        if (s.isPresent()) {
-            if (s.get().getConsume() > s.get().getGenerate()) {
-                return 0;
-            }
-            Optional<PowerComponentInfo> info = s.get().getInfoForPos(getBlockPos());
-            return info.map(powerComponentInfo -> powerComponentInfo.type() == PowerComponentType.PRODUCER
-                    ? powerComponentInfo.produces()
-                    : powerComponentInfo.consumes())
-                .orElse(1);
-        } else {
-            return Math.abs(this.power);
-        }
-    }
+
 }

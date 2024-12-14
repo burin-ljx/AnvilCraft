@@ -250,10 +250,15 @@ public class SimplePowerGrid {
     /**
      * 寻找电网
      */
-    public static List<SimplePowerGrid> findPowerGrid(BlockPos pos) {
-        return PowerGridRenderer.getGridMap().values().stream()
-            .filter(it -> it.blocks.stream().anyMatch(it1 -> it1.equals(pos)))
-            .toList();
+    public static Optional<SimplePowerGrid> findPowerGrid(BlockPos pos) {
+        for (SimplePowerGrid value : PowerGridRenderer.getGridMap().values()) {
+            for (BlockPos block : value.blocks) {
+                if (block.equals(pos)) {
+                    return Optional.of(value);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
 
