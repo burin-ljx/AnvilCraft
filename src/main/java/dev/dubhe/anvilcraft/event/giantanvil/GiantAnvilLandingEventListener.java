@@ -342,7 +342,7 @@ public class GiantAnvilLandingEventListener {
         }
         MultiblockInput input = new MultiblockInput(blocks, size);
         level.getRecipeManager()
-            .getRecipeFor(ModRecipeTypes.MULITBLOCK_TYPE.get(), input, level)
+            .getRecipeFor(ModRecipeTypes.MULTIBLOCK_TYPE.get(), input, level)
             .ifPresent(recipe -> {
                 ItemStack result = recipe.value().getResult().copy();
                 for (int y = 0; y < size; y++) {

@@ -54,12 +54,12 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipeTypes.MULITBLOCK_TYPE.get();
+        return ModRecipeTypes.MULTIBLOCK_TYPE.get();
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipeTypes.MULITBLOCK_SERIALIZER.get();
+        return ModRecipeTypes.MULTIBLOCK_SERIALIZER.get();
     }
 
     @Override
