@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:mulitblock/giant_anvil_1"
+        "recipe": "anvilcraft:multiblock/giant_anvil_2"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:mulitblock/giant_anvil_1"
+      "anvilcraft:multiblock/giant_anvil_2"
     ]
   }
 }
