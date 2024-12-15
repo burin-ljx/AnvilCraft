@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:block_crush/black_sand"
+        "recipe": "anvilcraft:mesh/cinerite/silver_nugget"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:block_crush/black_sand"
+      "anvilcraft:mesh/cinerite/silver_nugget"
     ]
   }
 }

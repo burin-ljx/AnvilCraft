@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:mesh/deepslate_chips/lead_nugget"
+        "recipe": "anvilcraft:mesh/cinerite/gunpowder"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:mesh/deepslate_chips/lead_nugget"
+      "anvilcraft:mesh/cinerite/gunpowder"
     ]
   }
 }

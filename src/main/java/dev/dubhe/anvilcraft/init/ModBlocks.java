@@ -2402,19 +2402,6 @@ public class ModBlocks {
         .initialProperties(() -> Blocks.BLACK_CONCRETE_POWDER)
         .tag(BlockTags.MINEABLE_WITH_SHOVEL)
         .register();
-    public static final BlockEntry<ColoredFallingBlock> DEEPSLATE_CHIPS = REGISTRATE
-        .block("deepslate_chips", (b) -> new ColoredFallingBlock(new ColorRGBA(0x000000), b))
-        .initialProperties(() -> Blocks.SAND)
-        .simpleItem()
-        .tag(BlockTags.MINEABLE_WITH_SHOVEL)
-        .register();
-    public static final BlockEntry<ColoredFallingBlock> BLACK_SAND = REGISTRATE
-        .block("black_sand", (b) -> new ColoredFallingBlock(new ColorRGBA(0x000000), b))
-        .initialProperties(() -> Blocks.SAND)
-        .simpleItem()
-        .tag(BlockTags.MINEABLE_WITH_SHOVEL)
-        .register();
-
     public static final BlockEntry<ArrowBlock> ARROW = REGISTRATE
         .block("arrow", ArrowBlock::new)
         .initialProperties(() -> Blocks.STONE)

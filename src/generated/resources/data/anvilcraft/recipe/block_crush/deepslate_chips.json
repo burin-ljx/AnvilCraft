@@ -1,5 +1,0 @@
-{
-  "type": "anvilcraft:block_crush",
-  "input": "minecraft:deepslate",
-  "result": "anvilcraft:deepslate_chips"
-}

@@ -1,11 +1,11 @@
 {
   "type": "anvilcraft:mesh",
   "input": {
-    "item": "anvilcraft:black_sand"
+    "item": "anvilcraft:cinerite"
   },
   "result": {
     "count": 1,
-    "id": "anvilcraft:silver_nugget"
+    "id": "minecraft:gunpowder"
   },
   "result_amount": {
     "type": "minecraft:binomial",

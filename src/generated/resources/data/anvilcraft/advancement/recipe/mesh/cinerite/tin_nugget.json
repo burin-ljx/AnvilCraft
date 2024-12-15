@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:mesh/deepslate_chips/deepslate_chips"
+        "recipe": "anvilcraft:mesh/cinerite/tin_nugget"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:mesh/deepslate_chips/deepslate_chips"
+      "anvilcraft:mesh/cinerite/tin_nugget"
     ]
   }
 }
