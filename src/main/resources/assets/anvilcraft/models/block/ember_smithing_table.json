@@ -1,6 +1,7 @@
 {
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/cube",
+	"ambientocclusion": false,
 	"render_type": "minecraft:cutout",
 	"textures": {
 		"4": "anvilcraft:block/ember_metal_block_outline",

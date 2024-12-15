@@ -1,6 +1,7 @@
 {
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/stairs",
+	"ambientocclusion": false,
 	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "anvilcraft:block/cut_ember_metal_block",
