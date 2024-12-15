@@ -30,6 +30,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -75,6 +76,10 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
 
     protected float getAttackDamageModifierAmount() {
         return 5;
+    }
+
+    public Block getAnvil(){
+        return Blocks.ANVIL;
     }
 
     private static void breakBlock(ServerPlayer player, BlockPos pos, @NotNull ServerLevel level, ItemStack tool) {
@@ -132,17 +137,19 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
     public static boolean dropAnvil(Player player, Level level, BlockPos blockPos) {
         if (player == null || level.isClientSide) return false;
         ItemStack itemStack = player.getItemInHand(player.getUsedItemHand());
-        if (player.getCooldowns().isOnCooldown(itemStack.getItem())) {
+        Item item = itemStack.getItem();
+        if(!(item instanceof AnvilHammerItem anvilHammerItem)) return false;
+        if (player.getCooldowns().isOnCooldown(anvilHammerItem)) {
             return false;
         }
         player.getCooldowns().addCooldown(itemStack.getItem(), 5);
+        FallingBlockEntity dummyAnvilEntity = new FallingBlockEntity(EntityType.FALLING_BLOCK, level);
+        dummyAnvilEntity.blockState = anvilHammerItem.getAnvil().defaultBlockState();
         AnvilFallOnLandEvent event = new AnvilFallOnLandEvent(
-            level, blockPos.above(), new FallingBlockEntity(EntityType.FALLING_BLOCK, level), player.fallDistance);
+            level, blockPos.above(), dummyAnvilEntity, player.fallDistance);
         NeoForge.EVENT_BUS.post(event);
         level.playSound(null, blockPos, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 1f, 1f);
-        if (itemStack.getItem() instanceof AnvilHammerItem) {
-            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
-        }
+        itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
         return true;
     }
 

@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.item;
 
+import dev.dubhe.anvilcraft.init.ModBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -30,6 +32,11 @@ public class EmberAnvilHammerItem extends AnvilHammerItem implements IInherentEn
     @Override
     protected float getAttackDamageModifierAmount() {
         return 9;
+    }
+
+    @Override
+    public Block getAnvil(){
+        return ModBlocks.EMBER_ANVIL.get();
     }
 
     @Override
