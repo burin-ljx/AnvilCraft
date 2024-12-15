@@ -4,10 +4,12 @@ import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.hammer.HammerManager;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
+import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.network.RocketJumpPacket;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -86,18 +88,29 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
         if (!state.is(ModBlockTags.HAMMER_REMOVABLE) && !(block instanceof IHammerRemovable)) return;
-        block.playerWillDestroy(level, pos, state, player);
-        level.destroyBlock(pos, false);
+        if (block instanceof AbstractMultiplePartBlock<?> multiplePartBlock){
+            Vec3i offset = state.getValue(multiplePartBlock.getPart()).getOffset();
+            Vec3i offsetMainPart = multiplePartBlock.getMainPartOffset();
+            BlockPos posMainPart = pos.subtract(offset).offset(offsetMainPart);
+            BlockState stateMainPart = level.getBlockState(posMainPart);
+            if(level.getBlockState(posMainPart).is(block)){
+                pos = posMainPart;
+                state = stateMainPart;
+            }
+        }
+        BlockPos posToRemove = pos;
+        block.playerWillDestroy(level, posToRemove, state, player);
+        level.destroyBlock(posToRemove, false);
         if (player.isCreative()) return;
-        BlockEntity entity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
-        List<ItemStack> drops = Block.getDrops(state, level, pos, entity, player, tool);
+        BlockEntity entity = state.hasBlockEntity() ? level.getBlockEntity(posToRemove) : null;
+        List<ItemStack> drops = Block.getDrops(state, level, posToRemove, entity, player, tool);
         if (!player.isAlive() && player.hasDisconnected()) {
-            drops.forEach(drop -> Block.popResource(level, pos, drop));
-            state.spawnAfterBreak(level, pos, tool, true);
+            drops.forEach(drop -> Block.popResource(level, posToRemove, drop));
+            state.spawnAfterBreak(level, posToRemove, tool, true);
             return;
         }
         drops.forEach(drop -> player.getInventory().placeItemBackInInventory(drop));
-        state.spawnAfterBreak(level, pos, tool, true);
+        state.spawnAfterBreak(level, posToRemove, tool, true);
     }
 
     /**
