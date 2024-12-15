@@ -93,7 +93,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
             Vec3i offsetMainPart = multiplePartBlock.getMainPartOffset();
             BlockPos posMainPart = pos.subtract(offset).offset(offsetMainPart);
             BlockState stateMainPart = level.getBlockState(posMainPart);
-            if(level.getBlockState(posMainPart).is(block)){
+            if(stateMainPart.is(block)){
                 pos = posMainPart;
                 state = stateMainPart;
             }
