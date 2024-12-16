@@ -160,8 +160,8 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
-    public static DirectionProperty determineProperty(BlockState blockState){
-        if (blockState.is(ModBlocks.CHUTE) || blockState.is(ModBlocks.SIMPLE_CHUTE)){
+    public static DirectionProperty determineProperty(BlockState blockState) {
+        if (blockState.is(ModBlocks.CHUTE) || blockState.is(ModBlocks.SIMPLE_CHUTE)) {
             return ChuteBlock.FACING;
         }
         return FACING;
@@ -199,8 +199,12 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction facing = context.getNearestLookingDirection();
+        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
+            facing = facing.getOpposite();
+        }
         return this.defaultBlockState()
-            .setValue(FACING, context.getNearestLookingDirection())
+            .setValue(FACING, facing)
             .setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
