@@ -17,6 +17,7 @@
     "EndPortalBlockMixin",
     "ExplosionMixin",
     "FlyingHitEntityMixin",
+    "HopperBlockMixin",
     "ItemEntityMixin",
     "PistonBaseBlockMixin",
     "PistonMovingBlockEntityMixin",
