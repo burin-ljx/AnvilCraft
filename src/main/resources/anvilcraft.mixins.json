@@ -41,7 +41,11 @@
     "SectionCompilerMixin",
     "SoundEngineMixin",
     "compat.EmbChunkBuilderMeshingTaskMixin",
-    "compat.SodiumChunkBuilderMeshingTaskMixin"
+    "compat.SodiumChunkBuilderMeshingTaskMixin",
+    "compat.EmbeddiumDefaultMaterialsMixin",
+    "compat.EmbeddiumDefaultTerrainRenderPassesMixin",
+    "compat.SodiumDefaultMaterialsMixin",
+    "compat.SodiumDefaultTerrainRenderPassesMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",
   "injectors": {
