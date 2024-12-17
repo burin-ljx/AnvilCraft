@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ public class TimeWarpRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {
         timeWarp(provider, ModItems.RESIN, 1, ModItems.AMBER, 1);
         timeWarp(provider, Items.OBSIDIAN, 1, Items.CRYING_OBSIDIAN, 1);
-        timeWarp(provider, Items.CHARCOAL, 1, Items.COAL, 1);
+        timeWarp(provider, Items.CHARCOAL, 1, Items.COAL, 2);
         timeWarp(provider, Items.SAND, 1, Items.DIRT, 1);
         timeWarp(provider, Items.IRON_BLOCK, 1, Items.RAW_IRON, 3);
         timeWarp(provider, Items.GOLD_BLOCK, 1, Items.RAW_GOLD, 3);
@@ -68,6 +69,10 @@ public class TimeWarpRecipeLoader {
             .consumeFluid(true)
             .cauldron(ModBlocks.MELT_GEM_CAULDRON.get())
             .save(provider);
+        TimeWarpRecipe.builder()
+            .requires(ItemTags.LOGS)
+            .result(new ItemStack(Items.COAL))
+            .save(provider, AnvilCraft.of("time_warp/coal_from_logs"));
 
         timeWarpToOilCauldron(provider, Items.ROTTEN_FLESH, 64);
         timeWarpToOilCauldron(provider, Items.SPIDER_EYE, 64);

@@ -19,7 +19,11 @@ public class StampingRecipeLoader {
         stamping(provider, Items.IRON_INGOT, Items.HEAVY_WEIGHTED_PRESSURE_PLATE);
         stamping(provider, Items.GOLD_INGOT, Items.LIGHT_WEIGHTED_PRESSURE_PLATE);
         stamping(provider, Items.SNOWBALL, Items.SNOW);
-        stamping(provider, ModItems.WOOD_FIBER.get(), Items.PAPER);
+//        stamping(provider, ModItems.WOOD_FIBER.get(), Items.PAPER);
+        StampingRecipe.builder()
+            .requires(ModItems.WOOD_FIBER.get())
+            .result(new ItemStack(Items.PAPER, 4))
+            .save(provider, AnvilCraft.of("stamping/paper_from_wood_fiber"));
 
         StampingRecipe.builder()
             .requires(Items.MILK_BUCKET)
@@ -38,12 +42,12 @@ public class StampingRecipeLoader {
         StampingRecipe.builder()
             .requires(Tags.Items.CROPS_WHEAT)
             .result(new ItemStack(ModItems.FLOUR.get()))
-            .result(new ItemStack(Items.WHEAT_SEEDS))
+            .result(ChanceItemStack.of(new ItemStack(ModItems.FLOUR.get())).withChance(0.5f))
             .save(provider);
         StampingRecipe.builder()
             .requires(Items.SUGAR_CANE)
             .result(new ItemStack(Items.PAPER))
-            .result(ChanceItemStack.of(new ItemStack(Items.SUGAR)).withChance(0.25f))
+            .result(new ItemStack(Items.SUGAR))
             .save(provider, AnvilCraft.of("stamping/paper_from_sugar_cane"));
         StampingRecipe.builder()
             .requires(Items.COCOA_BEANS)
@@ -67,7 +71,7 @@ public class StampingRecipeLoader {
         StampingRecipe.builder()
             .requires(ItemTags.LOGS)
             .result(new ItemStack(ModItems.WOOD_FIBER.asItem()))
-            .result(ChanceItemStack.of(new ItemStack(ModItems.RESIN.get())).withChance(0.25f))
+            .result(new ItemStack(ModItems.RESIN.get()))
             .save(provider);
         stamping(provider, Items.CHERRY_LEAVES, Items.PINK_PETALS);
         StampingRecipe.builder()

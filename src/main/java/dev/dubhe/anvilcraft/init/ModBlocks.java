@@ -296,10 +296,10 @@ public class ModBlocks {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(Items.ANVIL),
-                    Ingredient.of(ModItems.ROYAL_STEEL_INGOT),
+                    Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get().asItem())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.ROYAL_STEEL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_anvil"));
         })
         .initialProperties(() -> Blocks.ANVIL)
@@ -318,10 +318,10 @@ public class ModBlocks {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(Items.GRINDSTONE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_INGOT),
+                    Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get().asItem())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.ROYAL_STEEL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_grindstone"));
         })
         .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -338,10 +338,10 @@ public class ModBlocks {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(Items.SMITHING_TABLE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_INGOT),
+                    Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get().asItem())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.ROYAL_STEEL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_smithing_table"));
         })
         .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -359,10 +359,10 @@ public class ModBlocks {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModBlocks.ROYAL_ANVIL),
-                    Ingredient.of(ModItems.EMBER_METAL_INGOT),
+                    Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get().asItem())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.EMBER_METAL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_anvil"));
         })
         .initialProperties(() -> Blocks.ANVIL)
@@ -388,10 +388,10 @@ public class ModBlocks {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModBlocks.ROYAL_GRINDSTONE),
-                    Ingredient.of(ModItems.EMBER_METAL_INGOT),
+                    Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get().asItem())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.EMBER_METAL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_grindstone"));
         })
         .tag(BlockTags.WITHER_IMMUNE,
@@ -414,10 +414,10 @@ public class ModBlocks {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModBlocks.ROYAL_SMITHING_TABLE),
-                    Ingredient.of(ModItems.EMBER_METAL_INGOT),
+                    Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get().asItem())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.EMBER_METAL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_smithing_table"));
         })
         .tag(BlockTags.WITHER_IMMUNE,

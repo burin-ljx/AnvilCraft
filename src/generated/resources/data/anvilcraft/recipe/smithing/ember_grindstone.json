@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smithing_transform",
   "addition": {
-    "item": "anvilcraft:ember_metal_ingot"
+    "item": "anvilcraft:ember_metal_block"
   },
   "base": {
     "item": "anvilcraft:royal_grindstone"

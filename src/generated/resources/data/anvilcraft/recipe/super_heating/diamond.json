@@ -24,30 +24,6 @@
     },
     {
       "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
-    },
-    {
-      "item": "minecraft:coal_block"
     }
   ],
   "results": [
@@ -55,7 +31,7 @@
       "amount": 1.0,
       "stack": {
         "count": 1,
-        "id": "minecraft:diamond_block"
+        "id": "minecraft:diamond"
       }
     }
   ]

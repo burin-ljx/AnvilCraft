@@ -4,7 +4,7 @@
     "item": "anvilcraft:ember_metal_ingot"
   },
   "base": {
-    "item": "anvilcraft:royal_steel_pickaxe"
+    "tag": "anvilcraft:ember_metal_pickaxe_base"
   },
   "result": {
     "count": 1,
