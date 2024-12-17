@@ -1335,7 +1335,9 @@ public class ModBlocks {
                         .modelFile(DangerUtil.genModModelFile("block/sliding_rail").get())
                         .rotationY(90)
                         .buildLast()};
-                case Z, Y -> DangerUtil.genConfiguredModel("block/sliding_rail")
+                case Z -> DangerUtil.genConfiguredModel("block/sliding_rail")
+                    .get();
+                case Y -> DangerUtil.genConfiguredModel("block/sliding_rail_cross")
                     .get();
             });
         })
