@@ -14,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
