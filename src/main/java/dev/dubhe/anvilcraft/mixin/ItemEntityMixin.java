@@ -1,17 +1,23 @@
 package dev.dubhe.anvilcraft.mixin;
 
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.HollowMagnetBlock;
+import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.IFireReforging;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -19,6 +25,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +39,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,6 +61,21 @@ abstract class ItemEntityMixin extends Entity {
 
     @Shadow
     protected abstract void setUnderwaterMovement();
+
+    @Shadow
+    public abstract boolean isMergable();
+
+    @Shadow
+    public abstract void mergeWithNeighbours();
+
+    @Shadow
+    private int pickupDelay;
+
+    @Shadow
+    private int age;
+
+    @Shadow
+    public int lifespan;
 
     public ItemEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -142,5 +168,145 @@ abstract class ItemEntityMixin extends Entity {
         if (blockState.is(ModBlocks.SLIDING_RAIL) || blockState.is(ModBlocks.SLIDING_RAIL_STOP)) {
             cir.setReturnValue(this.getOnPos(0.1f));
         }
+    }
+
+    // 以下是中子锭运动相关mixin
+
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    private void neutroniumTick(CallbackInfo ci){
+        ItemStack item = this.getItem();
+        if (!item.is(ModItems.NEUTRONIUM_INGOT)) return;
+        if (item.onEntityItemUpdate((ItemEntity) (Object) this)) {
+            ci.cancel();
+            return;
+        }
+
+        this.level().getProfiler().push("entityBaseTick");
+
+        this.inBlockState = null;
+        if (this.isPassenger() && this.getVehicle().isRemoved()) {
+            this.stopRiding();
+        }
+        if (this.boardingCooldown > 0) {
+            this.boardingCooldown--;
+        }
+        this.walkDistO = this.walkDist;
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
+        this.handlePortal();
+        this.wasInPowderSnow = this.isInPowderSnow;
+        this.isInPowderSnow = false;
+        this.checkBelowWorld();
+
+        this.level().getProfiler().pop();
+
+        if (this.pickupDelay > 0 && this.pickupDelay != 32767) {
+            --this.pickupDelay;
+        }
+
+        this.xo = this.getX();
+        this.yo = this.getY();
+        this.zo = this.getZ();
+        Vec3 vec3 = this.getDeltaMovement();
+        this.applyGravity();
+        this.noPhysics = false;
+        if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > (double)1.0E-5F || (this.tickCount + this.getId()) % 4 == 0) {
+            this.neutroniumMove(MoverType.SELF, this.getDeltaMovement());
+            float f = 0.98F;
+            if (this.onGround()) {
+                BlockPos groundPos = this.getBlockPosBelowThatAffectsMyMovement();
+                f = this.level().getBlockState(groundPos).getFriction(this.level(), groundPos, this) * 0.98F;
+            }
+            this.setDeltaMovement(this.getDeltaMovement().multiply(f, 0.98, f));
+            if (this.onGround()) {
+                Vec3 vec31 = this.getDeltaMovement();
+                if (vec31.y < (double)0.0F) {
+                    this.setDeltaMovement(vec31.multiply(1.0, -0.5, 1.0));
+                }
+            }
+        }
+        boolean flag = Mth.floor(this.xo) != Mth.floor(this.getX()) || Mth.floor(this.yo) != Mth.floor(this.getY()) || Mth.floor(this.zo) != Mth.floor(this.getZ());
+        int i = flag ? 2 : 40;
+        if (this.tickCount % i == 0 && !this.level().isClientSide && this.isMergable()) {
+            this.mergeWithNeighbours();
+        }
+        if (this.age != -32768) {
+            ++this.age;
+        }
+        if (!this.level().isClientSide) {
+            double d0 = this.getDeltaMovement().subtract(vec3).lengthSqr();
+            if (d0 > 0.01) {
+                this.hasImpulse = true;
+            }
+        }
+        item = this.getItem();
+        if (!this.level().isClientSide && this.age >= this.lifespan) {
+            this.lifespan = Mth.clamp(this.lifespan + EventHooks.onItemExpire((ItemEntity) (Object)this), 0, 32766);
+            if (this.age >= this.lifespan) {
+                this.discard();
+            }
+        }
+        if (item.isEmpty() && !this.isRemoved()) {
+            this.discard();
+        }
+        ci.cancel();
+    }
+
+    @Unique
+    private void neutroniumMove(MoverType moverType, Vec3 motion) {
+
+        this.level().getProfiler().push("move");
+        //代替原版move方法中的collide调用
+        AABB box = this.getBoundingBox().expandTowards(motion);
+        int x1 = Mth.floor(box.minX - 1.0E-7) - 1;
+        int x2 = Mth.floor(box.maxX + 1.0E-7) + 1;
+        int y1 = Mth.floor(box.minY - 1.0E-7) - 1;
+        int y2 = Mth.floor(box.maxY + 1.0E-7) + 1;
+        int z1 = Mth.floor(box.minZ - 1.0E-7) - 1;
+        int z2 = Mth.floor(box.maxZ + 1.0E-7) + 1;
+        List<VoxelShape> shapes = new ArrayList<>();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int x = x1; x < x2; x++) {
+            for (int y = y1; y < y2; y++) {
+                for (int z = z1; z < z2; z++) {
+                    pos.set(x, y, z);
+                    BlockState blockState = this.level().getBlockState(pos);
+                    //只检测带有特定标签的方块的碰撞
+                    if(blockState.is(ModBlockTags.NEUTRONIUM_CANNOT_PASS_THROUGH)) {
+                        shapes.add(blockState.getCollisionShape(this.level(), pos).move(x, y, z));
+                    }
+                }
+            }
+        }
+        Vec3 motion2 = Entity.collideWithShapes(motion, this.getBoundingBox(), shapes);
+        if (motion2.lengthSqr() > 1.0E-7) {
+            this.setPos(this.getX() + motion2.x, this.getY() + motion2.y, this.getZ() + motion2.z);
+        }
+
+        this.level().getProfiler().popPush("rest");
+        // 处理一些原版move方法中，对ItemEntity有必要的后续操作
+        boolean collisionX = !Mth.equal(motion2.x, motion.x);
+        boolean collisionZ = !Mth.equal(motion2.z, motion.z);
+        this.horizontalCollision = collisionX || collisionZ;
+        this.verticalCollision = motion2.y != motion.y;
+        this.verticalCollisionBelow = this.verticalCollision && motion.y < (double)0.0F;
+        this.minorHorizontalCollision = false;
+        this.setOnGroundWithMovement(this.verticalCollisionBelow, motion2);
+        BlockPos blockpos = this.getOnPosLegacy();
+        BlockState blockState = this.level().getBlockState(blockpos);
+        if (this.horizontalCollision) {
+            Vec3 vec31 = this.getDeltaMovement();
+            this.setDeltaMovement(collisionX ? 0.0 : vec31.x, vec31.y, collisionZ ? 0.0 : vec31.z);
+        }
+        Block block = blockState.getBlock();
+        if (motion2.y != motion.y) {
+            block.updateEntityAfterFallOn(this.level(), this);
+        }
+        if (this.onGround()) {
+            block.stepOn(this.level(), blockpos, blockState, this);
+        }
+        this.tryCheckInsideBlocks();
+
+        this.level().getProfiler().pop();
     }
 }

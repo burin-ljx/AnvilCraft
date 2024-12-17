@@ -1,0 +1,8 @@
+{
+  "type": "anvilcraft:block_compress",
+  "inputs": [
+    "anvilcraft:void_matter_block",
+    "anvilcraft:supercritical_nesting_shulker_box"
+  ],
+  "result": "anvilcraft:space_overcompressor"
+}

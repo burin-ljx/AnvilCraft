@@ -242,7 +242,7 @@ public class EmberAnvilMenu extends AnvilMenu {
         super.onTake(player, stack);
         Level level = player.level();
         if (level.isClientSide()) return;
-        int curedNumber = ICursed.hasCuredNumber(player);
+        int curedNumber = ICursed.hasCursedNumber(player);
         if (curedNumber <= 0) return;
         LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
         bolt.setPos(player.getX(), player.getY(), player.getZ());
