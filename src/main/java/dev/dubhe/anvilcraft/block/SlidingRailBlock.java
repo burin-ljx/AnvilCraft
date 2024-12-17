@@ -63,6 +63,14 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
             Block.box(0, 12, 0, 5, 16, 16),
             Block.box(11, 6, 0, 14, 12, 16)
         ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    public static final VoxelShape AABB_Y =
+        Stream.of(
+            Block.box(0, 0, 0, 16, 6, 16),
+            Block.box(11, 6, 11, 16, 16, 16),
+            Block.box(0, 6, 11, 5, 16, 16),
+            Block.box(0, 6, 0, 5, 16, 5),
+            Block.box(11, 6, 0, 16, 16, 5)
+        ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
     public static final HashMap<BlockPos, PistonPushInfo> MOVING_PISTON_MAP = new HashMap<>();
 
@@ -99,8 +107,9 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
             case X:
                 yield AABB_X;
             case Z:
-            default:
                 yield AABB_Z;
+            case Y:
+                yield AABB_Y;
         };
     }
 

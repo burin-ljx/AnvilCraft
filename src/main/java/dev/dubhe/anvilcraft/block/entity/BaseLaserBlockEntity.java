@@ -157,17 +157,17 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
 
         if (!(level instanceof ServerLevel serverLevel)) return;
         updateLaserLevel(calculateLaserLevel());
-        AABB trackBoundingBox = new AABB(
-            getBlockPos()
-                .relative(direction)
-                .getCenter()
-                .add(-0.0625, -0.0625, -0.0625),
-            irradiateBlockPos.relative(direction.getOpposite())
-                .getCenter()
-                .add(0.0625, 0.0625, 0.0625)
-        );
         int hurt = Math.min(16, laserLevel - 4);
         if (hurt > 0) {
+            AABB trackBoundingBox = new AABB(
+                getBlockPos()
+                    .relative(direction)
+                    .getCenter()
+                    .add(-0.0625, -0.0625, -0.0625),
+                irradiateBlockPos.relative(direction.getOpposite())
+                    .getCenter()
+                    .add(0.0625, 0.0625, 0.0625)
+            );
             level.getEntities(
                 EntityTypeTest.forClass(LivingEntity.class),
                 trackBoundingBox,
@@ -180,16 +180,16 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
             );
         }
         BlockState irradiateBlock = level.getBlockState(irradiateBlockPos);
-        List<ItemStack> drops = Block.getDrops(
-            irradiateBlock,
-            serverLevel,
-            irradiateBlockPos,
-            level.getBlockEntity(irradiateBlockPos)
-        );
         int cooldown = COOLDOWNS[Math.clamp(laserLevel / 4, 0, 4)];
         if (tickCount >= cooldown) {
             tickCount = 0;
             if (irradiateBlock.is(Tags.Blocks.ORES)) {
+                List<ItemStack> drops = Block.getDrops(
+                    irradiateBlock,
+                    serverLevel,
+                    irradiateBlockPos,
+                    level.getBlockEntity(irradiateBlockPos)
+                );
                 Vec3 blockPos = getBlockPos().relative(direction.getOpposite()).getCenter();
                 IItemHandler cap = getLevel()
                     .getCapability(
@@ -216,16 +216,12 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
                 });
                 if (irradiateBlock.is(Blocks.ANCIENT_DEBRIS)) {
                     level.setBlockAndUpdate(irradiateBlockPos, Blocks.NETHERRACK.defaultBlockState());
+                } else if (irradiateBlock.is(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)) {
+                    level.setBlockAndUpdate(irradiateBlockPos, Blocks.DEEPSLATE.defaultBlockState());
+                } else if (irradiateBlock.is(Tags.Blocks.ORES_IN_GROUND_NETHERRACK)) {
+                    level.setBlockAndUpdate(irradiateBlockPos, Blocks.NETHERRACK.defaultBlockState());
                 } else {
-                    if (irradiateBlock.is(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE))
-                        level.setBlockAndUpdate(irradiateBlockPos, Blocks.DEEPSLATE.defaultBlockState());
-                    else {
-                        if (irradiateBlock.is(Tags.Blocks.ORES_IN_GROUND_NETHERRACK)) {
-                            level.setBlockAndUpdate(irradiateBlockPos, Blocks.NETHERRACK.defaultBlockState());
-                        } else {
-                            level.setBlockAndUpdate(irradiateBlockPos, Blocks.STONE.defaultBlockState());
-                        }
-                    }
+                    level.setBlockAndUpdate(irradiateBlockPos, Blocks.STONE.defaultBlockState());
                 }
                 /* else {
                     if (level.getBlockState(irradiateBlockPos).getBlock().defaultDestroyTime() >= 0

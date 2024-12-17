@@ -5,7 +5,7 @@
       "y": 90
     },
     "axis=y": {
-      "model": "anvilcraft:block/sliding_rail"
+      "model": "anvilcraft:block/sliding_rail_cross"
     },
     "axis=z": {
       "model": "anvilcraft:block/sliding_rail"
