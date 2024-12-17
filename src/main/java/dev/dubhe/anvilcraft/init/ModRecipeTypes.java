@@ -107,9 +107,9 @@ public class ModRecipeTypes {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MobTransformRecipe>>
             MOB_TRANSFORM_SERIALIZER = RECIPE_SERIALIZERS.register("mob_transform", MobTransformRecipe.Serializer::new);
 
-    public static final DeferredHolder<RecipeType<?>, RecipeType<MultiblockRecipe>> MULITBLOCK_TYPE =
-            registerType("mulitblock");
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MultiblockRecipe>> MULITBLOCK_SERIALIZER =
+    public static final DeferredHolder<RecipeType<?>, RecipeType<MultiblockRecipe>> MULTIBLOCK_TYPE =
+            registerType("multiblock");
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MultiblockRecipe>> MULTIBLOCK_SERIALIZER =
             RECIPE_SERIALIZERS.register("multiblock", MultiblockRecipe.Serializer::new);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<MineralFountainRecipe>> MINERAL_FOUNTAIN =

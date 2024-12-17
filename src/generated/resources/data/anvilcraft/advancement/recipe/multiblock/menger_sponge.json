@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:mulitblock/large_cake"
+        "recipe": "anvilcraft:multiblock/menger_sponge"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:mulitblock/large_cake"
+      "anvilcraft:multiblock/menger_sponge"
     ]
   }
 }

@@ -56,7 +56,7 @@ public class MultiBlockRecipeLoader {
                         'J',
                         BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_SLAB.get())
                                 .hasState(SlabBlock.TYPE, SlabType.BOTTOM))
-                .save(provider, AnvilCraft.of("mulitblock/giant_anvil_1"));
+                .save(provider, AnvilCraft.of("multiblock/giant_anvil_1"));
 
         MultiblockRecipe.builder(ModBlocks.GIANT_ANVIL)
                 .layer("AAA", "AAA", "AAA")
@@ -66,7 +66,7 @@ public class MultiBlockRecipeLoader {
                 .symbol('B', ModBlocks.HEAVY_IRON_COLUMN.get())
                 .symbol('C', ModBlocks.HEAVY_IRON_PLATE.get())
                 .symbol('D', ModBlocks.POLISHED_HEAVY_IRON_BLOCK.get())
-                .save(provider, AnvilCraft.of("mulitblock/giant_anvil_2"));
+                .save(provider, AnvilCraft.of("multiblock/giant_anvil_2"));
 
         MultiblockRecipe.builder(ModBlocks.MENGER_SPONGE)
                 .layer("AAA", "A A", "AAA")
@@ -177,6 +177,6 @@ public class MultiBlockRecipeLoader {
                         "A AA AA A",
                         "AAAAAAAAA")
                 .symbol('A', "anvilcraft:menger_sponge")
-                .save(provider, AnvilCraft.of("mulitblock/menger_sponge_2"));
+                .save(provider, AnvilCraft.of("multiblock/menger_sponge_2"));
     }
 }

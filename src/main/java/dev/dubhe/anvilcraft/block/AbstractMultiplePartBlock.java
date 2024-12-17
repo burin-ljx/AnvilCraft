@@ -40,7 +40,7 @@ public abstract class AbstractMultiplePartBlock<P extends Enum<P> & IMultiplePar
 
     public abstract P[] getParts();
 
-    protected Vec3i getMainPartOffset() {
+    public Vec3i getMainPartOffset() {
         return new Vec3i(0, 0, 0);
     }
 

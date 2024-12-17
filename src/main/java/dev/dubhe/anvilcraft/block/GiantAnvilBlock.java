@@ -216,7 +216,7 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
     }
 
     @Override
-    protected Vec3i getMainPartOffset() {
+    public Vec3i getMainPartOffset() {
         return new Vec3i(0, 1, 0);
     }
 

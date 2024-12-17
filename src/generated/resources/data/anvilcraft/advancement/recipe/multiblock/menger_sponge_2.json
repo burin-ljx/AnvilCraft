@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:mulitblock/menger_sponge_2"
+        "recipe": "anvilcraft:multiblock/menger_sponge_2"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:mulitblock/menger_sponge_2"
+      "anvilcraft:multiblock/menger_sponge_2"
     ]
   }
 }

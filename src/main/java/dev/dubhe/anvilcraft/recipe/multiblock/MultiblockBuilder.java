@@ -64,7 +64,7 @@ public class MultiblockBuilder extends AbstractRecipeBuilder<MultiblockRecipe> {
 
     @Override
     public String getType() {
-        return "mulitblock";
+        return "multiblock";
     }
 
     @Override
