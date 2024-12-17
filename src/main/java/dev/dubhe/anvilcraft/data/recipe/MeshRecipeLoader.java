@@ -42,19 +42,15 @@ public class MeshRecipeLoader {
 
         mesh(provider, ModBlocks.CINERITE, ModBlocks.CINERITE, 0.5f);
         mesh(provider, ModBlocks.CINERITE, Items.LAPIS_LAZULI, 0.1f);
+        mesh(provider, ModBlocks.CINERITE, Items.GUNPOWDER, 0.1f);
         mesh(provider, ModBlocks.CINERITE, ModItems.ZINC_NUGGET, 0.1f);
+        mesh(provider, ModBlocks.CINERITE, ModItems.LEAD_NUGGET, 0.1f);
+        mesh(provider, ModBlocks.CINERITE, ModItems.TIN_NUGGET, 0.1f);
+        mesh(provider, ModBlocks.CINERITE, ModItems.SILVER_NUGGET, 0.1f);
 
         mesh(provider, ModBlocks.QUARTZ_SAND, ModBlocks.QUARTZ_SAND, 0.5f);
         mesh(provider, ModBlocks.QUARTZ_SAND, Items.QUARTZ, 1.0f);
-        mesh(provider, ModBlocks.QUARTZ_SAND, ModItems.TIN_NUGGET, 0.2f);
 
-        mesh(provider, ModBlocks.DEEPSLATE_CHIPS, ModBlocks.DEEPSLATE_CHIPS, 0.5f);
-        mesh(provider, ModBlocks.DEEPSLATE_CHIPS, ModItems.LIME_POWDER, 0.1f);
-        mesh(provider, ModBlocks.DEEPSLATE_CHIPS, ModItems.LEAD_NUGGET, 0.1f);
-
-        mesh(provider, ModBlocks.BLACK_SAND, ModBlocks.BLACK_SAND, 0.5f);
-        mesh(provider, ModBlocks.BLACK_SAND, Items.GUNPOWDER, 0.1f);
-        mesh(provider, ModBlocks.BLACK_SAND, ModItems.SILVER_NUGGET, 0.1f);
     }
 
     private static void mesh(RegistrateRecipeProvider provider, ItemLike input, ItemLike result, float chance) {

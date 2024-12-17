@@ -528,34 +528,6 @@ public class ModItems {
     public static final ItemEntry<Item> COCOA_POWDER =
         REGISTRATE.item("cocoa_powder", Item::new).register();
 
-    public static final ItemEntry<Item> BEEF_MUSHROOM_STEW_RAW = REGISTRATE
-        .item("beef_mushroom_stew_raw", Item::new)
-        .properties(properties -> properties.stacksTo(1))
-        .recipe((ctx, provider) -> {
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get())
-                .requires(Items.BEEF)
-                .requires(Items.BROWN_MUSHROOM)
-                .requires(Items.RED_MUSHROOM)
-                .requires(Items.BOWL)
-                .unlockedBy("hasitem", RegistrateRecipeProvider.has(Items.BEEF))
-                .save(provider);
-        })
-        .register();
-
-    public static final ItemEntry<Item> UTUSAN_RAW = REGISTRATE
-        .item("utusan_raw", Item::new)
-        .recipe((ctx, provider) -> {
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get())
-                .requires(Items.SPIDER_EYE)
-                .requires(Items.PUFFERFISH)
-                .requires(Items.POISONOUS_POTATO)
-                .requires(Items.LILY_OF_THE_VALLEY)
-                .requires(Items.WITHER_ROSE)
-                .unlockedBy("has_spider_eye", RegistrateRecipeProvider.has(Items.SPIDER_EYE))
-                .save(provider);
-        })
-        .register();
-
     public static final ItemEntry<Item> MAGNET_INGOT = REGISTRATE
         .item("magnet_ingot", Item::new)
         .recipe((ctx, provider) -> {

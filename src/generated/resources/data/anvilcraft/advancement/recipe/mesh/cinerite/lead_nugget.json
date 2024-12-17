@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:mesh/black_sand/black_sand"
+        "recipe": "anvilcraft:mesh/cinerite/lead_nugget"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:mesh/black_sand/black_sand"
+      "anvilcraft:mesh/cinerite/lead_nugget"
     ]
   }
 }

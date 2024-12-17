@@ -19,8 +19,6 @@ public class BlockCrushRecipeLoader {
         blockCrush(provider, Blocks.ANDESITE, ModBlocks.CINERITE.get());
         blockCrush(provider, Blocks.POLISHED_DIORITE, Blocks.DIORITE);
         blockCrush(provider, Blocks.DIORITE, ModBlocks.QUARTZ_SAND.get());
-        blockCrush(provider, Blocks.DEEPSLATE, ModBlocks.DEEPSLATE_CHIPS.get());
-        blockCrush(provider, Blocks.BLACKSTONE, ModBlocks.BLACK_SAND.get());
         blockCrush(provider, Blocks.STONE_BRICKS, Blocks.CRACKED_STONE_BRICKS);
         blockCrush(provider, Blocks.DEEPSLATE_BRICKS, Blocks.CRACKED_DEEPSLATE_BRICKS);
         blockCrush(provider, Blocks.NETHER_BRICKS, Blocks.CRACKED_NETHER_BRICKS);

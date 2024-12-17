@@ -1,7 +1,7 @@
 {
   "type": "anvilcraft:mesh",
   "input": {
-    "item": "anvilcraft:quartz_sand"
+    "item": "anvilcraft:cinerite"
   },
   "result": {
     "count": 1,
@@ -10,6 +10,6 @@
   "result_amount": {
     "type": "minecraft:binomial",
     "n": 1.0,
-    "p": 0.2
+    "p": 0.1
   }
 }

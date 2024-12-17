@@ -1,11 +1,11 @@
 {
   "type": "anvilcraft:mesh",
   "input": {
-    "item": "anvilcraft:deepslate_chips"
+    "item": "anvilcraft:cinerite"
   },
   "result": {
     "count": 1,
-    "id": "anvilcraft:lead_nugget"
+    "id": "anvilcraft:silver_nugget"
   },
   "result_amount": {
     "type": "minecraft:binomial",
