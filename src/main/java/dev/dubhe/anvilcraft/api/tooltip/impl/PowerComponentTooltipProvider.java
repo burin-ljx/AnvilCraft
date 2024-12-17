@@ -45,10 +45,9 @@ public class PowerComponentTooltipProvider implements IBlockEntityTooltipProvide
         } else {
             return List.of();
         }
-        List<SimplePowerGrid> powerGrids = SimplePowerGrid.findPowerGrid(pos);
+        Optional<SimplePowerGrid> powerGrids = SimplePowerGrid.findPowerGrid(pos);
         if (powerGrids.isEmpty()) return List.of();
-        SimplePowerGrid grid = powerGrids.getFirst();
-        if (grid == null) return List.of();
+        SimplePowerGrid grid = powerGrids.get();
         final Optional<PowerComponentInfo> optional = grid.getInfoForPos(pos);
         if (optional.isEmpty()) return null;
         PowerComponentInfo componentInfo = optional.get();

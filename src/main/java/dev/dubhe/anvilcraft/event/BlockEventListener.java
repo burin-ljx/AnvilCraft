@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.event;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
+import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.item.AnvilHammerItem;
 
 import net.minecraft.world.InteractionHand;
@@ -43,7 +44,7 @@ public class BlockEventListener {
         if (event.getEntity().getItemInHand(hand).getItem() instanceof AnvilHammerItem) {
             if (AnvilHammerItem.ableToUseAnvilHammer(event.getLevel(), event.getPos(), event.getEntity())) {
                 Block b = event.getLevel().getBlockState(event.getPos()).getBlock();
-                if (b instanceof IHammerRemovable
+                if ((b instanceof IHammerRemovable || b.defaultBlockState().is(ModBlockTags.HAMMER_REMOVABLE))
                     && !(b instanceof IHammerChangeable)
                     && !event.getEntity().isShiftKeyDown()
                 ) {

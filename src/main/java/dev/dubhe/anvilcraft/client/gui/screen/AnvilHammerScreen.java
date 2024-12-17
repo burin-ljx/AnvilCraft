@@ -433,6 +433,9 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     public void removed() {
+        if (!animationStarted) {
+            currentBlockState = currentBlockState.cycle(property);
+        }
         Minecraft.getInstance().level.setBlock(
             targetBlockPos,
             currentBlockState,

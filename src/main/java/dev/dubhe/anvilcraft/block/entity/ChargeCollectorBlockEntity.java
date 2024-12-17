@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.api.tooltip.providers.IHasAffectRange;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
 
 import dev.dubhe.anvilcraft.network.ChargeCollectorIncomingChargePacket;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +30,10 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
     private double chargeCount = 0;
     private PowerGrid grid = null;
     private int power = 0;
+    @Getter
+    private int time = 0;
+    @Getter
+    private float rotation = 0;
 
     public static @NotNull ChargeCollectorBlockEntity createBlockEntity(
         BlockEntityType<?> type,
@@ -107,6 +112,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
             grid.markChanged();
         }
         this.chargeCount = 0;
+        time++;
     }
 
     /**
@@ -137,5 +143,9 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
     @Override
     public AABB shape() {
         return AABB.ofSize(getBlockPos().getCenter(), 5, 5, 5);
+    }
+
+    public void clientTick() {
+        rotation += (float) (getServerPower() * 0.03);
     }
 }
