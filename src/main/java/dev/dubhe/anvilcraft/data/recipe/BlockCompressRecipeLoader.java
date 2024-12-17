@@ -44,6 +44,11 @@ public class BlockCompressRecipeLoader {
             .input(Blocks.DIRT)
             .result(Blocks.MYCELIUM)
             .save(provider);
+        BlockCompressRecipe.builder()
+            .input(ModBlocks.VOID_MATTER_BLOCK.get())
+            .input(ModBlocks.SUPERCRITICAL_NESTING_SHULKER_BOX.get())
+            .result(ModBlocks.SPACE_OVERCOMPRESSOR.get())
+            .save(provider);
     }
 
     private static void blockCompress(RegistrateRecipeProvider provider, Block block1, Block block2, Block result) {
