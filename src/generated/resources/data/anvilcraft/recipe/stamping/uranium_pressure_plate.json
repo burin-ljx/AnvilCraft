@@ -1,0 +1,17 @@
+{
+  "type": "anvilcraft:stamping",
+  "ingredients": [
+    {
+      "item": "anvilcraft:uranium_ingot"
+    }
+  ],
+  "results": [
+    {
+      "amount": 1.0,
+      "stack": {
+        "count": 1,
+        "id": "anvilcraft:uranium_pressure_plate"
+      }
+    }
+  ]
+}
