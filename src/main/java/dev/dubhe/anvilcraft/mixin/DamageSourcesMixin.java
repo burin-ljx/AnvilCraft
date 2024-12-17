@@ -19,6 +19,8 @@ public abstract class DamageSourcesMixin implements ModDamageTypes.DamageSourceE
 
     @Unique
     private DamageSource anvilCraft$laser;
+    @Unique
+    private DamageSource anvilCraft$lostInTime;
 
     @Inject(
         method = "<init>",
@@ -26,10 +28,16 @@ public abstract class DamageSourcesMixin implements ModDamageTypes.DamageSourceE
     )
     void initModDamageSources(RegistryAccess registry, CallbackInfo ci){
         anvilCraft$laser = this.source(ModDamageTypes.LASER);
+        anvilCraft$lostInTime = this.source(ModDamageTypes.LOST_IN_TIME);
     }
 
     @Override
     public DamageSource laser() {
         return anvilCraft$laser;
+    }
+
+    @Override
+    public DamageSource lostInTime(){
+        return anvilCraft$lostInTime;
     }
 }
