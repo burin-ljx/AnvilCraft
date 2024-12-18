@@ -9,6 +9,7 @@ import com.mojang.math.MatrixUtil;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -148,6 +149,79 @@ public class RenderHelper {
         }
 
         poseStack.popPose();
+    }
+
+    //test for spectral anvil conversion recipe:
+    public static void renderLevelLike(
+            LevelLike level,
+            GuiGraphics guiGraphics,
+            int xPos,
+            int yPos,
+            float scaleFactor,
+            float rotationSpeed) {
+        RenderSystem.enableBlend();
+        Minecraft minecraft = Minecraft.getInstance();
+        DeltaTracker tracker = minecraft.getTimer();
+        ClientLevel clientLevel = minecraft.level;
+        PoseStack pose = guiGraphics.pose();
+        int sizeX = level.horizontalSize();
+        int sizeY = level.verticalSize();
+
+        pose.pushPose();
+        pose.translate(xPos, yPos, 100);
+        float scaleX = scaleFactor / (float) Math.sqrt(sizeX * sizeX * 2);
+        float scaleY = scaleFactor / (float) sizeY;
+        float scale = Math.min(scaleY, scaleX);
+        pose.scale(-scale, -scale, -scale);
+
+        pose.translate(-(float) sizeX / 2, -(float) sizeY / 2, 0);
+        pose.mulPose(Axis.XP.rotationDegrees(-30));
+
+        float offsetX = (float) -sizeX / 2;
+        float offsetZ = (float) -sizeY / 2 + 1;
+        float rotationY = (clientLevel.getGameTime() + tracker.getGameTimeDeltaPartialTick(true)) * rotationSpeed;
+
+        pose.translate(-offsetX, 0, -offsetZ);
+        pose.mulPose(Axis.YP.rotationDegrees(rotationY + 45));
+
+        pose.translate(offsetX, 0, offsetZ);
+
+        Iterable<BlockPos> iter = BlockPos.betweenClosed(BlockPos.ZERO, new BlockPos(sizeX - 1, sizeY - 1, sizeX - 1));
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        pose.translate(0, 0, -1);
+        MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
+        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+        for (BlockPos pos : iter) {
+            BlockState state = level.getBlockState(pos);
+            pose.pushPose();
+            pose.translate(pos.getX(), pos.getY(), pos.getZ());
+            FluidState fluid = state.getFluidState();
+            if (!fluid.isEmpty()) {
+                RenderType renderType = ItemBlockRenderTypes.getRenderLayer(fluid);
+                VertexConsumer vertex = buffers.getBuffer(renderType);
+                blockRenderer.renderLiquid(pos, level, new VertexConsumerWithPose(vertex, pose.last(), pos), state, fluid);
+            }
+            if (state.getRenderShape() != RenderShape.INVISIBLE) {
+                BakedModel bakedModel = blockRenderer.getBlockModel(state);
+                for (RenderType type : bakedModel.getRenderTypes(state, RANDOM, ModelData.EMPTY)) {
+                    VertexConsumer vertex = buffers.getBuffer(type);
+                    blockRenderer.renderBatched(state, pos, level, pose, vertex, false, RANDOM, ModelData.EMPTY, type);
+                }
+            }
+            pose.popPose();
+        }
+        buffers.endBatch();
+        pose.popPose();
+        pose.popPose();
+    }
+
+    public static void renderLevelLike(
+        LevelLike level,
+        GuiGraphics guiGraphics,
+        int xPos,
+        int yPos,
+        float scale){
+        renderLevelLike(level, guiGraphics, xPos, yPos, scale, 0.0f);
     }
 
     public static void renderItemWithTransparency(ItemStack stack, PoseStack poseStack, int x, int y, float alpha) {
