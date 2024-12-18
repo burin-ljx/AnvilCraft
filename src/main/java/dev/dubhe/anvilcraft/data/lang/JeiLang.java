@@ -51,6 +51,10 @@ public class JeiLang {
         provider.add("gui.anvilcraft.category.end_portal_conversion", "Falling Block Through End Portal");
         provider.add("gui.anvilcraft.category.end_portal_conversion.fall_through", "Converted when fall through end portal");
 
+        provider.add("gui.anvilcraft.category.beacon_conversion", "Beacon Conversion");
+        provider.add("gui.anvilcraft.category.beacon_conversion.activate", "Use this item to activate beacon");
+        provider.add("gui.anvilcraft.category.beacon_conversion.beacon_base", "Use this block as beacon base");
+
         provider.add("jei.anvilcraft.info.geode_1", "Finds Amethyst Geodes nearby when using.");
         provider.add("jei.anvilcraft.info.geode_2", "Dropped by Budding Amethyst blocks.");
         provider.add("jei.anvilcraft.info.geode_3", "You can also find it in the Bonus Chest");

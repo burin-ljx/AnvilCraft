@@ -35,6 +35,7 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
     private final IDrawable slot;
     private final IDrawable preRenderedEndPortal;
     private final Component title;
+    private final Component fallThroughTooltip;
 
     private final IDrawable arrowIn;
     private final IDrawable arrowOut;
@@ -43,8 +44,9 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
         background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
         slot = helper.getSlotDrawable();
         preRenderedEndPortal = helper.drawableBuilder(TextureConstants.PRE_RENDERED_END_PORTAL,
-            0, 0, 500, 312).setTextureSize(500, 312).build();
+            0, 0, 400, 300).setTextureSize(400, 300).build();
         title = Component.translatable("gui.anvilcraft.category.end_portal_conversion");
+        fallThroughTooltip = Component.translatable("gui.anvilcraft.category.end_portal_conversion.fall_through");
 
         arrowIn = helper.createDrawable(TextureConstants.ANVIL_CRAFT_SPRITES, 0, 31, 16, 8);
         arrowOut = helper.createDrawable(TextureConstants.ANVIL_CRAFT_SPRITES, 0, 40, 16, 10);
@@ -87,7 +89,7 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.scale(0.1f, 0.1f, 1.0f);
-        preRenderedEndPortal.draw(guiGraphics, 570, 350);
+        preRenderedEndPortal.draw(guiGraphics, 600, 350);
         pose.popPose();
         arrowIn.draw(guiGraphics, 54, 32);
         arrowOut.draw(guiGraphics, 92, 31);
@@ -103,9 +105,9 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
         IRecipeSlotsView recipeSlotsView,
         double mouseX,
         double mouseY) {
-        if (mouseX >= 57 && mouseX <= 107) {
-            if (mouseY >= 35 && mouseY <= 66) {
-                tooltip.add(Component.translatable("gui.anvilcraft.category.end_portal_conversion.fall_through"));
+        if (mouseX >= 60 && mouseX <= 102) {
+            if (mouseY >= 35 && mouseY <= 65) {
+                tooltip.add(fallThroughTooltip);
             }
         }
     }

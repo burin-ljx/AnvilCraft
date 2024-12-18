@@ -21,6 +21,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -44,6 +45,8 @@ public class BeaconConversionCategory implements IRecipeCategory<BeaconConversio
     private final IDrawable slot;
     private final IDrawable progressArrow;
     private final Component title;
+    private final Component activateTooltip;
+    private final Component beaconBaseTooltip;
     private final IDrawable arrowIn;
 
     private final Map<BeaconConversionRecipe, LevelLike> cache = new HashMap<>();
@@ -52,6 +55,10 @@ public class BeaconConversionCategory implements IRecipeCategory<BeaconConversio
         background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
         slot = helper.getSlotDrawable();
         title = Component.translatable("gui.anvilcraft.category.beacon_conversion");
+        activateTooltip = Component.translatable("gui.anvilcraft.category.beacon_conversion.activate")
+            .withStyle(ChatFormatting.GOLD);
+        beaconBaseTooltip = Component.translatable("gui.anvilcraft.category.beacon_conversion.beacon_base")
+            .withStyle(ChatFormatting.GOLD);
         progressArrow = helper.drawableBuilder(TextureConstants.PROGRESS, 0, 0, 24, 16)
             .setTextureSize(24, 16)
             .build();
@@ -84,11 +91,15 @@ public class BeaconConversionCategory implements IRecipeCategory<BeaconConversio
     @Override
     public void setRecipe(
         IRecipeLayoutBuilder builder, BeaconConversionRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 10, 12)
-            .addItemStack(ModItems.CURSED_GOLD_INGOT.asStack());
-        builder.addSlot(RecipeIngredientRole.CATALYST, 10, 32)
-            .addItemStack(ModBlocks.CURSED_GOLD_BLOCK.asStack(recipe.cursedGoldBlockCount));
-        builder.addSlot(RecipeIngredientRole.INPUT, 10, 96)
+        builder.addSlot(RecipeIngredientRole.INPUT, 48, 8)
+            .addItemStack(ModItems.CURSED_GOLD_INGOT.asStack())
+            .addRichTooltipCallback((recipeSlotView, tooltip) ->
+                tooltip.add(activateTooltip));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 10, 110)
+            .addItemStack(ModBlocks.CURSED_GOLD_BLOCK.asStack(recipe.cursedGoldBlockCount))
+            .addRichTooltipCallback((recipeSlotView, tooltip) ->
+                tooltip.add(beaconBaseTooltip));
+        builder.addSlot(RecipeIngredientRole.INPUT, 10, 92)
             .addItemStack(Blocks.BEACON.asItem().getDefaultInstance());
         IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 96)
             .addItemStack(ModBlocks.CORRUPTED_BEACON.asStack());
@@ -123,15 +134,15 @@ public class BeaconConversionCategory implements IRecipeCategory<BeaconConversio
             level = beaconBase;
         }
 
-        RenderHelper.renderLevelLike(level, guiGraphics, 100, 50, 80);
+        RenderHelper.renderLevelLike(level, guiGraphics, 90, 50, 90);
 
-        slot.draw(guiGraphics, 9, 11);
-        slot.draw(guiGraphics, 9, 31);
-        slot.draw(guiGraphics, 9, 95);
+        slot.draw(guiGraphics, 47, 7);
+        slot.draw(guiGraphics, 9, 109);
+        slot.draw(guiGraphics, 9, 91);
         if (recipe.chance < 1.0f) slot.draw(guiGraphics, 111, 95);
         slot.draw(guiGraphics, 129, 95);
 
-        arrowIn.draw(guiGraphics, 30, 18);
+        arrowIn.draw(guiGraphics, 66, 14);
         progressArrow.draw(guiGraphics, 60, 96);
     }
 
