@@ -29,10 +29,13 @@ abstract class EndPortalBlockMixin {
                 "Lnet/minecraft/world/entity/Entity;setAsInsidePortal(Lnet/minecraft/world/level/block/Portal;Lnet/minecraft/core/BlockPos;)V"),
         cancellable = true)
     private void fallBlockEntityInside(
-        BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity, CallbackInfo ci) {
-        if (pEntity instanceof FallingBlockEntity fallingBlockEntity
-            && !fallingBlockEntity.blockState.is(ModBlockTags.END_PORTAL_UNABLE_CHANGE)) {
-            fallingBlockEntity.blockState = ModBlocks.END_DUST.getDefaultState();
+        BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity, CallbackInfo ci
+    ) {
+        if (
+            pEntity instanceof FallingBlockEntity fallingBlockEntity
+                && !fallingBlockEntity.blockState.is(ModBlockTags.END_PORTAL_UNABLE_CHANGE)
+        ) {
+            BlockState newState = ModBlocks.END_DUST.getDefaultState();
             anvil:
             if (fallingBlockEntity.blockState.is(BlockTags.ANVIL)) {
                 double rand = pLevel.random.nextDouble();
@@ -45,13 +48,14 @@ abstract class EndPortalBlockMixin {
                 } else if (fallingBlockEntity.blockState.is(ModBlocks.ROYAL_ANVIL) && rand >= 0.5) {
                     break anvil;
                 } else if (fallingBlockEntity.blockState.is(ModBlocks.EMBER_ANVIL)) {
-                    fallingBlockEntity.blockState = ModBlocks.SPECTRAL_ANVIL.getDefaultState();
+                    newState = ModBlocks.SPECTRAL_ANVIL.getDefaultState();
                     break anvil;
                 } else if (rand >= 0.03) {
                     break anvil;
                 }
-                fallingBlockEntity.blockState = ModBlocks.SPECTRAL_ANVIL.getDefaultState();
+                newState = ModBlocks.SPECTRAL_ANVIL.getDefaultState();
             }
+            fallingBlockEntity.blockState = newState;
             fallingBlockEntity.setAsInsidePortal((Portal) this, pPos);
             ci.cancel();
         }
