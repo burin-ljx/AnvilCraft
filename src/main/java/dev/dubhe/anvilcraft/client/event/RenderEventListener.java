@@ -31,12 +31,6 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 public class RenderEventListener {
 
     @SubscribeEvent
-    public static void onRenderLaser(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL)return;
-        LaserRenderer.getInstance().render(event.getModelViewMatrix(), event.getProjectionMatrix());
-    }
-
-    @SubscribeEvent
     public static void onRenderInspection(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
         Vec3 camera = event.getCamera().getPosition();

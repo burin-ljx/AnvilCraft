@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.dubhe.anvilcraft.api.LaserStateAccess;
 import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
@@ -57,6 +58,7 @@ public class LaserRenderer {
             Function.identity(),
             it -> new VertexBuffer(VertexBuffer.Usage.STATIC)
         ));
+    private final Map<RenderType, MeshData.SortState> sortStates = new HashMap<>();
     private final ClientLevel level;
     private Set<LaserStateAccess> laserBlockEntities = new HashSet<>();
     private final Minecraft minecraft = Minecraft.getInstance();
@@ -77,7 +79,7 @@ public class LaserRenderer {
     }
 
     public void uploadBuffers() {
-        while (!compileQueue.isEmpty()){
+        while (!compileQueue.isEmpty()) {
             compileQueue.poll().run();
         }
         while (!pendingUploads.isEmpty()) {
@@ -100,10 +102,12 @@ public class LaserRenderer {
             return;
         }
         laserBlockEntities.add(baseLaserBlockEntity);
+        laserBlockEntities.removeIf(LaserStateAccess::removed);
         compileQueue.add(new RebuildTask());
     }
 
     public void render(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
+        RenderSystem.enableBlend();
         if (ModRenderTargets.getBloomTarget() != null && RenderState.isBloomEffectEnabled()) {
             ModRenderTargets.getBloomTarget().setClearColor(0, 0, 0, 0);
             ModRenderTargets.getBloomTarget().clear(Minecraft.ON_OSX);
@@ -114,6 +118,16 @@ public class LaserRenderer {
         Window window = Minecraft.getInstance().getWindow();
         Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
         for (Map.Entry<RenderType, VertexBuffer> entry : buffers.entrySet()) {
+            MeshData.SortState sortState = sortStates.get(entry.getKey());
+            if (sortState != null) {
+                ByteBufferBuilder.Result result = sortState.buildSortedIndexBuffer(byteBuffers.get(entry.getKey()), createVertexSorting());
+                if (result != null) {
+                    VertexBuffer vb = entry.getValue();
+                    vb.bind();
+                    vb.uploadIndexBuffer(result);
+                    VertexBuffer.unbind();
+                }
+            }
             if (entry.getKey() == ModRenderTypes.LASER) {
                 RenderState.levelStage();
                 renderLayer(entry.getKey(), entry.getValue(), frustumMatrix, projectionMatrix, cameraPosition, window);
@@ -159,6 +173,11 @@ public class LaserRenderer {
         renderType.clearRenderState();
     }
 
+    private VertexSorting createVertexSorting() {
+        Vec3 cameraPos = minecraft.gameRenderer.getMainCamera().getPosition();
+        return VertexSorting.byDistance(cameraPos.toVector3f());
+    }
+
     public void clear() {
         byteBuffers.values().forEach(ByteBufferBuilder::clear);
     }
@@ -197,9 +216,6 @@ public class LaserRenderer {
                             return bufferBuilderMap.get(it);
                         }
                         throw new IllegalArgumentException("Unknown RenderType: " + it);
-                    },
-                    it -> {
-
                     }
                 );
             }
@@ -209,6 +225,14 @@ public class LaserRenderer {
                     if (meshData != null) {
                         LaserRenderer.this.isEmpty = false;
                         VertexBuffer vb = buffers.get(renderType);
+                        sortStates.put(
+                            renderType,
+                            meshData.sortQuads(
+                                byteBuffers.get(renderType),
+                                createVertexSorting()
+                            )
+                        );
+
                         if (vb.isInvalid()) {
                             meshData.close();
                         } else {

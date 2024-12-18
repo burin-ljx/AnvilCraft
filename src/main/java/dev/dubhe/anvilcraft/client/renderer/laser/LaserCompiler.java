@@ -28,18 +28,6 @@ public class LaserCompiler {
         LaserState state,
         Function<RenderType, VertexConsumer> bufferBuilderFunction
     ) {
-        compile(
-            state,
-            bufferBuilderFunction,
-            it -> {}
-        );
-    }
-
-    public static void compile(
-        LaserState state,
-        Function<RenderType, VertexConsumer> bufferBuilderFunction,
-        Consumer<RenderType> renderTypeCompiled
-    ) {
         if (state.laserLevel() <= 0) return;
         VertexConsumer solidLayer = bufferBuilderFunction.apply(RenderType.solid());
         float width = LASER_WIDTH[Math.clamp(state.blockEntity().getLaserLevel(), 1, 64)] + 0.001f;
@@ -56,7 +44,6 @@ public class LaserCompiler {
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );
-        renderTypeCompiled.accept(RenderType.solid());
         RenderType haloRenderType = ModRenderTypes.LASER;
         VertexConsumer builder = bufferBuilderFunction.apply(haloRenderType);
         float haloWidth = width + HALF_PIXEL;
@@ -73,7 +60,6 @@ public class LaserCompiler {
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );
-        renderTypeCompiled.accept(haloRenderType);
     }
 
     private static void renderBox(

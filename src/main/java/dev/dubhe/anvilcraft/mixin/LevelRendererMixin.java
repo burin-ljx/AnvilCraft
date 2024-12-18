@@ -104,6 +104,7 @@ public abstract class LevelRendererMixin {
         Matrix4f projectionMatrix,
         CallbackInfo ci
     ) {
+        LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
         if (!RenderState.isEnhancedRenderingAvailable()) return;
         if (!RenderState.isBloomEffectEnabled()) return;
 
