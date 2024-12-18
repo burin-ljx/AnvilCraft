@@ -253,7 +253,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_PICKAXE),
+                    Ingredient.of(ModItemTags.EMBER_METAL_PICKAXE_BASE),
                     Ingredient.of(ModItems.EMBER_METAL_INGOT),
                     RecipeCategory.TOOLS,
                     ctx.get())
@@ -269,7 +269,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_AXE),
+                    Ingredient.of(ModItemTags.EMBER_METAL_AXE_BASE),
                     Ingredient.of(ModItems.EMBER_METAL_INGOT),
                     RecipeCategory.TOOLS,
                     ctx.get())
@@ -285,7 +285,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_SHOVEL),
+                    Ingredient.of(ModItemTags.EMBER_METAL_SHOVEL_BASE),
                     Ingredient.of(ModItems.EMBER_METAL_INGOT),
                     RecipeCategory.TOOLS,
                     ctx.get())
@@ -301,7 +301,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_HOE),
+                    Ingredient.of(ModItemTags.EMBER_METAL_HOE_BASE),
                     Ingredient.of(ModItems.EMBER_METAL_INGOT),
                     RecipeCategory.TOOLS,
                     ctx.get())
@@ -317,7 +317,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
-                    Ingredient.of(ModItems.ROYAL_STEEL_SWORD),
+                    Ingredient.of(ModItemTags.EMBER_METAL_SWORD_BASE),
                     Ingredient.of(ModItems.EMBER_METAL_INGOT),
                     RecipeCategory.TOOLS,
                     ctx.get())
@@ -356,10 +356,10 @@ public class ModItems {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModItems.ANVIL_HAMMER),
-                    Ingredient.of(ModItems.ROYAL_STEEL_INGOT),
+                    Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.ROYAL_STEEL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_anvil_hammer"));
         })
         .tag(ItemTags.MACE_ENCHANTABLE)
@@ -372,11 +372,11 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             SmithingTransformRecipeBuilder.smithing(
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
-                    Ingredient.of(ModItems.ANVIL_HAMMER),
-                    Ingredient.of(ModItems.EMBER_METAL_INGOT),
+                    Ingredient.of(ModItems.ROYAL_ANVIL_HAMMER),
+                    Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
                     RecipeCategory.TOOLS,
                     ctx.get())
-                .unlocks("hasitem", AnvilCraftDatagen.has(ModItems.EMBER_METAL_INGOT))
+                .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_anvil_hammer"));
         })
         .tag(ItemTags.MACE_ENCHANTABLE,

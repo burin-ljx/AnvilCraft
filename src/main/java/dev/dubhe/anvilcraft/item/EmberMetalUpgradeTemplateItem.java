@@ -19,7 +19,9 @@ public class EmberMetalUpgradeTemplateItem extends SmithingTemplateItem {
                     "screen.anvilcraft.smithing_template.ember_metal_upgrade_smithing_template.applies_to")
             .withStyle(DESCRIPTION_FORMAT);
     private static final Component UPGRADE_INGREDIENTS =
-            Component.translatable("item.anvilcraft.ember_metal_ingot").withStyle(DESCRIPTION_FORMAT);
+            Component.translatable("screen.anvilcraft.smithing_template.ember_metal_upgrade_smithing_template"
+                + ".upgrade_ingredients")
+                .withStyle(DESCRIPTION_FORMAT);
     private static final Component UPGRADE = Component.translatable(
                     "screen.anvilcraft.ember_metal_upgrade_smithing_template")
             .withStyle(TITLE_FORMAT);

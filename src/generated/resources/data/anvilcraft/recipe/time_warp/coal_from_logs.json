@@ -5,7 +5,7 @@
   "from_water": false,
   "ingredients": [
     {
-      "item": "minecraft:charcoal"
+      "tag": "minecraft:logs"
     }
   ],
   "produce_fluid": false,
@@ -13,7 +13,7 @@
     {
       "amount": 1.0,
       "stack": {
-        "count": 2,
+        "count": 1,
         "id": "minecraft:coal"
       }
     }

@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.SuperHeatingRecipe;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
@@ -26,10 +27,6 @@ public class SuperHeatingRecipeLoader {
                 .save(provider, AnvilCraft.of("super_heating/lava_from_stone"));
 
         SuperHeatingRecipe.builder()
-                .requires(Items.COAL_BLOCK, 16)
-                .result(new ItemStack(Items.DIAMOND_BLOCK))
-                .save(provider);
-        SuperHeatingRecipe.builder()
                 .requires(Items.IRON_INGOT, 3)
                 .requires(Items.DIAMOND)
                 .requires(Items.AMETHYST_SHARD)
@@ -47,9 +44,13 @@ public class SuperHeatingRecipeLoader {
                 .result(new ItemStack(ModBlocks.EMBER_GLASS, 8))
                 .save(provider);
         SuperHeatingRecipe.builder()
-                .requires(ModItems.WOOD_FIBER, 4)
+                .requires(ModItems.WOOD_FIBER, 2)
                 .result(new ItemStack(Items.CHARCOAL))
                 .save(provider);
+        SuperHeatingRecipe.builder()
+            .requires(Blocks.COAL_BLOCK, 8)
+            .result(new ItemStack(Items.DIAMOND))
+            .save(provider);
         SuperHeatingRecipe.builder()
                 .requires(ModItems.CRAB_CLAW)
                 .result(new ItemStack(ModItems.LIME_POWDER.asItem()))

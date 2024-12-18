@@ -54,6 +54,22 @@ public class ItemTagLoader {
                 .add(findResourceKey(Items.IRON_SHOVEL))
                 .add(findResourceKey(Items.DIAMOND_SHOVEL));
 
+        provider.addTag(ModItemTags.EMBER_METAL_PICKAXE_BASE)
+                .add(findResourceKey(ModItems.ROYAL_STEEL_PICKAXE.get()))
+                .add(findResourceKey(Items.NETHERITE_PICKAXE));
+        provider.addTag(ModItemTags.EMBER_METAL_AXE_BASE)
+                .add(findResourceKey(ModItems.ROYAL_STEEL_AXE.get()))
+                .add(findResourceKey(Items.NETHERITE_AXE));
+        provider.addTag(ModItemTags.EMBER_METAL_HOE_BASE)
+                .add(findResourceKey(ModItems.ROYAL_STEEL_HOE.get()))
+                .add(findResourceKey(Items.NETHERITE_HOE));
+        provider.addTag(ModItemTags.EMBER_METAL_SWORD_BASE)
+                .add(findResourceKey(ModItems.ROYAL_STEEL_SWORD.get()))
+                .add(findResourceKey(Items.NETHERITE_SWORD));
+        provider.addTag(ModItemTags.EMBER_METAL_SHOVEL_BASE)
+                .add(findResourceKey(ModItems.ROYAL_STEEL_SHOVEL.get()))
+                .add(findResourceKey(Items.NETHERITE_SHOVEL));
+
         provider.addTag(ModItemTags.GEMS)
                 .add(findResourceKey(Items.EMERALD))
                 .add(findResourceKey(ModItems.RUBY.get()))

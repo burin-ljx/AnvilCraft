@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:stamping/paper"
+        "recipe": "anvilcraft:time_warp/coal_from_logs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -15,7 +15,7 @@
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:stamping/paper"
+      "anvilcraft:time_warp/coal_from_logs"
     ]
   }
 }
