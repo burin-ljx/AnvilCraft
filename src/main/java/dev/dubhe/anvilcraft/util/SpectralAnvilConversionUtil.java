@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 public class SpectralAnvilConversionUtil {
-    private static final Object2DoubleMap<Block> SPECTRAL_ANVIL_CONVERSION_CHANCE = new Object2DoubleOpenHashMap<>();
+    public static final Object2DoubleMap<Block> SPECTRAL_ANVIL_CONVERSION_CHANCE = new Object2DoubleOpenHashMap<>();
 
     static {
         SPECTRAL_ANVIL_CONVERSION_CHANCE.put(Blocks.DAMAGED_ANVIL, 0.01);

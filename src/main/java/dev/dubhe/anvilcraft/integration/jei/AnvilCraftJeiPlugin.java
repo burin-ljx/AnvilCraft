@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.client.gui.screen.JewelCraftingScreen;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItems;
+import dev.dubhe.anvilcraft.integration.jei.category.EndPortalConversionCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.JewelCraftingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.BlockCompressCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.BlockCrushCategory;
@@ -23,6 +24,7 @@ import dev.dubhe.anvilcraft.integration.jei.category.anvil.TimeWarpCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.multiblock.MultiBlockCraftingCategory;
 import dev.dubhe.anvilcraft.integration.jei.recipe.CementStainingRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.ColoredConcreteRecipe;
+import dev.dubhe.anvilcraft.integration.jei.recipe.EndPortalConversionRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.MeshRecipeGroup;
 import dev.dubhe.anvilcraft.recipe.JewelCraftingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
@@ -69,6 +71,8 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         createRecipeType("cement_staining", CementStainingRecipe.class);
     public static final RecipeType<ColoredConcreteRecipe> COLORED_CONCRETE =
         createRecipeType("colored_concrete", ColoredConcreteRecipe.class);
+    public static final RecipeType<EndPortalConversionRecipe> END_PORTAL_CONVERSION =
+        createRecipeType("end_portal_conversion", EndPortalConversionRecipe.class);
 
     public static final RecipeType<RecipeHolder<BlockCompressRecipe>> BLOCK_COMPRESS =
         createRecipeHolderType("block_compress");
@@ -114,6 +118,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         TimeWarpCategory.registerRecipes(registration);
         MultiBlockCraftingCategory.registerRecipes(registration);
         JewelCraftingCategory.registerRecipes(registration);
+        EndPortalConversionCategory.registerRecipes(registration);
 
         registration.addItemStackInfo(
             new ItemStack(ModItems.GEODE.get()),
@@ -152,6 +157,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         TimeWarpCategory.registerRecipeCatalysts(registration);
         MultiBlockCraftingCategory.registerRecipeCatalysts(registration);
         JewelCraftingCategory.registerRecipeCatalysts(registration);
+        EndPortalConversionCategory.registerRecipeCatalysts(registration);
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
 
@@ -186,6 +192,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new TimeWarpCategory(guiHelper));
         registration.addRecipeCategories(new MultiBlockCraftingCategory(guiHelper));
         registration.addRecipeCategories(new JewelCraftingCategory(guiHelper));
+        registration.addRecipeCategories(new EndPortalConversionCategory(guiHelper));
     }
 
     @Override
