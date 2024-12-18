@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.integration.jei.recipe.EndPortalConversionRecipe;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiSlotUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -83,15 +84,6 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
         GuiGraphics guiGraphics,
         double mouseX,
         double mouseY) {
-
-//        RenderHelper.renderBlock(
-//            guiGraphics,
-//            Blocks.END_PORTAL.defaultBlockState(),
-//            81,
-//            40,
-//            10,
-//            12,
-//            RenderHelper.SINGLE_BLOCK);
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.scale(0.1f, 0.1f, 1.0f);
@@ -102,6 +94,19 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
 
         JeiSlotUtil.drawInputSlots(guiGraphics, slot, recipe.ingredients.size());
         JeiSlotUtil.drawOutputSlots(guiGraphics, slot, recipe.results.size());
+    }
+
+    public void getTooltip(
+        ITooltipBuilder tooltip,
+        EndPortalConversionRecipe recipe,
+        IRecipeSlotsView recipeSlotsView,
+        double mouseX,
+        double mouseY) {
+        if (mouseX >= 57 && mouseX <= 107) {
+            if (mouseY >= 35 && mouseY <= 66) {
+                tooltip.add(Component.translatable("gui.anvilcraft.category.end_portal_conversion.fall_through"));
+            }
+        }
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {

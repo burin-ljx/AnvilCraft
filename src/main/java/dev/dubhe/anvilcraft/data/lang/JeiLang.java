@@ -48,6 +48,9 @@ public class JeiLang {
 
         provider.add("gui.anvilcraft.category.jewel_crafting", "Jewel Crafting");
 
+        provider.add("gui.anvilcraft.category.end_portal_conversion", "Falling Block Through End Portal");
+        provider.add("gui.anvilcraft.category.end_portal_conversion.fall_through", "Converted when fall through end portal");
+
         provider.add("jei.anvilcraft.info.geode_1", "Finds Amethyst Geodes nearby when using.");
         provider.add("jei.anvilcraft.info.geode_2", "Dropped by Budding Amethyst blocks.");
         provider.add("jei.anvilcraft.info.geode_3", "You can also find it in the Bonus Chest");
