@@ -9,11 +9,12 @@ import org.embeddedt.embeddium.api.render.chunk.BlockRenderContext;
 import org.embeddedt.embeddium.impl.render.chunk.compile.ChunkBuildBuffers;
 import org.embeddedt.embeddium.impl.render.chunk.compile.pipeline.BlockRenderer;
 import org.embeddedt.embeddium.impl.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ChunkBuilderMeshingTask.class)
-public class EmbChunkBuilderMeshingTaskMixin {
+abstract class EmbChunkBuilderMeshingTaskMixin {
     @WrapOperation(
         method = "execute(Lorg/embeddedt/embeddium/impl/render/chunk/compile/ChunkBuildContext;Lorg/embeddedt/embeddium/impl/util/task/CancellationToken;)Lorg/embeddedt/embeddium/impl/render/chunk/compile/ChunkBuildOutput;",
         at = @At(
@@ -23,7 +24,7 @@ public class EmbChunkBuilderMeshingTaskMixin {
     )
     void skipBlock(
         BlockRenderer instance,
-        BlockRenderContext context,
+        @NotNull BlockRenderContext context,
         ChunkBuildBuffers consumer,
         Operation<Void> original
     ) {

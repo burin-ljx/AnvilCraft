@@ -34,7 +34,6 @@ import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -65,9 +64,8 @@ public class AnvilCraft {
         .getConfig();
 
     public static final Registrate REGISTRATE = Registrate.create(MOD_ID);
-    private final Logger logger = LoggerFactory.getLogger("AnvilCraft");
 
-    public AnvilCraft(IEventBus modEventBus, ModContainer container) {
+    public AnvilCraft(IEventBus modEventBus) {
         ModItemGroups.register(modEventBus);
         ModBlocks.register();
         ModFluids.register(modEventBus);
@@ -90,11 +88,11 @@ public class AnvilCraft {
         AnvilCraftDatagen.init();
 
         registerEvents(modEventBus);
-        logger.info("Ciallo～(∠・ω< )⌒★");
-        logger.info("let's 0721!");
+        LOGGER.info("Ciallo～(∠・ω< )⌒★");
+        LOGGER.info("let's 0721!");
     }
 
-    private static void registerEvents(IEventBus eventBus) {
+    private static void registerEvents(@NotNull IEventBus eventBus) {
         NeoForge.EVENT_BUS.addListener(AnvilCraft::registerCommand);
         NeoForge.EVENT_BUS.addListener(AnvilCraft::addReloadListeners);
         NeoForge.EVENT_BUS.addListener(AnvilCraft::addItemTooltips);
@@ -112,16 +110,16 @@ public class AnvilCraft {
         ModCommands.register(event.getDispatcher());
     }
 
-    public static void registerPayload(RegisterPayloadHandlersEvent event) {
+    public static void registerPayload(@NotNull RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         ModNetworks.init(registrar);
     }
 
-    public static void addItemTooltips(ItemTooltipEvent event) {
+    public static void addItemTooltips(@NotNull ItemTooltipEvent event) {
         ItemTooltipManager.addTooltip(event.getItemStack(), event.getToolTip());
     }
 
-    public static void addReloadListeners(AddReloadListenerEvent event) {
+    public static void addReloadListeners(@NotNull AddReloadListenerEvent event) {
         RecipeManager recipeManager = event.getServerResources().getRecipeManager();
         event.addListener(
             (
@@ -136,7 +134,7 @@ public class AnvilCraft {
         );
     }
 
-    public static void loadComplete(FMLLoadCompleteEvent event) {
+    public static void loadComplete(@NotNull FMLLoadCompleteEvent event) {
         event.enqueueWork(() -> {
             ModInteractionMap.initInteractionMap();
             if (Util.isLoaded("theoneprobe")) {
@@ -146,7 +144,7 @@ public class AnvilCraft {
         });
     }
 
-    public static void packSetup(AddPackFindersEvent event) {
+    public static void packSetup(@NotNull AddPackFindersEvent event) {
         event.addPackFinders(
             of("resourcepacks/transparent_cauldron"),
             PackType.CLIENT_RESOURCES,
