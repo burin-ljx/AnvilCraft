@@ -22,5 +22,6 @@ public class RegisterAdditionalEventListener {
         event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/creative_generator_cube")));
         event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/charge_collector_cube")));
         event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/laser")));
+        event.register(ModelResourceLocation.standalone(AnvilCraft.of("block/axis")));
     }
 }
