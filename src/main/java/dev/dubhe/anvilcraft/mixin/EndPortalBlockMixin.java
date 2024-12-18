@@ -39,7 +39,7 @@ abstract class EndPortalBlockMixin {
             BlockState newState = ModBlocks.END_DUST.getDefaultState();
             if (fallingBlockEntity.blockState.is(BlockTags.ANVIL)) {
                 double rand = pLevel.random.nextDouble();
-                if(rand < SpectralAnvilConversionUtil.chance(fallingBlockEntity.blockState.getBlock())){
+                if (rand < SpectralAnvilConversionUtil.chance(fallingBlockEntity.blockState.getBlock())) {
                     newState = ModBlocks.SPECTRAL_ANVIL.getDefaultState();
                 }
             }
