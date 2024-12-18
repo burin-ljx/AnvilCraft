@@ -96,6 +96,7 @@ public class EndPortalConversionCategory implements IRecipeCategory<EndPortalCon
         JeiSlotUtil.drawOutputSlots(guiGraphics, slot, recipe.results.size());
     }
 
+    @Override
     public void getTooltip(
         ITooltipBuilder tooltip,
         EndPortalConversionRecipe recipe,

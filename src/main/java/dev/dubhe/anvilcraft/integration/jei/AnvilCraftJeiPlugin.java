@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.client.gui.screen.JewelCraftingScreen;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItems;
+import dev.dubhe.anvilcraft.integration.jei.category.BeaconConversionCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.EndPortalConversionCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.JewelCraftingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.BlockCompressCategory;
@@ -22,6 +23,7 @@ import dev.dubhe.anvilcraft.integration.jei.category.anvil.StampingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.SuperHeatingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.TimeWarpCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.multiblock.MultiBlockCraftingCategory;
+import dev.dubhe.anvilcraft.integration.jei.recipe.BeaconConversionRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.CementStainingRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.ColoredConcreteRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.EndPortalConversionRecipe;
@@ -73,6 +75,8 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         createRecipeType("colored_concrete", ColoredConcreteRecipe.class);
     public static final RecipeType<EndPortalConversionRecipe> END_PORTAL_CONVERSION =
         createRecipeType("end_portal_conversion", EndPortalConversionRecipe.class);
+    public static final RecipeType<BeaconConversionRecipe> BEACON_CONVERSION =
+        createRecipeType("beacon_conversion", BeaconConversionRecipe.class);
 
     public static final RecipeType<RecipeHolder<BlockCompressRecipe>> BLOCK_COMPRESS =
         createRecipeHolderType("block_compress");
@@ -119,6 +123,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         MultiBlockCraftingCategory.registerRecipes(registration);
         JewelCraftingCategory.registerRecipes(registration);
         EndPortalConversionCategory.registerRecipes(registration);
+        BeaconConversionCategory.registerRecipes(registration);
 
         registration.addItemStackInfo(
             new ItemStack(ModItems.GEODE.get()),
@@ -161,6 +166,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         MultiBlockCraftingCategory.registerRecipeCatalysts(registration);
         JewelCraftingCategory.registerRecipeCatalysts(registration);
         EndPortalConversionCategory.registerRecipeCatalysts(registration);
+        BeaconConversionCategory.registerRecipeCatalysts(registration);
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
 
@@ -196,6 +202,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new MultiBlockCraftingCategory(guiHelper));
         registration.addRecipeCategories(new JewelCraftingCategory(guiHelper));
         registration.addRecipeCategories(new EndPortalConversionCategory(guiHelper));
+        registration.addRecipeCategories(new BeaconConversionCategory(guiHelper));
     }
 
     @Override
