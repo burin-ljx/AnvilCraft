@@ -11,7 +11,6 @@ import dev.dubhe.anvilcraft.util.LevelLike;
 import dev.dubhe.anvilcraft.util.RenderHelper;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
-import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -144,20 +143,6 @@ public class BeaconConversionCategory implements IRecipeCategory<BeaconConversio
 
         arrowIn.draw(guiGraphics, 66, 14);
         progressArrow.draw(guiGraphics, 60, 96);
-    }
-
-    @Override
-    public void getTooltip(
-        ITooltipBuilder tooltip,
-        BeaconConversionRecipe recipe,
-        IRecipeSlotsView recipeSlotsView,
-        double mouseX,
-        double mouseY) {
-//        if (mouseX >= 57 && mouseX <= 107) {
-//            if (mouseY >= 35 && mouseY <= 66) {
-//                tooltip.add(Component.translatable("gui.anvilcraft.category.end_portal_conversion.fall_through"));
-//            }
-//        }
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {
