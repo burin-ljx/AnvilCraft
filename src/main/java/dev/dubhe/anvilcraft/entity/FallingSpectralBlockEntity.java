@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 @ParametersAreNonnullByDefault
 public class FallingSpectralBlockEntity extends FallingBlockEntity {
     private boolean isGhostEntity;
-    private float fallDistance = 0;
+    private float fallDistance = 1.0f;
 
     public FallingSpectralBlockEntity(EntityType<? extends FallingSpectralBlockEntity> entityType, Level level) {
         super(entityType, level);
@@ -87,9 +87,11 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
         fallDistance -= (float) this.getDeltaMovement().y;
         if (this.level().isClientSide) return;
         BlockPos current = this.blockPosition();
-        BlockPos below = current.below();
+        Vec3 pos = this.position();
+        Vec3 belowPos = pos.subtract(0.0D, 0.335D, 0.0D);
+        BlockPos below = new BlockPos((int) Math.floor(belowPos.x()), (int) Math.floor(belowPos.y()), (int) Math.floor(belowPos.z()));
         BlockState blockStateDown = this.level().getBlockState(below);
-        if (current.getY() < -160) {
+        if (pos.y() < -160) {
             discard();
         }
         if (!shouldIgnoreBlockInMovement(blockStateDown)) {
@@ -182,7 +184,7 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
         FallingSpectralBlockEntity fallingBlockEntity = new FallingSpectralBlockEntity(
             level,
             (double) pos.getX() + 0.5,
-            pos.getY(),
+            (double) pos.getY() - 0.96,
             (double) pos.getZ() + 0.5,
             blockState.hasProperty(BlockStateProperties.WATERLOGGED)
                 ? blockState.setValue(BlockStateProperties.WATERLOGGED, false)
