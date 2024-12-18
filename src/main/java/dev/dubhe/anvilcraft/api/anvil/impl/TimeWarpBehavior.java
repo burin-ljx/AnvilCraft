@@ -16,6 +16,7 @@ import dev.dubhe.anvilcraft.util.RecipeUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,12 +32,16 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TimeWarpBehavior implements IAnvilBehavior {
+    public static final int SOUL_PARTICLE_COUNT = 3;
+
     @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean handle(
@@ -48,8 +53,22 @@ public class TimeWarpBehavior implements IAnvilBehavior {
         BlockState belowState = level.getBlockState(hitBlockPos.below());
         if (!belowState.is(ModBlocks.CORRUPTED_BEACON) || !belowState.getValue(CorruptedBeaconBlock.LIT)) return false;
 
-        level.getEntitiesOfClass(LivingEntity.class, new AABB(hitBlockPos), LivingEntity::isAlive)
-            .forEach(it -> it.hurt(ModDamageTypes.lostInTime(level), Float.MAX_VALUE));
+        List<LivingEntity> damagedEntities = level.getEntitiesOfClass(
+            LivingEntity.class,
+            new AABB(hitBlockPos),
+            LivingEntity::isAlive);
+        if(!damagedEntities.isEmpty()){
+            damagedEntities.forEach(it -> it.hurt(ModDamageTypes.lostInTime(level), Float.MAX_VALUE));
+            if(level instanceof ServerLevel serverLevel && damagedEntities.stream().anyMatch(LivingEntity::isDeadOrDying)){
+                Vec3 particleCenter = hitBlockPos.above().getCenter();
+                serverLevel.sendParticles(ParticleTypes.SOUL,
+                    particleCenter.x,
+                    particleCenter.y,
+                    particleCenter.z,
+                    SOUL_PARTICLE_COUNT,
+                    0.4, 0.4, 0.4, 0.01);
+            }
+        }
 
         Map<ItemEntity, ItemStack> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(hitBlockPos))
             .stream()
