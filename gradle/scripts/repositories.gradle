@@ -31,4 +31,7 @@ repositories {
     maven { // TOP
         url "https://maven.k-4u.nl"
     }
+    maven {
+        url "https://maven.su5ed.dev/releases"
+    }
 }

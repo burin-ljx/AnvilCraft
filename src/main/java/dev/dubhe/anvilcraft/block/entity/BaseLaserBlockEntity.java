@@ -1,6 +1,8 @@
 package dev.dubhe.anvilcraft.block.entity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.api.LaserStateAccess;
+import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
@@ -35,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class BaseLaserBlockEntity extends BlockEntity {
+public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserStateAccess {
     public static final int[] COOLDOWNS = {
         Integer.MAX_VALUE,
         24 * 20,
@@ -194,8 +196,8 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
                 IItemHandler cap = getLevel()
                     .getCapability(
                         Capabilities.ItemHandler.BLOCK,
-                        getBlockPos().relative(getDirection().getOpposite()),
-                        getDirection()
+                        getBlockPos().relative(getFacing().getOpposite()),
+                        getFacing()
                     );
                 drops.forEach(itemStack -> {
                     if (cap != null) {
@@ -267,7 +269,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         irradiateBlockEntity.onCancelingIrradiation(this);
     }
 
-    public abstract Direction getDirection();
+    public abstract Direction getFacing();
 
     @Override
     public void setRemoved() {
@@ -276,9 +278,10 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         if (irradiateBlockPos == null) return;
         if (!(level.getBlockEntity(irradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity)) return;
         irradiateBlockEntity.onCancelingIrradiation(this);
+        LaserRenderer.getInstance().requireRecompile(this);
     }
 
-    public float laserOffset() {
+    public float getLaserOffset() {
         return 0;
     }
 
@@ -299,6 +302,17 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
             Double.POSITIVE_INFINITY);
     }
 
+    @Override
+    public boolean removed() {
+        return isRemoved();
+    }
+
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
+        LaserRenderer.getInstance().requireRecompile(this);
+    }
+
     public void updateLaserLevel(int value){
         if (laserLevel != value){
             markChanged();
@@ -309,5 +323,6 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
     public void clientUpdate(BlockPos irradiateBlockPos, int laserLevel) {
         this.irradiateBlockPos = irradiateBlockPos;
         this.laserLevel = laserLevel;
+        LaserRenderer.getInstance().requireRecompile(this);
     }
 }

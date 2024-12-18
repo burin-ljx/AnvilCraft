@@ -24,6 +24,7 @@ public class ModShaders {
     private static PostChain bloomChain;
     static final Minecraft MINECRAFT = Minecraft.getInstance();
 
+    @Getter
     static ShaderInstance renderTypeLaserShader;
     static ShaderInstance renderTypeColoredOverlayShader;
     @Getter

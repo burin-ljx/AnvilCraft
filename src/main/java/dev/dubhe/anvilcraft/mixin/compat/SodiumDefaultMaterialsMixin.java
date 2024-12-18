@@ -18,7 +18,7 @@ public class SodiumDefaultMaterialsMixin {
         cancellable = true
     )
     private static void anvilcraft$forRenderLayer(RenderType layer, CallbackInfoReturnable<Material> cir){
-        if (layer == ModRenderTypes.LASER){
+        if (layer == ModRenderTypes.LASER) {
             cir.setReturnValue(ModSodiumMaterials.LASER);
             cir.cancel();
         }

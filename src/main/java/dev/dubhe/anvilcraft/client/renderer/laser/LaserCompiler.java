@@ -4,9 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
+import dev.dubhe.anvilcraft.util.Callback;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class LaserCompiler {
@@ -26,6 +28,18 @@ public class LaserCompiler {
         LaserState state,
         Function<RenderType, VertexConsumer> bufferBuilderFunction
     ) {
+        compile(
+            state,
+            bufferBuilderFunction,
+            it -> {}
+        );
+    }
+
+    public static void compile(
+        LaserState state,
+        Function<RenderType, VertexConsumer> bufferBuilderFunction,
+        Consumer<RenderType> renderTypeCompiled
+    ) {
         if (state.laserLevel() <= 0) return;
         VertexConsumer solidLayer = bufferBuilderFunction.apply(RenderType.solid());
         float width = LASER_WIDTH[Math.clamp(state.blockEntity().getLaserLevel(), 1, 64)] + 0.001f;
@@ -42,7 +56,8 @@ public class LaserCompiler {
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );
-        RenderType haloRenderType = RenderState.isEnhancedRenderingAvailable() ? ModRenderTypes.LASER : RenderType.translucent();
+        renderTypeCompiled.accept(RenderType.solid());
+        RenderType haloRenderType = ModRenderTypes.LASER;
         VertexConsumer builder = bufferBuilderFunction.apply(haloRenderType);
         float haloWidth = width + HALF_PIXEL;
         renderBox(
@@ -58,6 +73,7 @@ public class LaserCompiler {
             state.laserAtlasSprite(),
             state.concreteAtlasSprite()
         );
+        renderTypeCompiled.accept(haloRenderType);
     }
 
     private static void renderBox(
