@@ -62,5 +62,8 @@ public class JeiLang {
         provider.add("jei.anvilcraft.info.craw_claw", "You can obtain this from crab traps placed in the water.");
 
         provider.add("jei.anvilcraft.info.capacitor", "You can charge the empty capacitor in the charger to obtain it.");
+
+        provider.add("jei.anvilcraft.info.end_dust", "Any falling block, except for anvils and Dragon Egg, will be " +
+            "converted into End Dust when fall through end portal.");
     }
 }

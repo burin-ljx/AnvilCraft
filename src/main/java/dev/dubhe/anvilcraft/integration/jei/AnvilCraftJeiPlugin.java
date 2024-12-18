@@ -136,6 +136,9 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addItemStackInfo(
             new ItemStack(ModItems.CAPACITOR.get()),
             Component.translatable("jei.anvilcraft.info.capacitor"));
+        registration.addItemStackInfo(
+            ModBlocks.END_DUST.asStack(),
+            Component.translatable("jei.anvilcraft.info.end_dust"));
     }
 
     @Override
