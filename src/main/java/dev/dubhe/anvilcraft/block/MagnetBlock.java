@@ -81,7 +81,7 @@ public class MagnetBlock extends Block implements IHammerRemovable {
             if (bl) {
                 level.scheduleTick(pos, this, 4);
             } else {
-                level.setBlock(pos, state.cycle(LIT), 2);
+                level.setBlockAndUpdate(pos, state.cycle(LIT));
             }
         }
     }
@@ -156,7 +156,7 @@ public class MagnetBlock extends Block implements IHammerRemovable {
         BlockPos pos,
         RandomSource random) {
         if (state.getValue(LIT) && !level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, state.cycle(LIT), 2);
+            level.setBlockAndUpdate(pos, state.cycle(LIT));
         }
     }
 }

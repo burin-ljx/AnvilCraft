@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.block;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.entity.FallingSpectralBlockEntity;
 
+import dev.dubhe.anvilcraft.util.MagnetUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -56,7 +57,8 @@ public class SpectralAnvilBlock extends Block implements IHammerRemovable {
     public SpectralAnvilBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
-            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(POWERED, false));
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(POWERED, false)
+        );
     }
 
     @Override
@@ -141,13 +143,13 @@ public class SpectralAnvilBlock extends Block implements IHammerRemovable {
         BlockPos neighborPos,
         boolean movedByPiston
     ) {
-        boolean hasNeighborSignal = level.hasNeighborSignal(pos);
+        boolean hasNeighborSignal = MagnetUtil.hasMagnetism(level, pos);
         boolean currentPowered = state.getValue(POWERED);
         if (hasNeighborSignal && !currentPowered) {
-            level.scheduleTick(pos, this, 4);
-            level.setBlock(pos, state.setValue(POWERED, Boolean.TRUE), 2);
+            level.setBlockAndUpdate(pos, state.setValue(POWERED, true));
         } else if (!hasNeighborSignal && currentPowered) {
-            level.setBlock(pos, state.setValue(POWERED, Boolean.FALSE), 2);
+            level.scheduleTick(pos, this, 4);
+            level.setBlockAndUpdate(pos, state.setValue(POWERED, false));
         }
     }
 }

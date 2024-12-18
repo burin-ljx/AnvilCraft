@@ -148,8 +148,7 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
         if (dist < 0) {
             return false;
         }
-        Predicate<Entity> predicate =
-            EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
+        Predicate<Entity> predicate = EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
         float f = (float) Math.min(Mth.floor((float) dist * 2), 40);
         this.level().getEntities(this, this.getBoundingBox(), predicate).forEach(entity -> entity.hurt(source, f));
         boolean isAnvil = this.blockState.is(BlockTags.ANVIL);
@@ -177,8 +176,9 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
     /**
      * 落下幻灵实体
      */
-    public static FallingSpectralBlockEntity fall(
-        Level level, BlockPos pos, BlockState blockState, boolean updateBlock, boolean isGhostEntity) {
+    public static @NotNull FallingSpectralBlockEntity fall(
+        Level level, BlockPos pos, BlockState blockState, boolean updateBlock, boolean isGhostEntity
+    ) {
         FallingSpectralBlockEntity fallingBlockEntity = new FallingSpectralBlockEntity(
             level,
             (double) pos.getX() + 0.5,
