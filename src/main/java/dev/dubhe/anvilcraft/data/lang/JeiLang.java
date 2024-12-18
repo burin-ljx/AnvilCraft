@@ -48,7 +48,7 @@ public class JeiLang {
 
         provider.add("gui.anvilcraft.category.jewel_crafting", "Jewel Crafting");
 
-        provider.add("gui.anvilcraft.category.end_portal_conversion", "Falling Block Through End Portal");
+        provider.add("gui.anvilcraft.category.end_portal_conversion", "Block Falls Into End Portal");
         provider.add("gui.anvilcraft.category.end_portal_conversion.fall_through", "Converted when fall through end portal");
 
         provider.add("gui.anvilcraft.category.beacon_conversion", "Beacon Conversion");

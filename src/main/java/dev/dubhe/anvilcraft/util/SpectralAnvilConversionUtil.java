@@ -1,13 +1,13 @@
 package dev.dubhe.anvilcraft.util;
 
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 public class SpectralAnvilConversionUtil {
-    public static final Object2DoubleMap<Block> SPECTRAL_ANVIL_CONVERSION_CHANCE = new Object2DoubleOpenHashMap<>();
+    public static final Object2DoubleMap<Block> SPECTRAL_ANVIL_CONVERSION_CHANCE = new Object2DoubleLinkedOpenHashMap<>();
 
     static {
         SPECTRAL_ANVIL_CONVERSION_CHANCE.put(Blocks.DAMAGED_ANVIL, 0.01);
