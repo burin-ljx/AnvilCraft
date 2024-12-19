@@ -2,29 +2,21 @@
   "multipart": [
     {
       "apply": {
-        "model": "anvilcraft:block/oil_cauldron_level1"
-      },
-      "when": {
-        "level": "1"
-      }
-    },
-    {
-      "apply": {
         "model": "anvilcraft:block/fire_cauldron_fire1"
       },
       "when": {
         "level": "1"
       }
     },
-	{
+    {
       "apply": {
-        "model": "anvilcraft:block/oil_cauldron_level2"
+        "model": "anvilcraft:block/oil_cauldron_level1"
       },
       "when": {
-        "level": "2"
+        "level": "1"
       }
     },
-    {
+	{
       "apply": {
         "model": "anvilcraft:block/fire_cauldron_fire2"
       },
@@ -32,9 +24,17 @@
         "level": "2"
       }
     },
+    {
+      "apply": {
+        "model": "anvilcraft:block/oil_cauldron_level2"
+      },
+      "when": {
+        "level": "2"
+      }
+    },
 	{
       "apply": {
-        "model": "anvilcraft:block/oil_cauldron_full"
+        "model": "anvilcraft:block/fire_cauldron_fire3"
       },
       "when": {
         "level": "3"
@@ -42,7 +42,7 @@
     },
     {
       "apply": {
-        "model": "anvilcraft:block/fire_cauldron_fire3"
+        "model": "anvilcraft:block/oil_cauldron_full"
       },
       "when": {
         "level": "3"
