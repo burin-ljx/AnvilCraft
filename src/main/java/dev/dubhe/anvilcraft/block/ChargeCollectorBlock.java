@@ -68,10 +68,6 @@ public class ChargeCollectorBlock extends BetterBaseEntityBlock implements IHamm
                 (level1, blockPos, blockState, blockEntity) -> blockEntity.clientTick()
             );
         }
-        return createTickerHelper(
-            type,
-            ModBlockEntities.CHARGE_COLLECTOR.get(),
-            (level1, blockPos, blockState, blockEntity) -> blockEntity.tick()
-        );
+        return super.getTicker(level, state, type);
     }
 }

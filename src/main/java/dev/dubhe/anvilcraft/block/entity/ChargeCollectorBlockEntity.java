@@ -22,11 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerProducer, IHasAffectRange {
-
     private static final double MAX_POWER_PER_INCOMING = 128;
-    private static final int COOLDOWN = 40;
+    private static final int COOLDOWN = 2;
 
-    private int cooldownCount = 40;
+    private int cooldownCount = 2;
     private double chargeCount = 0;
     private PowerGrid grid = null;
     private int power = 0;
@@ -82,7 +81,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.loadAdditional(tag, registries);
         this.cooldownCount = tag.getInt("cooldownCount");
         this.chargeCount = tag.getDouble("chargeCount");
@@ -90,18 +89,16 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    public void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.loadAdditional(tag, registries);
         tag.putInt("cooldownCount", this.cooldownCount);
         tag.putDouble("chargeCount", this.chargeCount);
         tag.putInt("power", this.power);
     }
 
-    /**
-     * 方块实体tick
-     */
-    public void tick() {
-        if (this.cooldownCount > 1) {
+    @Override
+    public void gridTick() {
+        if (this.cooldownCount >= 1) {
             this.cooldownCount -= 1;
             return;
         }
