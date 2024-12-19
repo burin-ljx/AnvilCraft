@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,12 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PistonMoveBlockListener {
+
+    @Unique
     private static final Map<Block, Double> CHARGE_NUMS = new HashMap<>();
 
     static {
-        CHARGE_NUMS.put(Blocks.COPPER_BLOCK, 1d / 8);
-        CHARGE_NUMS.put(Blocks.EXPOSED_COPPER, 1d / 16);
-        CHARGE_NUMS.put(Blocks.WEATHERED_COPPER, 1d / 32);
+        CHARGE_NUMS.put(Blocks.COPPER_BLOCK, 1d / 4);
+        CHARGE_NUMS.put(Blocks.EXPOSED_COPPER, 1d / 8);
+        CHARGE_NUMS.put(Blocks.WEATHERED_COPPER, 1d / 16);
     }
 
     /**
