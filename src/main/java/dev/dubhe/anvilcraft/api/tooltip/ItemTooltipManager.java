@@ -58,6 +58,7 @@ public class ItemTooltipManager {
         map.put(ModBlocks.ROYAL_STEEL_BLOCK.asItem(), "Explosion proof");
         map.put(ModBlocks.SMOOTH_ROYAL_STEEL_BLOCK.asItem(), "Explosion proof");
         map.put(ModBlocks.CUT_ROYAL_STEEL_BLOCK.asItem(), "Explosion proof");
+        map.put(ModBlocks.CUT_ROYAL_STEEL_PILLAR.asItem(), "Explosion proof");
         map.put(ModBlocks.CUT_ROYAL_STEEL_STAIRS.asItem(), "Explosion proof");
         map.put(ModBlocks.CUT_ROYAL_STEEL_SLAB.asItem(), "Explosion proof");
         map.put(ModBlocks.TEMPERING_GLASS.asItem(), "Explosion proof, No tools required on collect");

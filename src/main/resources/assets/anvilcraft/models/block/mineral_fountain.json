@@ -4,7 +4,7 @@
 	"textures": {
 		"0": "anvilcraft:block/mineral_fountain",
 		"1": "anvilcraft:block/mineral_fountain_top",
-		"2": "anvilcraft:block/mineral_fountain_bottom",
+		"2": "anvilcraft:block/sturdy_deepslate",
 		"particle": "anvilcraft:block/mineral_fountain"
 	},
 	"elements": [
