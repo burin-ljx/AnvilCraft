@@ -19,7 +19,9 @@ public class RoyalUpgradeTemplateItem extends SmithingTemplateItem {
                     "screen.anvilcraft.smithing_template.royal_steel_upgrade_smithing_template.applies_to")
             .withStyle(DESCRIPTION_FORMAT);
     private static final Component UPGRADE_INGREDIENTS =
-            Component.translatable("item.anvilcraft.royal_steel_ingot").withStyle(DESCRIPTION_FORMAT);
+            Component.translatable("screen.anvilcraft.smithing_template.royal_steel_upgrade_smithing_template"
+                + ".upgrade_ingredients")
+                .withStyle(DESCRIPTION_FORMAT);
     private static final Component UPGRADE = Component.translatable(
                     "screen.anvilcraft.royal_steel_upgrade_smithing_template")
             .withStyle(TITLE_FORMAT);

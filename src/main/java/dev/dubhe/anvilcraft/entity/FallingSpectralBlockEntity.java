@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 @ParametersAreNonnullByDefault
 public class FallingSpectralBlockEntity extends FallingBlockEntity {
     private boolean isGhostEntity;
-    private float fallDistance = 0;
+    private float fallDistance = 1.0f;
 
     public FallingSpectralBlockEntity(EntityType<? extends FallingSpectralBlockEntity> entityType, Level level) {
         super(entityType, level);
@@ -87,9 +87,11 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
         fallDistance -= (float) this.getDeltaMovement().y;
         if (this.level().isClientSide) return;
         BlockPos current = this.blockPosition();
-        BlockPos below = current.below();
+        Vec3 pos = this.position();
+        Vec3 belowPos = pos.subtract(0.0D, 0.335D, 0.0D);
+        BlockPos below = new BlockPos((int) Math.floor(belowPos.x()), (int) Math.floor(belowPos.y()), (int) Math.floor(belowPos.z()));
         BlockState blockStateDown = this.level().getBlockState(below);
-        if (current.getY() < -160) {
+        if (pos.y() < -160) {
             discard();
         }
         if (!shouldIgnoreBlockInMovement(blockStateDown)) {
@@ -148,8 +150,7 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
         if (dist < 0) {
             return false;
         }
-        Predicate<Entity> predicate =
-            EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
+        Predicate<Entity> predicate = EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
         float f = (float) Math.min(Mth.floor((float) dist * 2), 40);
         this.level().getEntities(this, this.getBoundingBox(), predicate).forEach(entity -> entity.hurt(source, f));
         boolean isAnvil = this.blockState.is(BlockTags.ANVIL);
@@ -177,12 +178,13 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
     /**
      * 落下幻灵实体
      */
-    public static FallingSpectralBlockEntity fall(
-        Level level, BlockPos pos, BlockState blockState, boolean updateBlock, boolean isGhostEntity) {
+    public static @NotNull FallingSpectralBlockEntity fall(
+        Level level, BlockPos pos, BlockState blockState, boolean updateBlock, boolean isGhostEntity
+    ) {
         FallingSpectralBlockEntity fallingBlockEntity = new FallingSpectralBlockEntity(
             level,
             (double) pos.getX() + 0.5,
-            pos.getY(),
+            (double) pos.getY() - 0.96,
             (double) pos.getZ() + 0.5,
             blockState.hasProperty(BlockStateProperties.WATERLOGGED)
                 ? blockState.setValue(BlockStateProperties.WATERLOGGED, false)

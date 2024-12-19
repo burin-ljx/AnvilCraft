@@ -1,0 +1,31 @@
+{
+  "type": "anvilcraft:multiblock",
+  "pattern": {
+    "layers": [
+      [
+        "AAA",
+        "AAA",
+        "AAA"
+      ],
+      [
+        "AAA",
+        "AAA",
+        "AAA"
+      ],
+      [
+        "AAA",
+        "AAA",
+        "AAA"
+      ]
+    ],
+    "symbols": {
+      "A": {
+        "block": "minecraft:coal_block"
+      }
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:diamond_block"
+  }
+}

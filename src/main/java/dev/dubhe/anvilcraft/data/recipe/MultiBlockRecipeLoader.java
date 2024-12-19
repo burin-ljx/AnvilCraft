@@ -76,6 +76,13 @@ public class MultiBlockRecipeLoader {
                 .symbol('B', ModBlocks.VOID_MATTER_BLOCK.get())
                 .save(provider);
 
+        MultiblockRecipe.builder(Blocks.DIAMOND_BLOCK)
+                .layer("AAA", "AAA", "AAA")
+                .layer("AAA", "AAA", "AAA")
+                .layer("AAA", "AAA", "AAA")
+                .symbol('A', Blocks.COAL_BLOCK)
+                .save(provider);
+
         MultiblockRecipe.builder(ModBlocks.LARGE_CAKE)
                 .layer("AAA", "AAA", "AAA")
                 .layer(" B ", "BBB", " B ")

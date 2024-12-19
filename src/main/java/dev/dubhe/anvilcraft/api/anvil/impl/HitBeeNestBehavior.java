@@ -31,13 +31,13 @@ public class HitBeeNestBehavior implements IAnvilBehavior {
         BlockPos potPos = pos.below();
         BlockState pot = level.getBlockState(potPos);
         if (pot.is(Blocks.CAULDRON)) {
-            level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 0));
+            level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 2));
             level.setBlockAndUpdate(potPos, ModBlocks.HONEY_CAULDRON.getDefaultState());
             level.setBlockAndUpdate(potPos, level.getBlockState(potPos).setValue(LayeredCauldronBlock.LEVEL, 1));
         } else {
             if (pot.is(ModBlocks.HONEY_CAULDRON.get())) {
                 int cauldronHoneyLevel = pot.getValue(LayeredCauldronBlock.LEVEL);
-                level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 0));
+                level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 2));
                 if (cauldronHoneyLevel < LayeredCauldronBlock.MAX_FILL_LEVEL) {
                     level.setBlockAndUpdate(potPos, pot.setValue(LayeredCauldronBlock.LEVEL, cauldronHoneyLevel + 1));
                 } else {

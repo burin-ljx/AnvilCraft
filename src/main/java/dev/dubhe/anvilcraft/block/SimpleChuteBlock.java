@@ -20,7 +20,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -42,6 +44,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import com.mojang.serialization.MapCodec;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -290,5 +293,16 @@ public class SimpleChuteBlock
     @Override
     public @Nullable Property<?> getChangeableProperty(BlockState blockState) {
         return FACING;
+    }
+
+    @Override
+    public @NotNull BlockState rotate(@NotNull BlockState state, @NotNull Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public @NotNull BlockState mirror(@NotNull BlockState state, @NotNull Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 }

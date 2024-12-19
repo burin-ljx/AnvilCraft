@@ -1,6 +1,5 @@
 package dev.dubhe.anvilcraft.mixin;
 
-import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.HollowMagnetBlock;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
@@ -8,7 +7,6 @@ import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.IFireReforging;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -17,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
@@ -63,10 +61,10 @@ abstract class ItemEntityMixin extends Entity {
     protected abstract void setUnderwaterMovement();
 
     @Shadow
-    public abstract boolean isMergable();
+    protected abstract boolean isMergable();
 
     @Shadow
-    public abstract void mergeWithNeighbours();
+    protected abstract void mergeWithNeighbours();
 
     @Shadow
     private int pickupDelay;
@@ -173,7 +171,7 @@ abstract class ItemEntityMixin extends Entity {
     // 以下是中子锭运动相关mixin
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void neutroniumTick(CallbackInfo ci){
+    private void anvilcraft$neutroniumTick(CallbackInfo ci){
         ItemStack item = this.getItem();
         if (!item.is(ModItems.NEUTRONIUM_INGOT)) return;
         if (item.onEntityItemUpdate((ItemEntity) (Object) this)) {
@@ -211,7 +209,7 @@ abstract class ItemEntityMixin extends Entity {
         this.applyGravity();
         this.noPhysics = false;
         if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > (double)1.0E-5F || (this.tickCount + this.getId()) % 4 == 0) {
-            this.neutroniumMove(MoverType.SELF, this.getDeltaMovement());
+            this.anvilCraft$neutroniumMove(MoverType.SELF, this.getDeltaMovement());
             float f = 0.98F;
             if (this.onGround()) {
                 BlockPos groundPos = this.getBlockPosBelowThatAffectsMyMovement();
@@ -252,8 +250,15 @@ abstract class ItemEntityMixin extends Entity {
         ci.cancel();
     }
 
+    @Override
+    @NotNull
+    public PushReaction getPistonPushReaction(){
+        if(this.getItem().is(ModItems.NEUTRONIUM_INGOT)) return PushReaction.IGNORE;
+        return super.getPistonPushReaction();
+    }
+
     @Unique
-    private void neutroniumMove(MoverType moverType, Vec3 motion) {
+    private void anvilCraft$neutroniumMove(MoverType moverType, Vec3 motion) {
 
         this.level().getProfiler().push("move");
         //代替原版move方法中的collide调用

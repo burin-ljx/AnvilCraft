@@ -4,7 +4,7 @@
     "item": "anvilcraft:ember_metal_ingot"
   },
   "base": {
-    "item": "anvilcraft:royal_steel_axe"
+    "tag": "anvilcraft:ember_metal_axe_base"
   },
   "result": {
     "count": 1,
