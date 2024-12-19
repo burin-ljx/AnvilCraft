@@ -48,6 +48,13 @@ public class JeiLang {
 
         provider.add("gui.anvilcraft.category.jewel_crafting", "Jewel Crafting");
 
+        provider.add("gui.anvilcraft.category.end_portal_conversion", "Block Falls Into End Portal");
+        provider.add("gui.anvilcraft.category.end_portal_conversion.fall_through", "Converted when fall through end portal");
+
+        provider.add("gui.anvilcraft.category.beacon_conversion", "Beacon Conversion");
+        provider.add("gui.anvilcraft.category.beacon_conversion.activate", "Use this item to activate beacon");
+        provider.add("gui.anvilcraft.category.beacon_conversion.beacon_base", "Use this block as beacon base");
+
         provider.add("jei.anvilcraft.info.geode_1", "Finds Amethyst Geodes nearby when using.");
         provider.add("jei.anvilcraft.info.geode_2", "Dropped by Budding Amethyst blocks.");
         provider.add("jei.anvilcraft.info.geode_3", "You can also find it in the Bonus Chest");
@@ -59,5 +66,8 @@ public class JeiLang {
         provider.add("jei.anvilcraft.info.craw_claw", "You can obtain this from crab traps placed in the water.");
 
         provider.add("jei.anvilcraft.info.capacitor", "You can charge the empty capacitor in the charger to obtain it.");
+
+        provider.add("jei.anvilcraft.info.end_dust", "Any falling block, except for anvils and Dragon Egg, will be " +
+            "converted into End Dust when fall through end portal.");
     }
 }
