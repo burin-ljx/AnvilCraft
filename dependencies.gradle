@@ -1,8 +1,18 @@
 dependencies {
+    // Registrate
     api("com.tterrag.registrate:Registrate:${libs.versions.registrate.get()}")
     jarJar("com.tterrag.registrate:Registrate:${libs.versions.registrate.get()}")
 
+    // Anvil Lib
+    implementation(libs.anvillib)
+    jarJar(libs.anvillib)
+
+    // Cloth Config
     implementation(libs.clothConfig)
+    jarJar(libs.clothConfig)
+
+    // Curios API
+    implementation(libs.curios)
 
     // JEI
     compileOnlyApi(libs.jeiCommonApi) { transitive = false }
@@ -22,15 +32,13 @@ dependencies {
     compileOnlyApi("vazkii.patchouli:Patchouli:${libs.versions.patchouli.get()}:api")
     runtimeOnly(libs.patchouli)
 
+    // Sodium, Iris, Embeddium
     compileOnly("maven.modrinth:sodium:mc1.21.1-0.6.3-neoforge")
     compileOnly("maven.modrinth:embeddium:1.0.11+mc1.21.1")
     compileOnly("maven.modrinth:iris:1.8.1+1.21.1-neoforge")
 
+    // Jade, The One Probe, KubeJS
     implementation(libs.jade)
     implementation(libs.theoneprobe)
     implementation(libs.kubejs)
 }
-
-//    compileOnly("maven.modrinth:sodium:mc1.21.1-0.6.0-beta.4-neoforge")
-//    compileOnly("maven.modrinth:iris:1.8.0-beta.5+1.21-neoforge")
-//    compileOnly("maven.modrinth:embeddium:1.0.11+mc1.21.1")
