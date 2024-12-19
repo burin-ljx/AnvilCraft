@@ -18,5 +18,6 @@ public class LangHandler {
         PatchouliLang.init(provider);
         ScreenLang.init(provider);
         JeiLang.init(provider);
+        EnchantmentDescriptionsLang.init(provider);
     }
 }
