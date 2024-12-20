@@ -156,6 +156,31 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        int selectionIdx = possibleStates.indexOf(currentBlockState);
+        if (scrollY > 0) {
+            if (selectionIdx == possibleStates.size() - 1) {
+                selectionIdx = 0;
+            } else {
+                selectionIdx++;
+            }
+        } else if (scrollY < 0) {
+            if (selectionIdx == 0) {
+                selectionIdx = possibleStates.size() - 1;
+            } else {
+                selectionIdx--;
+            }
+        }
+        currentBlockState = possibleStates.get(selectionIdx);
+        targetAngle = items.stream()
+            .filter(it -> it.state == currentBlockState)
+            .findFirst()
+            .orElseThrow()
+            .angle;
+        return true;
+    }
+
+    @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (closingAnimationStarted) return true;
         float screenCenterX = width / 2f;
