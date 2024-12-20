@@ -119,11 +119,12 @@ public class PowerGrid {
             for (IPowerStorage storage : this.storages) {
                 need -= storage.getOutputPower();
                 storages.add(storage);
-                if (need <= 0) break;
-            }
-            if (need > 0) this.update(false);
-            else for (IPowerStorage storage : storages) {
-                this.generate += storage.extract(this.consume - this.generate);
+                if (need <= 0) {
+                    for (IPowerStorage selectStorage : storages) {
+                        this.generate += selectStorage.extract(this.consume - this.generate);
+                    }
+                    break;
+                }
             }
         }
         this.gridTick();
