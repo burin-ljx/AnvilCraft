@@ -157,8 +157,6 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        System.out.println("scrollX = " + scrollX);
-        System.out.println("scrollY = " + scrollY);
         int selectionIdx = possibleStates.indexOf(currentBlockState);
         if (scrollY > 0) {
             if (selectionIdx == possibleStates.size() - 1) {
