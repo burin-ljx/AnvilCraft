@@ -99,7 +99,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
     @Override
     public void gridTick() {
         if (level == null || level.isClientSide()) return;
-        if (this.cooldownCount-- > 1) return；
+        if (this.cooldownCount-- > 1) return;
         this.cooldownCount = COOLDOWN;
         int oldPower = this.power;
         this.power = (int) Math.floor(this.chargeCount);
