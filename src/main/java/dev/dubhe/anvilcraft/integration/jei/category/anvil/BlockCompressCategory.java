@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.integration.jei.AnvilCraftJeiPlugin;
+import dev.dubhe.anvilcraft.integration.jei.util.BlockTagDisplayHelper;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRecipeUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRenderHelper;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
@@ -11,9 +12,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
 import dev.dubhe.anvilcraft.util.RenderHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import mezz.jei.api.gui.ITickTimer;
@@ -38,6 +38,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.atomic.AtomicReference;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -123,17 +124,20 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
 
         for (int i = recipe.inputs.size() - 1; i >= 0; i--) {
             Either<TagKey<Block>, Block> input = recipe.inputs.get(i);
-            int finalI = i;
-            input.ifRight(r -> {
+            AtomicReference<BlockState> renderedState = new AtomicReference<>();
+            input.ifRight(r -> renderedState.set(r.defaultBlockState()))
+                .ifLeft(tag -> BlockTagDisplayHelper.getDisplay(tag)
+                    .ifPresent(block -> renderedState.set(block.defaultBlockState())));
+            if(renderedState.get() != null){
                 RenderHelper.renderBlock(
                     guiGraphics,
-                    r.defaultBlockState(),
+                    renderedState.get(),
                     50,
-                    30 + 10 * finalI,
-                    10 - 10 * finalI,
+                    30 + 10 * i,
+                    10 - 10 * i,
                     12,
                     RenderHelper.SINGLE_BLOCK);
-            });
+            }
         }
 
         RenderHelper.renderBlock(
@@ -153,19 +157,21 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
         IRecipeCategory.super.getTooltip(tooltip, recipeHolder, recipeSlotsView, mouseX, mouseY);
         BlockCompressRecipe recipe = recipeHolder.value();
 
-//        if (mouseX >= 40 && mouseX <= 58) {
-//            if (mouseY >= 24 && mouseY <= 42) {
+        if (mouseX >= 40 && mouseX <= 58) {
+            if (mouseY >= 24 && mouseY <= 42) {
 //                tooltip.add(recipe.inputs.getFirst().getName());
-//            }
-//            if (mouseY >= 42 && mouseY <= 52) {
+                tooltip.addAll(BlockTagDisplayHelper.getTooltipsForInput(recipe.inputs.getFirst()));
+            }
+            if (mouseY >= 42 && mouseY <= 52) {
 //                tooltip.add(recipe.inputs.getLast().getName());
-//            }
-//        }
-//        if (mouseX >= 100 && mouseX <= 120) {
-//            if (mouseY >= 42 && mouseY <= 52) {
-//                tooltip.add(recipe.result.getName());
-//            }
-//        }
+                tooltip.addAll(BlockTagDisplayHelper.getTooltipsForInput(recipe.inputs.getLast()));
+            }
+        }
+        if (mouseX >= 100 && mouseX <= 120) {
+            if (mouseY >= 42 && mouseY <= 52) {
+                tooltip.add(recipe.result.getName());
+            }
+        }
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {

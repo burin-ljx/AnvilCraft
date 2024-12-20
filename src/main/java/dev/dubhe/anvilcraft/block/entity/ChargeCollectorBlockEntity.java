@@ -98,10 +98,12 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
 
     @Override
     public void gridTick() {
-        if (this.cooldownCount >= 1) {
+        System.out.println("cooldownCount: " + this.cooldownCount);
+        if (this.cooldownCount > 1) {
             this.cooldownCount -= 1;
             return;
         }
+        System.out.println("collect charge:");
         this.cooldownCount = COOLDOWN;
         int oldPower = this.power;
         this.power = (int) Math.floor(this.chargeCount);
@@ -116,7 +118,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
      * 向集电器添加电荷
      *
      * @param num 添加至收集器的电荷数
-     * @return 溢出的电荷数(既未被添加至收集器的电荷数)
+     * @return 溢出的电荷数(即未被添加至收集器的电荷数)
      */
     public double incomingCharge(double num, BlockPos srcPos) {
         double overflow = num - (MAX_POWER_PER_INCOMING - this.chargeCount);
