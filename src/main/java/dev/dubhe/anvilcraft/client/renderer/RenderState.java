@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.client.renderer;
 
 import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.iris.IrisState;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.neoforged.fml.ModList;
@@ -30,7 +31,7 @@ public class RenderState {
     }
 
     public static boolean isEnhancedRenderingAvailable() {
-        return !Minecraft.useShaderTransparency();
+        return !Minecraft.useShaderTransparency() && !IrisState.isShaderEnabled();
     }
 
     public static boolean isBloomEffectEnabled(){

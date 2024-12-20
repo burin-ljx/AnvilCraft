@@ -38,7 +38,6 @@
     "LevelRendererMixin",
     "MinecraftClientMixin",
     "MouseHandlerMixin",
-    "RenderSystemMixin",
     "RenderTypeMixin",
     "SectionCompilerMixin",
     "SoundEngineMixin",
@@ -47,7 +46,8 @@
     "compat.EmbeddiumDefaultTerrainRenderPassesMixin",
     "compat.SodiumChunkBuilderMeshingTaskMixin",
     "compat.SodiumDefaultMaterialsMixin",
-    "compat.SodiumDefaultTerrainRenderPassesMixin"
+    "compat.SodiumDefaultTerrainRenderPassesMixin",
+    "LevelChunkMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",
   "injectors": {

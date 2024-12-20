@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -39,9 +38,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
     @Shadow
-    protected abstract void renderSectionLayer(RenderType renderType, double x, double y, double z, Matrix4f frustrumMatrix, Matrix4f projectionMatrix);
-
-    @Shadow
     @Final
     private Minecraft minecraft;
 
@@ -49,8 +45,7 @@ public abstract class LevelRendererMixin {
         method = "renderLevel",
         at = @At(
             value = "INVOKE",
-            shift = At.Shift.AFTER,
-            target = "Lnet/minecraft/client/Options;getCloudsType()Lnet/minecraft/client/CloudStatus;"
+            target = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;"
         )
     )
     void renderEnhancedTransmitterLines(
@@ -71,6 +66,7 @@ public abstract class LevelRendererMixin {
                 bufferSource,
                 camera.getPosition()
             );
+            LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
         }
     }
 
@@ -81,7 +77,7 @@ public abstract class LevelRendererMixin {
             target = "Lnet/minecraft/client/renderer/LevelRenderer;compileSections(Lnet/minecraft/client/Camera;)V"
         )
     )
-    void uploadBuffers(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci){
+    void uploadBuffers(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
         LaserRenderer.getInstance().runTasks();
     }
 
@@ -105,8 +101,11 @@ public abstract class LevelRendererMixin {
         CallbackInfo ci
     ) {
         if (!RenderState.isEnhancedRenderingAvailable()) return;
-        LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
         if (!RenderState.isBloomEffectEnabled()) return;
+        if (ModRenderTargets.getBloomTarget() != null) {
+            ModRenderTargets.getBloomTarget().copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+        }
+        LaserRenderer.getInstance().renderBloomed(frustumMatrix, projectionMatrix);
         RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(0, 0, 0, 0);
         mcInput.clear(Minecraft.ON_OSX);

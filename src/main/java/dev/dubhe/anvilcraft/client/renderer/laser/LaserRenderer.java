@@ -44,6 +44,10 @@ public class LaserRenderer {
         RenderType.solid(),
         ModRenderTypes.LASER
     };
+
+    public static final RenderType[] BLOOM_RENDERTYPES = new RenderType[]{
+        ModRenderTypes.LASER
+    };
     private static final MemoryUtil.MemoryAllocator ALLOCATOR = MemoryUtil.getAllocator(false);
 
     private final Queue<Runnable> pendingUploads = new ConcurrentLinkedDeque<>();
@@ -92,18 +96,38 @@ public class LaserRenderer {
         valid = false;
     }
 
+    public void blockRemoved(LaserStateAccess laserStateAccess) {
+        if (lastRebuildTask != null) {
+            lastRebuildTask.cancel();
+        }
+        laserBlockEntities.remove(laserStateAccess);
+        compileQueue.add(new RebuildTask());
+    }
+
     public void requireRecompile(LaserStateAccess baseLaserBlockEntity) {
         if (lastRebuildTask != null) {
             lastRebuildTask.cancel();
         }
         if (baseLaserBlockEntity.removed()) {
             laserBlockEntities.remove(baseLaserBlockEntity);
+            laserBlockEntities.removeIf(LaserStateAccess::removed);
             compileQueue.add(new RebuildTask());
             return;
         }
         laserBlockEntities.add(baseLaserBlockEntity);
         laserBlockEntities.removeIf(LaserStateAccess::removed);
         compileQueue.add(new RebuildTask());
+    }
+
+    public void renderBloomed(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
+        if (isEmpty) return;
+        Window window = Minecraft.getInstance().getWindow();
+        Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
+        for (RenderType bloomRendertype : BLOOM_RENDERTYPES) {
+            VertexBuffer vb = buffers.get(bloomRendertype);
+            RenderState.bloomStage();
+            renderLayer(bloomRendertype, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
+        }
     }
 
     public void render(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
@@ -113,13 +137,7 @@ public class LaserRenderer {
         Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
         for (RenderType renderType : SUPPORTED_RENDERTYPES) {
             VertexBuffer vb = buffers.get(renderType);
-            if (renderType == ModRenderTypes.LASER) {
-                RenderState.levelStage();
-                renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
-                RenderState.bloomStage();
-                renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
-                continue;
-            }
+            RenderState.levelStage();
             renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
         }
     }
@@ -188,7 +206,7 @@ public class LaserRenderer {
                         pos.getZ()
                     );
                     LaserState laserState = LaserState.create(laserBlockEntity, poseStack);
-                    if (laserState != null) {
+                    if (laserState != null && laserState.laserLevel() > 0) {
                         float width = LaserCompiler.laserWidth(laserState);
                         LaserCompiler.compileStage(
                             laserState,
