@@ -29,10 +29,10 @@ public class BulgingRecipeLoader {
         bulging(provider, Items.DRIED_KELP, Items.KELP);
         crystallize(provider, ModItems.SEA_HEART_SHELL_SHARD, ModItems.PRISMARINE_CLUSTER, true);
 
-        VanillaConstants.CONCRETE_POWDERS.forEach(block ->bulging(provider, block, block.concrete));
+        VanillaConstants.CONCRETE_POWDERS.forEach(block -> bulging(provider, block, block.concrete));
 
         VanillaConstants.WEATHERING_COPPERS.forEach(weatheringCopper -> {
-            if(!(weatheringCopper instanceof Block block)) return;
+            if (!(weatheringCopper instanceof Block block)) return;
             weatheringCopper.getNext(block.defaultBlockState()).ifPresent(
                 state -> bulging(provider, block, state.getBlock())
             );
