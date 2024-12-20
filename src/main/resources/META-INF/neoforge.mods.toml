@@ -49,6 +49,9 @@ file="META-INF/accesstransformer.cfg"
 
 # The coremods config file path is not configurable and is always loaded from META-INF/coremods.json
 
+[modproperties."${mod_id}".anvillib.integrations]
+curios = ["dev.dubhe.anvilcraft.integration.curios.CuriosIntegration"]
+
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies."${mod_id}"]] #optional
     modId="neoforge" #mandatory
