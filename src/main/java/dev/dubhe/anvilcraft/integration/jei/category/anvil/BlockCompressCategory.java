@@ -158,12 +158,10 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
         BlockCompressRecipe recipe = recipeHolder.value();
 
         if (mouseX >= 40 && mouseX <= 58) {
-            if (mouseY >= 24 && mouseY <= 42) {
-//                tooltip.add(recipe.inputs.getFirst().getName());
+            if (mouseY >= 24 && mouseY < 42) {
                 tooltip.addAll(BlockTagDisplayHelper.getTooltipsForInput(recipe.inputs.getFirst()));
             }
             if (mouseY >= 42 && mouseY <= 52) {
-//                tooltip.add(recipe.inputs.getLast().getName());
                 tooltip.addAll(BlockTagDisplayHelper.getTooltipsForInput(recipe.inputs.getLast()));
             }
         }
