@@ -1,17 +1,17 @@
 package dev.dubhe.anvilcraft.data.recipe;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.recipe.anvil.BulgingRecipe;
-
+import dev.dubhe.anvilcraft.util.VanillaConstants;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 
 public class BulgingRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {
@@ -26,24 +26,48 @@ public class BulgingRecipeLoader {
         bulging(provider, Items.TUBE_CORAL, Items.TUBE_CORAL_BLOCK);
         bulging(provider, ModItems.SPONGE_GEMMULE, Items.WET_SPONGE, true);
         bulging(provider, ModItems.FLOUR, ModItems.DOUGH);
+        bulging(provider, Items.DRIED_KELP, Items.KELP);
         crystallize(provider, ModItems.SEA_HEART_SHELL_SHARD, ModItems.PRISMARINE_CLUSTER, true);
 
+        VanillaConstants.CONCRETE_POWDERS.forEach(block ->bulging(provider, block, block.concrete));
+
+        VanillaConstants.WEATHERING_COPPERS.forEach(weatheringCopper -> {
+            if(!(weatheringCopper instanceof Block block)) return;
+            weatheringCopper.getNext(block.defaultBlockState()).ifPresent(
+                state -> bulging(provider, block, state.getBlock())
+            );
+        });
+
         BulgingRecipe.builder()
-                .cauldron(ModBlocks.CEMENT_CAULDRONS.get(Color.GRAY).get())
-                .requires(ModItems.LIME_POWDER, 4)
-                .requires(ModBlocks.CINERITE)
-                .fromWater(true)
-                .save(provider, AnvilCraft.of("bulging/cement_cauldron"));
+            .cauldron(ModBlocks.CEMENT_CAULDRONS.get(Color.GRAY).get())
+            .requires(ModItems.LIME_POWDER, 4)
+            .requires(ModBlocks.CINERITE)
+            .fromWater(true)
+            .save(provider, AnvilCraft.of("bulging/cement_cauldron"));
+
+        BulgingRecipe.builder()
+            .cauldron(Blocks.WATER_CAULDRON)
+            .requires(Items.RED_MUSHROOM)
+            .result(Blocks.RED_MUSHROOM_BLOCK.asItem().getDefaultInstance())
+            .result(Blocks.MUSHROOM_STEM.asItem().getDefaultInstance(), 0.1f)
+            .save(provider);
+
+        BulgingRecipe.builder()
+            .cauldron(Blocks.WATER_CAULDRON)
+            .requires(Items.BROWN_MUSHROOM)
+            .result(Blocks.BROWN_MUSHROOM_BLOCK.asItem().getDefaultInstance())
+            .result(Blocks.MUSHROOM_STEM.asItem().getDefaultInstance(), 0.1f)
+            .save(provider);
     }
 
     private static void bulging(
-            RegistrateRecipeProvider provider, ItemLike input, ItemLike result, boolean consumeFluid) {
+        RegistrateRecipeProvider provider, ItemLike input, ItemLike result, boolean consumeFluid) {
         BulgingRecipe.builder()
-                .cauldron(Blocks.WATER_CAULDRON)
-                .requires(input)
-                .result(new ItemStack(result))
-                .consumeFluid(consumeFluid)
-                .save(provider);
+            .cauldron(Blocks.WATER_CAULDRON)
+            .requires(input)
+            .result(new ItemStack(result))
+            .consumeFluid(consumeFluid)
+            .save(provider);
     }
 
     private static void bulging(RegistrateRecipeProvider provider, ItemLike input, ItemLike result) {
@@ -51,13 +75,13 @@ public class BulgingRecipeLoader {
     }
 
     private static void crystallize(
-            RegistrateRecipeProvider provider, ItemLike input, ItemLike result, boolean consumeFluid) {
+        RegistrateRecipeProvider provider, ItemLike input, ItemLike result, boolean consumeFluid) {
         BulgingRecipe.builder()
-                .cauldron(Blocks.POWDER_SNOW_CAULDRON)
-                .requires(input)
-                .result(new ItemStack(result))
-                .consumeFluid(consumeFluid)
-                .save(provider);
+            .cauldron(Blocks.POWDER_SNOW_CAULDRON)
+            .requires(input)
+            .result(new ItemStack(result))
+            .consumeFluid(consumeFluid)
+            .save(provider);
     }
 
     private static void crystallize(RegistrateRecipeProvider provider, ItemLike input, ItemLike result) {

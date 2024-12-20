@@ -266,6 +266,11 @@ public class BulgingRecipe implements Recipe<BulgingRecipe.Input> {
             return this;
         }
 
+        public Builder result(ItemStack stack, float chance){
+            results.add(ChanceItemStack.of(stack).withChance(chance));
+            return this;
+        }
+
         @Override
         public BulgingRecipe buildRecipe() {
             return new BulgingRecipe(ingredients, cauldron, results, produceFluid, consumeFluid, fromWater);
