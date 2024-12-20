@@ -87,13 +87,10 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
         fallDistance -= (float) this.getDeltaMovement().y;
         if (this.level().isClientSide) return;
         BlockPos current = this.blockPosition();
-        Vec3 pos = this.position();
-        Vec3 belowPos = pos.subtract(0.0D, 0.335D, 0.0D);
-        BlockPos below = new BlockPos((int) Math.floor(belowPos.x()), (int) Math.floor(belowPos.y()), (int) Math.floor(belowPos.z()));
+        BlockPos pos = this.blockPosition();
+        BlockPos below = pos.below();
         BlockState blockStateDown = this.level().getBlockState(below);
-        if (pos.y() < -160) {
-            discard();
-        }
+        if (pos.getY() < -160) this.discard();
         if (!shouldIgnoreBlockInMovement(blockStateDown)) {
             this.discard();
             if (!isGhostEntity) {
@@ -118,11 +115,7 @@ public class FallingSpectralBlockEntity extends FallingBlockEntity {
                 LivingEntity.class,
                 new AABB(current),
                 predicate
-            ).forEach(it -> it.hurt(
-                    level().damageSources().anvil(this),
-                    Math.min(40f, fallDistance * 2)
-                )
-            );
+            ).forEach(it -> it.hurt(level().damageSources().anvil(this), Math.min(40f, fallDistance * 2)));
             NeoForge.EVENT_BUS.post(new AnvilFallOnLandEvent(level(), current, this, fallDistance));
         }
         this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
