@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * 电力元件
  */
 @SuppressWarnings("unused")
-public interface IPowerComponent {
+public interface IPowerComponent extends Comparable<IPowerComponent> {
     BooleanProperty OVERLOAD = BooleanProperty.create("overload");
     EnumProperty<Switch> SWITCH = EnumProperty.create("switch", Switch.class);
 
@@ -104,5 +104,12 @@ public interface IPowerComponent {
         } else if (!this.getGrid().isWorking() && !state.getValue(OVERLOAD)) {
             level.setBlockAndUpdate(pos, state.setValue(OVERLOAD, true));
         }
+    }
+
+    @Override
+    default int compareTo(@NotNull IPowerComponent iPowerComponent) {
+        if (this.equals(iPowerComponent)) return 0;
+        int i = getComponentType().compareTo(iPowerComponent.getComponentType());
+        return i == 0 ? 1 : i;
     }
 }

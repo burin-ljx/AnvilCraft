@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 电网
@@ -134,7 +135,7 @@ public class PowerGrid {
     }
 
     private void gridTick() {
-        Set<IPowerComponent> components = Collections.synchronizedSet(new HashSet<>());
+        Set<IPowerComponent> components = Collections.synchronizedSet(new TreeSet<>());
         components.addAll(this.transmitters);
         components.addAll(this.consumers);
         components.addAll(this.storages);

@@ -420,10 +420,14 @@ public class ModItems {
         .register();
     public static final ItemEntry<CapacitorItem> CAPACITOR = REGISTRATE
         .item("capacitor", CapacitorItem::new)
+        .model((ctx, provider) -> {
+        })
         .tag(ModItemTags.CAPACITOR)
         .register();
     public static final ItemEntry<EmptyCapacitorItem> CAPACITOR_EMPTY = REGISTRATE
         .item("capacitor_empty", EmptyCapacitorItem::new)
+        .model((ctx, provider) -> {
+        })
         .tag(ModItemTags.CAPACITOR)
         .register();
     public static final ItemEntry<Item> CHOCOLATE = REGISTRATE

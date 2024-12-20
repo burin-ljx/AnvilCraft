@@ -1,27 +1,42 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url = "https://server.cjsah.net:1002/maven/" }
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
-    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
-    maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
-    maven {
+    maven { // Anvil Lib
+        name = "Cjsah Maven"
+        url = "https://server.cjsah.net:1002/maven/"
+    }
+    maven { // Modrinth File, LazyDFU, Jade
+        name = "Modrinth Maven"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven { // Mod Menu, EMI
+        name = "TerraformersMC Maven"
+        url = "https://maven.terraformersmc.com/releases/"
+    }
+    maven { // Cloth Config, REI
+        name = "Shedaniel Maven"
+        url = "https://maven.shedaniel.me/"
+    }
+    maven { // CurseForge File
+        name = "CurseForge Maven"
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
-    } // Curse Forge File
-    maven {
+    }
+    maven { // Patchouli
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
-    maven {
-        url = "https://dvs1.progwml6.com/files/maven/"
+    maven { // Registrate Fork
+        name = "Ithundxr Maven"
+        url = "https://maven.ithundxr.dev/snapshots"
     }
-    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate Fork
-    maven { url = "https://mvn.devos.one/snapshots/" }
-    maven {
-        // saps.dev Maven (KubeJS and Rhino)
+    maven { // KubeJS, Rhino
+        name = "Saps Maven"
         url = "https://maven.saps.dev/minecraft"
         content {
             includeGroup "dev.latvian.mods"
@@ -29,7 +44,12 @@ repositories {
         }
     }
     maven { // TOP
+        name = "k-4u Maven"
         url "https://maven.k-4u.nl"
+    }
+    maven { // Curios API
+        name = "OctoStudios Maven"
+        url = uri("https://maven.octo-studios.com/releases")
     }
     maven {
         url "https://maven.su5ed.dev/releases"

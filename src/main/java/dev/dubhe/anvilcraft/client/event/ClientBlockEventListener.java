@@ -38,7 +38,7 @@ public class ClientBlockEventListener {
             if (AnvilHammerItem.ableToUseAnvilHammer(event.getLevel(), event.getPos(), event.getEntity())) {
                 Block b = event.getLevel().getBlockState(event.getPos()).getBlock();
                 if ((b instanceof IHammerRemovable || b.defaultBlockState().is(ModBlockTags.HAMMER_REMOVABLE))
-                    && !(b instanceof IHammerChangeable)
+                    && !(b instanceof IHammerChangeable || b.defaultBlockState().is(ModBlockTags.HAMMER_CHANGEABLE))
                     && !event.getEntity().isShiftKeyDown()
                 ) {
                     return;

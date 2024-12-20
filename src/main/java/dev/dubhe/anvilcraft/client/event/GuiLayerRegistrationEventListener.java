@@ -52,7 +52,7 @@ public class GuiLayerRegistrationEventListener {
                     screenHeight
                 );
             }
-            if (!(minecraft.player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof IEngineerGoggles)) return;
+            if (!IEngineerGoggles.hasGoggles(minecraft.player)) return;
             HitResult hit = minecraft.hitResult;
             if (hit == null || hit.getType() != HitResult.Type.BLOCK) {
                 return;

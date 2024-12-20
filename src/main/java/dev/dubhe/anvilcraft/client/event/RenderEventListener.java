@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -68,15 +69,8 @@ public class RenderEventListener {
                     handItem, event.getPoseStack(), vertexConsumer3, camX, camY, camZ);
             }
         }
-        if (!(entity instanceof LivingEntity le)) return;
-        boolean bl = true;
-        for (ItemStack slot : le.getArmorSlots()) {
-            if (slot.getItem() instanceof IEngineerGoggles) {
-                bl = false;
-                break;
-            }
-        }
-        if (bl) return;
+        if (!(entity instanceof Player player)) return;
+        if (!IEngineerGoggles.hasGoggles(player)) return;
         PowerGridRenderer.render(event.getPoseStack(), bufferSource, vec3);
         HitResult hit = Minecraft.getInstance().hitResult;
         if (hit == null || hit.getType() != HitResult.Type.BLOCK) {
