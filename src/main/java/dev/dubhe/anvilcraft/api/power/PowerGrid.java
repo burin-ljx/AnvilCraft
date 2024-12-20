@@ -121,11 +121,8 @@ public class PowerGrid {
                 storages.add(storage);
                 if (need <= 0) break;
             }
-            if (need > 0) {
-                this.update(false);
-                return;
-            }
-            for (IPowerStorage storage : storages) {
+            if (need > 0) this.update(false);
+            else for (IPowerStorage storage : storages) {
                 this.generate += storage.extract(this.consume - this.generate);
             }
         }
