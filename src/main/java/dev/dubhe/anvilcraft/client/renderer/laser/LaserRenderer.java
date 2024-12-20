@@ -5,6 +5,7 @@ import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
@@ -40,8 +41,8 @@ import java.util.stream.Collectors;
 
 public class LaserRenderer {
     public static final RenderType[] SUPPORTED_RENDERTYPES = new RenderType[]{
-        ModRenderTypes.LASER,
         RenderType.solid(),
+        ModRenderTypes.LASER
     };
     private static final MemoryUtil.MemoryAllocator ALLOCATOR = MemoryUtil.getAllocator(false);
 
@@ -97,6 +98,7 @@ public class LaserRenderer {
         }
         if (baseLaserBlockEntity.removed()) {
             laserBlockEntities.remove(baseLaserBlockEntity);
+            compileQueue.add(new RebuildTask());
             return;
         }
         laserBlockEntities.add(baseLaserBlockEntity);
@@ -106,24 +108,19 @@ public class LaserRenderer {
 
     public void render(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
         RenderSystem.enableBlend();
-        if (ModRenderTargets.getBloomTarget() != null && RenderState.isBloomEffectEnabled()) {
-            ModRenderTargets.getBloomTarget().setClearColor(0, 0, 0, 0);
-            ModRenderTargets.getBloomTarget().clear(Minecraft.ON_OSX);
-            ModRenderTargets.getBloomTarget().copyDepthFrom(this.minecraft.getMainRenderTarget());
-        }
         if (isEmpty) return;
-        System.out.println("RENDER!!!");
         Window window = Minecraft.getInstance().getWindow();
         Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
-        for (Map.Entry<RenderType, VertexBuffer> entry : buffers.entrySet()) {
-            if (entry.getKey() == ModRenderTypes.LASER) {
+        for (RenderType renderType : SUPPORTED_RENDERTYPES) {
+            VertexBuffer vb = buffers.get(renderType);
+            if (renderType == ModRenderTypes.LASER) {
                 RenderState.levelStage();
-                renderLayer(entry.getKey(), entry.getValue(), frustumMatrix, projectionMatrix, cameraPosition, window);
+                renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
                 RenderState.bloomStage();
-                renderLayer(entry.getKey(), entry.getValue(), frustumMatrix, projectionMatrix, cameraPosition, window);
+                renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
                 continue;
             }
-            renderLayer(entry.getKey(), entry.getValue(), frustumMatrix, projectionMatrix, cameraPosition, window);
+            renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
         }
     }
 
@@ -191,23 +188,27 @@ public class LaserRenderer {
                         pos.getZ()
                     );
                     LaserState laserState = LaserState.create(laserBlockEntity, poseStack);
-                    if (laserState == null) continue;
-                    float width = LaserCompiler.laserWidth(laserState);
-                    LaserCompiler.compileStage(
-                        laserState,
-                        bufferBuilder,
-                        renderType,
-                        width
-                    );
+                    if (laserState != null) {
+                        float width = LaserCompiler.laserWidth(laserState);
+                        LaserCompiler.compileStage(
+                            laserState,
+                            bufferBuilder,
+                            renderType,
+                            width
+                        );
+                    }
                     poseStack.popPose();
                 }
-                if (bufferBuilder.vertices > 0){
+                if (bufferBuilder.vertices > 0) {
                     LaserRenderer.this.isEmpty = false;
                 }
-                System.out.println(renderType.name + " bufferBuilder.vertices = " + bufferBuilder.vertices);
                 int compiledVertices = bufferBuilder.vertices * bufferBuilder.format.getVertexSize();
                 long allocated = ALLOCATOR.malloc(compiledVertices);
                 MemoryUtil.memCopy(ptr + offsetBeforeCompile, allocated, compiledVertices);
+                MeshData mesh = bufferBuilder.build();
+                if (mesh != null) {
+                    mesh.close();
+                }
                 CompileResult compileResult = new CompileResult(
                     renderType,
                     bufferBuilder.vertices,

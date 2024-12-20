@@ -104,10 +104,9 @@ public abstract class LevelRendererMixin {
         Matrix4f projectionMatrix,
         CallbackInfo ci
     ) {
-        LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
         if (!RenderState.isEnhancedRenderingAvailable()) return;
+        LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
         if (!RenderState.isBloomEffectEnabled()) return;
-
         RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(0, 0, 0, 0);
         mcInput.clear(Minecraft.ON_OSX);

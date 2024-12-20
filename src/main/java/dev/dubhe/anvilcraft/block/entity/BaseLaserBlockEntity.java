@@ -304,7 +304,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
 
     @Override
     public boolean removed() {
-        return isRemoved();
+        return remove;
     }
 
     @Override
