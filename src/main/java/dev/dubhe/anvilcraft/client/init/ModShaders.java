@@ -24,6 +24,7 @@ public class ModShaders {
     private static PostChain bloomChain;
     static final Minecraft MINECRAFT = Minecraft.getInstance();
 
+    @Getter
     static ShaderInstance renderTypeLaserShader;
     static ShaderInstance renderTypeColoredOverlayShader;
     @Getter
@@ -41,7 +42,7 @@ public class ModShaders {
             event.registerShader(new ShaderInstance(
                     event.getResourceProvider(),
                     AnvilCraft.of("rendertype_laser"),
-                    DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL
+                    DefaultVertexFormat.BLOCK
                 ),
                 it -> renderTypeLaserShader = it
             );

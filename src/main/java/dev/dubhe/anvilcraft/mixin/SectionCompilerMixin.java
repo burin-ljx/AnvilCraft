@@ -113,25 +113,25 @@ public abstract class SectionCompilerMixin {
     ) {
         if (!RenderState.isEnhancedRenderingAvailable()) return;
         if (!(blockEntity instanceof BaseLaserBlockEntity baseLaserBlockEntity)) return;
-        poseStack.pushPose();
-        BlockPos pos = blockEntity.getBlockPos();
-        poseStack.translate(
-            (float) SectionPos.sectionRelative(pos.getX()),
-            (float) SectionPos.sectionRelative(pos.getY()),
-            (float) SectionPos.sectionRelative(pos.getZ())
-        );
-        LaserState laserState = LaserState.create(baseLaserBlockEntity, poseStack);
-        if (laserState != null) {
-            LaserCompiler.compile(
-                laserState,
-                renderType -> this.getOrBeginLayer(
-                    map,
-                    sectionBufferBuilderPack,
-                    renderType
-                )
-            );
-        }
-        poseStack.popPose();
+//        poseStack.pushPose();
+//        BlockPos pos = blockEntity.getBlockPos();
+//        poseStack.translate(
+//            (float) SectionPos.sectionRelative(pos.getX()),
+//            (float) SectionPos.sectionRelative(pos.getY()),
+//            (float) SectionPos.sectionRelative(pos.getZ())
+//        );
+//        LaserState laserState = LaserState.create(baseLaserBlockEntity, poseStack);
+//        if (laserState != null) {
+//            LaserCompiler.compile(
+//                laserState,
+//                renderType -> this.getOrBeginLayer(
+//                    map,
+//                    sectionBufferBuilderPack,
+//                    renderType
+//                )
+//            );
+//        }
+//        poseStack.popPose();
     }
 
     @WrapOperation(

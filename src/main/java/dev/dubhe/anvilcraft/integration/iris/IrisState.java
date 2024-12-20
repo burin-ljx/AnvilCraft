@@ -7,7 +7,7 @@ import net.irisshaders.iris.api.v0.IrisApi;
 public class IrisState {
 
     public static boolean isShaderEnabled() {
-        if (RenderState.isIrisPresent()){
+        if (RenderState.isIrisPresent()) {
             return isShaderEnabledInternal();
         }
         return false;

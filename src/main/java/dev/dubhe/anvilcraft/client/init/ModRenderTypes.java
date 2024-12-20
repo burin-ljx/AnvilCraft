@@ -115,7 +115,7 @@ public class ModRenderTypes {
 
     public static final RenderType LASER = RenderType.create(
         "anvilcraft:laser",
-        DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL,
+        DefaultVertexFormat.BLOCK,
         VertexFormat.Mode.QUADS,
         1536,
         true,

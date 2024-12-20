@@ -29,7 +29,7 @@ public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
     public void tick(@NotNull Level level) {
         resetState();
         if (enabled || enabledLastTick) {
-            emitLaser(getDirection());
+            emitLaser(getFacing());
         }
         enabledLastTick = enabled;
         if (laserLevel == 0) {
@@ -57,7 +57,7 @@ public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
     }
 
     @Override
-    public Direction getDirection() {
+    public Direction getFacing() {
         return getBlockState().getValue(RubyPrismBlock.FACING);
     }
 }

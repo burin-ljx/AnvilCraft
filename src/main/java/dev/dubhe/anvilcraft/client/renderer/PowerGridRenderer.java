@@ -65,6 +65,11 @@ public class PowerGridRenderer {
         if (!RenderState.isEnhancedRenderingAvailable() || !RenderState.isBloomEffectEnabled()) return;
         if (!AnvilCraft.config.renderPowerTransmitterLines) return;
         if (Minecraft.getInstance().level == null) return;
+        if (ModRenderTargets.getBloomTarget() != null) {
+            ModRenderTargets.getBloomTarget().setClearColor(0, 0, 0, 0);
+            ModRenderTargets.getBloomTarget().clear(Minecraft.ON_OSX);
+            ModRenderTargets.getBloomTarget().copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+        }
         String level = Minecraft.getInstance().level.dimension().location().toString();
 
         VertexConsumer consumer1 = bufferSource.getBuffer(ModRenderTypes.LINE_BLOOM);

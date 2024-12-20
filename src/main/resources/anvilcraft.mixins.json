@@ -36,16 +36,18 @@
     "GameRendererMixin",
     "ItemInHandRendererMixin",
     "LevelRendererMixin",
+    "MinecraftClientMixin",
     "MouseHandlerMixin",
     "RenderTypeMixin",
     "SectionCompilerMixin",
     "SoundEngineMixin",
     "compat.EmbChunkBuilderMeshingTaskMixin",
-    "compat.SodiumChunkBuilderMeshingTaskMixin",
     "compat.EmbeddiumDefaultMaterialsMixin",
     "compat.EmbeddiumDefaultTerrainRenderPassesMixin",
+    "compat.SodiumChunkBuilderMeshingTaskMixin",
     "compat.SodiumDefaultMaterialsMixin",
-    "compat.SodiumDefaultTerrainRenderPassesMixin"
+    "compat.SodiumDefaultTerrainRenderPassesMixin",
+    "LevelChunkMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",
   "injectors": {

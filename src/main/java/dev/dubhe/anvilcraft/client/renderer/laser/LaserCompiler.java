@@ -4,9 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
+import dev.dubhe.anvilcraft.util.Callback;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.neoforged.fml.common.Mod;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class LaserCompiler {
@@ -22,41 +25,66 @@ public class LaserCompiler {
         LASER_WIDTH = array;
     }
 
+    public static void compileStage(
+        LaserState state,
+        VertexConsumer vertexConsumer,
+        RenderType renderType,
+        float width
+    ) {
+        if (renderType == RenderType.SOLID) {
+            renderBox(
+                vertexConsumer,
+                state.pose(),
+                -width,
+                -state.offset() - 0.001f,
+                -width,
+                width,
+                state.length() + 0.501f,
+                width,
+                1f,
+                state.laserAtlasSprite(),
+                state.concreteAtlasSprite()
+            );
+        } else if (renderType == ModRenderTypes.LASER) {
+            float haloWidth = width + HALF_PIXEL;
+            renderBox(
+                vertexConsumer,
+                state.pose(),
+                -haloWidth,
+                -state.offset(),
+                -haloWidth,
+                haloWidth,
+                state.length() + 0.5f + HALF_PIXEL,
+                haloWidth,
+                0.6f,
+                state.laserAtlasSprite(),
+                state.concreteAtlasSprite()
+            );
+        }
+    }
+
+    public static float laserWidth(LaserState state) {
+        return LASER_WIDTH[Math.clamp(state.blockEntity().getLaserLevel(), 1, 64)] + 0.001f;
+    }
+
+
     public static void compile(
         LaserState state,
         Function<RenderType, VertexConsumer> bufferBuilderFunction
     ) {
         if (state.laserLevel() <= 0) return;
-        VertexConsumer solidLayer = bufferBuilderFunction.apply(RenderType.solid());
-        float width = LASER_WIDTH[Math.clamp(state.blockEntity().getLaserLevel(), 1, 64)] + 0.001f;
-        renderBox(
-            solidLayer,
-            state.pose(),
-            -width,
-            -state.offset() - 0.001f,
-            -width,
-            width,
-            state.length() + 0.501f,
-            width,
-            1f,
-            state.laserAtlasSprite(),
-            state.concreteAtlasSprite()
+        float width = laserWidth(state);
+        compileStage(
+            state,
+            bufferBuilderFunction.apply(RenderType.solid()),
+            RenderType.SOLID,
+            width
         );
-        RenderType haloRenderType = RenderState.isEnhancedRenderingAvailable() ? ModRenderTypes.LASER : RenderType.translucent();
-        VertexConsumer builder = bufferBuilderFunction.apply(haloRenderType);
-        float haloWidth = width + HALF_PIXEL;
-        renderBox(
-            builder,
-            state.pose(),
-            -haloWidth,
-            -state.offset(),
-            -haloWidth,
-            haloWidth,
-            state.length() + 0.5f + HALF_PIXEL,
-            haloWidth,
-            0.6f,
-            state.laserAtlasSprite(),
-            state.concreteAtlasSprite()
+        compileStage(
+            state,
+            bufferBuilderFunction.apply(ModRenderTypes.LASER),
+            ModRenderTypes.LASER,
+            width
         );
     }
 

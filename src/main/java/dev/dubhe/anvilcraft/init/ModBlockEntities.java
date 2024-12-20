@@ -32,7 +32,7 @@ import dev.dubhe.anvilcraft.client.renderer.blockentity.CorruptedBeaconRenderer;
 import dev.dubhe.anvilcraft.client.renderer.blockentity.CreativeGeneratorRenderer;
 import dev.dubhe.anvilcraft.client.renderer.blockentity.HasMobBlockRenderer;
 import dev.dubhe.anvilcraft.client.renderer.blockentity.HeliostatsRenderer;
-import dev.dubhe.anvilcraft.client.renderer.blockentity.LaserRenderer;
+import dev.dubhe.anvilcraft.client.renderer.blockentity.LaserBlockRenderer;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
@@ -150,12 +150,12 @@ public class ModBlockEntities {
     public static final BlockEntityEntry<RubyPrismBlockEntity> RUBY_PRISM = REGISTRATE
         .blockEntity("ruby_prism", RubyPrismBlockEntity::createBlockEntity)
         .validBlock(ModBlocks.RUBY_PRISM)
-        .renderer(() -> LaserRenderer::new)
+        .renderer(() -> LaserBlockRenderer::new)
         .register();
     public static final BlockEntityEntry<RubyLaserBlockEntity> RUBY_LASER = REGISTRATE
         .blockEntity("ruby_laser", RubyLaserBlockEntity::createBlockEntity)
         .validBlock(ModBlocks.RUBY_LASER)
-        .renderer(() -> LaserRenderer::new)
+        .renderer(() -> LaserBlockRenderer::new)
         .register();
 
     public static final BlockEntityEntry<ThermoelectricConverterBlockEntity> THERMOELECTRIC_CONVERTER = REGISTRATE

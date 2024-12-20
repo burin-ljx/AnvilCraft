@@ -58,7 +58,7 @@ public class RubyLaserBlockEntity extends BaseLaserBlockEntity implements IPower
                 2);
         }
         if (isSwitchedOn()) {
-            emitLaser(getDirection());
+            emitLaser(getFacing());
         } else {
             if (irradiateBlockPos != null
                 && level.getBlockEntity(irradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity
@@ -96,12 +96,12 @@ public class RubyLaserBlockEntity extends BaseLaserBlockEntity implements IPower
     }
 
     @Override
-    public float laserOffset() {
+    public float getLaserOffset() {
         return 0.489f;
     }
 
     @Override
-    public Direction getDirection() {
+    public Direction getFacing() {
         return this.getBlockState().getValue(RubyLaserBlock.FACING);
     }
 }

@@ -19,10 +19,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> {
+public class LaserBlockRenderer implements BlockEntityRenderer<BaseLaserBlockEntity> {
 
     @SuppressWarnings("unused")
-    public LaserRenderer(BlockEntityRendererProvider.Context context) {
+    public LaserBlockRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override

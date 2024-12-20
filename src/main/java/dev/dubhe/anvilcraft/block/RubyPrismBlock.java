@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RubyPrismBlock extends BaseEntityBlock implements IHammerRemovable, HammerRotateBehavior {
+public class RubyPrismBlock extends BaseLaserBlock implements IHammerRemovable, HammerRotateBehavior {
     public static final VoxelShape UP_MODEL =
         Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(2, 4, 2, 14, 14, 14), Block.box(4, 14, 4, 12, 16, 12));
     public static final VoxelShape DOWN_MODEL =
