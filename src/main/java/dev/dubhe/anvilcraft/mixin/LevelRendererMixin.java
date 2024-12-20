@@ -49,7 +49,7 @@ public abstract class LevelRendererMixin {
             ordinal = 2
         )
     )
-    void renderEnhancedTransmitterLines(
+    void renderLaserBeforeTerrain(
         DeltaTracker deltaTracker,
         boolean renderBlockOutline,
         Camera camera,
@@ -62,11 +62,6 @@ public abstract class LevelRendererMixin {
         @Local(index = 25) MultiBufferSource.BufferSource bufferSource
     ) {
         if (RenderState.isEnhancedRenderingAvailable()) {
-            PowerGridRenderer.renderEnhancedTransmitterLine(
-                poseStack,
-                bufferSource,
-                camera.getPosition()
-            );
             LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
         }
     }
@@ -99,14 +94,20 @@ public abstract class LevelRendererMixin {
         LightTexture lightTexture,
         Matrix4f frustumMatrix,
         Matrix4f projectionMatrix,
-        CallbackInfo ci
+        CallbackInfo ci,
+        @Local(index = 24) PoseStack poseStack,
+        @Local(index = 25) MultiBufferSource.BufferSource bufferSource
     ) {
         if (!RenderState.isEnhancedRenderingAvailable()) return;
         if (!RenderState.isBloomEffectEnabled()) return;
         if (ModRenderTargets.getBloomTarget() != null) {
             ModRenderTargets.getBloomTarget().copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
         }
-        RenderSystem.enableDepthTest();
+        PowerGridRenderer.renderEnhancedTransmitterLine(
+            poseStack,
+            bufferSource,
+            camera.getPosition()
+        );
         LaserRenderer.getInstance().renderBloomed(frustumMatrix, projectionMatrix);
         RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(0, 0, 0, 0);

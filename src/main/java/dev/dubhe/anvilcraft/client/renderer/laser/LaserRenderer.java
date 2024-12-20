@@ -129,27 +129,19 @@ public class LaserRenderer {
     }
 
     public void renderBloomed(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
-        if (isEmpty) return;
-        Window window = Minecraft.getInstance().getWindow();
-        Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
-        for (Map.Entry<ChunkPos, Map<RenderType, VertexBuffer>> chunkPosMapEntry : buffers.entrySet()) {
-            ChunkPos chunkPos = chunkPosMapEntry.getKey();
-            int renderDistance = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16;
-            if (cameraPosition.distanceTo(new Vec3(chunkPos.x * 16, cameraPosition.y, chunkPos.z * 16)) > renderDistance) {
-                continue;
-            }
-            Map<RenderType, VertexBuffer> bufferMap = chunkPosMapEntry.getValue();
-            Map<RenderType, CompileResult> compileResultMap = this.compileResultMap.get(chunkPos);
-            if (compileResultMap == null) continue;
-            for (RenderType bloomRendertype : BLOOM_RENDERTYPES) {
-                VertexBuffer vb = bufferMap.get(bloomRendertype);
-                RenderState.bloomStage();
-                renderLayer(bloomRendertype, vb, frustumMatrix, projectionMatrix, cameraPosition, window, compileResultMap);
-            }
-        }
+        renderInternal(frustumMatrix, projectionMatrix, BLOOM_RENDERTYPES, RenderState::bloomStage);
     }
 
     public void render(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
+        renderInternal(frustumMatrix, projectionMatrix, SUPPORTED_RENDERTYPES, RenderState::levelStage);
+    }
+
+    private void renderInternal(
+        Matrix4f frustumMatrix,
+        Matrix4f projectionMatrix,
+        RenderType[] renderTypes,
+        Runnable stateSwitcher
+    ){
         RenderSystem.enableBlend();
         if (isEmpty) return;
         Window window = Minecraft.getInstance().getWindow();
@@ -163,9 +155,9 @@ public class LaserRenderer {
             Map<RenderType, VertexBuffer> bufferMap = chunkPosMapEntry.getValue();
             Map<RenderType, CompileResult> compileResultMap = this.compileResultMap.get(chunkPos);
             if (compileResultMap == null) continue;
-            for (RenderType renderType : SUPPORTED_RENDERTYPES) {
+            for (RenderType renderType : renderTypes) {
                 VertexBuffer vb = bufferMap.get(renderType);
-                RenderState.levelStage();
+                stateSwitcher.run();
                 renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window, compileResultMap);
             }
         }
