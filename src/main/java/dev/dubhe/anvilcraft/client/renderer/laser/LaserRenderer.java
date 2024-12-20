@@ -4,15 +4,12 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.dubhe.anvilcraft.api.LaserStateAccess;
-import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
 import lombok.EqualsAndHashCode;
@@ -22,7 +19,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.compress.utils.Lists;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL15C;
@@ -32,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -54,13 +54,9 @@ public class LaserRenderer {
     private final Queue<Runnable> compileQueue = new ConcurrentLinkedDeque<>();
     @Getter
     private static LaserRenderer instance;
-    private final Map<RenderType, VertexBuffer> buffers = Arrays.stream(SUPPORTED_RENDERTYPES)
-        .collect(Collectors.toMap(
-            Function.identity(),
-            it -> new VertexBuffer(VertexBuffer.Usage.STATIC)
-        ));
 
-    private Map<RenderType, CompileResult> compileResultMap = new HashMap<>();
+    private final Map<ChunkPos, Map<RenderType, VertexBuffer>> buffers = new HashMap<>();
+    private Map<ChunkPos, Map<RenderType, CompileResult>> compileResultMap = new HashMap<>();
 
     @SuppressWarnings("unused")
     private final ClientLevel level;
@@ -90,9 +86,22 @@ public class LaserRenderer {
         }
     }
 
+    private Map<RenderType, VertexBuffer> getBufferForChunk(ChunkPos chunkPos) {
+        if (buffers.containsKey(chunkPos)) {
+            return buffers.get(chunkPos);
+        }
+        Map<RenderType, VertexBuffer> vb = Arrays.stream(SUPPORTED_RENDERTYPES)
+            .collect(Collectors.toMap(
+                Function.identity(),
+                it -> new VertexBuffer(VertexBuffer.Usage.STATIC)
+            ));
+        buffers.put(chunkPos, vb);
+        return vb;
+    }
+
     public void releaseBuffers() {
-        buffers.values().forEach(VertexBuffer::close);
-        compileResultMap.values().forEach(CompileResult::free);
+        buffers.values().forEach(it -> it.values().forEach(VertexBuffer::close));
+        compileResultMap.values().forEach(it -> it.values().forEach(CompileResult::free));
         valid = false;
     }
 
@@ -123,10 +132,20 @@ public class LaserRenderer {
         if (isEmpty) return;
         Window window = Minecraft.getInstance().getWindow();
         Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
-        for (RenderType bloomRendertype : BLOOM_RENDERTYPES) {
-            VertexBuffer vb = buffers.get(bloomRendertype);
-            RenderState.bloomStage();
-            renderLayer(bloomRendertype, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
+        for (Map.Entry<ChunkPos, Map<RenderType, VertexBuffer>> chunkPosMapEntry : buffers.entrySet()) {
+            ChunkPos chunkPos = chunkPosMapEntry.getKey();
+            int renderDistance = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16;
+            if (cameraPosition.distanceTo(new Vec3(chunkPos.x * 16, cameraPosition.y, chunkPos.z * 16)) > renderDistance) {
+                continue;
+            }
+            Map<RenderType, VertexBuffer> bufferMap = chunkPosMapEntry.getValue();
+            Map<RenderType, CompileResult> compileResultMap = this.compileResultMap.get(chunkPos);
+            if (compileResultMap == null) continue;
+            for (RenderType bloomRendertype : BLOOM_RENDERTYPES) {
+                VertexBuffer vb = bufferMap.get(bloomRendertype);
+                RenderState.bloomStage();
+                renderLayer(bloomRendertype, vb, frustumMatrix, projectionMatrix, cameraPosition, window, compileResultMap);
+            }
         }
     }
 
@@ -135,10 +154,20 @@ public class LaserRenderer {
         if (isEmpty) return;
         Window window = Minecraft.getInstance().getWindow();
         Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
-        for (RenderType renderType : SUPPORTED_RENDERTYPES) {
-            VertexBuffer vb = buffers.get(renderType);
-            RenderState.levelStage();
-            renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
+        for (Map.Entry<ChunkPos, Map<RenderType, VertexBuffer>> chunkPosMapEntry : buffers.entrySet()) {
+            ChunkPos chunkPos = chunkPosMapEntry.getKey();
+            int renderDistance = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16;
+            if (cameraPosition.distanceTo(new Vec3(chunkPos.x * 16, cameraPosition.y, chunkPos.z * 16)) > renderDistance) {
+                continue;
+            }
+            Map<RenderType, VertexBuffer> bufferMap = chunkPosMapEntry.getValue();
+            Map<RenderType, CompileResult> compileResultMap = this.compileResultMap.get(chunkPos);
+            if (compileResultMap == null) continue;
+            for (RenderType renderType : SUPPORTED_RENDERTYPES) {
+                VertexBuffer vb = bufferMap.get(renderType);
+                RenderState.levelStage();
+                renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window, compileResultMap);
+            }
         }
     }
 
@@ -148,7 +177,8 @@ public class LaserRenderer {
         Matrix4f frustumMatrix,
         Matrix4f projectionMatrix,
         Vec3 cameraPosition,
-        Window window
+        Window window,
+        Map<RenderType, CompileResult> compileResultMap
     ) {
         CompileResult compileResult = compileResultMap.get(renderType);
         renderType.setupRenderState();
@@ -173,11 +203,6 @@ public class LaserRenderer {
         renderType.clearRenderState();
     }
 
-    private VertexSorting createVertexSorting() {
-        Vec3 cameraPos = minecraft.gameRenderer.getMainCamera().getPosition();
-        return VertexSorting.byDistance(cameraPos.toVector3f());
-    }
-
     public void clear() {
     }
 
@@ -187,63 +212,79 @@ public class LaserRenderer {
         @Override
         public void run() {
             lastRebuildTask = this;
-            Map<RenderType, CompileResult> compileResultMap = new HashMap<>();
+            Map<ChunkPos, Map<RenderType, CompileResult>> compileResultMap = new HashMap<>();
             PoseStack poseStack = new PoseStack();
             LaserRenderer.this.isEmpty = true;
-            for (RenderType renderType : SUPPORTED_RENDERTYPES) {
-                if (cancelled) return;
-                Tesselator tesselator = Tesselator.getInstance();
-                BufferBuilder bufferBuilder = tesselator.begin(renderType.mode, renderType.format);
-                long ptr = tesselator.buffer.pointer;
-                int offsetBeforeCompile = tesselator.buffer.writeOffset;
-                for (LaserStateAccess laserBlockEntity : new ArrayList<>(laserBlockEntities)) {
-                    if (cancelled) return;
-                    poseStack.pushPose();
-                    BlockPos pos = laserBlockEntity.getBlockPos();
-                    poseStack.translate(
-                        pos.getX(),
-                        pos.getY(),
-                        pos.getZ()
-                    );
-                    LaserState laserState = LaserState.create(laserBlockEntity, poseStack);
-                    if (laserState != null && laserState.laserLevel() > 0) {
-                        float width = LaserCompiler.laserWidth(laserState);
-                        LaserCompiler.compileStage(
-                            laserState,
-                            bufferBuilder,
-                            renderType,
-                            width
-                        );
-                    }
-                    poseStack.popPose();
-                }
-                if (bufferBuilder.vertices > 0) {
-                    LaserRenderer.this.isEmpty = false;
-                }
-                int compiledVertices = bufferBuilder.vertices * bufferBuilder.format.getVertexSize();
-                long allocated = ALLOCATOR.malloc(compiledVertices);
-                MemoryUtil.memCopy(ptr + offsetBeforeCompile, allocated, compiledVertices);
-                MeshData mesh = bufferBuilder.build();
-                if (mesh != null) {
-                    mesh.close();
-                }
-                CompileResult compileResult = new CompileResult(
-                    renderType,
-                    bufferBuilder.vertices,
-                    bufferBuilder.format.getVertexSize(),
-                    allocated,
-                    renderType.mode.indexCount(bufferBuilder.vertices)
-                );
-                compileResultMap.put(renderType, compileResult);
+            Map<ChunkPos, List<LaserStateAccess>> groupedLaserStates = new HashMap<>();
+            for (LaserStateAccess laserBlockEntity : laserBlockEntities) {
+                groupedLaserStates.computeIfAbsent(new ChunkPos(laserBlockEntity.getBlockPos()), it -> Lists.newArrayList())
+                    .add(laserBlockEntity);
             }
-            LaserRenderer.this.compileResultMap.values().forEach(CompileResult::free);
+            for (Map.Entry<ChunkPos, List<LaserStateAccess>> chunkPosListEntry : groupedLaserStates.entrySet()) {
+                ChunkPos chunkPos = chunkPosListEntry.getKey();
+                List<LaserStateAccess> group = chunkPosListEntry.getValue();
+                for (RenderType renderType : SUPPORTED_RENDERTYPES) {
+                    if (cancelled) return;
+                    Tesselator tesselator = Tesselator.getInstance();
+                    BufferBuilder bufferBuilder = tesselator.begin(renderType.mode, renderType.format);
+                    long ptr = tesselator.buffer.pointer;
+                    int offsetBeforeCompile = tesselator.buffer.writeOffset;
+                    for (LaserStateAccess laserBlockEntity : new ArrayList<>(group)) {
+                        if (cancelled) return;
+                        poseStack.pushPose();
+                        BlockPos pos = laserBlockEntity.getBlockPos();
+                        poseStack.translate(
+                            pos.getX(),
+                            pos.getY(),
+                            pos.getZ()
+                        );
+                        LaserState laserState = LaserState.create(laserBlockEntity, poseStack);
+                        if (laserState != null && laserState.laserLevel() > 0) {
+                            float width = LaserCompiler.laserWidth(laserState);
+                            LaserCompiler.compileStage(
+                                laserState,
+                                bufferBuilder,
+                                renderType,
+                                width
+                            );
+                        }
+                        poseStack.popPose();
+                    }
+                    if (bufferBuilder.vertices > 0) {
+                        LaserRenderer.this.isEmpty = false;
+                    }
+                    int compiledVertices = bufferBuilder.vertices * bufferBuilder.format.getVertexSize();
+                    long allocated = ALLOCATOR.malloc(compiledVertices);
+                    MemoryUtil.memCopy(ptr + offsetBeforeCompile, allocated, compiledVertices);
+                    MeshData mesh = bufferBuilder.build();
+                    if (mesh != null) {
+                        mesh.close();
+                    }
+                    CompileResult compileResult = new CompileResult(
+                        renderType,
+                        bufferBuilder.vertices,
+                        bufferBuilder.format.getVertexSize(),
+                        allocated,
+                        renderType.mode.indexCount(bufferBuilder.vertices)
+                    );
+                    compileResultMap.computeIfAbsent(chunkPos, it -> new HashMap<>())
+                        .put(renderType, compileResult);
+                }
+            }
+
+            LaserRenderer.this.compileResultMap
+                .values()
+                .forEach(it -> it.values().forEach(CompileResult::free));
+
             LaserRenderer.this.compileResultMap = compileResultMap;
-            compileResultMap.forEach((renderType, compileResult) -> {
-                pendingUploads.add(() -> {
-                    VertexBuffer vb = buffers.get(renderType);
-                    compileResult.upload(vb);
-                });
-            });
+            compileResultMap.forEach((chunkPos, map) ->
+                map.forEach((renderType, compileResult) ->
+                    pendingUploads.add(() -> {
+                        VertexBuffer vb = getBufferForChunk(chunkPos).get(renderType);
+                        compileResult.upload(vb);
+                    })
+                )
+            );
             lastRebuildTask = null;
         }
 

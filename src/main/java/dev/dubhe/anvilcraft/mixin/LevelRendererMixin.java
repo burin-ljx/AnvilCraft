@@ -45,7 +45,8 @@ public abstract class LevelRendererMixin {
         method = "renderLevel",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;"
+            target = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;",
+            ordinal = 2
         )
     )
     void renderEnhancedTransmitterLines(
@@ -105,6 +106,7 @@ public abstract class LevelRendererMixin {
         if (ModRenderTargets.getBloomTarget() != null) {
             ModRenderTargets.getBloomTarget().copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
         }
+        RenderSystem.enableDepthTest();
         LaserRenderer.getInstance().renderBloomed(frustumMatrix, projectionMatrix);
         RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(0, 0, 0, 0);
