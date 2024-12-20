@@ -104,7 +104,8 @@ public class ItemTagLoader {
                 .add(findResourceKey(Items.GLOW_BERRIES));
         provider.addTag(ModItemTags.WRENCH)
                 .add(findResourceKey(ModItems.ANVIL_HAMMER.get()))
-                .add(findResourceKey(ModItems.ROYAL_ANVIL_HAMMER.get()));
+                .add(findResourceKey(ModItems.ROYAL_ANVIL_HAMMER.get()))
+                .add(findResourceKey(ModItems.EMBER_ANVIL_HAMMER.get()));
         provider.addTag(ModItemTags.FIRE_STARTER)
                 .add(findResourceKey(Items.TORCH))
                 .add(findResourceKey(Items.SOUL_TORCH))
