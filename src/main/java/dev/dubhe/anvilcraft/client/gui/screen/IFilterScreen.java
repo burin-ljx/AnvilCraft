@@ -143,7 +143,7 @@ public interface IFilterScreen<T extends AbstractContainerMenu & IFilterMenu> {
      *
      * @param guiGraphics 画布
      * @param slot        槽位
-     * @param stack       物品堆栈
+     * @param stack       物品堆叠
      */
     default void renderFilterItem(@NotNull GuiGraphics guiGraphics, @NotNull Slot slot, @NotNull ItemStack stack) {
         int i = slot.x;
