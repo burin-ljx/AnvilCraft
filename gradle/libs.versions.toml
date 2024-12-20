@@ -15,6 +15,8 @@ modDevGradle = "2.0.34-beta"
 spotless = "7.0.0.BETA2"
 lombok = "8.7.1"
 machete = "1.+"
+anvillib = "1.1.0+build.97"
+curios = "9.0.15+1.21.1"
 
 [libraries]
 neoForge = { group = "net.neoforged", name = "neoforge", version.ref = "neoForge" }
@@ -31,6 +33,8 @@ jade = { group = "maven.modrinth", name = "jade", version.ref = "jade" }
 theoneprobe = { group = "mcjty.theoneprobe", name = "theoneprobe", version.ref = "theoneprobe" }
 kubejs = { group = "dev.latvian.mods", name = "kubejs-neoforge", version.ref = "kubejs" }
 patchouli = { group = "vazkii.patchouli", name = "Patchouli", version.ref = "patchouli" }
+anvillib = { group = "dev.anvilcraft.lib", name = "anvillib-neoforge-1.21.1", version.ref = "anvillib" }
+curios = { group = "top.theillusivec4.curios", name = "curios-neoforge", version.ref = "curios" }
 
 
 [plugins]
