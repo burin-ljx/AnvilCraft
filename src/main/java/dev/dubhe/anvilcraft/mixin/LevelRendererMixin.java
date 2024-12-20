@@ -82,7 +82,7 @@ public abstract class LevelRendererMixin {
         )
     )
     void uploadBuffers(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci){
-        LaserRenderer.getInstance().uploadBuffers();
+        LaserRenderer.getInstance().runTasks();
     }
 
 

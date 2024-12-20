@@ -42,7 +42,7 @@ public class ModShaders {
             event.registerShader(new ShaderInstance(
                     event.getResourceProvider(),
                     AnvilCraft.of("rendertype_laser"),
-                    DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL
+                    DefaultVertexFormat.BLOCK
                 ),
                 it -> renderTypeLaserShader = it
             );

@@ -4,9 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
@@ -16,7 +14,7 @@ import dev.dubhe.anvilcraft.api.LaserStateAccess;
 import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
-import dev.dubhe.anvilcraft.util.ThreadFactoryImpl;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -25,6 +23,9 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL15C;
+import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,25 +43,24 @@ public class LaserRenderer {
         ModRenderTypes.LASER,
         RenderType.solid(),
     };
+    private static final MemoryUtil.MemoryAllocator ALLOCATOR = MemoryUtil.getAllocator(false);
+
     private final Queue<Runnable> pendingUploads = new ConcurrentLinkedDeque<>();
     private final Queue<Runnable> compileQueue = new ConcurrentLinkedDeque<>();
     @Getter
     private static LaserRenderer instance;
-    private final Map<RenderType, ByteBufferBuilder> byteBuffers = Arrays.stream(SUPPORTED_RENDERTYPES)
-        .collect(Collectors.toMap(
-            Function.identity(),
-            it -> new ByteBufferBuilder(786432)
-        ));
     private final Map<RenderType, VertexBuffer> buffers = Arrays.stream(SUPPORTED_RENDERTYPES)
         .collect(Collectors.toMap(
             Function.identity(),
             it -> new VertexBuffer(VertexBuffer.Usage.STATIC)
         ));
-    private final Map<RenderType, MeshData.SortState> sortStates = new HashMap<>();
+
+    private Map<RenderType, CompileResult> compileResultMap = new HashMap<>();
+
+    @SuppressWarnings("unused")
     private final ClientLevel level;
-    private Set<LaserStateAccess> laserBlockEntities = new HashSet<>();
+    private final Set<LaserStateAccess> laserBlockEntities = new HashSet<>();
     private final Minecraft minecraft = Minecraft.getInstance();
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactoryImpl());
     private RebuildTask lastRebuildTask = null;
     private boolean isEmpty = true;
     private boolean valid = true;
@@ -78,18 +76,18 @@ public class LaserRenderer {
         instance = new LaserRenderer(level);
     }
 
-    public void uploadBuffers() {
-        while (!compileQueue.isEmpty()) {
+    public void runTasks() {
+        while (!compileQueue.isEmpty() && valid) {
             compileQueue.poll().run();
         }
-        while (!pendingUploads.isEmpty()) {
+        while (!pendingUploads.isEmpty() && valid) {
             pendingUploads.poll().run();
         }
     }
 
     public void releaseBuffers() {
-        byteBuffers.values().forEach(ByteBufferBuilder::close);
         buffers.values().forEach(VertexBuffer::close);
+        compileResultMap.values().forEach(CompileResult::free);
         valid = false;
     }
 
@@ -118,16 +116,6 @@ public class LaserRenderer {
         Window window = Minecraft.getInstance().getWindow();
         Vec3 cameraPosition = minecraft.gameRenderer.getMainCamera().getPosition();
         for (Map.Entry<RenderType, VertexBuffer> entry : buffers.entrySet()) {
-            MeshData.SortState sortState = sortStates.get(entry.getKey());
-            if (sortState != null) {
-                ByteBufferBuilder.Result result = sortState.buildSortedIndexBuffer(byteBuffers.get(entry.getKey()), createVertexSorting());
-                if (result != null) {
-                    VertexBuffer vb = entry.getValue();
-                    vb.bind();
-                    vb.uploadIndexBuffer(result);
-                    VertexBuffer.unbind();
-                }
-            }
             if (entry.getKey() == ModRenderTypes.LASER) {
                 RenderState.levelStage();
                 renderLayer(entry.getKey(), entry.getValue(), frustumMatrix, projectionMatrix, cameraPosition, window);
@@ -147,10 +135,7 @@ public class LaserRenderer {
         Vec3 cameraPosition,
         Window window
     ) {
-        if (vertexBuffer.getFormat() == null) {
-            System.out.println("WTF");
-            return;
-        }
+        CompileResult compileResult = compileResultMap.get(renderType);
         renderType.setupRenderState();
         ShaderInstance shader = RenderSystem.getShader();
         shader.setDefaultUniforms(VertexFormat.Mode.QUADS, frustumMatrix, projectionMatrix, window);
@@ -165,7 +150,7 @@ public class LaserRenderer {
             uniform.upload();
         }
         vertexBuffer.bind();
-        vertexBuffer.draw();
+        RenderSystem.drawElements(GL15.GL_TRIANGLES, compileResult.indexCount, vertexBuffer.sequentialIndices.type().asGLType);
         VertexBuffer.unbind();
         if (uniform != null) {
             uniform.set(0.0F, 0.0F, 0.0F);
@@ -179,7 +164,6 @@ public class LaserRenderer {
     }
 
     public void clear() {
-        byteBuffers.values().forEach(ByteBufferBuilder::clear);
     }
 
     private class RebuildTask implements Runnable {
@@ -188,72 +172,113 @@ public class LaserRenderer {
         @Override
         public void run() {
             lastRebuildTask = this;
-            Map<RenderType, BufferBuilder> bufferBuilderMap = new HashMap<>();
-            for (RenderType supportedRendertype : SUPPORTED_RENDERTYPES) {
-                bufferBuilderMap.put(supportedRendertype, new BufferBuilder(
-                    byteBuffers.get(supportedRendertype),
-                    VertexFormat.Mode.QUADS,
-                    DefaultVertexFormat.BLOCK)
-                );
-            }
+            Map<RenderType, CompileResult> compileResultMap = new HashMap<>();
             PoseStack poseStack = new PoseStack();
             LaserRenderer.this.isEmpty = true;
-            for (LaserStateAccess laserBlockEntity : new ArrayList<>(laserBlockEntities)) {
+            for (RenderType renderType : SUPPORTED_RENDERTYPES) {
                 if (cancelled) return;
-                poseStack.pushPose();
-                BlockPos pos = laserBlockEntity.getBlockPos();
-                poseStack.translate(
-                    pos.getX(),
-                    pos.getY(),
-                    pos.getZ()
-                );
-                LaserState laserState = LaserState.create(laserBlockEntity, poseStack);
-                if (laserState == null) continue;
-                LaserCompiler.compile(
-                    laserState,
-                    it -> {
-                        if (bufferBuilderMap.containsKey(it)) {
-                            return bufferBuilderMap.get(it);
-                        }
-                        throw new IllegalArgumentException("Unknown RenderType: " + it);
-                    }
-                );
-            }
-            bufferBuilderMap.forEach((renderType, bufferBuilder) -> {
-                if (bufferBuilder != null) {
-                    MeshData meshData = bufferBuilder.build();
-                    if (meshData != null) {
-                        LaserRenderer.this.isEmpty = false;
-                        VertexBuffer vb = buffers.get(renderType);
-                        sortStates.put(
-                            renderType,
-                            meshData.sortQuads(
-                                byteBuffers.get(renderType),
-                                createVertexSorting()
-                            )
-                        );
-
-                        if (vb.isInvalid()) {
-                            meshData.close();
-                        } else {
-                            pendingUploads.add(() -> {
-                                if (LaserRenderer.this.valid) {
-                                    if (vb.isInvalid()) return;
-                                    vb.bind();
-                                    vb.upload(meshData);
-                                    VertexBuffer.unbind();
-                                }
-                            });
-                        }
-                    }
+                Tesselator tesselator = Tesselator.getInstance();
+                BufferBuilder bufferBuilder = tesselator.begin(renderType.mode, renderType.format);
+                long ptr = tesselator.buffer.pointer;
+                int offsetBeforeCompile = tesselator.buffer.writeOffset;
+                for (LaserStateAccess laserBlockEntity : new ArrayList<>(laserBlockEntities)) {
+                    if (cancelled) return;
+                    poseStack.pushPose();
+                    BlockPos pos = laserBlockEntity.getBlockPos();
+                    poseStack.translate(
+                        pos.getX(),
+                        pos.getY(),
+                        pos.getZ()
+                    );
+                    LaserState laserState = LaserState.create(laserBlockEntity, poseStack);
+                    if (laserState == null) continue;
+                    float width = LaserCompiler.laserWidth(laserState);
+                    LaserCompiler.compileStage(
+                        laserState,
+                        bufferBuilder,
+                        renderType,
+                        width
+                    );
+                    poseStack.popPose();
                 }
+                if (bufferBuilder.vertices > 0){
+                    LaserRenderer.this.isEmpty = false;
+                }
+                System.out.println(renderType.name + " bufferBuilder.vertices = " + bufferBuilder.vertices);
+                int compiledVertices = bufferBuilder.vertices * bufferBuilder.format.getVertexSize();
+                long allocated = ALLOCATOR.malloc(compiledVertices);
+                MemoryUtil.memCopy(ptr + offsetBeforeCompile, allocated, compiledVertices);
+                CompileResult compileResult = new CompileResult(
+                    renderType,
+                    bufferBuilder.vertices,
+                    bufferBuilder.format.getVertexSize(),
+                    allocated,
+                    renderType.mode.indexCount(bufferBuilder.vertices)
+                );
+                compileResultMap.put(renderType, compileResult);
+            }
+            LaserRenderer.this.compileResultMap.values().forEach(CompileResult::free);
+            LaserRenderer.this.compileResultMap = compileResultMap;
+            compileResultMap.forEach((renderType, compileResult) -> {
+                pendingUploads.add(() -> {
+                    VertexBuffer vb = buffers.get(renderType);
+                    compileResult.upload(vb);
+                });
             });
-
             lastRebuildTask = null;
         }
 
         void cancel() {
             cancelled = true;
+        }
+    }
+
+    @EqualsAndHashCode
+    static final class CompileResult {
+        final RenderType renderType;
+        final int vertexCount;
+        final int vertexSize;
+        final long vertexBufferPtr;
+        final int indexCount;
+        boolean freed = false;
+
+        CompileResult(
+            RenderType renderType,
+            int vertexCount,
+            int vertexSize,
+            long vertexBufferPtr,
+            int indexCount
+        ) {
+            this.renderType = renderType;
+            this.vertexCount = vertexCount;
+            this.vertexSize = vertexSize;
+            this.vertexBufferPtr = vertexBufferPtr;
+            this.indexCount = indexCount;
+        }
+
+        void upload(VertexBuffer vertexBuffer) {
+            if (freed) return;
+            VertexFormat.Mode mode = renderType.mode;
+            vertexBuffer.bind();
+            if (vertexBuffer.format != null) {
+                vertexBuffer.format.clearBufferState();
+            }
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBuffer.vertexBufferId);
+            renderType.format.setupBufferState();
+            vertexBuffer.format = renderType.format;
+            GL15C.nglBufferData(GL15.GL_ARRAY_BUFFER, (long) vertexCount * vertexSize, vertexBufferPtr, GL15.GL_STATIC_DRAW);
+            RenderSystem.AutoStorageIndexBuffer indexBuffer = RenderSystem.getSequentialBuffer(mode);
+            if (indexBuffer != vertexBuffer.sequentialIndices || !indexBuffer.hasStorage(indexCount)) {
+                indexBuffer.bind(indexCount);
+            }
+            vertexBuffer.sequentialIndices = indexBuffer;
+            VertexBuffer.unbind();
+        }
+
+        void free() {
+            if (freed) return;
+            ALLOCATOR.free(vertexBufferPtr);
+            freed = true;
         }
     }
 }
