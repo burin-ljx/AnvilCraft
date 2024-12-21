@@ -9,7 +9,6 @@ import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.GiantAnvilCube;
 import dev.dubhe.anvilcraft.entity.FallingGiantAnvilEntity;
 import dev.dubhe.anvilcraft.init.ModBlocks;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,10 +44,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.stream.Stream;
 
@@ -323,14 +320,13 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
                     BlockPos bp = pos.offset(dx, dy, dz);
                     BlockState blockState = level.getBlockState(bp);
                     level.setBlock(bp, blockState.getFluidState().createLegacyBlock(), 3, 0);
-//                    level.setBlock(bp, blockState.getFluidState().createLegacyBlock(), 18);
                 }
             }
         }
 
         UPDATE_OFFSET.forEach((direction, offestList) -> offestList.forEach(offset -> {
             BlockPos updatedPos = pos.offset(offset);
-            BlockPos fromPos = pos.relative(direction);
+            BlockPos fromPos = updatedPos.relative(direction);
             level.neighborShapeChanged(direction,
                 level.getBlockState(fromPos),
                 updatedPos,
