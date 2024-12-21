@@ -1,5 +1,7 @@
 package dev.dubhe.anvilcraft.block;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.event.anvil.GiantAnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
@@ -112,6 +114,81 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
             Block.box(12, 0, 0, 16, 9, 16), Block.box(6, 9, 0, 16, 16, 16), Block.box(0, 12, 0, 6, 16, 16))
         .reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
         .get();
+
+    private static final ImmutableMap<Direction, ImmutableList<Vec3i>> UPDATE_OFFSET = ImmutableMap.of(
+        Direction.DOWN,
+        ImmutableList.of(
+            new Vec3i(-1, 3, -1),
+            new Vec3i(-1, 3, 0),
+            new Vec3i(-1, 3, 1),
+            new Vec3i(0, 3, -1),
+            new Vec3i(0, 3, 0),
+            new Vec3i(0, 3, 1),
+            new Vec3i(1, 3, -1),
+            new Vec3i(1, 3, 0),
+            new Vec3i(1, 3, 1)
+        ),
+        Direction.UP,
+        ImmutableList.of(
+            new Vec3i(-1, -1, -1),
+            new Vec3i(-1, -1, 0),
+            new Vec3i(-1, -1, 1),
+            new Vec3i(0, -1, -1),
+            new Vec3i(0, -1, 0),
+            new Vec3i(0, -1, 1),
+            new Vec3i(1, -1, -1),
+            new Vec3i(1, -1, 0),
+            new Vec3i(1, -1, 1)
+        ),
+        Direction.EAST,
+        ImmutableList.of(
+            new Vec3i(-2, 0, -1),
+            new Vec3i(-2, 0, 0),
+            new Vec3i(-2, 0, 1),
+            new Vec3i(-2, 1, -1),
+            new Vec3i(-2, 1, 0),
+            new Vec3i(-2, 1, 1),
+            new Vec3i(-2, 2, -1),
+            new Vec3i(-2, 2, 0),
+            new Vec3i(-2, 2, 1)
+        ),
+        Direction.WEST,
+        ImmutableList.of(
+            new Vec3i(2, 0, -1),
+            new Vec3i(2, 0, 0),
+            new Vec3i(2, 0, 1),
+            new Vec3i(2, 1, -1),
+            new Vec3i(2, 1, 0),
+            new Vec3i(2, 1, 1),
+            new Vec3i(2, 2, -1),
+            new Vec3i(2, 2, 0),
+            new Vec3i(2, 2, 1)
+        ),
+        Direction.SOUTH,
+        ImmutableList.of(
+            new Vec3i(-1, 0, -2),
+            new Vec3i(0, 0, -2),
+            new Vec3i(1, 0, -2),
+            new Vec3i(-1, 1, -2),
+            new Vec3i(0, 1, -2),
+            new Vec3i(1, 1, -2),
+            new Vec3i(-1, 2, -2),
+            new Vec3i(0, 2, -2),
+            new Vec3i(1, 2, -2)
+        ),
+        Direction.NORTH,
+        ImmutableList.of(
+            new Vec3i(-1, 0, 2),
+            new Vec3i(0, 0, 2),
+            new Vec3i(1, 0, 2),
+            new Vec3i(-1, 1, 2),
+            new Vec3i(0, 1, 2),
+            new Vec3i(1, 1, 2),
+            new Vec3i(-1, 2, 2),
+            new Vec3i(0, 2, 2),
+            new Vec3i(1, 2, 2)
+        )
+    );
 
     /**
      * @param properties 属性
@@ -246,9 +323,23 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
                     BlockPos bp = pos.offset(dx, dy, dz);
                     BlockState blockState = level.getBlockState(bp);
                     level.setBlock(bp, blockState.getFluidState().createLegacyBlock(), 3, 0);
+//                    level.setBlock(bp, blockState.getFluidState().createLegacyBlock(), 18);
                 }
             }
         }
+
+        UPDATE_OFFSET.forEach((direction, offestList) -> offestList.forEach(offset -> {
+            BlockPos updatedPos = pos.offset(offset);
+            BlockPos fromPos = pos.relative(direction);
+            level.neighborShapeChanged(direction,
+                level.getBlockState(fromPos),
+                updatedPos,
+                fromPos,
+                3,
+                512
+            );
+        }));
+
         FallingBlockEntity fallingBlockEntity = FallingGiantAnvilEntity.fall(level, above, state1, false);
         this.falling(fallingBlockEntity);
     }
