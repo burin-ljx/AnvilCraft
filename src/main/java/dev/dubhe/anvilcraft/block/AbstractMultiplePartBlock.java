@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
@@ -116,9 +115,7 @@ public abstract class AbstractMultiplePartBlock<P extends Enum<P> & IMultiplePar
         BlockState mainPartState = level.getBlockState(mainPartPos);
         if (!mainPartState.is(this)) return;
         if (!mainPartState.hasProperty(this.getPart())) return;
-        BlockState blockState2 = mainPartState.getFluidState().is(Fluids.WATER)
-            ? Blocks.WATER.defaultBlockState()
-            : Blocks.AIR.defaultBlockState();
+        BlockState blockState2 = mainPartState.getFluidState().createLegacyBlock();
         level.setBlock(mainPartPos, blockState2, 35);
         level.levelEvent(player, 2001, mainPartPos, Block.getId(mainPartState));
     }
