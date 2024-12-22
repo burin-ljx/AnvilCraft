@@ -58,9 +58,8 @@ public class ImpactPileBlock extends Block implements IHammerRemovable {
             for (int z = blockPos.getZ() - 1; z <= blockPos.getZ() + 1; z++) {
                 for (int y = level.getMinBuildHeight(); y <= level.getMinBuildHeight() + 5; y++) {
                     BlockPos pos = new BlockPos(x, y, z);
-                    level.destroyBlock(new BlockPos(x, y, z), true);
                     if (y <= level.getMinBuildHeight() + 1)
-                        level.setBlockAndUpdate(pos, Blocks.BEDROCK.defaultBlockState());
+                        setSturdyDeepslate(level, pos);
                 }
             }
         }
@@ -72,14 +71,19 @@ public class ImpactPileBlock extends Block implements IHammerRemovable {
                 level.setBlockAndUpdate(pos.south().west(), Blocks.LAVA.defaultBlockState());
                 level.setBlockAndUpdate(pos.south().east(), Blocks.LAVA.defaultBlockState());
             }
-            level.setBlockAndUpdate(pos, Blocks.BEDROCK.defaultBlockState());
-            level.setBlockAndUpdate(pos.north(), Blocks.BEDROCK.defaultBlockState());
-            level.setBlockAndUpdate(pos.south(), Blocks.BEDROCK.defaultBlockState());
-            level.setBlockAndUpdate(pos.west(), Blocks.BEDROCK.defaultBlockState());
-            level.setBlockAndUpdate(pos.east(), Blocks.BEDROCK.defaultBlockState());
+            setSturdyDeepslate(level, pos);
+            setSturdyDeepslate(level, pos.north());
+            setSturdyDeepslate(level, pos.south());
+            setSturdyDeepslate(level, pos.west());
+            setSturdyDeepslate(level, pos.east());
         }
         level.setBlockAndUpdate(
             new BlockPos(blockPos.getX(), level.getMinBuildHeight() + 4, blockPos.getZ()),
             ModBlocks.MINERAL_FOUNTAIN.getDefaultState());
+    }
+
+    private static void setSturdyDeepslate(Level level, BlockPos pos){
+        if(level.getBlockState(pos).is(Blocks.BEDROCK)) return;
+        level.setBlockAndUpdate(pos, ModBlocks.STURDY_DEEPSLATE.getDefaultState());
     }
 }

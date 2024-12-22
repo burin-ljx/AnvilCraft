@@ -1299,12 +1299,12 @@ public class ModBlocks {
         .register();
     public static final BlockEntry<MineralFountainBlock> MINERAL_FOUNTAIN = REGISTRATE
         .block("mineral_fountain", MineralFountainBlock::new)
-        .initialProperties(() -> Blocks.BEDROCK)
+        .initialProperties(() -> Blocks.REINFORCED_DEEPSLATE)
+        .properties(properties -> properties.noLootTable())
         .simpleItem()
         .blockstate((context, provider) -> provider.simpleBlock(
             context.get(),
             DangerUtil.genConfiguredModel("block/mineral_fountain").get()))
-        .loot((tables, block) -> tables.dropOther(block, Items.AIR))
         .register();
     public static final BlockEntry<SpaceOvercompressorBlock> SPACE_OVERCOMPRESSOR = REGISTRATE
         .block("space_overcompressor", SpaceOvercompressorBlock::new)
@@ -2810,6 +2810,15 @@ public class ModBlocks {
             Tags.Blocks.ORES,
             Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)
         .register();
+
+    public static final BlockEntry<Block> STURDY_DEEPSLATE = REGISTRATE
+        .block("sturdy_deepslate", Block::new)
+        .initialProperties(() -> Blocks.REINFORCED_DEEPSLATE)
+        .properties(properties -> properties.noLootTable())
+        .simpleItem()
+        .loot((tables, block)->{})
+        .register();
+
     public static final BlockEntry<Block> VOID_MATTER_BLOCK = REGISTRATE
         .block("void_matter_block", Block::new)
         .initialProperties(() -> Blocks.DIAMOND_BLOCK)
