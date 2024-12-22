@@ -21,10 +21,10 @@ import dev.dubhe.anvilcraft.init.ModMenuTypes;
 import dev.dubhe.anvilcraft.init.ModNetworks;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.init.ModVillagers;
+import dev.dubhe.anvilcraft.integration.CompatMods;
 import dev.dubhe.anvilcraft.integration.top.AnvilCraftTopPlugin;
 import dev.dubhe.anvilcraft.recipe.anvil.cache.RecipeCaches;
 import dev.dubhe.anvilcraft.util.ModInteractionMap;
-import dev.dubhe.anvilcraft.util.Util;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -137,7 +137,7 @@ public class AnvilCraft {
     public static void loadComplete(@NotNull FMLLoadCompleteEvent event) {
         event.enqueueWork(() -> {
             ModInteractionMap.initInteractionMap();
-            if (Util.isLoaded("theoneprobe")) {
+            if (CompatMods.THE_ONE_PROBE.isLoaded()) {
                 LOGGER.info("TheOneProbe found. Loading AnvilCraft TheOneProbe plugin...");
                 AnvilCraftTopPlugin.init();
             }

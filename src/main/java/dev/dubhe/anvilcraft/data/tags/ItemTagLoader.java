@@ -29,52 +29,52 @@ public class ItemTagLoader {
         provider.addTag(ModItemTags.GOLD_PLATES).add(findResourceKey(Items.LIGHT_WEIGHTED_PRESSURE_PLATE));
 
         provider.addTag(ModItemTags.ROYAL_STEEL_PICKAXE_BASE)
-                .add(findResourceKey(ModItems.AMETHYST_PICKAXE.get()))
+                .add(ModItems.AMETHYST_PICKAXE.getKey())
                 .add(findResourceKey(Items.GOLDEN_PICKAXE))
                 .add(findResourceKey(Items.IRON_PICKAXE))
                 .add(findResourceKey(Items.DIAMOND_PICKAXE));
         provider.addTag(ModItemTags.ROYAL_STEEL_AXE_BASE)
-                .add(findResourceKey(ModItems.AMETHYST_AXE.get()))
+                .add(ModItems.AMETHYST_AXE.getKey())
                 .add(findResourceKey(Items.GOLDEN_AXE))
                 .add(findResourceKey(Items.IRON_AXE))
                 .add(findResourceKey(Items.DIAMOND_AXE));
         provider.addTag(ModItemTags.ROYAL_STEEL_HOE_BASE)
-                .add(findResourceKey(ModItems.AMETHYST_HOE.get()))
+                .add(ModItems.AMETHYST_HOE.getKey())
                 .add(findResourceKey(Items.GOLDEN_HOE))
                 .add(findResourceKey(Items.IRON_HOE))
                 .add(findResourceKey(Items.DIAMOND_HOE));
         provider.addTag(ModItemTags.ROYAL_STEEL_SWORD_BASE)
-                .add(findResourceKey(ModItems.AMETHYST_SWORD.get()))
+                .add(ModItems.AMETHYST_SWORD.getKey())
                 .add(findResourceKey(Items.GOLDEN_SWORD))
                 .add(findResourceKey(Items.IRON_SWORD))
                 .add(findResourceKey(Items.DIAMOND_SWORD));
         provider.addTag(ModItemTags.ROYAL_STEEL_SHOVEL_BASE)
-                .add(findResourceKey(ModItems.AMETHYST_SHOVEL.get()))
+                .add(ModItems.AMETHYST_SHOVEL.getKey())
                 .add(findResourceKey(Items.GOLDEN_SHOVEL))
                 .add(findResourceKey(Items.IRON_SHOVEL))
                 .add(findResourceKey(Items.DIAMOND_SHOVEL));
 
         provider.addTag(ModItemTags.EMBER_METAL_PICKAXE_BASE)
-                .add(findResourceKey(ModItems.ROYAL_STEEL_PICKAXE.get()))
+                .add(ModItems.ROYAL_STEEL_PICKAXE.getKey())
                 .add(findResourceKey(Items.NETHERITE_PICKAXE));
         provider.addTag(ModItemTags.EMBER_METAL_AXE_BASE)
-                .add(findResourceKey(ModItems.ROYAL_STEEL_AXE.get()))
+                .add(ModItems.ROYAL_STEEL_AXE.getKey())
                 .add(findResourceKey(Items.NETHERITE_AXE));
         provider.addTag(ModItemTags.EMBER_METAL_HOE_BASE)
-                .add(findResourceKey(ModItems.ROYAL_STEEL_HOE.get()))
+                .add(ModItems.ROYAL_STEEL_HOE.getKey())
                 .add(findResourceKey(Items.NETHERITE_HOE));
         provider.addTag(ModItemTags.EMBER_METAL_SWORD_BASE)
-                .add(findResourceKey(ModItems.ROYAL_STEEL_SWORD.get()))
+                .add(ModItems.ROYAL_STEEL_SWORD.getKey())
                 .add(findResourceKey(Items.NETHERITE_SWORD));
         provider.addTag(ModItemTags.EMBER_METAL_SHOVEL_BASE)
-                .add(findResourceKey(ModItems.ROYAL_STEEL_SHOVEL.get()))
+                .add(ModItems.ROYAL_STEEL_SHOVEL.getKey())
                 .add(findResourceKey(Items.NETHERITE_SHOVEL));
 
         provider.addTag(ModItemTags.GEMS)
                 .add(findResourceKey(Items.EMERALD))
-                .add(findResourceKey(ModItems.RUBY.get()))
-                .add(findResourceKey(ModItems.SAPPHIRE.get()))
-                .add(findResourceKey(ModItems.TOPAZ.get()));
+                .add(ModItems.RUBY.getKey())
+                .add(ModItems.SAPPHIRE.getKey())
+                .add(ModItems.TOPAZ.getKey());
         provider.addTag(ModItemTags.GEM_BLOCKS)
                 .add(findResourceKey(Items.EMERALD_BLOCK))
                 .add(findResourceKey(ModBlocks.RUBY_BLOCK.asItem()))
@@ -103,9 +103,9 @@ public class ItemTagLoader {
                 .add(findResourceKey(Items.SWEET_BERRIES))
                 .add(findResourceKey(Items.GLOW_BERRIES));
         provider.addTag(ModItemTags.WRENCH)
-                .add(findResourceKey(ModItems.ANVIL_HAMMER.get()))
-                .add(findResourceKey(ModItems.ROYAL_ANVIL_HAMMER.get()))
-                .add(findResourceKey(ModItems.EMBER_ANVIL_HAMMER.get()));
+                .add(ModItems.ANVIL_HAMMER.getKey())
+                .add(ModItems.ROYAL_ANVIL_HAMMER.getKey())
+                .add(ModItems.EMBER_ANVIL_HAMMER.getKey());
         provider.addTag(ModItemTags.FIRE_STARTER)
                 .add(findResourceKey(Items.TORCH))
                 .add(findResourceKey(Items.SOUL_TORCH))
@@ -129,7 +129,7 @@ public class ItemTagLoader {
         provider.addTag(ModItemTags.EXPLOSION_PROOF)
                 .add(findResourceKey(ModBlocks.EARTH_CORE_SHARD_BLOCK.asItem()))
                 .add(findResourceKey(ModBlocks.EARTH_CORE_SHARD_ORE.asItem()))
-                .add(findResourceKey(ModItems.EARTH_CORE_SHARD.get()));
+                .add(ModItems.EARTH_CORE_SHARD.getKey());
     }
 
     private static ResourceKey<Item> findResourceKey(Item item) {

@@ -2,10 +2,10 @@ package dev.dubhe.anvilcraft.client.renderer;
 
 import com.mojang.logging.LogUtils;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.CompatMods;
 import dev.dubhe.anvilcraft.integration.iris.IrisState;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.neoforged.fml.ModList;
 import org.slf4j.Logger;
 
 public class RenderState {
@@ -15,7 +15,7 @@ public class RenderState {
     private static final Logger logger = LogUtils.getLogger();
 
     static {
-        IRIS_PRESENT = ModList.get().isLoaded("iris");
+        IRIS_PRESENT = CompatMods.IRIS.isLoaded();
     }
 
     public static boolean isIrisPresent() {

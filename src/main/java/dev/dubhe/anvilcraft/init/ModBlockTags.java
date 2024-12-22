@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 
+import dev.dubhe.anvilcraft.integration.CompatMods;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -59,8 +60,15 @@ public class ModBlockTags {
     public static final TagKey<Block> INCORRECT_FOR_AMYTHEST_TOOL = bind("incorrect_for_amythest_tool");
     public static final TagKey<Block> INCORRECT_FOR_EMBER_TOOL = bind("incorrect_for_ember_tool");
 
+    //mekanism tags
+    public static final TagKey<Block> MEKANISM_CARDBOARD_BOX_BLACKLIST = bindMekanism("cardboard_blacklist");
+
     private static @NotNull TagKey<Block> bindC(String id) {
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", id));
+    }
+
+    private static @NotNull TagKey<Block> bindMekanism(String id){
+        return TagKey.create(Registries.BLOCK, CompatMods.MEKANISM.of(id));
     }
 
     private static @NotNull TagKey<Block> bind(String id) {
