@@ -2,7 +2,6 @@ package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 
-import dev.dubhe.anvilcraft.integration.CompatMods;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -11,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public class ModBlockTags {
+
+    private static final String MEKANISM_MODID = "mekanism";
     // mod tags
     public static final TagKey<Block> UNDER_CAULDRON = bind("under_cauldron");
     public static final TagKey<Block> MAGNET = bind("magnet");
@@ -68,7 +69,7 @@ public class ModBlockTags {
     }
 
     private static @NotNull TagKey<Block> bindMekanism(String id){
-        return TagKey.create(Registries.BLOCK, CompatMods.MEKANISM.of(id));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MEKANISM_MODID, id));
     }
 
     private static @NotNull TagKey<Block> bind(String id) {

@@ -1,6 +1,5 @@
 package dev.dubhe.anvilcraft.util;
 
-import dev.dubhe.anvilcraft.integration.CompatMods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
-    public static final Lazy<Boolean> jadePresent = new Lazy<>(() -> CompatMods.JADE.isLoaded() || CompatMods.WTHIT.isLoaded());
+    public static final Lazy<Boolean> jadePresent = new Lazy<>(() -> isLoaded("jade") || isLoaded("wthit"));
     private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
     public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[] {
         Direction.SOUTH,
