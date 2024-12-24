@@ -70,17 +70,17 @@ public class ReinforcedConcreteBlock extends Block {
         BlockState belowState = level.getBlockState(pos.below());
         switch (half) {
             case TOP:
-                if (!belowState.is(this)) {
-                    level.setBlock(pos, state.setValue(HALF, SINGLE), 2);
-                } else if (!this.checkHalf(belowState, BOTTOM)) {
+                if (this.checkHalf(belowState, SINGLE)) {
                     level.setBlock(pos.below(), state.setValue(HALF, BOTTOM), 2);
+                } else if (!this.checkHalf(belowState, BOTTOM)){
+                    level.setBlock(pos, state.setValue(HALF, SINGLE), 2);
                 }
                 break;
             case BOTTOM:
-                if (!aboveState.is(this)){
-                    level.setBlock(pos, state.setValue(HALF, SINGLE), 2);
-                } else if (!this.checkHalf(aboveState, TOP)){
+                if (this.checkHalf(aboveState, SINGLE)) {
                     level.setBlock(pos.above(), state.setValue(HALF, TOP), 2);
+                } else if (!this.checkHalf(aboveState, TOP)){
+                    level.setBlock(pos, state.setValue(HALF, SINGLE), 2);
                 }
                 break;
             case SINGLE:
