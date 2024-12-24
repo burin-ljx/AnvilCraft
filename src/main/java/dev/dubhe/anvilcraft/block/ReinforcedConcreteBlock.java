@@ -1,6 +1,5 @@
 package dev.dubhe.anvilcraft.block;
 
-import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.ReinforcedConcreteHalf;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -39,31 +38,6 @@ public class ReinforcedConcreteBlock extends Block {
         builder.add(HALF);
     }
 
-    //    @Override
-//    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-//        if (direction.getAxis() != Direction.Axis.Y) return state;
-//        ReinforcedConcreteHalf half = state.getValue(HALF);
-//        BlockState aboveState = level.getBlockState(pos.above());
-//        BlockState belowState = level.getBlockState(pos.below());
-//        if (half == TOP) {
-//            if (this.checkHalf(belowState, BOTTOM)) return state;
-//            return state.setValue(HALF, SINGLE);
-//        } else if (half == BOTTOM) {
-//            if (this.checkHalf(aboveState, TOP)) return state;
-//            return state.setValue(HALF, SINGLE);
-//        } else {
-//            if (this.checkHalf(aboveState, SINGLE)) {
-//                level.setBlock(pos.above(), state.setValue(HALF, TOP), 2);
-//                return state.setValue(HALF, BOTTOM);
-//            }
-//            if (this.checkHalf(belowState, SINGLE)) {
-//                level.setBlock(pos.below(), state.setValue(HALF, BOTTOM), 2);
-//                return state.setValue(HALF, TOP);
-//            }
-//        }
-//        return state;
-//    }
-//
     private boolean checkHalf(BlockState state, ReinforcedConcreteHalf half) {
         return state.is(this) && state.getValue(HALF) == half;
     }
@@ -80,7 +54,6 @@ public class ReinforcedConcreteBlock extends Block {
     private boolean shouldIgnoreUpdate(BlockPos pos, BlockPos fromPos) {
         return pos.getY() == fromPos.getY() && (pos.getX() != fromPos.getX() || pos.getZ() != fromPos.getZ());
     }
-
 
     @Override
     public void neighborChanged(
