@@ -46,7 +46,7 @@ public class ReinforcedConcreteBlock extends Block {
      * When piston finished a block movement, this block will receive an NC update where neighborPos is
      * same as pos. So we cannot ignore the update when <code>neighborPos.equals(pos)</code>.
      *
-     * @param pos the position where block being updated
+     * @param pos     the position where block being updated
      * @param fromPos the position where block update is spread from
      * @return If the NC update should be ignored.
      * @see PistonMovingBlockEntity#tick(Level, BlockPos, BlockState, PistonMovingBlockEntity)
@@ -72,14 +72,14 @@ public class ReinforcedConcreteBlock extends Block {
             case TOP:
                 if (this.checkHalf(belowState, SINGLE)) {
                     level.setBlock(pos.below(), state.setValue(HALF, BOTTOM), 2);
-                } else if (!this.checkHalf(belowState, BOTTOM)){
+                } else if (!this.checkHalf(belowState, BOTTOM)) {
                     level.setBlock(pos, state.setValue(HALF, SINGLE), 2);
                 }
                 break;
             case BOTTOM:
                 if (this.checkHalf(aboveState, SINGLE)) {
                     level.setBlock(pos.above(), state.setValue(HALF, TOP), 2);
-                } else if (!this.checkHalf(aboveState, TOP)){
+                } else if (!this.checkHalf(aboveState, TOP)) {
                     level.setBlock(pos, state.setValue(HALF, SINGLE), 2);
                 }
                 break;
