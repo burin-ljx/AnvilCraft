@@ -8,9 +8,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * 电力元件
@@ -111,5 +112,9 @@ public interface IPowerComponent extends Comparable<IPowerComponent> {
         if (this.equals(iPowerComponent)) return 0;
         int i = getComponentType().compareTo(iPowerComponent.getComponentType());
         return i == 0 ? 1 : i;
+    }
+
+    default boolean isGridWorking() {
+        return Optional.ofNullable(this.getGrid()).map(PowerGrid::isWorking).orElse(false);
     }
 }

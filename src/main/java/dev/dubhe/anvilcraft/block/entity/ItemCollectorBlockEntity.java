@@ -156,12 +156,13 @@ public class ItemCollectorBlockEntity extends BlockEntity
     @Override
     public void gridTick() {
         if (level == null || level.isClientSide) return;
-        BlockState state = level.getBlockState(getBlockPos());
-        if (state.hasProperty(ItemCollectorBlock.POWERED) && state.getValue(ItemCollectorBlock.POWERED)) return;
         if (cd > 1) {
             cd--;
             return;
         }
+        if (!this.isGridWorking()) return;
+        BlockState state = level.getBlockState(getBlockPos());
+        if (state.hasProperty(ItemCollectorBlock.POWERED) && state.getValue(ItemCollectorBlock.POWERED)) return;
         AABB box = AABB.ofSize(
             Vec3.atCenterOf(getBlockPos()),
             rangeRadius.get() * 2.0 + 1,

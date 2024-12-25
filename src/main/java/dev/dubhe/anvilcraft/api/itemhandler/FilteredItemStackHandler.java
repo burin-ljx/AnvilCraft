@@ -141,11 +141,11 @@ public class FilteredItemStackHandler extends ItemStackHandler {
     }
 
     /**
-     * 判断指定槽位是否允许放入指定物品堆栈
+     * 判断指定槽位是否允许放入指定物品堆叠
      *
      * @param slot  槽位
-     * @param stack 物品堆栈
-     * @return 指定槽位是否允许放入指定物品堆栈
+     * @param stack 物品堆叠
+     * @return 指定槽位是否允许放入指定物品堆叠
      */
     public boolean isFiltered(int slot, ItemStack stack) {
         ItemStack filter = this.filteredItems.get(slot);
@@ -156,7 +156,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
      * 设置指定槽位的过滤
      *
      * @param slot  槽位
-     * @param stack 过滤物品堆栈（不检查NBT）
+     * @param stack 过滤物品堆叠（不检查NBT）
      */
     public boolean setFilter(int slot, @NotNull ItemStack stack) {
         if (slot < 0 || slot >= this.filteredItems.size()) return false;

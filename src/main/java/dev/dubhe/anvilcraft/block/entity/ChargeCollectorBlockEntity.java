@@ -112,7 +112,7 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
      * 向集电器添加电荷
      *
      * @param num 添加至收集器的电荷数
-     * @return 溢出的电荷数(既未被添加至收集器的电荷数)
+     * @return 溢出的电荷数(即未被添加至收集器的电荷数)
      */
     public double incomingCharge(double num, BlockPos srcPos) {
         double overflow = num - (MAX_POWER_PER_INCOMING - this.chargeCount);
