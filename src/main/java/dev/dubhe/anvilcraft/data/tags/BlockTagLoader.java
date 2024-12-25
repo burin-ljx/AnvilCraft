@@ -88,22 +88,22 @@ public class BlockTagLoader {
             .add(findResourceKey(Blocks.ANVIL))
             .add(findResourceKey(Blocks.CHIPPED_ANVIL))
             .add(findResourceKey(Blocks.DAMAGED_ANVIL))
-            .add(findResourceKey(ModBlocks.HEAVY_IRON_BLOCK.get()))
-            .add(findResourceKey(ModBlocks.HEAVY_IRON_BEAM.get()))
-            .add(findResourceKey(ModBlocks.HEAVY_IRON_COLUMN.get()))
-            .add(findResourceKey(ModBlocks.HEAVY_IRON_PLATE.get()))
-            .add(findResourceKey(ModBlocks.CUT_HEAVY_IRON_BLOCK.get()))
-            .add(findResourceKey(ModBlocks.CUT_HEAVY_IRON_SLAB.get()))
-            .add(findResourceKey(ModBlocks.CUT_HEAVY_IRON_STAIRS.get()))
-            .add(findResourceKey(ModBlocks.POLISHED_HEAVY_IRON_BLOCK.get()))
-            .add(findResourceKey(ModBlocks.POLISHED_HEAVY_IRON_SLAB.get()))
-            .add(findResourceKey(ModBlocks.POLISHED_HEAVY_IRON_STAIRS.get()));
+            .add(ModBlocks.HEAVY_IRON_BLOCK.getKey())
+            .add(ModBlocks.HEAVY_IRON_BEAM.getKey())
+            .add(ModBlocks.HEAVY_IRON_COLUMN.getKey())
+            .add(ModBlocks.HEAVY_IRON_PLATE.getKey())
+            .add(ModBlocks.CUT_HEAVY_IRON_BLOCK.getKey())
+            .add(ModBlocks.CUT_HEAVY_IRON_SLAB.getKey())
+            .add(ModBlocks.CUT_HEAVY_IRON_STAIRS.getKey())
+            .add(ModBlocks.POLISHED_HEAVY_IRON_BLOCK.getKey())
+            .add(ModBlocks.POLISHED_HEAVY_IRON_SLAB.getKey())
+            .add(ModBlocks.POLISHED_HEAVY_IRON_STAIRS.getKey());
 
         provider.addTag(ModBlockTags.UNDER_CAULDRON)
             .addTag(BlockTags.CAMPFIRES)
             .add(findResourceKey(Blocks.MAGMA_BLOCK))
-            .add(findResourceKey(ModBlocks.HEATER.get()))
-            .add(findResourceKey(ModBlocks.CORRUPTED_BEACON.get()));
+            .add(ModBlocks.HEATER.getKey())
+            .add(ModBlocks.CORRUPTED_BEACON.getKey());
 
         provider.addTag(ModBlockTags.BLOCK_DEVOURER_PROBABILITY_DROPPING)
             .add(findResourceKey(Blocks.STONE))
@@ -132,7 +132,14 @@ public class BlockTagLoader {
         provider.addTag(ModBlockTags.NEUTRONIUM_CANNOT_PASS_THROUGH)
             .add(findResourceKey(Blocks.END_STONE))
             .add(findResourceKey(Blocks.BEDROCK))
-            .add(findResourceKey(ModBlocks.END_DUST.get()))
-            .add(findResourceKey(ModBlocks.NEGATIVE_MATTER_BLOCK.get()));
+            .add(ModBlocks.END_DUST.getKey())
+            .add(ModBlocks.NEGATIVE_MATTER_BLOCK.getKey());
+
+        provider.addTag(ModBlockTags.MEKANISM_CARDBOARD_BOX_BLACKLIST)
+            .add(ModBlocks.GIANT_ANVIL.getKey())
+            .add(ModBlocks.TRANSMISSION_POLE.getKey())
+            .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
+            .add(ModBlocks.TESLA_TOWER.getKey())
+            .add(ModBlocks.OVERSEER_BLOCK.getKey());
     }
 }
