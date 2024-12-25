@@ -51,6 +51,7 @@ public class RenderEventListener {
     @SubscribeEvent
     public static void onRender(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
+        if (Minecraft.getInstance().options.hideGui) return;
         Entity entity = event.getCamera().getEntity();
         MultiBufferSource.BufferSource bufferSource =
             event.getLevelRenderer().renderBuffers.bufferSource();

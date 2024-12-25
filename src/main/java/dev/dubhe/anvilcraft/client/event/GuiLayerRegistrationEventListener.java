@@ -32,6 +32,7 @@ public class GuiLayerRegistrationEventListener {
     public static void onRegister(RegisterGuiLayersEvent event) {
         event.registerAboveAll(AnvilCraft.of("power"), (guiGraphics, pDeltaTracker) -> {
             Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.options.hideGui) return;
             float partialTick = pDeltaTracker.getGameTimeDeltaPartialTick(
                 Minecraft.getInstance().isPaused()
             );
