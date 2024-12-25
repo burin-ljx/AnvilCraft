@@ -139,7 +139,7 @@ public class BulgingCategory implements IRecipeCategory<RecipeHolder<BulgingReci
 
         JeiSlotUtil.drawInputSlots(guiGraphics, slot, recipe.mergedIngredients.size());
         if (!recipe.results.isEmpty()) {
-            JeiSlotUtil.drawOutputSlots(guiGraphics, slot, 1);
+            JeiSlotUtil.drawOutputSlots(guiGraphics, slot, recipe.results.size());
             if (recipe.isConsumeFluid()) {
                 guiGraphics.drawString(
                         Minecraft.getInstance().font,
