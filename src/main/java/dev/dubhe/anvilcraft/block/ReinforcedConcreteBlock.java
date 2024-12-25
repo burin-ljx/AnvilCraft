@@ -51,7 +51,7 @@ public class ReinforcedConcreteBlock extends Block {
      * @return If the NC update should be ignored.
      * @see PistonMovingBlockEntity#tick(Level, BlockPos, BlockState, PistonMovingBlockEntity)
      */
-    private boolean shouldIgnoreUpdate(BlockPos pos, BlockPos fromPos) {
+    private static boolean shouldIgnoreUpdate(BlockPos pos, BlockPos fromPos) {
         return pos.getY() == fromPos.getY() && (pos.getX() != fromPos.getX() || pos.getZ() != fromPos.getZ());
     }
 
