@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
-    private boolean enabledLastTick = false;
     private boolean enabled = false;
 
     private RubyPrismBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -27,16 +26,14 @@ public class RubyPrismBlockEntity extends BaseLaserBlockEntity {
     }
 
     public void tick(@NotNull Level level) {
-        resetState();
-        if (enabled || enabledLastTick) {
+        if (enabled) {
             emitLaser(getFacing());
         }
-        enabledLastTick = enabled;
         if (laserLevel == 0) {
             enabled = false;
-            enabledLastTick = false;
         }
         super.tick(level);
+        resetState();
     }
 
     @Override

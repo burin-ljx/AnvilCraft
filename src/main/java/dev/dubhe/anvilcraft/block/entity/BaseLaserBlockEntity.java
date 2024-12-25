@@ -77,19 +77,14 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
     }
 
     public void updateIrradiateBlockPos(BlockPos newPos) {
-        if (newPos == irradiateBlockPos) return;
         if (irradiateBlockPos == null) {
+            if (newPos != null)
+                markChanged();
             irradiateBlockPos = newPos;
-            markChanged();
             return;
         }
-        if (newPos == null) {
-            irradiateBlockPos = null;
+        if (!irradiateBlockPos.equals(newPos))
             markChanged();
-            return;
-        }
-        if (irradiateBlockPos.equals(newPos)) return;
-        markChanged();
         irradiateBlockPos = newPos;
     }
 
