@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.mixin;
 
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +15,6 @@ public class MinecraftClientMixin {
         at = @At("HEAD")
     )
     void updateLevel(ClientLevel level, CallbackInfo ci){
-        LaserRenderer.updateLevel(level);
+        CacheableBERenderingPipeline.updateLevel(level);
     }
 }
