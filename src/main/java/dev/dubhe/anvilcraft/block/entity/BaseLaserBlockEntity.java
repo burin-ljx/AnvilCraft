@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
 
 import lombok.Getter;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -273,7 +274,9 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
         if (irradiateBlockPos == null) return;
         if (!(level.getBlockEntity(irradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity)) return;
         irradiateBlockEntity.onCancelingIrradiation(this);
-        LaserRenderer.getInstance().requireRecompile(this);
+        if (level instanceof ClientLevel) {
+            LaserRenderer.getInstance().requireRecompile(this);
+        }
     }
 
     public float getLaserOffset() {
@@ -305,7 +308,9 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        LaserRenderer.getInstance().requireRecompile(this);
+        if (level instanceof ClientLevel) {
+            LaserRenderer.getInstance().requireRecompile(this);
+        }
     }
 
     public void updateLaserLevel(int value){
