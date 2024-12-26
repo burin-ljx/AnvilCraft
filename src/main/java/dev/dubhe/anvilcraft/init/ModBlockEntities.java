@@ -12,6 +12,7 @@ import dev.dubhe.anvilcraft.block.entity.HeaterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeliostatsBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.InductionLightBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ItemCollectorBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.LoadMonitorBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.MagneticChuteBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.MineralFountainBlockEntity;
@@ -48,6 +49,11 @@ public class ModBlockEntities {
     public static final BlockEntityEntry<ItemCollectorBlockEntity> ITEM_COLLECTOR = REGISTRATE
         .blockEntity("item_collector", ItemCollectorBlockEntity::new)
         .validBlock(ModBlocks.ITEM_COLLECTOR)
+        .register();
+
+    public static final BlockEntityEntry<ItemDetectorBlockEntity> ITEM_DETECTOR = REGISTRATE
+        .blockEntity("item_detector", ItemDetectorBlockEntity::createBlockEntity)
+        .validBlock(ModBlocks.ITEM_DETECTOR)
         .register();
 
     public static final BlockEntityEntry<ChuteBlockEntity> CHUTE = REGISTRATE

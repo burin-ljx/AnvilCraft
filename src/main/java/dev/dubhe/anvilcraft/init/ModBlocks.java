@@ -1135,7 +1135,8 @@ public class ModBlocks {
             provider.horizontalBlock(
                 ctx.get(),
                 state -> DangerUtil.genModModelFile("block/item_detector" +
-                    (state.getValue(ItemDetectorBlock.POWERED) ? "_on" : "")).get()
+                    (state.getValue(ItemDetectorBlock.POWERED) ? "_on" : "")).get(),
+                0
             );
         })
         .simpleItem()

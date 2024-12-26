@@ -88,6 +88,7 @@ public class BlockComparatorBlock extends HorizontalDirectionalBlock implements 
         return this.defaultBlockState().setValue(FACING, direction.getOpposite());
     }
 
+    @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (level.isClientSide || (oldState.is(this) && state.getValue(FACING) == oldState.getValue(FACING)))
             return;
@@ -96,6 +97,7 @@ public class BlockComparatorBlock extends HorizontalDirectionalBlock implements 
         this.updateNeighborsInFront(level, pos, state);
     }
 
+    @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (level.isClientSide || (state.is(newState.getBlock()) && state.getValue(FACING) == newState.getValue(FACING)))
             return;

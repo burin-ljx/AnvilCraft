@@ -8,7 +8,9 @@ import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
 import dev.dubhe.anvilcraft.network.HammerUsePacket;
 import dev.dubhe.anvilcraft.network.HeliostatsIrradiationPacket;
 import dev.dubhe.anvilcraft.network.InspectionStateChangedPacket;
+import dev.dubhe.anvilcraft.network.ItemDetectorChangeRangePacket;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
+import dev.dubhe.anvilcraft.network.MachineCycleFilterModePacket;
 import dev.dubhe.anvilcraft.network.MachineEnableFilterPacket;
 import dev.dubhe.anvilcraft.network.MachineOutputDirectionPacket;
 import dev.dubhe.anvilcraft.network.MutedSoundSyncPacket;
@@ -155,6 +157,16 @@ public class ModNetworks {
                 RemoveTeslaFilterPacket.TYPE,
                 RemoveTeslaFilterPacket.STREAM_CODEC,
                 RemoveTeslaFilterPacket.HANDLER
+        );
+        registrar.playBidirectional(
+                ItemDetectorChangeRangePacket.TYPE,
+                ItemDetectorChangeRangePacket.STREAM_CODEC,
+                ItemDetectorChangeRangePacket.HANDLER
+        );
+        registrar.playBidirectional(
+                MachineCycleFilterModePacket.TYPE,
+                MachineCycleFilterModePacket.STREAM_CODEC,
+                MachineCycleFilterModePacket.HANDLER
         );
     }
 }
