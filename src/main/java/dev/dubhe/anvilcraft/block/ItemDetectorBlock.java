@@ -3,28 +3,32 @@ package dev.dubhe.anvilcraft.block;
 import com.mojang.serialization.MapCodec;
 import dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
+import dev.dubhe.anvilcraft.block.better.BetterBaseEntityBlock;
 import dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity;
+import dev.dubhe.anvilcraft.init.ModBlockEntities;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.init.ModMenuTypes;
-import dev.dubhe.anvilcraft.util.Util;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -42,7 +46,7 @@ import java.util.EnumSet;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ItemDetectorBlock extends HorizontalDirectionalBlock implements EntityBlock, HammerRotateBehavior, IHammerRemovable {
+public class ItemDetectorBlock extends BetterBaseEntityBlock implements EntityBlock, HammerRotateBehavior, IHammerRemovable {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -65,7 +69,7 @@ public class ItemDetectorBlock extends HorizontalDirectionalBlock implements Ent
     }
 
     @Override
-    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
@@ -80,6 +84,11 @@ public class ItemDetectorBlock extends HorizontalDirectionalBlock implements Ent
     }
 
     @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction direction = context.getHorizontalDirection();
         return this.defaultBlockState().setValue(FACING, direction.getOpposite());
@@ -88,10 +97,11 @@ public class ItemDetectorBlock extends HorizontalDirectionalBlock implements Ent
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (level.isClientSide ||
-            (oldState.is(this) && state.getValue(FACING) == oldState.getValue(FACING))
-            || !state.getValue(POWERED)) {
-            return;
+            (oldState.is(this) && state.getValue(FACING) == oldState.getValue(FACING))) return;
+        if (oldState.is(this) && level.getBlockEntity(pos) instanceof ItemDetectorBlockEntity blockEntity) {
+            blockEntity.recalcDetectionRange();
         }
+        if (!state.getValue(POWERED)) return;
         level.setBlock(pos, state.setValue(POWERED, false), 2);
         this.updateNeighborsInFront(level, pos, state);
     }
@@ -105,30 +115,6 @@ public class ItemDetectorBlock extends HorizontalDirectionalBlock implements Ent
             return;
         }
         this.updateNeighborsInFront(level, pos, state);
-    }
-
-    @Override
-    protected ItemInteractionResult useItemOn(
-        ItemStack pStack,
-        BlockState pState,
-        Level pLevel,
-        BlockPos pPos,
-        Player pPlayer,
-        InteractionHand pHand,
-        BlockHitResult pHitResult
-    ) {
-        return Util.interactionResultConverter().apply(this.use(pState, pLevel, pPos, pPlayer, pHand, pHitResult));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-        BlockState pState,
-        Level pLevel,
-        BlockPos pPos,
-        Player pPlayer,
-        BlockHitResult pHitResult
-    ) {
-        return this.use(pState, pLevel, pPos, pPlayer, InteractionHand.MAIN_HAND, pHitResult);
     }
 
     public InteractionResult use(
@@ -151,30 +137,12 @@ public class ItemDetectorBlock extends HorizontalDirectionalBlock implements Ent
             if (player instanceof ServerPlayer serverPlayer) {
                 if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) return InteractionResult.PASS;
                 ModMenuTypes.open(serverPlayer, be, pos);
-//                PacketDistributor.sendToPlayer(serverPlayer, new ItemDetectorChangeRangePacket(be.getRange()));
-//                PacketDistributor.sendToPlayer(serverPlayer, new MachineCycleFilterModePacket(be.getFilterMode()));
-//                for (int i = 0; i < be.getFilteredItems().size(); i++) {
-//                    PacketDistributor.sendToPlayer(serverPlayer,
-//                        new SlotFilterChangePacket(i, be.getFilter(i), false));
-//                }
             }
         }
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public BlockState updateShape(
-        BlockState blockState,
-        Direction direction,
-        BlockState blockState2,
-        LevelAccessor level,
-        BlockPos pos,
-        BlockPos pos2
-    ) {
-        return blockState;
-    }
-
-    protected void updateNeighborsInFront(Level level, BlockPos pos, BlockState state) {
+    public void updateNeighborsInFront(Level level, BlockPos pos, BlockState state) {
         Direction direction = state.getValue(FACING);
         BlockPos blockpos = pos.relative(direction.getOpposite());
         if (EventHooks.onNeighborNotify(level, pos, level.getBlockState(pos), EnumSet.of(direction.getOpposite()), false).isCanceled())
@@ -200,11 +168,38 @@ public class ItemDetectorBlock extends HorizontalDirectionalBlock implements Ent
 
     @Override
     protected int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
-        return blockState.getValue(POWERED) && blockState.getValue(FACING) == side ? 15 : 0;
+        BlockEntity blockEntity = blockAccess.getBlockEntity(pos);
+        if (!(blockEntity instanceof ItemDetectorBlockEntity idbe)) return 0;
+        return blockState.getValue(FACING) == side ? idbe.getOutputSignal() : 0;
     }
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ItemDetectorBlockEntity(pos, state);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        Level level,
+        BlockState state,
+        BlockEntityType<T> type
+    ) {
+        if (level.isClientSide) {
+            return null;
+        }
+        return createTickerHelper(type, ModBlockEntities.ITEM_DETECTOR.get(),
+            (level1, blockPos, blockState, blockEntity) ->
+                blockEntity.tick());
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rot) {
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 }

@@ -152,11 +152,11 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
         if (type == ClickType.PICKUP) {
             if (slot instanceof FilterOnlySlot && !slot.getItem().isEmpty()) {
                 ItemStack carriedItem = this.menu.getCarried();
-                if(carriedItem.isEmpty()) {
+                if (carriedItem.isEmpty()) {
                     int id = slot.getContainerSlot();
                     this.menu.getBlockEntity().clearFilter(id);
                     PacketDistributor.sendToServer(new SlotFilterChangePacket(id, ItemStack.EMPTY));
-                }
+                } else return;
             }
         }
         super.slotClicked(slot, slotId, mouseButton, type);

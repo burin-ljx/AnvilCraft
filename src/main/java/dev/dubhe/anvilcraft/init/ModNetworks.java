@@ -27,7 +27,6 @@ import dev.dubhe.anvilcraft.network.SlotFilterChangePacket;
 import dev.dubhe.anvilcraft.network.StructureDataSyncPacket;
 import dev.dubhe.anvilcraft.network.TeslaFilterSyncPacket;
 import dev.dubhe.anvilcraft.network.UpdateDisplayItemPacket;
-
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModNetworks {
