@@ -105,38 +105,34 @@ public class DiskItem extends Item {
         Level level = context.getLevel();
         if (level.isClientSide) return InteractionResult.PASS;
         Player player = context.getPlayer();
-        if (player == null || player.isShiftKeyDown()) {
-            return InteractionResult.PASS;
-        }
+        if (player == null || player.isShiftKeyDown()) return InteractionResult.FAIL;
         BlockPos clickedPos = context.getClickedPos();
         if (!level.getBlockState(clickedPos).hasBlockEntity()) return InteractionResult.PASS;
         BlockEntity blockEntity = level.getBlockEntity(clickedPos);
-        if (blockEntity instanceof IDiskCloneable diskCloneable) {
-            ItemStack stack = context.getItemInHand();
-            if (hasDataStored(stack)) {
-                CompoundTag tag = getData(stack);
-                if (!tag.getString("StoredFrom")
-                        .equals(BuiltInRegistries.BLOCK_ENTITY_TYPE
-                                .getKey(blockEntity.getType())
-                                .toString())) {
-                    player.displayClientMessage(MESSAGE_INCOMPATIBLE, true);
-                    return InteractionResult.PASS;
-                }
-                diskCloneable.applyDiskData(tag);
-                player.displayClientMessage(MESSAGE_APPLIED, true);
-            } else {
-                CompoundTag tag = createData(stack);
-                tag.putString(
-                        "StoredFrom",
-                        BuiltInRegistries.BLOCK_ENTITY_TYPE
-                                .getKey(blockEntity.getType())
-                                .toString());
-                diskCloneable.storeDiskData(tag);
-                player.displayClientMessage(MESSAGE_STORED, true);
+        if (!(blockEntity instanceof IDiskCloneable diskCloneable)) return InteractionResult.PASS;
+        ItemStack stack = context.getItemInHand();
+        if (hasDataStored(stack)) {
+            CompoundTag tag = getData(stack);
+            if (!tag.getString("StoredFrom")
+                .equals(BuiltInRegistries.BLOCK_ENTITY_TYPE
+                    .getKey(blockEntity.getType())
+                    .toString())) {
+                player.displayClientMessage(MESSAGE_INCOMPATIBLE, true);
+                return InteractionResult.FAIL;
             }
-            return InteractionResult.SUCCESS;
+            diskCloneable.applyDiskData(tag);
+            player.displayClientMessage(MESSAGE_APPLIED, true);
+        } else {
+            CompoundTag tag = createData(stack);
+            tag.putString(
+                "StoredFrom",
+                BuiltInRegistries.BLOCK_ENTITY_TYPE
+                    .getKey(blockEntity.getType())
+                    .toString());
+            diskCloneable.storeDiskData(tag);
+            player.displayClientMessage(MESSAGE_STORED, true);
         }
-        return InteractionResult.FAIL;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -147,8 +143,8 @@ public class DiskItem extends Item {
             if (hasDataStored(itemStack)) {
                 deleteData(itemStack);
                 player.displayClientMessage(MESSAGE_CLEARED, true);
+                return InteractionResultHolder.success(itemStack);
             }
-            return InteractionResultHolder.success(itemStack);
         }
         return super.use(level, player, usedHand);
     }

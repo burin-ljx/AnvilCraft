@@ -1,0 +1,49 @@
+package dev.dubhe.anvilcraft.integration.jade.provider;
+
+import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.IServerDataProvider;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.config.IPluginConfig;
+
+import static dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity.Mode;
+
+public enum ItemDetectorProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+    INSTANCE;
+
+    @Override
+    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
+        CompoundTag serverData = blockAccessor.getServerData();
+        if (serverData.contains("Range")) {
+            int range = serverData.getInt("Range");
+            iTooltip.add(Component.translatable("tooltip.anvilcraft.jade.item_detector", range));
+        }
+        if (serverData.contains("FilterMode")) {
+            int ordinal = serverData.getInt("FilterMode");
+            if (ordinal >= 0 && ordinal < Mode.values().length) {
+                Mode filterMode = Mode.values()[ordinal];
+                iTooltip.add(Component.translatable("screen.anvilcraft.button.filter_mode",
+                    Component.translatable("screen.anvilcraft.button.filter_mode_" + filterMode.buttonPath))
+                );
+            }
+        }
+    }
+
+    @Override
+    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
+        if (blockAccessor.getBlockEntity() instanceof ItemDetectorBlockEntity blockEntity) {
+            compoundTag.putInt("Range", blockEntity.getRange());
+            compoundTag.putInt("FilterMode", blockEntity.getFilterMode().ordinal());
+        }
+    }
+
+    @Override
+    public ResourceLocation getUid() {
+        return AnvilCraft.of("item_detector");
+    }
+}

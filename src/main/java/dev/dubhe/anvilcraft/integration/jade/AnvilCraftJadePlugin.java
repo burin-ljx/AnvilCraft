@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.integration.jade;
 
+import dev.dubhe.anvilcraft.integration.jade.provider.ItemDetectorProvider;
 import dev.dubhe.anvilcraft.integration.jade.provider.PowerBlockProvider;
 import dev.dubhe.anvilcraft.integration.jade.provider.RubyPrismProvider;
 
@@ -17,11 +18,13 @@ public class AnvilCraftJadePlugin implements IWailaPlugin {
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(PowerBlockProvider.INSTANCE, BlockEntity.class);
         registration.registerBlockDataProvider(RubyPrismProvider.INSTANCE, BlockEntity.class);
+        registration.registerBlockDataProvider(ItemDetectorProvider.INSTANCE, BlockEntity.class);
     }
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(PowerBlockProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(RubyPrismProvider.INSTANCE, Block.class);
+        registration.registerBlockComponent(ItemDetectorProvider.INSTANCE, Block.class);
     }
 }
