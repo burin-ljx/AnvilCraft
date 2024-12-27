@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.api.item.IDiskCloneable;
 import dev.dubhe.anvilcraft.init.ModComponents;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -31,6 +32,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class DiskItem extends Item {
+
+    private static final String TOOLTIP_PREFIX = "tooltip.anvilcraft.item.disk.";
+    private static final String MESSAGE_PREFIX = "message.anvilcraft.disk.";
+    private static final Component TOOLTIP_STORE = tooltip("store");
+    private static final Component TOOLTIP_CLEAR = tooltip("clear");
+    private static final Component MESSAGE_STORED = message("data_stored");
+    private static final Component MESSAGE_CLEARED = message("data_cleared");
+    private static final Component MESSAGE_APPLIED = message("data_applied");
+    private static final Component MESSAGE_INCOMPATIBLE = message("data_incompatible");
 
     public DiskItem(Properties properties) {
         super(properties);
@@ -84,6 +94,9 @@ public class DiskItem extends Item {
                     .getString();
             tooltipComponents.add(Component.translatable("item.anvilcraft.disk.stored_from", name)
                     .withStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+            tooltipComponents.add(TOOLTIP_CLEAR);
+        } else {
+            tooltipComponents.add(TOOLTIP_STORE);
         }
     }
 
@@ -91,11 +104,16 @@ public class DiskItem extends Item {
     public @NotNull InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         if (level.isClientSide) return InteractionResult.PASS;
-        if (context.getPlayer().isShiftKeyDown()) {
+        Player player = context.getPlayer();
+        if (player == null) {
+            return InteractionResult.FAIL;
+        }
+        if (player.isShiftKeyDown()) {
             return InteractionResult.SUCCESS;
         }
-        if (!level.getBlockState(context.getClickedPos()).hasBlockEntity()) return InteractionResult.PASS;
-        BlockEntity blockEntity = level.getBlockEntity(context.getClickedPos());
+        BlockPos clickedPos = context.getClickedPos();
+        if (!level.getBlockState(clickedPos).hasBlockEntity()) return InteractionResult.PASS;
+        BlockEntity blockEntity = level.getBlockEntity(clickedPos);
         if (blockEntity instanceof IDiskCloneable diskCloneable) {
             ItemStack stack = context.getItemInHand();
             if (hasDataStored(stack)) {
@@ -103,8 +121,12 @@ public class DiskItem extends Item {
                 if (!tag.getString("StoredFrom")
                         .equals(BuiltInRegistries.BLOCK_ENTITY_TYPE
                                 .getKey(blockEntity.getType())
-                                .toString())) return InteractionResult.PASS;
+                                .toString())) {
+                    player.displayClientMessage(MESSAGE_INCOMPATIBLE, true);
+                    return InteractionResult.PASS;
+                }
                 diskCloneable.applyDiskData(tag);
+                player.displayClientMessage(MESSAGE_APPLIED, true);
             } else {
                 CompoundTag tag = createData(stack);
                 tag.putString(
@@ -113,6 +135,7 @@ public class DiskItem extends Item {
                                 .getKey(blockEntity.getType())
                                 .toString());
                 diskCloneable.storeDiskData(tag);
+                player.displayClientMessage(MESSAGE_STORED, true);
             }
             return InteractionResult.SUCCESS;
         }
@@ -126,10 +149,21 @@ public class DiskItem extends Item {
             ItemStack itemStack = player.getItemInHand(usedHand);
             if (hasDataStored(itemStack)) {
                 deleteData(itemStack);
+                player.displayClientMessage(MESSAGE_CLEARED, true);
             }
             return InteractionResultHolder.success(itemStack);
         }
         return super.use(level, player, usedHand);
+    }
+
+    private static Component tooltip(String suffix) {
+        return Component.translatable(TOOLTIP_PREFIX + suffix)
+            .withStyle(ChatFormatting.GRAY);
+    }
+
+    private static Component message(String suffix) {
+        return Component.translatable(MESSAGE_PREFIX + suffix)
+            .withStyle(ChatFormatting.AQUA);
     }
 
     public record DiskData(CompoundTag tag) {
