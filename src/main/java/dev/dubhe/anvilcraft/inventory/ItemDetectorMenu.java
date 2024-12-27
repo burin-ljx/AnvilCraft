@@ -1,6 +1,5 @@
 package dev.dubhe.anvilcraft.inventory;
 
-import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.IFilterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity;
 import dev.dubhe.anvilcraft.inventory.component.FilterOnlySlot;
@@ -10,23 +9,23 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@Getter
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ItemDetectorMenu extends AbstractContainerMenu implements IFilterMenu {
-    @Getter
+
     private final ItemDetectorBlockEntity blockEntity;
-    private final Level level;
 
     public ItemDetectorMenu(
         @Nullable MenuType<?> menuType, int containerId, Inventory inventory, @NotNull BlockEntity machine) {
@@ -34,10 +33,9 @@ public class ItemDetectorMenu extends AbstractContainerMenu implements IFilterMe
         ItemCollectorMenu.checkContainerSize(inventory, 9);
 
         this.blockEntity = (ItemDetectorBlockEntity) machine;
-        this.level = this.blockEntity.getLevel();
 
-        this.addPlayerInventory(inventory);
         this.addPlayerHotbar(inventory);
+        this.addPlayerInventory(inventory);
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
@@ -88,49 +86,52 @@ public class ItemDetectorMenu extends AbstractContainerMenu implements IFilterMe
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        AnvilCraft.LOGGER.debug("quickMoveStack: {}", index);
-        Slot sourceSlot = this.slots.get(index);
+        // Check if the slot clicked is one of the vanilla container slots
+        if (index >= VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+            return ItemStack.EMPTY;
+        }
+        Slot sourceSlot = this.getSlot(index);
         //noinspection ConstantValue
         if (sourceSlot == null || !sourceSlot.hasItem()) {
             return ItemStack.EMPTY;
         } // EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
-
-        // Check if the slot clicked is one of the vanilla container slots
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
-            // This is a vanilla container slot so try to the stack into filter
-            for (int j = 0; j < FILTER_SLOT_COUNT; j++) {
-                AnvilCraft.LOGGER.debug("First for loop: {}", j);
-                Slot slot = this.slots.get(FILTER_FIRST_SLOT_INDEX + j);
-                if (!(slot instanceof FilterOnlySlot filterSlot)) continue;
-                if (!filterSlot.getItem().is(sourceStack.getItem())) continue;
-                AnvilCraft.LOGGER.debug("pre set copy");
-                filterSlot.set(sourceStack.copy());
-                AnvilCraft.LOGGER.debug("post set copy");
-                return ItemStack.EMPTY;
-            }
-            for (int j = 0; j < FILTER_SLOT_COUNT; j++) {
-                AnvilCraft.LOGGER.debug("Second for loop: {}", j);
-                Slot slot = this.slots.get(FILTER_FIRST_SLOT_INDEX + j);
-                if (!(slot instanceof FilterOnlySlot filterSlot)) continue;
-                if (!filterSlot.getItem().isEmpty()) continue;
-                AnvilCraft.LOGGER.debug("pre set copy");
-                filterSlot.set(sourceStack.copy());
-                AnvilCraft.LOGGER.debug("post set copy");
-                return ItemStack.EMPTY;
-            }
+        // This is a vanilla container slot so try to set filter
+        for (int j = 0; j < FILTER_SLOT_COUNT; j++) {
+            Slot slot = this.getSlot(FILTER_FIRST_SLOT_INDEX + j);
+            if (!(slot instanceof FilterOnlySlot filterSlot)) continue;
+            if (!filterSlot.getItem().is(sourceStack.getItem())) continue;
+            filterSlot.set(sourceStack.copy());
+            return ItemStack.EMPTY;
         }
-        AnvilCraft.LOGGER.debug("finally return");
+        for (int j = 0; j < FILTER_SLOT_COUNT; j++) {
+            Slot slot = this.getSlot(FILTER_FIRST_SLOT_INDEX + j);
+            if (!(slot instanceof FilterOnlySlot filterSlot)) continue;
+            if (!filterSlot.getItem().isEmpty()) continue;
+            filterSlot.set(sourceStack.copy());
+            return ItemStack.EMPTY;
+        }
         return ItemStack.EMPTY;
     }
 
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (slotId >= FILTER_FIRST_SLOT_INDEX &&
+            slotId < FILTER_FIRST_SLOT_INDEX + FILTER_SLOT_COUNT &&
+            this.getSlot(slotId) instanceof FilterOnlySlot filterSlot &&
+            (button >= 0 && button < HOTBAR_SLOT_COUNT || button == Inventory.SLOT_OFFHAND) &&
+            clickType == ClickType.SWAP) {
+            filterSlot.set(player.getInventory().getItem(button).copy());
+            return;
+        }
+        super.clicked(slotId, button, clickType, player);
+    }
+
     public void setFilterMode(ItemDetectorBlockEntity.Mode mode) {
-//        this.blockEntity.setFilterMode(mode);
         this.setData(ItemDetectorBlockEntity.DATASLOT_ID_FILTER_MODE, mode.ordinal());
     }
 
     public void setRange(int range) {
-//        this.blockEntity.setRange(range);
         this.setData(ItemDetectorBlockEntity.DATASLOT_ID_RANGE, range);
     }
 
@@ -171,6 +172,5 @@ public class ItemDetectorMenu extends AbstractContainerMenu implements IFilterMe
     public void flush() {
         IFilterMenu.super.flush();
     }
-
 
 }

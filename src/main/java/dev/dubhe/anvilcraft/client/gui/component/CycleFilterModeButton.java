@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.client.gui.component;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
 
 import static dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity.Mode;
 
+@MethodsReturnNonnullByDefault
 public class CycleFilterModeButton extends Button {
 
     private final Supplier<Mode> filterMode;
@@ -28,7 +30,6 @@ public class CycleFilterModeButton extends Button {
     public CycleFilterModeButton(int x, int y, OnPress onPress, Supplier<Mode> filterMode) {
         super(x, y, 16, 16, DEFAULT_MESSAGE, onPress, Button.DEFAULT_NARRATION);
         this.filterMode = filterMode;
-        this.flush();
     }
 
     @Override
@@ -44,11 +45,10 @@ public class CycleFilterModeButton extends Button {
         return this.filterMode.get().buttonPath;
     }
 
-    public void flush() {
-        this.setMessage(Component.translatable(
-            "screen.anvilcraft.button.filter_mode",
-            Component.translatable(
-                "screen.anvilcraft.button.filter_mode_" + this.buttonPath())));
+    @Override
+    public Component getMessage() {
+        return Component.translatable("screen.anvilcraft.button.filter_mode",
+            Component.translatable("screen.anvilcraft.button.filter_mode_" + this.buttonPath()));
     }
 
     @Override

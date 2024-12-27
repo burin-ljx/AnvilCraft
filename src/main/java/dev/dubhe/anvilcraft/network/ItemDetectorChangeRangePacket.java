@@ -1,15 +1,12 @@
 package dev.dubhe.anvilcraft.network;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.client.gui.screen.ItemDetectorScreen;
 import dev.dubhe.anvilcraft.inventory.ItemDetectorMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +19,10 @@ public record ItemDetectorChangeRangePacket(int range) implements CustomPacketPa
             ByteBufCodecs.INT,
             ItemDetectorChangeRangePacket::range,
             ItemDetectorChangeRangePacket::new);
-    public static final IPayloadHandler<ItemDetectorChangeRangePacket> HANDLER = new DirectionalPayloadHandler<>(
-        ItemDetectorChangeRangePacket::clientHandler, ItemDetectorChangeRangePacket::serverHandler
-    );
+//    public static final IPayloadHandler<ItemDetectorChangeRangePacket> HANDLER = new DirectionalPayloadHandler<>(
+//        ItemDetectorChangeRangePacket::clientHandler, ItemDetectorChangeRangePacket::serverHandler
+//    );
+    public static final IPayloadHandler<ItemDetectorChangeRangePacket> HANDLER = ItemDetectorChangeRangePacket::serverHandler;
 
     @Override
     @NotNull
@@ -41,12 +39,12 @@ public record ItemDetectorChangeRangePacket(int range) implements CustomPacketPa
         });
     }
 
-    public static void clientHandler(ItemDetectorChangeRangePacket data, IPayloadContext context) {
-        Minecraft client = Minecraft.getInstance();
-        context.enqueueWork(() -> {
-            if (client.screen instanceof ItemDetectorScreen screen) {
-                screen.getMenu().setRange(data.range);
-            }
-        });
-    }
+//    public static void clientHandler(ItemDetectorChangeRangePacket data, IPayloadContext context) {
+//        Minecraft client = Minecraft.getInstance();
+//        context.enqueueWork(() -> {
+//            if (client.screen instanceof ItemDetectorScreen screen) {
+//                screen.getMenu().setRange(data.range);
+//            }
+//        });
+//    }
 }

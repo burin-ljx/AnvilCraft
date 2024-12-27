@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity;
 import dev.dubhe.anvilcraft.client.gui.component.CycleFilterModeButton;
 import dev.dubhe.anvilcraft.client.gui.component.ItemCollectorButton;
 import dev.dubhe.anvilcraft.client.gui.component.TextWidget;
@@ -68,7 +67,6 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
                 if(!(b instanceof CycleFilterModeButton button)) return;
                 PacketDistributor.sendToServer(new MachineCycleFilterModePacket(button.cycle()));
                 this.menu.setFilterMode(button.cycle());
-                button.flush();
             },
             () -> this.menu.getBlockEntity().getFilterMode()
         );
@@ -85,14 +83,12 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
         // range - +
         this.addRenderableWidget(new ItemCollectorButton(leftPos + 43, topPos + 23, "minus", (b) -> {
             this.menu.getBlockEntity().decreaseRange();
-//            this.menu.setRange(this.menu.getBlockEntity().getRange());
             PacketDistributor.sendToServer(
                 new ItemDetectorChangeRangePacket(this.menu.getBlockEntity().getRange())
             );
         }));
         this.addRenderableWidget(new ItemCollectorButton(leftPos + 81, topPos + 23, "add", (b) -> {
             this.menu.getBlockEntity().increaseRange();
-//            this.menu.setRange(this.menu.getBlockEntity().getRange());
             PacketDistributor.sendToServer(
                 new ItemDetectorChangeRangePacket(this.menu.getBlockEntity().getRange())
             );
@@ -152,19 +148,15 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
         if (type == ClickType.PICKUP) {
             if (slot instanceof FilterOnlySlot && !slot.getItem().isEmpty()) {
                 ItemStack carriedItem = this.menu.getCarried();
-                if (carriedItem.isEmpty()) {
+//                if (carriedItem.isEmpty()) {
                     int id = slot.getContainerSlot();
                     this.menu.getBlockEntity().clearFilter(id);
-                    PacketDistributor.sendToServer(new SlotFilterChangePacket(id, ItemStack.EMPTY));
-                } else return;
+                    PacketDistributor.sendToServer(new SlotFilterChangePacket(id, carriedItem, false));
+//                } else return;
+                return;
             }
         }
         super.slotClicked(slot, slotId, mouseButton, type);
-    }
-
-    @Override
-    public void flush() {
-        this.cycleFilterModeButton.flush();
     }
 
     private int getScrollSpeed(){
@@ -194,9 +186,5 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
     @Override
     public ItemDetectorMenu getFilterMenu() {
         return this.menu;
-    }
-
-    public void setFilterMode(ItemDetectorBlockEntity.Mode filterMode){
-        this.menu.setFilterMode(filterMode);
     }
 }

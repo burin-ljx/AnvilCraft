@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.block.entity;
 
-import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.api.item.IDiskCloneable;
 import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IHasAffectRange;
 import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
@@ -45,18 +45,22 @@ import static dev.dubhe.anvilcraft.block.ItemDetectorBlock.POWERED;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Getter
-public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider, IFilterBlockEntity, IHasAffectRange {
+public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider, IFilterBlockEntity, IHasAffectRange,
+    IDiskCloneable {
 
     public static final int DATASLOT_ID_RANGE = 0;
     public static final int DATASLOT_ID_FILTER_MODE = 1;
     private static final FilteredItemStackHandler DUMMY_HANDLER = new FilteredItemStackHandler(0);
     private static final int MIN_RANGE = 1;
     private static final int MAX_RANGE = 8;
+    @Getter
     private final FilterOnlyContainer filter;
+    @Getter
     private Mode filterMode;
+    @Getter
     private int range = 0;
     private AABB detectionRange;
+    @Getter
     private final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
@@ -85,6 +89,7 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
             return 2;
         }
     };
+    @Getter
     private int outputSignal = 0;
 
     public ItemDetectorBlockEntity(BlockEntityType<? extends BlockEntity> type, BlockPos pos, BlockState blockState) {
@@ -103,6 +108,11 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
         BlockPos pos,
         BlockState blockState) {
         return new ItemDetectorBlockEntity(type, pos, blockState);
+    }
+
+    private static int lerpOutput(int matchCount, int targetCount) {
+        if (matchCount < targetCount) return 0;
+        return Math.min(15, 1 + (matchCount - targetCount) * 14 / (63 * targetCount));
     }
 
     @Override
@@ -129,11 +139,6 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
         CompoundTag tag = super.getUpdateTag(registries);
         tag.putInt("Range", this.range);
         return tag;
-    }
-
-    private static int lerpOutput(int matchCount, int targetCount) {
-        if (matchCount < targetCount) return 0;
-        return Math.min(15, 1 + (matchCount - targetCount) * 14 / (63 * targetCount));
     }
 
     public void tick() {
@@ -280,7 +285,6 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
     }
 
     public void recalcDetectionRange() {
-        AnvilCraft.LOGGER.debug("recalcDetectionRange, range is: {}", this.range);
         this.detectionRange = this.calcDetectionRange();
         this.setChanged();
         if (this.level instanceof ServerLevel) {
@@ -304,6 +308,23 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void storeDiskData(CompoundTag data) {
+        if (this.level == null) return;
+        data.putInt("Range", this.range);
+        data.putString("FilterMode", this.filterMode.toString());
+        data.put("Filter", this.filter.serializeNBT(this.level.registryAccess()));
+    }
+
+    @Override
+    public void applyDiskData(CompoundTag data) {
+        if (this.level == null) return;
+        this.setRange(data.getInt("Range"));
+        this.filterMode = Mode.valueOf(data.getString("FilterMode"));
+        filter.deserializeNBT(this.level.registryAccess(), data.getCompound("Filter"));
+        this.recalcDetectionRange();
     }
 
     public enum Mode {
