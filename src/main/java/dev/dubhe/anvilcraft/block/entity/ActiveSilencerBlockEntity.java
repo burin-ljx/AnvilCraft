@@ -110,6 +110,7 @@ public class ActiveSilencerBlockEntity
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        if (player.isSpectator()) return null;
         return new ActiveSilencerMenu(ModMenuTypes.ACTIVE_SILENCER.get(), i, inventory, this);
     }
 

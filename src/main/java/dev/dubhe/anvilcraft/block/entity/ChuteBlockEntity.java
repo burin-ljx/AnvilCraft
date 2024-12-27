@@ -74,6 +74,7 @@ public class ChuteBlockEntity extends BaseChuteBlockEntity {
 
     @Nullable @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        if (player.isSpectator()) return null;
         return new ChuteMenu(ModMenuTypes.CHUTE.get(), i, inventory, this);
     }
 }

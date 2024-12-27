@@ -242,7 +242,7 @@ public class TeslaTowerBlockEntity extends BlockEntity
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
-        if (level == null) return null;
+        if (level == null || player.isSpectator()) return null;
         BlockState blockState = level.getBlockState(getBlockPos());
         int yOffset = blockState.getValue(TeslaTowerBlock.HALF).getOffsetY();
         if (level.getBlockEntity(getBlockPos().above(-yOffset)) instanceof TeslaTowerBlockEntity teslaTowerBlockEntity)

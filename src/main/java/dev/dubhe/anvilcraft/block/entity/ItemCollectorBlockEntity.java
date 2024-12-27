@@ -135,6 +135,7 @@ public class ItemCollectorBlockEntity extends BlockEntity
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        if (player.isSpectator()) return null;
         return new ItemCollectorMenu(ModMenuTypes.ITEM_COLLECTOR.get(), i, inventory, this);
     }
 
