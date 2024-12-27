@@ -8,7 +8,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import org.jetbrains.annotations.NotNull;
@@ -46,17 +45,6 @@ public class MachineCycleFilterModePacket implements CustomPacketPayload {
             if (!(player.containerMenu instanceof ItemDetectorMenu menu)) return;
             menu.setFilterMode(data.filterMode);
             menu.flush();
-            PacketDistributor.sendToPlayer(player, data);
         });
     }
-
-//    public static void clientHandler(MachineCycleFilterModePacket data, IPayloadContext context) {
-//        Minecraft client = Minecraft.getInstance();
-//        context.enqueueWork(() -> {
-//            if (client.screen instanceof ItemDetectorScreen screen) {
-//                screen.setFilterMode(data.filterMode);
-//                screen.flush();
-//            }
-//        });
-//    }
 }

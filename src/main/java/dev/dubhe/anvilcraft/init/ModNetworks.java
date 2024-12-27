@@ -162,7 +162,7 @@ public class ModNetworks {
                 ItemDetectorChangeRangePacket.STREAM_CODEC,
                 ItemDetectorChangeRangePacket.HANDLER
         );
-        registrar.playBidirectional(
+        registrar.playToServer(
                 MachineCycleFilterModePacket.TYPE,
                 MachineCycleFilterModePacket.STREAM_CODEC,
                 MachineCycleFilterModePacket.HANDLER
