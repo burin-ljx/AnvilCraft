@@ -19,9 +19,6 @@ public record ItemDetectorChangeRangePacket(int range) implements CustomPacketPa
             ByteBufCodecs.INT,
             ItemDetectorChangeRangePacket::range,
             ItemDetectorChangeRangePacket::new);
-//    public static final IPayloadHandler<ItemDetectorChangeRangePacket> HANDLER = new DirectionalPayloadHandler<>(
-//        ItemDetectorChangeRangePacket::clientHandler, ItemDetectorChangeRangePacket::serverHandler
-//    );
     public static final IPayloadHandler<ItemDetectorChangeRangePacket> HANDLER = ItemDetectorChangeRangePacket::serverHandler;
 
     @Override

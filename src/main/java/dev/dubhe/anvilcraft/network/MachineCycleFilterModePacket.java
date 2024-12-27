@@ -22,8 +22,6 @@ public class MachineCycleFilterModePacket implements CustomPacketPayload {
             ByteBufCodecs.INT,
             p -> p.getFilterMode().ordinal(),
             i -> new MachineCycleFilterModePacket(Mode.values()[i]));
-//    public static final IPayloadHandler<MachineCycleFilterModePacket> HANDLER = new DirectionalPayloadHandler<>(
-//        MachineCycleFilterModePacket::clientHandler, MachineCycleFilterModePacket::serverHandler);
     public static final IPayloadHandler<MachineCycleFilterModePacket> HANDLER = MachineCycleFilterModePacket::serverHandler;
 
     private final Mode filterMode;

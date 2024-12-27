@@ -101,9 +101,6 @@ public class ItemDetectorBlock extends BetterBaseEntityBlock implements EntityBl
         if (oldState.is(this) && level.getBlockEntity(pos) instanceof ItemDetectorBlockEntity blockEntity) {
             blockEntity.recalcDetectionRange();
         }
-//        if (!state.getValue(POWERED)) return;
-//        level.setBlock(pos, state.setValue(POWERED, false), 2);
-//        this.updateNeighborsInFront(level, pos, state);
     }
 
     @Override
@@ -130,9 +127,7 @@ public class ItemDetectorBlock extends BetterBaseEntityBlock implements EntityBl
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof ItemDetectorBlockEntity be) {
             if (player.getItemInHand(hand).is(ModItems.DISK.get())) {
-                //TODO: implement useDisk
                 return be.useDisk(level, player, hand, player.getItemInHand(hand), hit);
-//                return InteractionResult.SUCCESS;
             }
             if (player instanceof ServerPlayer serverPlayer) {
                 if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) return InteractionResult.PASS;
