@@ -156,6 +156,18 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
             this.detectionRange,
             entity -> !entity.getItem().isEmpty()
         );
+        int output = getOutput(itemEntities);
+        if (output == this.outputSignal) return;
+        this.outputSignal = output;
+        if (blockState.getValue(POWERED) != (this.outputSignal > 0)) {
+            blockState = blockState.setValue(POWERED, this.outputSignal > 0);
+            level.setBlock(pos, blockState, 2);
+        }
+        ModBlocks.ITEM_DETECTOR.get().updateNeighborsInFront(level, pos, blockState);
+    }
+
+    private int getOutput(List<ItemEntity> itemEntities) {
+        if (itemEntities.isEmpty()) return 0;
         int minNonZeroOutput = 16;
         boolean canOutput = true;
         boolean hasFilter = false;
@@ -186,17 +198,7 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
             }
             output = lerpOutput(totalCount, 1);
         }
-        if (output == this.outputSignal) return;
-        this.outputSignal = output;
-        if (blockState.getValue(POWERED) != (this.outputSignal > 0)) {
-            blockState = blockState.setValue(POWERED, this.outputSignal > 0);
-            level.setBlock(pos, blockState, 2);
-        }
-        ModBlocks.ITEM_DETECTOR.get().updateNeighborsInFront(level, pos, blockState);
-    }
-
-    public void cycleFilterMode() {
-        this.filterMode = this.filterMode.cycle();
+        return output;
     }
 
     public void setFilterMode(Mode filterMode) {
@@ -270,10 +272,6 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
         if (slot < 0 || slot >= this.filter.getContainerSize()) return false;
         this.filter.setItem(slot, filter);
         return true;
-    }
-
-    public boolean clearFilter(int slot) {
-        return this.setFilter(slot, ItemStack.EMPTY);
     }
 
     @Override
