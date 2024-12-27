@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.client.gui.component.CycleFilterModeButton;
 import dev.dubhe.anvilcraft.client.gui.component.ItemCollectorButton;
@@ -144,17 +145,22 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
     }
 
     @Override
-    protected void slotClicked(@NotNull Slot slot, int slotId, int mouseButton, @NotNull ClickType type) {
-        if (type == ClickType.PICKUP) {
-            if (slot instanceof FilterOnlySlot && !slot.getItem().isEmpty()) {
-                ItemStack carriedItem = this.menu.getCarried();
-                int id = slot.getContainerSlot();
-                this.menu.getBlockEntity().clearFilter(id);
-                PacketDistributor.sendToServer(new SlotFilterChangePacket(id, carriedItem, false));
-                return;
+    protected void slotClicked(@NotNull Slot slot, int slotId, int button, @NotNull ClickType type) {
+        if (type == ClickType.PICKUP &&
+            slot instanceof FilterOnlySlot filterSlot &&
+            (button == InputConstants.MOUSE_BUTTON_LEFT || button == InputConstants.MOUSE_BUTTON_RIGHT)) {
+            ItemStack filterStack = this.menu.getCarried();
+            int id = slot.getContainerSlot();
+            if (!filterStack.isEmpty() && button == InputConstants.MOUSE_BUTTON_RIGHT) {
+                filterStack = filterStack.copyWithCount(1);
+            } else {
+                filterStack = filterStack.copy();
             }
+            filterSlot.set(filterStack);
+            PacketDistributor.sendToServer(new SlotFilterChangePacket(id, filterStack, false));
+            return;
         }
-        super.slotClicked(slot, slotId, mouseButton, type);
+        super.slotClicked(slot, slotId, button, type);
     }
 
     private int getScrollSpeed(){

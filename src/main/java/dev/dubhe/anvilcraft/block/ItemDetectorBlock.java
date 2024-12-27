@@ -101,6 +101,7 @@ public class ItemDetectorBlock extends BetterBaseEntityBlock implements EntityBl
         if (oldState.is(this) && level.getBlockEntity(pos) instanceof ItemDetectorBlockEntity blockEntity) {
             blockEntity.recalcDetectionRange();
         }
+        if (state.getValue(POWERED)) this.updateNeighborsInFront(level, pos, state);
     }
 
     @Override
