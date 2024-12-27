@@ -40,7 +40,7 @@ public class DiskItem extends Item {
     private static final Component MESSAGE_STORED = message("data_stored");
     private static final Component MESSAGE_CLEARED = message("data_cleared");
     private static final Component MESSAGE_APPLIED = message("data_applied");
-    private static final Component MESSAGE_INCOMPATIBLE = message("data_incompatible");
+    private static final Component MESSAGE_INCOMPATIBLE = messageFailed("data_incompatible");
 
     public DiskItem(Properties properties) {
         super(properties);
@@ -105,11 +105,8 @@ public class DiskItem extends Item {
         Level level = context.getLevel();
         if (level.isClientSide) return InteractionResult.PASS;
         Player player = context.getPlayer();
-        if (player == null) {
-            return InteractionResult.FAIL;
-        }
-        if (player.isShiftKeyDown()) {
-            return InteractionResult.SUCCESS;
+        if (player == null || player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
         }
         BlockPos clickedPos = context.getClickedPos();
         if (!level.getBlockState(clickedPos).hasBlockEntity()) return InteractionResult.PASS;
@@ -162,8 +159,12 @@ public class DiskItem extends Item {
     }
 
     private static Component message(String suffix) {
+        return Component.translatable(MESSAGE_PREFIX + suffix);
+    }
+
+    private static Component messageFailed(String suffix) {
         return Component.translatable(MESSAGE_PREFIX + suffix)
-            .withStyle(ChatFormatting.AQUA);
+            .withStyle(ChatFormatting.RED);
     }
 
     public record DiskData(CompoundTag tag) {
