@@ -2,6 +2,8 @@ package dev.dubhe.anvilcraft.integration.jade.provider;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +13,8 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
+import java.util.Optional;
+
 import static dev.dubhe.anvilcraft.block.entity.ItemDetectorBlockEntity.Mode;
 
 public enum ItemDetectorProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
@@ -18,6 +22,10 @@ public enum ItemDetectorProvider implements IBlockComponentProvider, IServerData
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
+        boolean shiftKeyDown = Optional.ofNullable(Minecraft.getInstance().player)
+            .map(LocalPlayer::isShiftKeyDown)
+            .orElse(false);
+        if (!shiftKeyDown) return;
         CompoundTag serverData = blockAccessor.getServerData();
         if (serverData.contains("Range")) {
             int range = serverData.getInt("Range");

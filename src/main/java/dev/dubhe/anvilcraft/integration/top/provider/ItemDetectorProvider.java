@@ -30,6 +30,7 @@ public enum ItemDetectorProvider implements IProbeInfoProvider {
             Level level,
             BlockState blockState,
             IProbeHitData hitData) {
+        if (!player.isShiftKeyDown()) return;
         Optional.ofNullable(level.getBlockEntity(hitData.getPos()))
             .filter(b -> b instanceof ItemDetectorBlockEntity)
             .ifPresent(b -> {
