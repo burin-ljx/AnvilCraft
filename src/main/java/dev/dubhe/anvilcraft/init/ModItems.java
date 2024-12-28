@@ -1204,6 +1204,19 @@ public class ModItems {
         })
         .register();
 
+    public static final ItemEntry<Item> BRONZE_NUGGET = REGISTRATE
+        .item("bronze_nugget", Item::new)
+        .tag(ModItemTags.BRONZE_NUGGETS, ModItemTags.BRONZE_NUGGETS)
+        .recipe((ctx, provider) -> {
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
+                .requires(ModItemTags.BRONZE_INGOTS)
+                .unlockedBy(
+                    AnvilCraftDatagen.hasItem(ModItemTags.BRONZE_INGOTS),
+                    RegistrateRecipeProvider.has(ModItemTags.BRONZE_INGOTS))
+                .save(provider);
+        })
+        .register();
+
     public static final ItemEntry<Item> BRASS_INGOT = REGISTRATE
         .item("brass_ingot", Item::new)
         .tag(ModItemTags.BRASS_INGOTS, ModItemTags.BRASS_INGOTS)
@@ -1222,6 +1235,19 @@ public class ModItems {
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.BRASS_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.BRASS_NUGGETS))
+                .save(provider);
+        })
+        .register();
+
+    public static final ItemEntry<Item> BRASS_NUGGET = REGISTRATE
+        .item("brass_nugget", Item::new)
+        .tag(ModItemTags.BRASS_NUGGETS, ModItemTags.BRASS_NUGGETS)
+        .recipe((ctx, provider) -> {
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
+                .requires(ModItemTags.BRASS_INGOTS)
+                .unlockedBy(
+                    AnvilCraftDatagen.hasItem(ModItemTags.BRASS_INGOTS),
+                    RegistrateRecipeProvider.has(ModItemTags.BRASS_INGOTS))
                 .save(provider);
         })
         .register();

@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.integration.top;
 
+import dev.dubhe.anvilcraft.integration.top.provider.ItemDetectorProvider;
 import dev.dubhe.anvilcraft.integration.top.provider.PowerBlockProvider;
 import dev.dubhe.anvilcraft.integration.top.provider.RubyPrismProvider;
 
@@ -12,5 +13,6 @@ public class AnvilCraftTopPlugin {
 
         probe.registerProvider(PowerBlockProvider.INSTANCE);
         probe.registerProvider(RubyPrismProvider.INSTANCE);
+        probe.registerProvider(ItemDetectorProvider.INSTANCE);
     }
 }

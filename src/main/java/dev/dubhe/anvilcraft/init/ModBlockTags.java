@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public class ModBlockTags {
+
+    private static final String MEKANISM_MODID = "mekanism";
     // mod tags
     public static final TagKey<Block> UNDER_CAULDRON = bind("under_cauldron");
     public static final TagKey<Block> MAGNET = bind("magnet");
@@ -59,8 +61,15 @@ public class ModBlockTags {
     public static final TagKey<Block> INCORRECT_FOR_AMYTHEST_TOOL = bind("incorrect_for_amythest_tool");
     public static final TagKey<Block> INCORRECT_FOR_EMBER_TOOL = bind("incorrect_for_ember_tool");
 
+    //mekanism tags
+    public static final TagKey<Block> MEKANISM_CARDBOARD_BOX_BLACKLIST = bindMekanism("cardboard_blacklist");
+
     private static @NotNull TagKey<Block> bindC(String id) {
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", id));
+    }
+
+    private static @NotNull TagKey<Block> bindMekanism(String id){
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MEKANISM_MODID, id));
     }
 
     private static @NotNull TagKey<Block> bind(String id) {

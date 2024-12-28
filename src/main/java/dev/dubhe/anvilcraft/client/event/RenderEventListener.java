@@ -2,12 +2,9 @@ package dev.dubhe.anvilcraft.client.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.tooltip.HudTooltipManager;
 import dev.dubhe.anvilcraft.client.ModInspectionClient;
 import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
-import dev.dubhe.anvilcraft.client.renderer.RenderState;
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
 import dev.dubhe.anvilcraft.item.IEngineerGoggles;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -51,6 +48,7 @@ public class RenderEventListener {
     @SubscribeEvent
     public static void onRender(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
+        if (Minecraft.getInstance().options.hideGui) return;
         Entity entity = event.getCamera().getEntity();
         MultiBufferSource.BufferSource bufferSource =
             event.getLevelRenderer().renderBuffers.bufferSource();

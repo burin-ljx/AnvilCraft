@@ -18,7 +18,12 @@ public class ScreenLang {
         provider.add("screen.anvilcraft.button.direction.west", "West");
         provider.add("screen.anvilcraft.button.off", "off");
         provider.add("screen.anvilcraft.button.on", "on");
+        provider.add("screen.anvilcraft.button.filter_mode", "Filter Mode: %s");
+        provider.add("screen.anvilcraft.button.filter_mode_any", "Any");
+        provider.add("screen.anvilcraft.button.filter_mode_all", "All");
         provider.add("screen.anvilcraft.button.record", "Retention item filtering: %s");
+        provider.add("screen.anvilcraft.filter.scroll_to_change", "Scroll mouse to change count");
+        provider.add("screen.anvilcraft.filter.shift_to_scroll_faster", "Hold Shift to scroll faster");
         provider.add("screen.anvilcraft.slot.disable.tooltip", "Use item clicks to set filter");
         provider.add("screen.anvilcraft.royal_grindstone.remove_curse_count", "Removed %i curse");
         provider.add("screen.anvilcraft.royal_grindstone.remove_repair_cost", "Removed %i repair cost");

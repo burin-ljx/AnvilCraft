@@ -11,11 +11,11 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline;
 import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
 import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
@@ -49,7 +49,7 @@ public abstract class LevelRendererMixin {
             ordinal = 2
         )
     )
-    void renderLaserBeforeTerrain(
+    void renderBEBeforeTerrain(
         DeltaTracker deltaTracker,
         boolean renderBlockOutline,
         Camera camera,
@@ -62,7 +62,7 @@ public abstract class LevelRendererMixin {
         @Local(index = 25) MultiBufferSource.BufferSource bufferSource
     ) {
         if (RenderState.isEnhancedRenderingAvailable()) {
-            LaserRenderer.getInstance().render(frustumMatrix, projectionMatrix);
+            CacheableBERenderingPipeline.getInstance().render(frustumMatrix, projectionMatrix);
         }
     }
 
@@ -74,7 +74,7 @@ public abstract class LevelRendererMixin {
         )
     )
     void uploadBuffers(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
-        LaserRenderer.getInstance().runTasks();
+        CacheableBERenderingPipeline.getInstance().runTasks();
     }
 
 
@@ -108,7 +108,7 @@ public abstract class LevelRendererMixin {
             bufferSource,
             camera.getPosition()
         );
-        LaserRenderer.getInstance().renderBloomed(frustumMatrix, projectionMatrix);
+        CacheableBERenderingPipeline.getInstance().renderBloomed(frustumMatrix, projectionMatrix);
         RenderTarget mcInput = ModShaders.getBloomChain().getTempTarget("mcinput");
         mcInput.setClearColor(0, 0, 0, 0);
         mcInput.clear(Minecraft.ON_OSX);

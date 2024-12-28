@@ -8,8 +8,6 @@ import dev.dubhe.anvilcraft.recipe.mineral.MineralFountainRecipe;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class MineralFountainBlockEntity extends BlockEntity {
@@ -48,22 +45,14 @@ public class MineralFountainBlockEntity extends BlockEntity {
         tickCount = 0;
         BlockState aroundState = getAroundBlock();
         // 冷却检查
-        if (aroundState.is(Blocks.BLUE_ICE)
-            || aroundHas(Blocks.BEDROCK)
-            || aroundHas(ModBlocks.MINERAL_FOUNTAIN.get())) {
+        if (aroundHas(Blocks.BEDROCK) || aroundHas(ModBlocks.MINERAL_FOUNTAIN.get())) {
             level.destroyBlock(getBlockPos(), false);
-            level.setBlockAndUpdate(getBlockPos(), Blocks.BEDROCK.defaultBlockState());
+            level.setBlockAndUpdate(getBlockPos(), ModBlocks.STURDY_DEEPSLATE.getDefaultState());
             return;
         }
         // 高度检查
-        if (level.getMinBuildHeight() > getBlockPos().getY() || getBlockPos().getY() > level.getMinBuildHeight() + 5)
+        if (level.getMinBuildHeight() > getBlockPos().getY() || getBlockPos().getY() > level.getMinBuildHeight() + 8)
             return;
-        // 底层基岩检查
-        BlockPos checkPos = getBlockPos();
-        while (checkPos.getY() > level.getMinBuildHeight()) {
-            checkPos = checkPos.below();
-            if (!level.getBlockState(checkPos).is(Blocks.BEDROCK)) return;
-        }
         BlockState aboveState = level.getBlockState(getBlockPos().above());
         // 岩浆处理
         if (aroundState.is(Blocks.LAVA)) {
@@ -74,6 +63,8 @@ public class MineralFountainBlockEntity extends BlockEntity {
             Block hotBlock = HeatableBlockManager.getHotBlock(aboveState.getBlock());
             if (hotBlock == null) return;
             level.setBlockAndUpdate(getBlockPos().above(), hotBlock.defaultBlockState());
+        } else if(aboveState.is(Blocks.AIR)){
+            level.setBlockAndUpdate(getBlockPos().above(), ModBlocks.CINERITE.getDefaultState());
         } else {
             MineralFountainRecipe.Input input =
                 new MineralFountainRecipe.Input(aroundState.getBlock(), aboveState.getBlock());

@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.client.gui.component.EnableFilterButton;
 import dev.dubhe.anvilcraft.inventory.IFilterMenu;
 import dev.dubhe.anvilcraft.network.MachineEnableFilterPacket;
 
+import dev.dubhe.anvilcraft.util.RenderHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -142,12 +143,12 @@ public interface IFilterScreen<T extends AbstractContainerMenu & IFilterMenu> {
      *
      * @param guiGraphics 画布
      * @param slot        槽位
-     * @param stack       物品堆栈
+     * @param stack       物品堆叠
      */
     default void renderFilterItem(@NotNull GuiGraphics guiGraphics, @NotNull Slot slot, @NotNull ItemStack stack) {
         int i = slot.x;
         int j = slot.y;
-        guiGraphics.renderFakeItem(stack, i, j);
+        RenderHelper.renderItemWithTransparency(stack, guiGraphics.pose(), i, j, 0.52f);
         guiGraphics.fill(i, j, i + 16, j + 16, 0x80ffaaaa);
     }
 

@@ -2,7 +2,6 @@ package dev.dubhe.anvilcraft.client.renderer.laser;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.LaserStateAccess;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -13,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Function;
 
 public record LaserState(
-    LaserStateAccess blockEntity,
+    BaseLaserBlockEntity blockEntity,
     BlockPos pos,
     float length,
     float offset,
@@ -22,7 +21,7 @@ public record LaserState(
     TextureAtlasSprite laserAtlasSprite,
     TextureAtlasSprite concreteAtlasSprite
 ) {
-    public static LaserState create(LaserStateAccess blockEntity, PoseStack poseStack) {
+    public static LaserState create(BaseLaserBlockEntity blockEntity, PoseStack poseStack) {
         if (blockEntity.getIrradiateBlockPos() == null) return null;
         Function<ResourceLocation, TextureAtlasSprite> spriteGetter = Minecraft.getInstance()
             .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);

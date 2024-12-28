@@ -34,6 +34,13 @@ public class SuperHeatingRecipeLoader {
                 .result(new ItemStack(ModItems.ROYAL_STEEL_INGOT.asItem()))
                 .save(provider);
         SuperHeatingRecipe.builder()
+            .requires(Blocks.IRON_BLOCK, 3)
+            .requires(Blocks.DIAMOND_BLOCK)
+            .requires(Blocks.AMETHYST_BLOCK, 2)
+            .requires(ModItemTags.GEM_BLOCKS)
+            .result(ModBlocks.ROYAL_STEEL_BLOCK.asStack())
+            .save(provider);
+        SuperHeatingRecipe.builder()
                 .requires(ModBlocks.QUARTZ_SAND, 8)
                 .requires(ModItems.ROYAL_STEEL_INGOT)
                 .result(new ItemStack(ModBlocks.TEMPERING_GLASS, 8))

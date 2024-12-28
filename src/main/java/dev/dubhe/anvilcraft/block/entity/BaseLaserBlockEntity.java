@@ -1,13 +1,16 @@
 package dev.dubhe.anvilcraft.block.entity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.LaserStateAccess;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBlockEntity;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBlockEntityRenderer;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
 
 import lombok.Getter;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -20,12 +23,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -37,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserStateAccess {
+public abstract class BaseLaserBlockEntity extends CacheableBlockEntity {
     public static final int[] COOLDOWNS = {
         Integer.MAX_VALUE,
         24 * 20,
@@ -77,19 +81,14 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
     }
 
     public void updateIrradiateBlockPos(BlockPos newPos) {
-        if (newPos == irradiateBlockPos) return;
         if (irradiateBlockPos == null) {
+            if (newPos != null)
+                markChanged();
             irradiateBlockPos = newPos;
-            markChanged();
             return;
         }
-        if (newPos == null) {
-            irradiateBlockPos = null;
+        if (!irradiateBlockPos.equals(newPos))
             markChanged();
-            return;
-        }
-        if (irradiateBlockPos.equals(newPos)) return;
-        markChanged();
         irradiateBlockPos = newPos;
     }
 
@@ -278,7 +277,9 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
         if (irradiateBlockPos == null) return;
         if (!(level.getBlockEntity(irradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity)) return;
         irradiateBlockEntity.onCancelingIrradiation(this);
-        LaserRenderer.getInstance().requireRecompile(this);
+        if (level instanceof ClientLevel) {
+            CacheableBERenderingPipeline.getInstance().update(this);
+        }
     }
 
     public float getLaserOffset() {
@@ -302,15 +303,13 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
             Double.POSITIVE_INFINITY);
     }
 
-    @Override
-    public boolean removed() {
-        return remove;
-    }
 
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        LaserRenderer.getInstance().requireRecompile(this);
+        if (level instanceof ClientLevel) {
+            CacheableBERenderingPipeline.getInstance().update(this);
+        }
     }
 
     public void updateLaserLevel(int value){
@@ -323,6 +322,11 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
     public void clientUpdate(BlockPos irradiateBlockPos, int laserLevel) {
         this.irradiateBlockPos = irradiateBlockPos;
         this.laserLevel = laserLevel;
-        LaserRenderer.getInstance().requireRecompile(this);
+        CacheableBERenderingPipeline.getInstance().update(this);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public CacheableBlockEntityRenderer<? extends CacheableBlockEntity> getRenderer() {
+        return LaserRenderer.INSTANCE;
     }
 }
