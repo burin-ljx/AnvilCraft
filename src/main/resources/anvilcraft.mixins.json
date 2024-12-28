@@ -11,6 +11,7 @@
     "BlockMixin",
     "CraftingMenuMixin",
     "DamageSourcesMixin",
+    "DefaultDispenseItemBehaviorMixin",
     "DispenseItemEmptyBottleBehaviorMixin",
     "DispenseItemEmptyBucketBehaviorMixin",
     "DispenseItemWaterBottleBehaviorMixin",
