@@ -81,14 +81,14 @@ public class OilCauldronBlock extends LayeredCauldronBlock implements IHammerRem
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-        ItemStack stack,
-        BlockState state,
-        Level level,
-        BlockPos pos,
-        Player player,
-        InteractionHand hand,
-        BlockHitResult hitResult
+    public ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hitResult
     ) {
         CauldronInteraction interaction = this.interactions.map().get(stack.getItem());
         if (interaction == null) {

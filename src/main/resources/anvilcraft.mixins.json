@@ -11,6 +11,7 @@
     "BlockMixin",
     "CraftingMenuMixin",
     "DamageSourcesMixin",
+    "DefaultDispenseItemBehaviorMixin",
     "DispenseItemEmptyBottleBehaviorMixin",
     "DispenseItemEmptyBucketBehaviorMixin",
     "DispenseItemWaterBottleBehaviorMixin",
@@ -35,6 +36,7 @@
     "ClientLevelMixin",
     "GameRendererMixin",
     "ItemInHandRendererMixin",
+    "LevelChunkMixin",
     "LevelRendererMixin",
     "MinecraftClientMixin",
     "MouseHandlerMixin",
@@ -46,8 +48,7 @@
     "compat.EmbeddiumDefaultTerrainRenderPassesMixin",
     "compat.SodiumChunkBuilderMeshingTaskMixin",
     "compat.SodiumDefaultMaterialsMixin",
-    "compat.SodiumDefaultTerrainRenderPassesMixin",
-    "LevelChunkMixin"
+    "compat.SodiumDefaultTerrainRenderPassesMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",
   "injectors": {
