@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.mixin;
 
-import dev.dubhe.anvilcraft.api.LaserStateAccess;
-import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline;
+import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -22,8 +22,8 @@ public abstract class LevelChunkMixin {
     @Inject(method = "removeBlockEntity", at = @At("HEAD"))
     void onBlockEntityRemoved(BlockPos pos, CallbackInfo ci) {
         BlockEntity be = getBlockEntity(pos);
-        if (be instanceof LaserStateAccess laserStateAccess) {
-            LaserRenderer.getInstance().blockRemoved(laserStateAccess);
+        if (be instanceof BaseLaserBlockEntity laserStateAccess) {
+            CacheableBERenderingPipeline.getInstance().blockRemoved(laserStateAccess);
         }
     }
 }

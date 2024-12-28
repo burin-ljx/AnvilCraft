@@ -1,7 +1,9 @@
 package dev.dubhe.anvilcraft.block.entity;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-import dev.dubhe.anvilcraft.api.LaserStateAccess;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBlockEntity;
+import dev.dubhe.anvilcraft.api.rendering.CacheableBlockEntityRenderer;
 import dev.dubhe.anvilcraft.client.renderer.laser.LaserRenderer;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
@@ -21,12 +23,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -38,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserStateAccess {
+public abstract class BaseLaserBlockEntity extends CacheableBlockEntity {
     public static final int[] COOLDOWNS = {
         Integer.MAX_VALUE,
         24 * 20,
@@ -275,7 +278,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
         if (!(level.getBlockEntity(irradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity)) return;
         irradiateBlockEntity.onCancelingIrradiation(this);
         if (level instanceof ClientLevel) {
-            LaserRenderer.getInstance().requireRecompile(this);
+            CacheableBERenderingPipeline.getInstance().update(this);
         }
     }
 
@@ -300,16 +303,12 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
             Double.POSITIVE_INFINITY);
     }
 
-    @Override
-    public boolean removed() {
-        return remove;
-    }
 
     @Override
     public void clearRemoved() {
         super.clearRemoved();
         if (level instanceof ClientLevel) {
-            LaserRenderer.getInstance().requireRecompile(this);
+            CacheableBERenderingPipeline.getInstance().update(this);
         }
     }
 
@@ -323,6 +322,11 @@ public abstract class BaseLaserBlockEntity extends BlockEntity implements LaserS
     public void clientUpdate(BlockPos irradiateBlockPos, int laserLevel) {
         this.irradiateBlockPos = irradiateBlockPos;
         this.laserLevel = laserLevel;
-        LaserRenderer.getInstance().requireRecompile(this);
+        CacheableBERenderingPipeline.getInstance().update(this);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public CacheableBlockEntityRenderer<? extends CacheableBlockEntity> getRenderer() {
+        return LaserRenderer.INSTANCE;
     }
 }
