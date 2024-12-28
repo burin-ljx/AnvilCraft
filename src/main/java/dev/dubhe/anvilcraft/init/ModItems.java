@@ -22,6 +22,7 @@ import dev.dubhe.anvilcraft.item.EmberMetalPickaxeItem;
 import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
+import dev.dubhe.anvilcraft.item.EmeraldAmuletItem;
 import dev.dubhe.anvilcraft.item.EmptyCapacitorItem;
 import dev.dubhe.anvilcraft.item.GeodeItem;
 import dev.dubhe.anvilcraft.item.GuideBookItem;
@@ -35,9 +36,12 @@ import dev.dubhe.anvilcraft.item.RoyalPickaxeItem;
 import dev.dubhe.anvilcraft.item.RoyalShovelItem;
 import dev.dubhe.anvilcraft.item.RoyalSwordItem;
 import dev.dubhe.anvilcraft.item.RoyalUpgradeTemplateItem;
+import dev.dubhe.anvilcraft.item.RubyAmuletItem;
+import dev.dubhe.anvilcraft.item.SapphireAmuletItem;
 import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
 import dev.dubhe.anvilcraft.item.SuperHeavyItem;
+import dev.dubhe.anvilcraft.item.TopazAmuletItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
@@ -418,6 +422,22 @@ public class ModItems {
         .model((ctx, provider) -> {
         })
         .register();
+
+    public static final ItemEntry<EmeraldAmuletItem> EMERALD_AMULET = REGISTRATE
+            .item("emerald_amulet", EmeraldAmuletItem::new)
+            //这里不知道加个什么tag好 .tag(ModItemTags.？？？)
+            .register();
+    public static final ItemEntry<TopazAmuletItem> TOPAZ_AMULET = REGISTRATE
+            .item("topaz_amulet", TopazAmuletItem::new)
+            .register();
+    public static final ItemEntry<RubyAmuletItem> RUBY_AMULET = REGISTRATE
+            .item("ruby_amulet", RubyAmuletItem::new)
+            .register();
+    public static final ItemEntry<SapphireAmuletItem> SAPPHIRE_AMULET = REGISTRATE
+            .item("sapphire_amulet", SapphireAmuletItem::new)
+            .register();
+
+
     public static final ItemEntry<CapacitorItem> CAPACITOR = REGISTRATE
         .item("capacitor", CapacitorItem::new)
         .model((ctx, provider) -> {
