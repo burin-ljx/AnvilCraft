@@ -1,14 +1,13 @@
 package dev.dubhe.anvilcraft.api.rendering;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface CacheableBlockEntityRenderer<T extends CacheableBlockEntity> {
-    void compileRenderType(
+public interface CacheableBlockEntityRenderer<T extends BlockEntity> {
+    void render(
         T cacheableBlockEntity,
-        RenderType renderType,
-        BufferBuilder bufferBuilder,
+        MultiBufferSource.BufferSource buffer,
         PoseStack poseStack
     );
 }
