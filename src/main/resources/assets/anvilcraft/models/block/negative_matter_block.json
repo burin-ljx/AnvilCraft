@@ -1,6 +1,7 @@
 {
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/block",
+	"ambientocclusion": false,
 	"textures": {
 		"0": "anvilcraft:block/negative_matter_block",
 		"1": "anvilcraft:block/negative_matter_block_outline",
@@ -11,7 +12,6 @@
 			"from": [0.5, 0.5, 0.5],
 			"to": [15.5, 15.5, 15.5],
 			"shade": false,
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 15, 15], "texture": "#0"},
 				"east": {"uv": [0, 0, 15, 15], "texture": "#0"},
@@ -35,5 +35,11 @@
 				"down": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#1", "cullface": "up"}
 			}
 		}
-	]
+	],
+	"display": {
+		"gui": {
+			"rotation": [-30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		}
+	}
 }
