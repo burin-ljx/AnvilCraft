@@ -1,0 +1,27 @@
+{
+  "type": "anvilcraft:jewel_crafting",
+  "ingredients": [
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "minecraft:emerald_block"
+    },
+    {
+      "item": "anvilcraft:royal_steel_ingot"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "anvilcraft:emerald_amulet"
+  }
+}

@@ -30,7 +30,7 @@ public class MeltGemCauldron extends BetterAbstractCauldronBlock implements IHam
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
+    public ItemInteractionResult useItemOn(
         ItemStack stack,
         BlockState state,
         Level level,

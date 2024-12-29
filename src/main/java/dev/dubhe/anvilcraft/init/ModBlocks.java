@@ -26,6 +26,7 @@ import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
+import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
 import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
@@ -1092,13 +1093,13 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
-    public static final BlockEntry<BlockComparatorBlock> BLOCK_COMPARATOR_BLOCK = REGISTRATE
+    public static final BlockEntry<BlockComparatorBlock> BLOCK_COMPARATOR = REGISTRATE
         .block("block_comparator", BlockComparatorBlock::new)
         .initialProperties(() -> Blocks.OBSERVER)
         .properties(p -> p.noOcclusion())
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("ABA")
                 .pattern(" C ")
                 .pattern(" D ")
@@ -1110,6 +1111,33 @@ public class ModBlocks {
                 .save(provider);
         })
         .blockstate((ctx, provider) -> {
+        })
+        .simpleItem()
+        .register();
+    public static final BlockEntry<ItemDetectorBlock> ITEM_DETECTOR = REGISTRATE
+        .block("item_detector", ItemDetectorBlock::new)
+        .initialProperties(() -> Blocks.DAYLIGHT_DETECTOR)
+        .properties(p -> p.noOcclusion())
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .recipe((ctx, provider) -> {
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
+                .pattern("CC ")
+                .pattern("CBR")
+                .pattern("III")
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .define('B', ModItems.CIRCUIT_BOARD)
+                .define('R', Blocks.COMPARATOR)
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.CIRCUIT_BOARD), AnvilCraftDatagen.has(ModItems.CIRCUIT_BOARD))
+                .save(provider);
+        })
+        .blockstate((ctx, provider) -> {
+            provider.horizontalBlock(
+                ctx.get(),
+                state -> DangerUtil.genModModelFile("block/item_detector" +
+                    (state.getValue(ItemDetectorBlock.POWERED) ? "_on" : "")).get(),
+                0
+            );
         })
         .simpleItem()
         .register();

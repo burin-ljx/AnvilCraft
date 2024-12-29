@@ -45,7 +45,7 @@ public class CementCauldronBlock extends BetterAbstractCauldronBlock implements 
 
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         CauldronInteraction interaction = this.interactions.map().get(stack.getItem());
         if (interaction == null) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

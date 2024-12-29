@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class SlotFilterChangePacket implements CustomPacketPayload {
     public static final Type<SlotFilterChangePacket> TYPE = new Type<>(AnvilCraft.of("slot_filter_change"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SlotFilterChangePacket> STREAM_CODEC =
-            StreamCodec.ofMember(SlotFilterChangePacket::encode, SlotFilterChangePacket::new);
+            StreamCodec.ofMember(SlotFilterChangePacket::encode, SlotFilterChangePacket::decode);
     public static final IPayloadHandler<SlotFilterChangePacket> HANDLER = new DirectionalPayloadHandler<>(
             SlotFilterChangePacket::clientHandler, SlotFilterChangePacket::serverHandler);
 
@@ -33,14 +33,20 @@ public class SlotFilterChangePacket implements CustomPacketPayload {
      * @param index  槽位
      * @param filter 过滤
      */
-    public SlotFilterChangePacket(int index, @NotNull ItemStack filter) {
+    public SlotFilterChangePacket(int index, @NotNull ItemStack filter, boolean forceCount) {
         this.index = index;
         this.filter = filter.copy();
-        this.filter.setCount(1);
+        if (forceCount) this.filter.setCount(1);
     }
 
-    public SlotFilterChangePacket(@NotNull RegistryFriendlyByteBuf buf) {
-        this(buf.readInt(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
+    public SlotFilterChangePacket(int index, @NotNull ItemStack filter) {
+        this(index, filter, true);
+    }
+
+    public static SlotFilterChangePacket decode(@NotNull RegistryFriendlyByteBuf buf) {
+        int index = buf.readInt();
+        ItemStack filter = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+        return new SlotFilterChangePacket(index, filter, false);
     }
 
     public void encode(@NotNull RegistryFriendlyByteBuf buf) {
@@ -49,6 +55,7 @@ public class SlotFilterChangePacket implements CustomPacketPayload {
     }
 
     @Override
+    @NotNull
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }

@@ -26,6 +26,8 @@ public class ItemTooltipLang {
                 "tooltip.anvilcraft.item.structure_tool.must_odd",
                 "The side length of the selected area must be odd and cannot exceed 15");
         provider.add("tooltip.anvilcraft.item.structure_tool.click_to_copy", "Click to copy");
+        provider.add("tooltip.anvilcraft.item.disk.store", "Right click block to copy its setting");
+        provider.add("tooltip.anvilcraft.item.disk.clear", "Shift + Right click to clear data stored");
         provider.add("tooltip.anvilcraft.heliostats.adjacent_heliostats", "Adjacent heliostats detected.");
     }
 }

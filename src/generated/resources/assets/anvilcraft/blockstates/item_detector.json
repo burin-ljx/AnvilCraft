@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=east,powered=false": {
-      "model": "minecraft:block/schmitt_trigger_off",
+      "model": "anvilcraft:block/item_detector",
       "y": 270
     },
     "facing=east,powered=true": {
-      "model": "minecraft:block/schmitt_trigger_on",
+      "model": "anvilcraft:block/item_detector_on",
       "y": 270
     },
     "facing=north,powered=false": {
-      "model": "minecraft:block/schmitt_trigger_off",
+      "model": "anvilcraft:block/item_detector",
       "y": 180
     },
     "facing=north,powered=true": {
-      "model": "minecraft:block/schmitt_trigger_on",
+      "model": "anvilcraft:block/item_detector_on",
       "y": 180
     },
     "facing=south,powered=false": {
-      "model": "minecraft:block/schmitt_trigger_off"
+      "model": "anvilcraft:block/item_detector"
     },
     "facing=south,powered=true": {
-      "model": "minecraft:block/schmitt_trigger_on"
+      "model": "anvilcraft:block/item_detector_on"
     },
     "facing=west,powered=false": {
-      "model": "minecraft:block/schmitt_trigger_off",
+      "model": "anvilcraft:block/item_detector",
       "y": 90
     },
     "facing=west,powered=true": {
-      "model": "minecraft:block/schmitt_trigger_on",
+      "model": "anvilcraft:block/item_detector_on",
       "y": 90
     }
   }
