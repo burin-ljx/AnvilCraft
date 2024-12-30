@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -71,12 +72,12 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
             Block.box(0, 6, 0, 5, 16, 5),
             Block.box(11, 6, 0, 16, 16, 5)
         ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
     public static final HashMap<BlockPos, PistonPushInfo> MOVING_PISTON_MAP = new HashMap<>();
 
     public SlidingRailBlock(Properties properties) {
         super(properties);
-        registerDefaultState(getStateDefinition().any().setValue(AXIS, Direction.Axis.X));
+        registerDefaultState(getStateDefinition().any().setValue(AXIS, Axis.X));
     }
 
     @Nullable
@@ -97,6 +98,11 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
     }
 
     @Override
+    protected boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
+    }
+
+    @Override
     public VoxelShape getShape(
         BlockState blockState,
         BlockGetter blockGetter,
@@ -113,6 +119,8 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
         };
     }
 
+
+
     @Override
     public void onNeighborChange(
         BlockState state,
@@ -121,18 +129,15 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
         BlockPos neighbor
     ) {
         if (level.getBlockState(neighbor).is(Blocks.MOVING_PISTON)) {
-
             Direction dir = level.getBlockState(neighbor).getValue(FACING);
-            if (dir == Direction.UP || dir == Direction.DOWN || neighbor.getY() <= pos.getY()) {
-                if (MOVING_PISTON_MAP.containsKey(pos)) MOVING_PISTON_MAP.remove(pos);
+            if (dir.getAxis() == Axis.Y || !neighbor.equals(pos.above())) {
+                MOVING_PISTON_MAP.remove(pos);
                 return;
             }
             PistonPushInfo ppi = new PistonPushInfo(neighbor, dir);
             if (MOVING_PISTON_MAP.containsKey(pos)) {
                 MOVING_PISTON_MAP.get(pos).fromPos = neighbor;
             } else MOVING_PISTON_MAP.put(pos, ppi);
-
-
         }
     }
 
@@ -162,9 +167,14 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
         } else if (!MOVING_PISTON_MAP.get(pos).extending) {
             MOVING_PISTON_MAP.get(pos).direction = MOVING_PISTON_MAP.get(pos).direction.getOpposite();
         }
-        BlockPos fromPos = MOVING_PISTON_MAP.get(pos).fromPos;
-        pushBlock(fromPos, level, MOVING_PISTON_MAP.get(pos).direction);
+        level.blockEvent(pos, this, 0, MOVING_PISTON_MAP.get(pos).direction.get3DDataValue());
         MOVING_PISTON_MAP.remove(pos);
+    }
+
+    @Override
+    protected boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        Direction direction = Direction.from3DDataValue(param);
+        return moveBlocks(level, pos.above(), direction);
     }
 
     /**
@@ -178,9 +188,9 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
         moveBlocks(level, pos, direction);
     }
 
-    private static void moveBlocks(Level level, BlockPos pos, Direction facing) {
+    private static boolean moveBlocks(Level level, BlockPos pos, Direction facing) {
         PistonStructureResolver pistonstructureresolver = new PistonStructureResolver(level, pos.relative(facing.getOpposite()), facing, true);
-        if (!pistonstructureresolver.resolve()) return;
+        if (!pistonstructureresolver.resolve()) return false;
         Map<BlockPos, BlockState> map = Maps.newHashMap();
         List<BlockPos> list = pistonstructureresolver.getToPush();
         List<BlockState> list1 = Lists.newArrayList();
@@ -212,6 +222,7 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
         for (int k = list.size() - 1; k >= 0; k--) {
             BlockPos blockpos3 = list.get(k);
             blockpos3 = blockpos3.relative(direction);
+            BlockState blockstate5 = level.getBlockState(blockpos3);
             map.remove(blockpos3);
             BlockState blockstate8 = Blocks.MOVING_PISTON.defaultBlockState().setValue(FACING, facing);
             level.setBlock(blockpos3, blockstate8, 68);
@@ -225,7 +236,7 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
                     false
                 )
             );
-            ablockstate[i++] = level.getBlockState(blockpos3);
+            ablockstate[i++] = blockstate5;
         }
 
         BlockState blockState3 = Blocks.AIR.defaultBlockState();
@@ -255,6 +266,7 @@ public class SlidingRailBlock extends Block implements IHammerChangeable, IHamme
             level.updateNeighborsAt(list.get(i1), ablockstate[i++].getBlock());
         }
 
+        return true;
     }
 
     @Override
