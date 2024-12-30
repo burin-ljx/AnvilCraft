@@ -21,7 +21,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -60,6 +59,7 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
     private Mode filterMode;
     @Getter
     private int range = 0;
+    private boolean rangeChanged = true;
     private AABB detectionRange;
     @Getter
     private final ContainerData dataAccess = new ContainerData() {
@@ -137,8 +137,10 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        if (!this.rangeChanged) return new CompoundTag();
         CompoundTag tag = super.getUpdateTag(registries);
         tag.putInt("Range", this.range);
+        this.rangeChanged = false;
         return tag;
     }
 
@@ -220,8 +222,13 @@ public class ItemDetectorBlockEntity extends BlockEntity implements MenuProvider
         range = Mth.clamp(range, MIN_RANGE, MAX_RANGE);
         if (this.range == range) return;
         this.range = range;
-        this.setChanged();
         this.recalcDetectionRange();
+    }
+
+    @Override
+    public void setChanged() {
+        this.rangeChanged = true;
+        super.setChanged();
     }
 
     @Override
