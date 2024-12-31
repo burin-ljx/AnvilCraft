@@ -9,7 +9,7 @@
       "item": "anvilcraft:induction_light"
     },
     "C": {
-      "item": "anvilcraft:silver_pressure_plate"
+      "tag": "c:plates/silver"
     },
     "D": {
       "item": "anvilcraft:ruby_block"

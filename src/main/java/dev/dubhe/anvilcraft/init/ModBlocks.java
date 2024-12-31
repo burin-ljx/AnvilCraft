@@ -1047,7 +1047,7 @@ public class ModBlocks {
                 .pattern("ACA")
                 .define('A', ModItems.ROYAL_STEEL_INGOT)
                 .define('B', ModBlocks.INDUCTION_LIGHT)
-                .define('C', ModBlocks.SILVER_PRESSURE_PLATE)
+                .define('C', ModItemTags.SILVER_PLATES)
                 .define('D', ModBlocks.RUBY_BLOCK)
                 .define('E', Items.TINTED_GLASS)
                 .unlockedBy(
@@ -1057,8 +1057,8 @@ public class ModBlocks {
                     AnvilCraftDatagen.hasItem(ModBlocks.INDUCTION_LIGHT),
                     AnvilCraftDatagen.has(ModBlocks.INDUCTION_LIGHT))
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModBlocks.SILVER_PRESSURE_PLATE),
-                    AnvilCraftDatagen.has(ModBlocks.SILVER_PRESSURE_PLATE))
+                    AnvilCraftDatagen.hasItem(ModItemTags.SILVER_PLATES),
+                    AnvilCraftDatagen.has(ModItemTags.SILVER_PLATES))
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.RUBY_BLOCK),
                     AnvilCraftDatagen.has(ModBlocks.RUBY_BLOCK))
@@ -3266,7 +3266,7 @@ public class ModBlocks {
                 ctx.get(),
                 ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
             .item()
-            .tag(ModItemTags.PLATES, ModItemTags.bindC(type + "_plates"), ModItemTags.PLATES)
+            .tag(ModItemTags.PLATES, ModItemTags.bindC("plates/" + type), ModItemTags.PLATES)
             .initialProperties(
                 () -> type.equals("tungsten") ? new Item.Properties().fireResistant() : new Item.Properties())
             .build()

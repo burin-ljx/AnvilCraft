@@ -1478,6 +1478,15 @@ public class ModItems {
     public static final ItemEntry<SuperHeavyItem> STABLE_NEUTRONIUM_INGOT = REGISTRATE
         .item("stable_neutronium_ingot", SuperHeavyItem::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
+        .recipe((ctx, provider) -> {
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 1)
+                .requires(ModItems.NEUTRONIUM_INGOT)
+                .requires(ModItems.LEVITATION_POWDER)
+                .unlockedBy(
+                    AnvilCraftDatagen.hasItem(ModItems.NEUTRONIUM_INGOT),
+                    AnvilCraftDatagen.has(ModItems.NEUTRONIUM_INGOT))
+                .save(provider);
+        })
         .register();
     public static final ItemEntry<SuperHeavyItem> CHARGED_NEUTRONIUM_INGOT = REGISTRATE
         .item("charged_neutronium_ingot", SuperHeavyItem::new)
