@@ -35,7 +35,7 @@ public class VoidMatterBlock extends Block {
             .map(d -> level.getBlockState(pos.relative(d)))
             .filter(b -> b.getBlock() instanceof VoidMatterBlock)
             .count();
-        if (neighborVoidMatterCount > VOID_DECAY_THRESHOLD) {
+        if (neighborVoidMatterCount >= VOID_DECAY_THRESHOLD) {
             level.setBlockAndUpdate(pos, this.voidDecay(level, pos, state, random));
         }
     }
