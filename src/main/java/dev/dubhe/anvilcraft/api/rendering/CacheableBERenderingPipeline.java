@@ -1,10 +1,9 @@
 package dev.dubhe.anvilcraft.api.rendering;
 
-import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import lombok.Getter;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Matrix4f;
 
 import java.util.ArrayDeque;
@@ -13,15 +12,6 @@ import java.util.Map;
 import java.util.Queue;
 
 public class CacheableBERenderingPipeline {
-    public static final RenderType[] SUPPORTED_RENDERTYPES = new RenderType[]{
-        RenderType.solid(),
-        ModRenderTypes.LASER
-    };
-
-    public static final RenderType[] BLOOM_RENDERTYPES = new RenderType[]{
-        ModRenderTypes.LASER
-    };
-
     @Getter
     private static CacheableBERenderingPipeline instance;
     private final ClientLevel level;
@@ -59,12 +49,12 @@ public class CacheableBERenderingPipeline {
         instance = new CacheableBERenderingPipeline(level);
     }
 
-    public void blockRemoved(CacheableBlockEntity be){
+    public void blockRemoved(BlockEntity be){
         ChunkPos chunkPos = new ChunkPos(be.getBlockPos());
         getRenderRegion(chunkPos).blockRemoved(be);
     }
 
-    public void update(CacheableBlockEntity be){
+    public void update(BlockEntity be){
         ChunkPos chunkPos = new ChunkPos(be.getBlockPos());
         getRenderRegion(chunkPos).update(be);
     }
