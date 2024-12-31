@@ -135,6 +135,33 @@ public class BlockTagLoader {
             .add(ModBlocks.END_DUST.getKey())
             .add(ModBlocks.NEGATIVE_MATTER_BLOCK.getKey());
 
+        provider.addTag(ModBlockTags.VOID_DECAY_PRODUCTS)
+            .add(findResourceKey(Blocks.STONE))
+            .add(findResourceKey(Blocks.DEEPSLATE))
+            .add(findResourceKey(Blocks.ANDESITE))
+            .add(findResourceKey(Blocks.GRANITE))
+            .add(findResourceKey(Blocks.DIORITE))
+            .add(findResourceKey(Blocks.NETHERRACK))
+            .add(findResourceKey(Blocks.BLACKSTONE))
+            .add(findResourceKey(Blocks.END_STONE))
+            .add(findResourceKey(Blocks.ICE))
+            .add(findResourceKey(Blocks.RAW_IRON_BLOCK))
+            .add(findResourceKey(Blocks.OXIDIZED_COPPER))
+            .add(findResourceKey(Blocks.IRON_ORE))
+            .add(findResourceKey(Blocks.DEEPSLATE_IRON_ORE))
+            .add(findResourceKey(Blocks.COPPER_ORE))
+            .add(findResourceKey(Blocks.DEEPSLATE_COPPER_ORE))
+            .add(findResourceKey(Blocks.GOLD_ORE))
+            .add(findResourceKey(Blocks.DEEPSLATE_GOLD_ORE))
+            .add(ModBlocks.VOID_STONE.getKey())
+            .add(ModBlocks.END_DUST.getKey())
+            .add(ModBlocks.CURSED_GOLD_BLOCK.getKey())
+            .add(ModBlocks.DEEPSLATE_TIN_ORE.getKey())
+            .add(ModBlocks.DEEPSLATE_ZINC_ORE.getKey())
+            .add(ModBlocks.DEEPSLATE_LEAD_ORE.getKey())
+            .add(ModBlocks.DEEPSLATE_URANIUM_ORE.getKey());
+
+        //mekanism integration
         provider.addTag(ModBlockTags.MEKANISM_CARDBOARD_BOX_BLACKLIST)
             .add(ModBlocks.GIANT_ANVIL.getKey())
             .add(ModBlocks.TRANSMISSION_POLE.getKey())

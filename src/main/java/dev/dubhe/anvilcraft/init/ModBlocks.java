@@ -91,6 +91,7 @@ import dev.dubhe.anvilcraft.block.StampingPlatformBlock;
 import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
+import dev.dubhe.anvilcraft.block.VoidMatterBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical3PartHalf;
@@ -2846,8 +2847,8 @@ public class ModBlocks {
         .loot((tables, block)->{})
         .register();
 
-    public static final BlockEntry<Block> VOID_MATTER_BLOCK = REGISTRATE
-        .block("void_matter_block", Block::new)
+    public static final BlockEntry<VoidMatterBlock> VOID_MATTER_BLOCK = REGISTRATE
+        .block("void_matter_block", VoidMatterBlock::new)
         .initialProperties(() -> Blocks.DIAMOND_BLOCK)
         .properties(BlockBehaviour.Properties::noOcclusion)
         .blockstate((context, provider) -> provider.simpleBlock(
