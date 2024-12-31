@@ -380,7 +380,6 @@ public class ModBlocks {
         })
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .register();
     public static final BlockEntry<EmberGrindstone> EMBER_GRINDSTONE = REGISTRATE
@@ -406,7 +405,6 @@ public class ModBlocks {
         })
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .register();
     public static final BlockEntry<EmberSmithingTableBlock> EMBER_SMITHING_TABLE = REGISTRATE
@@ -432,7 +430,6 @@ public class ModBlocks {
         })
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .register();
 
@@ -1609,7 +1606,6 @@ public class ModBlocks {
             DangerUtil.genConfiguredModel("block/ember_metal_block").get()))
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
@@ -1638,7 +1634,6 @@ public class ModBlocks {
             DangerUtil.genConfiguredModel("block/cut_ember_metal_block").get()))
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
@@ -1672,7 +1667,6 @@ public class ModBlocks {
         })
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
@@ -1704,7 +1698,6 @@ public class ModBlocks {
         })
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .loot((tables, block) -> tables.add(block, tables.createSlabItemTable(block)))
         .recipe((ctx, provider) -> {
@@ -1749,7 +1742,6 @@ public class ModBlocks {
         })
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
@@ -2411,7 +2403,6 @@ public class ModBlocks {
         .tag(Tags.Blocks.GLASS_BLOCKS)
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .build()
         .register();
     public static final BlockEntry<? extends Block> CINERITE = REGISTRATE
