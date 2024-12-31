@@ -36,8 +36,9 @@ public class RecipeGenerator {
         RecipeType<?> recipeType,
         RecipeHolder<?> recipeHolder
     ) {
+        if (recipeType != RecipeType.SMOKING && recipeType != RecipeType.CRAFTING) return Optional.empty();
         logger.debug("Generating anvil recipe for {}", recipeHolder.id());
-        logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType.toString());
+        logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType);
         ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
         logger.debug("New id of {} is {}", recipeHolder.id(), newId);
         if (recipeType == RecipeType.SMOKING) {
