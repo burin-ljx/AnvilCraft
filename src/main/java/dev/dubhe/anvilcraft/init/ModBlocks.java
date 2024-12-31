@@ -640,18 +640,26 @@ public class ModBlocks {
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 8)
-                .pattern("A")
-                .pattern("B")
-                .pattern("C")
-                .define('A', ModBlocks.SILVER_PRESSURE_PLATE)
-                .define('B', Items.SUNFLOWER)
-                .define('C', Items.IRON_INGOT)
-                .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModBlocks.SILVER_PRESSURE_PLATE),
-                    AnvilCraftDatagen.has(ModBlocks.SILVER_PRESSURE_PLATE))
+                .pattern("S S")
+                .pattern("SFS")
+                .pattern(" I ")
+                .define('S', ModItemTags.SILVER_PLATES)
+                .define('F', Items.SUNFLOWER)
+                .define('I', Blocks.IRON_BLOCK)
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.SUNFLOWER), AnvilCraftDatagen.has(Items.SUNFLOWER))
-                .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Items.IRON_INGOT))
-                .save(provider);
+                .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.IRON_BLOCK), AnvilCraftDatagen.has(Blocks.IRON_BLOCK))
+                .save(provider, AnvilCraft.of("heliostats_biological"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 8)
+                .pattern("SDS")
+                .pattern("SCS")
+                .pattern(" I ")
+                .define('S', ModItemTags.SILVER_PLATES)
+                .define('D', Blocks.DAYLIGHT_DETECTOR)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .define('I', Blocks.IRON_BLOCK)
+                .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.CIRCUIT_BOARD), AnvilCraftDatagen.has(ModItems.CIRCUIT_BOARD))
+                .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.IRON_BLOCK), AnvilCraftDatagen.has(Blocks.IRON_BLOCK))
+                .save(provider, AnvilCraft.of("heliostats_electrical"));
         })
         .register();
     public static final BlockEntry<LoadMonitorBlock> LOAD_MONITOR = REGISTRATE

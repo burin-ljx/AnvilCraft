@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "anvilcraft:circuit_board"
+    },
+    "D": {
+      "item": "minecraft:daylight_detector"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "S": {
+      "tag": "c:plates/silver"
+    }
+  },
+  "pattern": [
+    "SDS",
+    "SCS",
+    " I "
+  ],
+  "result": {
+    "count": 8,
+    "id": "anvilcraft:heliostats"
+  }
+}
