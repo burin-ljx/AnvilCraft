@@ -22,12 +22,10 @@ public class BlockTagDisplayHelper {
      * @return 用于展示的方块（当<code>tag</code>为空标签或无效标签时，返回值也为空）
      */
     public static Optional<Block> getDisplay(TagKey<Block> tag){
-        return RegistryUtil.getRegistry(Registries.BLOCK).getTag(tag).map(it -> {
-            if(it.size() == 0) return Optional.<Block>empty();
-            return it.get((int) ((System.currentTimeMillis() / 1000) % it.size()))
-                .unwrapKey()
-                .map(key -> RegistryUtil.getRegistry(Registries.BLOCK).get(key));
-        }).orElse(Optional.empty());
+        return RegistryUtil.getRegistry(Registries.BLOCK)
+            .getTag(tag)
+            .filter(it -> it.size() > 0)
+            .map(it -> it.get((int) ((System.currentTimeMillis() / 1000) % it.size())).value());
     }
 
     /**
