@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "anvilcraft:neutronium_ingot"
+    },
+    {
+      "item": "anvilcraft:levitation_powder"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "anvilcraft:stable_neutronium_ingot"
+  }
+}
