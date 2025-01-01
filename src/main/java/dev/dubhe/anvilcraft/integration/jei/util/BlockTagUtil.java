@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BlockTagDisplayHelper {
+public class BlockTagUtil {
 
     /**
      * 根据方块标签，获取当前的用于循环展示的方块。
