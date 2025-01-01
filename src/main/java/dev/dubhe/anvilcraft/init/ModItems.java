@@ -334,7 +334,8 @@ public class ModItems {
         .tag(ItemTags.MACE_ENCHANTABLE)
         .model((ctx, provider) -> {
         })
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.TOOLS, ctx.get())
             .pattern("A")
             .pattern("B")
             .pattern("C")
@@ -395,7 +396,8 @@ public class ModItems {
     public static final ItemEntry<DiskItem> DISK = REGISTRATE
         .item("disk", DiskItem::new)
         .properties(p -> p.stacksTo(1))
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.TOOLS, ctx.get())
             .pattern("ABA")
             .pattern("ACA")
             .pattern("AAA")
@@ -448,7 +450,8 @@ public class ModItems {
     public static final ItemEntry<Item> CHOCOLATE = REGISTRATE
         .item("chocolate", properties -> new Item(properties.food(ModFoods.CHOCOLATE)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.FOOD, ctx.get())
             .pattern("ABA")
             .pattern("CDC")
             .pattern("ABA")
@@ -465,7 +468,8 @@ public class ModItems {
     public static final ItemEntry<Item> CHOCOLATE_BLACK = REGISTRATE
         .item("chocolate_black", p -> new Item(p.food(ModFoods.CHOCOLATE_BLACK)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.FOOD, ctx.get())
             .pattern("AAA")
             .pattern("BCB")
             .pattern("AAA")
@@ -480,7 +484,8 @@ public class ModItems {
     public static final ItemEntry<Item> CHOCOLATE_WHITE = REGISTRATE
         .item("chocolate_white", p -> new Item(p.food(ModFoods.CHOCOLATE_WHITE)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.FOOD, ctx.get())
             .pattern("AAA")
             .pattern("BCB")
             .pattern("AAA")
@@ -495,7 +500,8 @@ public class ModItems {
     public static final ItemEntry<Item> CREAMY_BREAD_ROLL = REGISTRATE
         .item("creamy_bread_roll", p -> new Item(p.food(ModFoods.CREAMY_BREAD_ROLL)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get())
+        .recipe((ctx, provider) -> ShapelessRecipeBuilder.shapeless(
+            RecipeCategory.FOOD, ctx.get())
             .requires(Items.BREAD)
             .requires(Items.SUGAR)
             .requires(ModItems.CREAM)
@@ -551,11 +557,11 @@ public class ModItems {
     public static final ItemEntry<Item> MAGNET_INGOT = REGISTRATE
         .item("magnet_ingot", Item::new)
         .recipe((ctx, provider) -> {
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get(), 9)
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.MAGNET_BLOCK)
                 .unlockedBy("hasitem", RegistrateRecipeProvider.has(ModBlocks.MAGNET_BLOCK))
                 .save(provider, AnvilCraft.of("magnet_ingot_9"));
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get(), 8)
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 8)
                 .requires(ModBlocks.HOLLOW_MAGNET_BLOCK)
                 .unlockedBy("hasitem", RegistrateRecipeProvider.has(ModBlocks.HOLLOW_MAGNET_BLOCK))
                 .save(provider, AnvilCraft.of("magnet_ingot_8"));

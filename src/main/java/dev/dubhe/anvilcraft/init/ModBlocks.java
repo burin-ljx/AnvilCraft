@@ -184,7 +184,7 @@ public class ModBlocks {
             ModBlockTags.MAGNET,
             BlockTags.NEEDS_STONE_TOOL)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -203,7 +203,7 @@ public class ModBlocks {
             ModBlockTags.MAGNET,
             BlockTags.NEEDS_STONE_TOOL)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("AAA")
                 .pattern("A A")
                 .pattern("AAA")
@@ -223,7 +223,7 @@ public class ModBlocks {
             ModBlockTags.MAGNET,
             BlockTags.NEEDS_STONE_TOOL)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("AAA")
                 .pattern("ABA")
                 .pattern("AAA")
@@ -243,7 +243,7 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("BAB")
                 .pattern("B B")
                 .pattern("B B")
@@ -299,7 +299,7 @@ public class ModBlocks {
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(Items.ANVIL),
                     Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
-                    RecipeCategory.TOOLS,
+                    RecipeCategory.MISC,
                     ctx.get().asItem())
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_anvil"));
@@ -321,7 +321,7 @@ public class ModBlocks {
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(Items.GRINDSTONE),
                     Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
-                    RecipeCategory.TOOLS,
+                    RecipeCategory.MISC,
                     ctx.get().asItem())
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_grindstone"));
@@ -341,7 +341,7 @@ public class ModBlocks {
                     Ingredient.of(ModItems.ROYAL_STEEL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(Items.SMITHING_TABLE),
                     Ingredient.of(ModBlocks.ROYAL_STEEL_BLOCK),
-                    RecipeCategory.TOOLS,
+                    RecipeCategory.MISC,
                     ctx.get().asItem())
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_smithing_table"));
@@ -362,7 +362,7 @@ public class ModBlocks {
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModBlocks.ROYAL_ANVIL),
                     Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
-                    RecipeCategory.TOOLS,
+                    RecipeCategory.MISC,
                     ctx.get().asItem())
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_anvil"));
@@ -390,7 +390,7 @@ public class ModBlocks {
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModBlocks.ROYAL_GRINDSTONE),
                     Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
-                    RecipeCategory.TOOLS,
+                    RecipeCategory.MISC,
                     ctx.get().asItem())
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_grindstone"));
@@ -415,7 +415,7 @@ public class ModBlocks {
                     Ingredient.of(ModItems.EMBER_METAL_UPGRADE_SMITHING_TEMPLATE),
                     Ingredient.of(ModBlocks.ROYAL_SMITHING_TABLE),
                     Ingredient.of(ModBlocks.EMBER_METAL_BLOCK),
-                    RecipeCategory.TOOLS,
+                    RecipeCategory.MISC,
                     ctx.get().asItem())
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_smithing_table"));
@@ -455,7 +455,8 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
+                    , ctx.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("BBB")
@@ -487,7 +488,8 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
+            , ctx.get())
                 .pattern("A")
                 .pattern("B")
                 .pattern("C")
@@ -522,7 +524,8 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
+            , ctx.get())
                 .pattern("A")
                 .pattern("B")
                 .pattern("C")
@@ -555,7 +558,8 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
+            , ctx.get())
                 .pattern("ABA")
                 .pattern("ACA")
                 .pattern("ADA")
@@ -588,7 +592,8 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 8)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
+                    , ctx.get(), 8)
                 .pattern("A")
                 .pattern("B")
                 .pattern("A")
@@ -838,7 +843,7 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("ABA")
                 .pattern("ADA")
                 .pattern("AEA")
@@ -995,7 +1000,7 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("AAA")
                 .pattern("DCB")
                 .pattern("AAA")
@@ -1017,7 +1022,7 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
                 .pattern("DA ")
                 .pattern("CBA")
                 .pattern("DA ")
@@ -1157,7 +1162,7 @@ public class ModBlocks {
             context.get(),
             DangerUtil.genConfiguredModel("block/impact_pile").get()))
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern(" A ")
                 .pattern(" B ")
                 .pattern(" B ")
@@ -1288,7 +1293,7 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModBlocks.CHUTE)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CHUTE)
                 .pattern("A A")
                 .pattern("ABA")
                 .pattern(" A ")
@@ -1309,7 +1314,7 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern(" A ")
                 .pattern("ABA")
                 .pattern("A A")
@@ -1379,7 +1384,7 @@ public class ModBlocks {
         .model((ctx, provider) -> provider.blockItem(ctx))
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 1)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 16)
                 .pattern("A A")
                 .pattern("BAB")
                 .pattern("BBB")
@@ -1406,11 +1411,11 @@ public class ModBlocks {
         .model((ctx, provider) -> provider.blockItem(ctx))
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 1)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
                 .pattern("A A")
                 .pattern("BAB")
                 .pattern("BBB")
-                .define('A', Blocks.BLUE_ICE)
+                .define('A', Blocks.SOUL_SAND)
                 .define('B', Items.IRON_INGOT)
                 .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.BLUE_ICE), AnvilCraftDatagen.has(Blocks.BLUE_ICE))
                 .save(provider);
@@ -1431,7 +1436,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.OVERSEER_BASE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -1468,7 +1473,7 @@ public class ModBlocks {
         .properties(p -> p.strength(5.0f, 1200f))
         .simpleItem()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 4)
                 .pattern("AA")
                 .pattern("AA")
                 .define('A', ModBlocks.ROYAL_STEEL_BLOCK)
@@ -1528,7 +1533,7 @@ public class ModBlocks {
         .simpleItem()
         .loot((tables, block) -> tables.add(block, tables.createSlabItemTable(block)))
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 6)
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 6)
                 .pattern("AAA")
                 .define('A', ModBlocks.CUT_ROYAL_STEEL_BLOCK)
                 .unlockedBy(
@@ -1566,7 +1571,7 @@ public class ModBlocks {
             (ctx, provider) -> provider.stairsBlock(ctx.get(), AnvilCraft.of("block/cut_royal_steel_block")))
         .simpleItem()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 4)
                 .pattern("A  ")
                 .pattern("AA ")
                 .pattern("AAA")
@@ -1609,7 +1614,7 @@ public class ModBlocks {
         .initialProperties(() -> new Item.Properties().fireResistant())
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -1637,7 +1642,7 @@ public class ModBlocks {
         .initialProperties(() -> new Item.Properties().fireResistant())
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 4)
                 .pattern("AA")
                 .pattern("AA")
                 .define('A', ModBlocks.EMBER_METAL_BLOCK)
@@ -1702,7 +1707,7 @@ public class ModBlocks {
         .build()
         .loot((tables, block) -> tables.add(block, tables.createSlabItemTable(block)))
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 6)
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 6)
                 .pattern("AAA")
                 .define('A', ModBlocks.CUT_EMBER_METAL_BLOCK)
                 .unlockedBy(
@@ -1745,7 +1750,7 @@ public class ModBlocks {
         .initialProperties(() -> new Item.Properties().fireResistant())
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 4)
                 .pattern("A  ")
                 .pattern("AA ")
                 .pattern("AAA")
@@ -1783,7 +1788,7 @@ public class ModBlocks {
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_IRON_TOOL)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2051,7 +2056,7 @@ public class ModBlocks {
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.BEACON_BASE_BLOCKS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2070,7 +2075,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_ZINC)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2089,7 +2094,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_TIN)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2108,7 +2113,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_TITANIUM)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2129,7 +2134,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_TUNGSTEN)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2148,7 +2153,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_LEAD)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2167,7 +2172,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_SILVER)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2186,7 +2191,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_URANIUM)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2205,7 +2210,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_BRONZE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2224,7 +2229,7 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_BRASS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2244,7 +2249,7 @@ public class ModBlocks {
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.BEACON_BASE_BLOCKS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2261,7 +2266,7 @@ public class ModBlocks {
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.BEACON_BASE_BLOCKS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2278,7 +2283,7 @@ public class ModBlocks {
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.BEACON_BASE_BLOCKS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2296,7 +2301,7 @@ public class ModBlocks {
         .item(ResinBlockItem::new)
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2315,7 +2320,7 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -2617,20 +2622,23 @@ public class ModBlocks {
     public static final BlockEntry<Block> RAW_ZINC = REGISTRATE
         .block("raw_zinc_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
             .define('A', ModItems.RAW_ZINC)
             .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.RAW_ZINC), AnvilCraftDatagen.has(ModItems.RAW_ZINC))
-            .save(provider))
+            .save(provider)
+        )
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_ZINC)
         .register();
     public static final BlockEntry<Block> RAW_TIN = REGISTRATE
         .block("raw_tin_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2643,7 +2651,8 @@ public class ModBlocks {
     public static final BlockEntry<Block> RAW_TITANIUM = REGISTRATE
         .block("raw_titanium_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2658,7 +2667,8 @@ public class ModBlocks {
     public static final BlockEntry<Block> RAW_TUNGSTEN = REGISTRATE
         .block("raw_tungsten_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2675,7 +2685,8 @@ public class ModBlocks {
     public static final BlockEntry<Block> RAW_LEAD = REGISTRATE
         .block("raw_lead_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2688,7 +2699,8 @@ public class ModBlocks {
     public static final BlockEntry<Block> RAW_SILVER = REGISTRATE
         .block("raw_silver_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2702,7 +2714,8 @@ public class ModBlocks {
     public static final BlockEntry<Block> RAW_URANIUM = REGISTRATE
         .block("raw_uranium_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2854,7 +2867,8 @@ public class ModBlocks {
         .blockstate((context, provider) -> provider.simpleBlock(
             context.get(),
             DangerUtil.genConfiguredModel("block/void_matter_block").get()))
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) ->
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2875,7 +2889,8 @@ public class ModBlocks {
         .block("earth_core_shard_block", Block::new)
         .initialProperties(() -> Blocks.DIAMOND_BLOCK)
         .properties(properties -> properties.explosionResistance(1200))
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) ->
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
@@ -2906,7 +2921,7 @@ public class ModBlocks {
         .initialProperties(Item.Properties::new)
         .build()
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
@@ -3055,7 +3070,7 @@ public class ModBlocks {
             .loot((tables, block) -> tables.add(block, tables.createSlabItemTable(block)))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE)
             .recipe((ctx, provider) -> {
-                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 6)
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 6)
                     .pattern("AAA")
                     .define('A', parent)
                     .unlockedBy(AnvilCraftDatagen.hasItem(parent.asItem()), AnvilCraftDatagen.has(parent))
@@ -3095,7 +3110,7 @@ public class ModBlocks {
                 provider.stairsBlock(ctx.get(), AnvilCraft.of("block/reinforced_concrete_" + color)))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE)
             .recipe((ctx, provider) -> {
-                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 4)
                     .pattern("A  ")
                     .pattern("AA ")
                     .pattern("AAA")
@@ -3131,7 +3146,7 @@ public class ModBlocks {
                 provider.wallBlock(ctx.get(), AnvilCraft.of("block/reinforced_concrete_" + color + "_wall")))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.WALLS)
             .recipe((ctx, provider) -> {
-                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 4)
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get(), 4)
                     .pattern("AAA")
                     .pattern("AAA")
                     .define('A', parent)
@@ -3233,7 +3248,7 @@ public class ModBlocks {
             .recipe((ctx, provider) -> {
                 for (Item ingredient : ingredients) {
                     ResourceLocation location1 = BuiltInRegistries.ITEM.getKey(ingredient);
-                    ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 1)
+                    ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get(), 1)
                         .pattern("AA")
                         .define('A', ingredient)
                         .unlockedBy(AnvilCraftDatagen.hasItem(ingredient), AnvilCraftDatagen.has(ingredient))
@@ -3273,7 +3288,7 @@ public class ModBlocks {
             .build()
             .recipe((ctx, provider) -> {
                 for (TagKey<Item> ingredient : ingredients) {
-                    ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 1)
+                    ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get(), 1)
                         .pattern("AA")
                         .define('A', ingredient)
                         .unlockedBy(AnvilCraftDatagen.hasItem(ingredient), AnvilCraftDatagen.has(ingredient))
