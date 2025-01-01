@@ -12,11 +12,8 @@ import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCrushRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SqueezingRecipe;
-
+import dev.dubhe.anvilcraft.util.BreakBlockUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -25,18 +22,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -45,13 +36,13 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static dev.dubhe.anvilcraft.util.AnvilUtil.dropItems;
@@ -181,38 +172,26 @@ public class AnvilEventListener {
         BlockState state = level.getBlockState(pos);
         if (state.getBlock().getExplosionResistance() >= 1200.0) event.setAnvilDamage(true);
         if (state.getDestroySpeed(level, pos) < 0) return;
-        BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
-        LootParams.Builder builder = new LootParams.Builder(serverLevel)
-            .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-            .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-            .withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity);
-        state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, false);
+        boolean smeltDrop = Optional.ofNullable(event.getEntity())
+            .map(FallingBlockEntity::getBlockState)
+            .map(b -> b.getBlock() instanceof EmberAnvilBlock)
+            .orElse(false);
+        boolean silkTouch = Optional.ofNullable(event.getEntity())
+            .map(FallingBlockEntity::getBlockState)
+            .map(b -> b.getBlock() instanceof RoyalAnvilBlock)
+            .orElse(false);
+        ItemStack dummyTool = silkTouch ? BreakBlockUtil.getDummySilkTouchTool(serverLevel) : ItemStack.EMPTY;
+        state.spawnAfterBreak(serverLevel, pos, dummyTool, false);
         if (state.getBlock() instanceof IHasMultiBlock multiBlock) {
             multiBlock.onRemove(level, pos, state);
         }
-        List<ItemStack> drops = state.getDrops(builder);
-        if (event.getEntity() != null && event.getEntity().blockState.getBlock() instanceof EmberAnvilBlock) {
-            drops = drops.stream()
-                .map(it -> {
-                    SingleRecipeInput cont = new SingleRecipeInput(it);
-                    return level.getRecipeManager()
-                        .getRecipeFor(RecipeType.SMELTING, cont, level)
-                        .map(smeltingRecipe -> smeltingRecipe.value().assemble(cont, level.registryAccess()))
-                        .orElse(it);
-                })
-                .collect(Collectors.toList());
+        List<ItemStack> drops;
+        if (smeltDrop) {
+            drops = BreakBlockUtil.dropSmelt(serverLevel, pos);
+        } else if (silkTouch) {
+            drops = BreakBlockUtil.dropSilkTouch(serverLevel, pos);
         } else {
-            if (event.getEntity() != null && event.getEntity().blockState.getBlock() instanceof RoyalAnvilBlock) {
-                HolderLookup<Enchantment> holderLookup = level.holderLookup(Registries.ENCHANTMENT);
-                Holder<Enchantment> silkTouchEnchantment = holderLookup.get(Enchantments.SILK_TOUCH).orElseThrow();
-                ItemStack tool = Items.NETHERITE_PICKAXE.getDefaultInstance();
-                tool.enchant(silkTouchEnchantment, 1);
-                builder.withParameter(
-                    LootContextParams.TOOL,
-                    tool
-                );
-                drops = state.getDrops(builder);
-            }
+            drops = BreakBlockUtil.drop(serverLevel, pos);
         }
         dropItems(drops, level, pos.getCenter());
         level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());

@@ -542,6 +542,8 @@
   "text.autoconfig.anvilcraft.option.geodeInterval.@Tooltip": "The search interval of the geode",
   "text.autoconfig.anvilcraft.option.geodeRadius": "Geode Maximum Search Radius",
   "text.autoconfig.anvilcraft.option.geodeRadius.@Tooltip": "The maximum search radius of the geode",
+  "text.autoconfig.anvilcraft.option.giantAnvilMaxShockRadius": "Giant Anvil Max Shock Radius",
+  "text.autoconfig.anvilcraft.option.giantAnvilMaxShockRadius.@Tooltip": "Maximum radius of giant anvil's shock behavior",
   "text.autoconfig.anvilcraft.option.heliostatsDetectionInterval": "Heliostats detection interval",
   "text.autoconfig.anvilcraft.option.heliostatsDetectionInterval.@Tooltip": "The number of ticks between heliostat detections",
   "text.autoconfig.anvilcraft.option.inductionLightBlockRipeningCooldown": "Induction Light Block Ripening Cooldown",

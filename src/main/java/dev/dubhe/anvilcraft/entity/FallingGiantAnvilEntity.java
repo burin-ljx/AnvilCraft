@@ -5,32 +5,31 @@ import dev.dubhe.anvilcraft.init.ModEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class FallingGiantAnvilEntity extends FallingBlockEntity {
 
     private float fallDistance = 0;
@@ -49,6 +48,18 @@ public class FallingGiantAnvilEntity extends FallingBlockEntity {
         this.yo = y;
         this.zo = z;
         this.setStartPos(this.blockPosition());
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag data) {
+        super.addAdditionalSaveData(data);
+        data.putFloat("anvilcraft$FallDistance", this.fallDistance);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag data) {
+        super.readAdditionalSaveData(data);
+        this.fallDistance = data.getFloat("anvilcraft$fallDistance");
     }
 
     /**
@@ -91,28 +102,8 @@ public class FallingGiantAnvilEntity extends FallingBlockEntity {
             }
             if (!this.level().isClientSide) {
                 BlockPos blockPos = this.blockPosition();
-                boolean isConcrete = this.blockState.getBlock() instanceof ConcretePowderBlock;
-                boolean shouldHandleWater =
-                        isConcrete && this.level().getFluidState(blockPos).is(FluidTags.WATER);
-                double d = this.getDeltaMovement().lengthSqr();
-                if (isConcrete && d > 1.0) {
-                    BlockHitResult blockHitResult = this.level()
-                            .clip(new ClipContext(
-                                    new Vec3(this.xo, this.yo, this.zo),
-                                    this.position(),
-                                    net.minecraft.world.level.ClipContext.Block.COLLIDER,
-                                    ClipContext.Fluid.SOURCE_ONLY,
-                                    this));
-                    if (blockHitResult.getType() != HitResult.Type.MISS
-                            && this.level()
-                                    .getFluidState(blockHitResult.getBlockPos())
-                                    .is(FluidTags.WATER)) {
-                        blockPos = blockHitResult.getBlockPos();
-                        shouldHandleWater = true;
-                    }
-                }
                 Block block = this.blockState.getBlock();
-                if (!this.onGround() && !shouldHandleWater) {
+                if (!this.onGround()) {
                     if (!this.level().isClientSide
                             && (this.time > 100
                                             && (blockPos.getY() <= this.level().getMinBuildHeight()
