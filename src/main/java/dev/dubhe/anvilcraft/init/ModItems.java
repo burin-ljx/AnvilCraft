@@ -1332,7 +1332,7 @@ public class ModItems {
         .item("netherite_crystal_nucleus", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("ABA")
                 .define('A', ModBlocks.TUNGSTEN_PRESSURE_PLATE)
                 .define('B', Items.NETHERITE_SCRAP)
