@@ -281,8 +281,7 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_metal_axe"));
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.AXES,
-            ModItemTags.EXPLOSION_PROOF)
+        .tag(ItemTags.AXES)
         .register();
     public static final ItemEntry<EmberMetalShovelItem> EMBER_METAL_SHOVEL = REGISTRATE
         .item("ember_metal_shovel", EmberMetalShovelItem::new)
@@ -297,8 +296,7 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_metal_shovel"));
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.SHOVELS,
-            ModItemTags.EXPLOSION_PROOF)
+        .tag(ItemTags.SHOVELS)
         .register();
     public static final ItemEntry<EmberMetalHoeItem> EMBER_METAL_HOE = REGISTRATE
         .item("ember_metal_hoe", EmberMetalHoeItem::new)
@@ -313,8 +311,7 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_metal_hoe"));
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.HOES,
-            ModItemTags.EXPLOSION_PROOF)
+        .tag(ItemTags.HOES)
         .register();
     public static final ItemEntry<EmberMetalSwordItem> EMBER_METAL_SWORD = REGISTRATE
         .item("ember_metal_sword", EmberMetalSwordItem::new)
@@ -329,8 +326,7 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_metal_sword"));
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.SWORDS,
-            ModItemTags.EXPLOSION_PROOF)
+        .tag(ItemTags.SWORDS)
         .register();
     public static final ItemEntry<AnvilHammerItem> ANVIL_HAMMER = REGISTRATE
         .item("anvil_hammer", AnvilHammerItem::new)
@@ -338,7 +334,8 @@ public class ModItems {
         .tag(ItemTags.MACE_ENCHANTABLE)
         .model((ctx, provider) -> {
         })
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.TOOLS, ctx.get())
             .pattern("A")
             .pattern("B")
             .pattern("C")
@@ -383,8 +380,7 @@ public class ModItems {
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_anvil_hammer"));
         })
-        .tag(ItemTags.MACE_ENCHANTABLE,
-            ModItemTags.EXPLOSION_PROOF)
+        .tag(ItemTags.MACE_ENCHANTABLE)
         .properties(properties -> properties.durability(2031))
         .model((ctx, provider) -> {
         })
@@ -400,7 +396,8 @@ public class ModItems {
     public static final ItemEntry<DiskItem> DISK = REGISTRATE
         .item("disk", DiskItem::new)
         .properties(p -> p.stacksTo(1))
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.TOOLS, ctx.get())
             .pattern("ABA")
             .pattern("ACA")
             .pattern("AAA")
@@ -453,7 +450,8 @@ public class ModItems {
     public static final ItemEntry<Item> CHOCOLATE = REGISTRATE
         .item("chocolate", properties -> new Item(properties.food(ModFoods.CHOCOLATE)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.FOOD, ctx.get())
             .pattern("ABA")
             .pattern("CDC")
             .pattern("ABA")
@@ -470,7 +468,8 @@ public class ModItems {
     public static final ItemEntry<Item> CHOCOLATE_BLACK = REGISTRATE
         .item("chocolate_black", p -> new Item(p.food(ModFoods.CHOCOLATE_BLACK)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.FOOD, ctx.get())
             .pattern("AAA")
             .pattern("BCB")
             .pattern("AAA")
@@ -485,7 +484,8 @@ public class ModItems {
     public static final ItemEntry<Item> CHOCOLATE_WHITE = REGISTRATE
         .item("chocolate_white", p -> new Item(p.food(ModFoods.CHOCOLATE_WHITE)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+            RecipeCategory.FOOD, ctx.get())
             .pattern("AAA")
             .pattern("BCB")
             .pattern("AAA")
@@ -500,7 +500,8 @@ public class ModItems {
     public static final ItemEntry<Item> CREAMY_BREAD_ROLL = REGISTRATE
         .item("creamy_bread_roll", p -> new Item(p.food(ModFoods.CREAMY_BREAD_ROLL)))
         .tag(Tags.Items.FOODS)
-        .recipe((ctx, provider) -> ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get())
+        .recipe((ctx, provider) -> ShapelessRecipeBuilder.shapeless(
+            RecipeCategory.FOOD, ctx.get())
             .requires(Items.BREAD)
             .requires(Items.SUGAR)
             .requires(ModItems.CREAM)
@@ -556,14 +557,16 @@ public class ModItems {
     public static final ItemEntry<Item> MAGNET_INGOT = REGISTRATE
         .item("magnet_ingot", Item::new)
         .recipe((ctx, provider) -> {
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get(), 9)
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.MAGNET_BLOCK)
                 .unlockedBy("hasitem", RegistrateRecipeProvider.has(ModBlocks.MAGNET_BLOCK))
-                .save(provider, AnvilCraft.of("magnet_ingot_9"));
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ctx.get(), 8)
+                .group(ctx.getId().toString())
+                .save(provider, AnvilCraft.of("magnet_ingot_from_block"));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 8)
                 .requires(ModBlocks.HOLLOW_MAGNET_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy("hasitem", RegistrateRecipeProvider.has(ModBlocks.HOLLOW_MAGNET_BLOCK))
-                .save(provider, AnvilCraft.of("magnet_ingot_8"));
+                .save(provider, AnvilCraft.of("magnet_ingot_from_hollow_block"));
         })
         .register();
     public static final ItemEntry<Item> SPONGE_GEMMULE =
@@ -575,6 +578,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.ROYAL_STEEL_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy("hasitem", RegistrateRecipeProvider.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("royal_steel_ingot_from_royal_steel_block"));
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ROYAL_STEEL_INGOT)
@@ -582,6 +586,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItems.ROYAL_STEEL_NUGGET)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItems.ROYAL_STEEL_NUGGET.get()),
                     AnvilCraftDatagen.has(ModItems.ROYAL_STEEL_NUGGET))
@@ -607,6 +612,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.CURSED_GOLD_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.CURSED_GOLD_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.CURSED_GOLD_BLOCK))
@@ -616,6 +622,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItems.CURSED_GOLD_NUGGET)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItems.CURSED_GOLD_NUGGET.get()),
                     AnvilCraftDatagen.has(ModItems.CURSED_GOLD_NUGGET))
@@ -747,6 +754,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TUNGSTEN_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.TUNGSTEN_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.TUNGSTEN_BLOCK))
@@ -756,6 +764,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.TUNGSTEN_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.TUNGSTEN_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.TUNGSTEN_NUGGETS))
@@ -766,6 +775,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_TUNGSTEN))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -774,6 +784,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_TUNGSTEN))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.smelting(
@@ -782,6 +793,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_TUNGSTEN_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -790,6 +802,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_TUNGSTEN_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -812,6 +825,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TITANIUM_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.TITANIUM_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.TITANIUM_BLOCK))
@@ -821,6 +835,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.TITANIUM_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.TITANIUM_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.TITANIUM_NUGGETS))
@@ -831,6 +846,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_TITANIUM))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -839,6 +855,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_TITANIUM))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.smelting(
@@ -847,6 +864,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_TITANIUM_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -855,6 +873,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_TITANIUM_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -877,6 +896,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.ZINC_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.ZINC_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.ZINC_BLOCK))
@@ -886,6 +906,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.ZINC_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.ZINC_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.ZINC_NUGGETS))
@@ -896,6 +917,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_ZINC))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -904,6 +926,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_ZINC))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.smelting(
@@ -912,6 +935,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_ZINC_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -920,6 +944,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_ZINC_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -942,6 +967,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TIN_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.TIN_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.TIN_BLOCK))
@@ -951,6 +977,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.TIN_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.TIN_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.TIN_NUGGETS))
@@ -961,6 +988,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_TIN))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -969,6 +997,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_TIN))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.smelting(
@@ -977,6 +1006,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_TIN_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -985,6 +1015,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_TIN_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -1007,6 +1038,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.LEAD_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.LEAD_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.LEAD_BLOCK))
@@ -1016,6 +1048,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.LEAD_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.LEAD_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.LEAD_NUGGETS))
@@ -1026,6 +1059,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_LEAD))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -1034,6 +1068,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_LEAD))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.smelting(
@@ -1042,6 +1077,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_LEAD_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -1050,6 +1086,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_LEAD_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -1072,6 +1109,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.SILVER_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.SILVER_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.SILVER_BLOCK))
@@ -1081,6 +1119,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.SILVER_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.SILVER_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.SILVER_NUGGETS))
@@ -1091,6 +1130,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_SILVER))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -1099,6 +1139,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_SILVER))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
 
@@ -1108,6 +1149,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_SILVER_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -1116,6 +1158,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_SILVER_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -1138,6 +1181,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.URANIUM_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.URANIUM_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.URANIUM_BLOCK))
@@ -1147,6 +1191,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.URANIUM_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.URANIUM_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.URANIUM_NUGGETS))
@@ -1157,6 +1202,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_URANIUM))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.blasting(
@@ -1165,6 +1211,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModItems.RAW_URANIUM))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName()));
             SimpleCookingRecipeBuilder.smelting(
@@ -1173,6 +1220,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     200)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_URANIUM_ORE))
                 .save(provider, AnvilCraft.of("smelting/" + ctx.getName() + "_from_ore"));
             SimpleCookingRecipeBuilder.blasting(
@@ -1181,6 +1229,7 @@ public class ModItems {
                     ctx.get(),
                     1,
                     100)
+                .group(ctx.getId().toString())
                 .unlockedBy("has_item", AnvilCraftDatagen.has(ModBlocks.DEEPSLATE_URANIUM_ORE))
                 .save(provider, AnvilCraft.of("blasting/" + ctx.getName() + "_from_ore"));
         })
@@ -1208,6 +1257,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.BRONZE_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.BRONZE_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.BRONZE_BLOCK))
@@ -1217,6 +1267,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.BRONZE_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.BRONZE_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.BRONZE_NUGGETS))
@@ -1243,6 +1294,7 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.BRASS_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.BRASS_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.BRASS_BLOCK))
@@ -1252,6 +1304,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItemTags.BRASS_NUGGETS)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.BRASS_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.BRASS_NUGGETS))
@@ -1279,7 +1332,7 @@ public class ModItems {
         .item("netherite_crystal_nucleus", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("ABA")
                 .define('A', ModBlocks.TUNGSTEN_PRESSURE_PLATE)
                 .define('B', Items.NETHERITE_SCRAP)
@@ -1408,10 +1461,10 @@ public class ModItems {
     public static final ItemEntry<? extends Item> EMBER_METAL_INGOT = REGISTRATE
         .item("ember_metal_ingot", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.EMBER_METAL_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.EMBER_METAL_BLOCK.asItem()),
                     AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
@@ -1421,6 +1474,7 @@ public class ModItems {
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', ModItems.EMBER_METAL_NUGGET)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItemTags.TUNGSTEN_NUGGETS),
                     RegistrateRecipeProvider.has(ModItemTags.TUNGSTEN_NUGGETS))
@@ -1431,7 +1485,6 @@ public class ModItems {
     public static final ItemEntry<? extends Item> EMBER_METAL_NUGGET = REGISTRATE
         .item("ember_metal_nugget", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItems.EMBER_METAL_INGOT)
@@ -1481,7 +1534,23 @@ public class ModItems {
     public static final ItemEntry<SuperHeavyItem> NEUTRONIUM_INGOT = REGISTRATE
         .item("neutronium_ingot", SuperHeavyItem::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.EXPLOSION_PROOF)
+        .register();
+    public static final ItemEntry<SuperHeavyItem> STABLE_NEUTRONIUM_INGOT = REGISTRATE
+        .item("stable_neutronium_ingot", SuperHeavyItem::new)
+        .initialProperties(() -> new Item.Properties().fireResistant())
+        .recipe((ctx, provider) -> {
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 1)
+                .requires(ModItems.NEUTRONIUM_INGOT)
+                .requires(ModItems.LEVITATION_POWDER)
+                .unlockedBy(
+                    AnvilCraftDatagen.hasItem(ModItems.NEUTRONIUM_INGOT),
+                    AnvilCraftDatagen.has(ModItems.NEUTRONIUM_INGOT))
+                .save(provider);
+        })
+        .register();
+    public static final ItemEntry<SuperHeavyItem> CHARGED_NEUTRONIUM_INGOT = REGISTRATE
+        .item("charged_neutronium_ingot", SuperHeavyItem::new)
+        .initialProperties(() -> new Item.Properties().fireResistant())
         .register();
 
     public static final ItemEntry<BucketItem> OIL_BUCKET = REGISTRATE

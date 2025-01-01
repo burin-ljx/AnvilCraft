@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "group": "anvilcraft:royal_steel_ingot",
   "key": {
     "A": {
       "item": "anvilcraft:royal_steel_nugget"

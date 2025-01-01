@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
+  "group": "anvilcraft:tungsten_ingot",
   "ingredients": [
     {
       "item": "anvilcraft:tungsten_block"

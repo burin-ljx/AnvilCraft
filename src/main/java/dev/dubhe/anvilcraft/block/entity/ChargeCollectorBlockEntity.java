@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.block.entity;
 import dev.dubhe.anvilcraft.api.power.IPowerProducer;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IHasAffectRange;
+import dev.dubhe.anvilcraft.block.ChargeCollectorBlock;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
 
 import dev.dubhe.anvilcraft.network.ChargeCollectorIncomingChargePacket;
@@ -103,6 +104,9 @@ public class ChargeCollectorBlockEntity extends BlockEntity implements IPowerPro
         this.cooldownCount = COOLDOWN;
         int oldPower = this.power;
         this.power = (int) Math.floor(this.chargeCount);
+        if (this.power > 0 && this.getBlockState().getBlock() instanceof ChargeCollectorBlock chargeCollector) {
+            chargeCollector.activate(this.level, this.getBlockPos(), this.getBlockState());
+        }
         if (power != oldPower && grid != null) grid.markChanged();
         this.chargeCount = 0;
         time++;
