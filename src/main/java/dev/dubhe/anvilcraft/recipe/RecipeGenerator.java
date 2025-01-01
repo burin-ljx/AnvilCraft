@@ -25,23 +25,29 @@ import static dev.dubhe.anvilcraft.util.Util.generateUniqueRecipeSuffix;
 public class RecipeGenerator {
     private static final Logger logger = LogUtils.getLogger();
 
+    private static ResourceLocation generateRecipeId(
+        RecipeType<?> recipeType,
+        RecipeHolder<?> recipeHolder
+    ) {
+        logger.debug("Generating anvil recipe for {}", recipeHolder.id());
+        logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType);
+        ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
+        logger.debug("New id of {} is {}", recipeHolder.id(), newId);
+        return newId;
+    }
 
     public static Optional<RecipeHolder<?>> handleVanillaRecipe(
         RecipeType<?> recipeType,
         RecipeHolder<?> recipeHolder
     ) {
         if (recipeType != RecipeType.SMOKING && recipeType != RecipeType.CRAFTING) return Optional.empty();
-        logger.debug("Generating anvil recipe for {}", recipeHolder.id());
-        logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType);
-        ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
-        logger.debug("New id of {} is {}", recipeHolder.id(), newId);
         if (recipeType == RecipeType.SMOKING) {
             SmokingRecipe recipe = (SmokingRecipe) recipeHolder.value();
             CookingRecipe newRecipe = CookingRecipe.builder()
                 .requires(recipe.ingredient)
                 .result(recipe.result)
                 .buildRecipe();
-            return Optional.of(new RecipeHolder<>(newId, newRecipe));
+            return Optional.of(new RecipeHolder<>(generateRecipeId(recipeType, recipeHolder), newRecipe));
         }
 //        if (recipeType == RecipeType.BLASTING) {
 //            BlastingRecipe recipe = (BlastingRecipe) recipeHolder.value();
@@ -86,7 +92,7 @@ public class RecipeGenerator {
                         .result(shapedRecipe.result)
                         .requires(pattern.ingredients().getFirst(), pattern.height() * pattern.height())
                         .buildRecipe();
-                    return Optional.of(new RecipeHolder<>(newId, newRecipe));
+                    return Optional.of(new RecipeHolder<>(generateRecipeId(recipeType, recipeHolder), newRecipe));
                 }
             } else {
                 if (recipe instanceof ShapelessRecipe shapelessRecipe) {
@@ -96,26 +102,18 @@ public class RecipeGenerator {
                             .result(shapelessRecipe.result)
                             .requires(ingredients.getFirst())
                             .buildRecipe();
-                        return Optional.of(new RecipeHolder<>(newId, newRecipe));
+                        return Optional.of(new RecipeHolder<>(generateRecipeId(recipeType, recipeHolder), newRecipe));
                     }
                     if (RecipeUtil.allIngredientEquals(ingredients)) {
                         ItemCompressRecipe newRecipe = ItemCompressRecipe.builder()
                             .result(shapelessRecipe.result)
                             .requires(ingredients.getFirst(), ingredients.size())
                             .buildRecipe();
-                        return Optional.of(new RecipeHolder<>(newId, newRecipe));
+                        return Optional.of(new RecipeHolder<>(generateRecipeId(recipeType, recipeHolder), newRecipe));
                     }
                 }
             }
         }
         return Optional.empty();
-    }
-
-    public static void testSwitch(Object o) {
-        switch (o) {
-            case String s -> System.out.println(s);
-            case Integer i -> System.out.println(i * i + 5);
-            default -> throw new IllegalStateException("Unexpected value: " + o);
-        }
     }
 }

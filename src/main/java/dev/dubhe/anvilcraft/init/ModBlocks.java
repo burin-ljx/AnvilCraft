@@ -2859,7 +2859,7 @@ public class ModBlocks {
     public static final BlockEntry<Block> STURDY_DEEPSLATE = REGISTRATE
         .block("sturdy_deepslate", Block::new)
         .initialProperties(() -> Blocks.REINFORCED_DEEPSLATE)
-        .properties(properties -> properties.noLootTable())
+        .properties(properties -> properties.noLootTable().pushReaction(PushReaction.BLOCK))
         .simpleItem()
         .loot((tables, block)->{})
         .register();
