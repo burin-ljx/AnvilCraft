@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.NyliumBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -93,6 +94,15 @@ public class RipeningManager {
                             Blocks.SUGAR_CANE.defaultBlockState(),
                             Block.UPDATE_ALL_IMMEDIATE
                         );
+                    }
+                    if (state.is(Blocks.CACTUS) && level.getBlockState(pos1.above()).is(Blocks.AIR)) {
+                        level.setBlock(pos1.above(), Blocks.CACTUS.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+                    }
+                    if (state.is(Blocks.NETHER_WART) && state.getValue(NetherWartBlock.AGE) != NetherWartBlock.MAX_AGE) {
+                        level.setBlock(pos1,
+                                Blocks.NETHER_WART.defaultBlockState().setValue(NetherWartBlock.AGE,
+                                        state.getValue(NetherWartBlock.AGE) + 1),
+                                Block.UPDATE_ALL_IMMEDIATE);
                     }
                 }
             }
