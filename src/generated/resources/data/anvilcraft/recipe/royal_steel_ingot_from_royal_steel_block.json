@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
+  "group": "anvilcraft:royal_steel_ingot",
   "ingredients": [
     {
       "item": "anvilcraft:royal_steel_block"

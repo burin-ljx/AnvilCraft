@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "group": "anvilcraft:cursed_gold_ingot",
   "key": {
     "A": {
       "item": "anvilcraft:cursed_gold_nugget"

@@ -1,13 +1,14 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
+  "group": "anvilcraft:magnet_ingot",
   "ingredients": [
     {
-      "item": "anvilcraft:magnet_block"
+      "item": "anvilcraft:hollow_magnet_block"
     }
   ],
   "result": {
-    "count": 9,
+    "count": 8,
     "id": "anvilcraft:magnet_ingot"
   }
 }

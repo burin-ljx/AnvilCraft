@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
+  "group": "anvilcraft:cursed_gold_ingot",
   "ingredients": [
     {
       "item": "anvilcraft:cursed_gold_block"

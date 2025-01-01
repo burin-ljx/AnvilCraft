@@ -649,6 +649,7 @@ public class ModBlocks {
                 .define('S', ModItemTags.SILVER_PLATES)
                 .define('F', Items.SUNFLOWER)
                 .define('I', Blocks.IRON_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.SUNFLOWER), AnvilCraftDatagen.has(Items.SUNFLOWER))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.IRON_BLOCK), AnvilCraftDatagen.has(Blocks.IRON_BLOCK))
                 .save(provider, AnvilCraft.of("heliostats_biological"));
@@ -660,6 +661,7 @@ public class ModBlocks {
                 .define('D', Blocks.DAYLIGHT_DETECTOR)
                 .define('C', ModItems.CIRCUIT_BOARD)
                 .define('I', Blocks.IRON_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.CIRCUIT_BOARD), AnvilCraftDatagen.has(ModItems.CIRCUIT_BOARD))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Blocks.IRON_BLOCK), AnvilCraftDatagen.has(Blocks.IRON_BLOCK))
                 .save(provider, AnvilCraft.of("heliostats_electrical"));
@@ -812,6 +814,7 @@ public class ModBlocks {
                 .pattern("ABA")
                 .define('A', Items.COPPER_INGOT)
                 .define('B', Items.QUARTZ_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.COPPER_INGOT),
                     AnvilCraftDatagen.has(Items.COPPER_INGOT))
@@ -825,6 +828,7 @@ public class ModBlocks {
                 .pattern("ABA")
                 .define('A', Items.COPPER_INGOT)
                 .define('B', Items.AMETHYST_BLOCK)
+                .group(ctx.getId().toString())
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.COPPER_INGOT),
                     AnvilCraftDatagen.has(Items.COPPER_INGOT))

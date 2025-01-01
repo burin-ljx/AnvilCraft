@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "group": "anvilcraft:heliostats",
   "key": {
     "F": {
       "item": "minecraft:sunflower"
