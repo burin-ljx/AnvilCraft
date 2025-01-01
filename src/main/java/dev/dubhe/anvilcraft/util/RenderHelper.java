@@ -1,10 +1,15 @@
 package dev.dubhe.anvilcraft.util;
 
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexMultiConsumer;
+import com.mojang.math.Axis;
 import com.mojang.math.MatrixUtil;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -19,6 +24,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -36,31 +42,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RenderHelper {
+
+    private static final int MAX_CACHE_SIZE = 64;
+    private static final LinkedHashMap<BlockState, BlockEntity> BLOCK_ENTITY_CHACE = new LinkedHashMap<>();
     private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
     private static final Vector3f L1 = new Vector3f(0.4F, 0.0F, 1.0F).normalize();
     private static final Vector3f L2 = new Vector3f(-0.4F, 1.0F, -0.2F).normalize();
-
 
     private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("trident"));
     private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.inventory(ResourceLocation.withDefaultNamespace("spyglass"));
@@ -84,6 +89,20 @@ public class RenderHelper {
                 renderType
             );
         }
+        if (currentClientLevel == null) return;
+        getCachedBlockEntity(blockState).ifPresent(blockEntity -> {
+            blockEntity.setLevel(currentClientLevel);
+            BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance()
+                .getBlockEntityRenderDispatcher().getRenderer(blockEntity);
+            if (renderer == null) return;
+            renderer.render(
+                blockEntity,
+                getPartialTick(),
+                poseStack,
+                buffers,
+                0xF000F0,
+                OverlayTexture.NO_OVERLAY);
+        });
     };
 
     public static void renderBlock(
@@ -224,6 +243,21 @@ public class RenderHelper {
         int yPos,
         float scale){
         renderLevelLike(level, guiGraphics, xPos, yPos, scale, 0.0f);
+    }
+
+    private static Optional<BlockEntity> getCachedBlockEntity(BlockState state) {
+        if (!state.hasBlockEntity()) return Optional.empty();
+        if (BLOCK_ENTITY_CHACE.containsKey(state)) return Optional.of(BLOCK_ENTITY_CHACE.get(state));
+        Optional<BlockEntity> opt = Optional.of(state.getBlock())
+            .filter(b -> b instanceof EntityBlock)
+            .map(b -> ((EntityBlock)b).newBlockEntity(BlockPos.ZERO, state));
+        opt.ifPresent(be -> {
+            BLOCK_ENTITY_CHACE.put(state, be);
+            if (BLOCK_ENTITY_CHACE.size() > MAX_CACHE_SIZE) {
+                BLOCK_ENTITY_CHACE.pollFirstEntry();
+            }
+        });
+        return opt;
     }
 
     public static void renderItemWithTransparency(ItemStack stack, PoseStack poseStack, int x, int y, float alpha) {
