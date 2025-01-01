@@ -70,7 +70,9 @@ public record FellingEffect(int range) implements EnchantmentEntityEffect {
                 if (blockState.is(BlockTags.LOGS)) {
                     BlockEntity blockEntity = level.getBlockEntity(blockPos);
                     level.removeBlock(blockPos, false);
-                    blockState.getBlock().playerDestroy(level, player, blockPos, blockState, blockEntity, tool);
+                    if (!player.isCreative()) {
+                        blockState.getBlock().playerDestroy(level, player, blockPos, blockState, blockEntity, tool);
+                    }
                     if (!sourceBlock.equals(blockPos)) {
                         tool.hurtAndBreak(1, level, player, onBreak);
                     }
