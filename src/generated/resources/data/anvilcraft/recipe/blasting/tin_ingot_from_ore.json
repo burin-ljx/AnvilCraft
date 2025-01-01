@@ -3,6 +3,7 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
+  "group": "anvilcraft:tin_ingot",
   "ingredient": {
     "item": "anvilcraft:deepslate_tin_ore"
   },

@@ -3,46 +3,38 @@ package dev.dubhe.anvilcraft.api.rendering;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
-import lombok.EqualsAndHashCode;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL15C;
-import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline.BLOOM_RENDERTYPES;
-import static dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline.SUPPORTED_RENDERTYPES;
 
 public class RenderRegion {
-    private static final MemoryUtil.MemoryAllocator ALLOCATOR = MemoryUtil.getAllocator(false);
+    public final List<RenderType> BLOOM_RENDERTYPES = List.of(
+        ModRenderTypes.LASER
+    );
     private final ChunkPos chunkPos;
-    private final Map<RenderType, VertexBuffer> buffers = Arrays.stream(SUPPORTED_RENDERTYPES)
-        .collect(Collectors.toMap(
-            Function.identity(),
-            it -> new VertexBuffer(VertexBuffer.Usage.STATIC)
-        ));
-    private Map<RenderType, CompileResult> compileResultMap = new HashMap<>();
-    private final List<CacheableBlockEntity> blockEntityList = new ArrayList<>();
+    private final Map<RenderType, VertexBuffer> buffers = new HashMap<>();
+    private Reference2IntMap<RenderType> indexCountMap = new Reference2IntOpenHashMap<>();
+    private final List<BlockEntity> blockEntityList = new ArrayList<>();
     private final CacheableBERenderingPipeline pipeline;
     private final Minecraft minecraft = Minecraft.getInstance();
     private RebuildTask lastRebuildTask;
@@ -54,11 +46,11 @@ public class RenderRegion {
         this.pipeline = pipeline;
     }
 
-    public void update(CacheableBlockEntity be) {
+    public void update(BlockEntity be) {
         if (lastRebuildTask != null) {
             lastRebuildTask.cancel();
         }
-        blockEntityList.removeIf(CacheableBlockEntity::isRemoved);
+        blockEntityList.removeIf(BlockEntity::isRemoved);
         if (be.isRemoved()) {
             blockEntityList.remove(be);
             pipeline.submitCompileTask(new RebuildTask());
@@ -68,12 +60,12 @@ public class RenderRegion {
         pipeline.submitCompileTask(new RebuildTask());
     }
 
-    public void blockRemoved(CacheableBlockEntity be) {
+    public void blockRemoved(BlockEntity be) {
         if (lastRebuildTask != null) {
             lastRebuildTask.cancel();
         }
         blockEntityList.remove(be);
-        blockEntityList.removeIf(CacheableBlockEntity::isRemoved);
+        blockEntityList.removeIf(BlockEntity::isRemoved);
         pipeline.submitCompileTask(new RebuildTask());
     }
 
@@ -82,13 +74,22 @@ public class RenderRegion {
     }
 
     public void render(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
-        renderInternal(frustumMatrix, projectionMatrix, SUPPORTED_RENDERTYPES, RenderState::levelStage);
+        renderInternal(frustumMatrix, projectionMatrix, buffers.keySet(), RenderState::levelStage);
+    }
+
+    public VertexBuffer getBuffer(RenderType renderType) {
+        if (buffers.containsKey(renderType)) {
+            return buffers.get(renderType);
+        }
+        VertexBuffer vb = new VertexBuffer(VertexBuffer.Usage.STATIC);
+        buffers.put(renderType, vb);
+        return vb;
     }
 
     private void renderInternal(
         Matrix4f frustumMatrix,
         Matrix4f projectionMatrix,
-        RenderType[] renderTypes,
+        Collection<RenderType> renderTypes,
         Runnable stateSwitcher
     ) {
         if (isEmpty) return;
@@ -101,14 +102,14 @@ public class RenderRegion {
         }
         for (RenderType renderType : renderTypes) {
             VertexBuffer vb = buffers.get(renderType);
+            if (vb == null) continue;
             stateSwitcher.run();
-            renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window, compileResultMap);
+            renderLayer(renderType, vb, frustumMatrix, projectionMatrix, cameraPosition, window);
         }
     }
 
     public void releaseBuffers() {
         buffers.values().forEach(VertexBuffer::close);
-        compileResultMap.values().forEach(CompileResult::free);
     }
 
     private void renderLayer(
@@ -117,10 +118,10 @@ public class RenderRegion {
         Matrix4f frustumMatrix,
         Matrix4f projectionMatrix,
         Vec3 cameraPosition,
-        Window window,
-        Map<RenderType, CompileResult> compileResultMap
+        Window window
     ) {
-        CompileResult compileResult = compileResultMap.get(renderType);
+        int indexCount = indexCountMap.getInt(renderType);
+        if (indexCount <= 0) return;
         renderType.setupRenderState();
         ShaderInstance shader = RenderSystem.getShader();
         shader.setDefaultUniforms(VertexFormat.Mode.QUADS, frustumMatrix, projectionMatrix, window);
@@ -135,7 +136,7 @@ public class RenderRegion {
             uniform.upload();
         }
         vertexBuffer.bind();
-        RenderSystem.drawElements(GL15.GL_TRIANGLES, compileResult.indexCount, vertexBuffer.sequentialIndices.type().asGLType);
+        GL11.glDrawElements(GL15.GL_TRIANGLES, indexCount, vertexBuffer.sequentialIndices.type().asGLType, 0L);
         VertexBuffer.unbind();
         if (uniform != null) {
             uniform.set(0.0F, 0.0F, 0.0F);
@@ -149,63 +150,36 @@ public class RenderRegion {
         @Override
         public void run() {
             lastRebuildTask = this;
-            Map<RenderType, CompileResult> compileResultMap = new HashMap<>();
             PoseStack poseStack = new PoseStack();
             RenderRegion.this.isEmpty = true;
-
-            for (RenderType renderType : SUPPORTED_RENDERTYPES) {
-                if (cancelled) return;
-                Tesselator tesselator = Tesselator.getInstance();
-                BufferBuilder bufferBuilder = tesselator.begin(renderType.mode, renderType.format);
-                long ptr = tesselator.buffer.pointer;
-                int offsetBeforeCompile = tesselator.buffer.writeOffset;
-                for (CacheableBlockEntity cacheableBlockEntity : blockEntityList) {
-                    @SuppressWarnings("ALL")
-                    CacheableBlockEntityRenderer renderer = cacheableBlockEntity.getRenderer();
-                    if (renderer == null) continue;
-                    poseStack.pushPose();
-                    BlockPos pos = cacheableBlockEntity.getBlockPos();
-                    poseStack.translate(
-                        pos.getX(),
-                        pos.getY(),
-                        pos.getZ()
-                    );
-                    renderer.compileRenderType(
-                        cacheableBlockEntity,
-                        renderType,
-                        bufferBuilder,
-                        poseStack
-                    );
-                    poseStack.popPose();
+            FullyBufferedBufferSource bufferSource = new FullyBufferedBufferSource();
+            for (BlockEntity be : blockEntityList) {
+                if (cancelled) {
+                    bufferSource.close();
+                    return;
                 }
-                if (bufferBuilder.vertices > 0) {
-                    RenderRegion.this.isEmpty = false;
-                }
-                int compiledVertices = bufferBuilder.vertices * bufferBuilder.format.getVertexSize();
-                long allocated = ALLOCATOR.malloc(compiledVertices);
-                MemoryUtil.memCopy(ptr + offsetBeforeCompile, allocated, compiledVertices);
-                MeshData mesh = bufferBuilder.build();
-                if (mesh != null) {
-                    mesh.close();
-                }
-                CompileResult compileResult = new CompileResult(
-                    renderType,
-                    bufferBuilder.vertices,
-                    bufferBuilder.format.getVertexSize(),
-                    allocated,
-                    renderType.mode.indexCount(bufferBuilder.vertices)
+                CacheableBlockEntityRenderer renderer = CacheableBlockEntityRenderers.get(be.getType());
+                if (renderer == null) continue;
+                poseStack.pushPose();
+                BlockPos pos = be.getBlockPos();
+                poseStack.translate(
+                    pos.getX(),
+                    pos.getY(),
+                    pos.getZ()
                 );
-                compileResultMap.put(renderType, compileResult);
+                renderer.render(
+                    be,
+                    bufferSource,
+                    poseStack
+                );
+                poseStack.popPose();
             }
-            RenderRegion.this.compileResultMap.values().forEach(CompileResult::free);
-            RenderRegion.this.compileResultMap = compileResultMap;
-            compileResultMap.forEach((renderType, compileResult) ->
-                pipeline.submitUploadTask(() -> {
-                        VertexBuffer vb = buffers.get(renderType);
-                        compileResult.upload(vb);
-                    }
-                )
+            RenderRegion.this.isEmpty = bufferSource.isEmpty();
+            bufferSource.upload(
+                RenderRegion.this::getBuffer,
+                pipeline::submitUploadTask
             );
+            RenderRegion.this.indexCountMap = bufferSource.indexCountMap;
             lastRebuildTask = null;
         }
 
@@ -215,52 +189,4 @@ public class RenderRegion {
     }
 
 
-    @EqualsAndHashCode
-    static final class CompileResult {
-        final RenderType renderType;
-        final int vertexCount;
-        final int vertexSize;
-        final long vertexBufferPtr;
-        final int indexCount;
-        boolean freed = false;
-
-        CompileResult(
-            RenderType renderType,
-            int vertexCount,
-            int vertexSize,
-            long vertexBufferPtr,
-            int indexCount
-        ) {
-            this.renderType = renderType;
-            this.vertexCount = vertexCount;
-            this.vertexSize = vertexSize;
-            this.vertexBufferPtr = vertexBufferPtr;
-            this.indexCount = indexCount;
-        }
-
-        void upload(VertexBuffer vertexBuffer) {
-            if (freed) return;
-            VertexFormat.Mode mode = renderType.mode;
-            vertexBuffer.bind();
-            if (vertexBuffer.format != null) {
-                vertexBuffer.format.clearBufferState();
-            }
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBuffer.vertexBufferId);
-            renderType.format.setupBufferState();
-            vertexBuffer.format = renderType.format;
-            GL15C.nglBufferData(GL15.GL_ARRAY_BUFFER, (long) vertexCount * vertexSize, vertexBufferPtr, GL15.GL_STATIC_DRAW);
-            RenderSystem.AutoStorageIndexBuffer indexBuffer = RenderSystem.getSequentialBuffer(mode);
-            if (indexBuffer != vertexBuffer.sequentialIndices || !indexBuffer.hasStorage(indexCount)) {
-                indexBuffer.bind(indexCount);
-            }
-            vertexBuffer.sequentialIndices = indexBuffer;
-            VertexBuffer.unbind();
-        }
-
-        void free() {
-            if (freed) return;
-            ALLOCATOR.free(vertexBufferPtr);
-            freed = true;
-        }
-    }
 }

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "minecraft:blue_ice"
+      "item": "minecraft:soul_sand"
     },
     "B": {
       "item": "minecraft:iron_ingot"
@@ -15,7 +15,7 @@
     "BBB"
   ],
   "result": {
-    "count": 1,
+    "count": 4,
     "id": "anvilcraft:sliding_rail_stop"
   }
 }

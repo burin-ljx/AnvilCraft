@@ -25,48 +25,9 @@ public class LaserCompiler {
         LASER_WIDTH = array;
     }
 
-    public static void compileStage(
-        LaserState state,
-        VertexConsumer vertexConsumer,
-        RenderType renderType,
-        float width
-    ) {
-        if (renderType == RenderType.SOLID) {
-            renderBox(
-                vertexConsumer,
-                state.pose(),
-                -width,
-                -state.offset() - 0.001f,
-                -width,
-                width,
-                state.length() + 0.501f,
-                width,
-                1f,
-                state.laserAtlasSprite(),
-                state.concreteAtlasSprite()
-            );
-        } else if (renderType == ModRenderTypes.LASER) {
-            float haloWidth = width + HALF_PIXEL;
-            renderBox(
-                vertexConsumer,
-                state.pose(),
-                -haloWidth,
-                -state.offset(),
-                -haloWidth,
-                haloWidth,
-                state.length() + 0.5f + HALF_PIXEL,
-                haloWidth,
-                0.6f,
-                state.laserAtlasSprite(),
-                state.concreteAtlasSprite()
-            );
-        }
-    }
-
     public static float laserWidth(LaserState state) {
         return LASER_WIDTH[Math.clamp(state.blockEntity().getLaserLevel(), 1, 64)] + 0.001f;
     }
-
 
     public static void compile(
         LaserState state,
@@ -74,17 +35,32 @@ public class LaserCompiler {
     ) {
         if (state.laserLevel() <= 0) return;
         float width = laserWidth(state);
-        compileStage(
-            state,
+        renderBox(
             bufferBuilderFunction.apply(RenderType.solid()),
-            RenderType.SOLID,
-            width
+            state.pose(),
+            -width,
+            -state.offset() - 0.001f,
+            -width,
+            width,
+            state.length() + 0.501f,
+            width,
+            1f,
+            state.laserAtlasSprite(),
+            state.concreteAtlasSprite()
         );
-        compileStage(
-            state,
+        float haloWidth = width + HALF_PIXEL;
+        renderBox(
             bufferBuilderFunction.apply(ModRenderTypes.LASER),
-            ModRenderTypes.LASER,
-            width
+            state.pose(),
+            -haloWidth,
+            -state.offset(),
+            -haloWidth,
+            haloWidth,
+            state.length() + 0.5f + HALF_PIXEL,
+            haloWidth,
+            0.6f,
+            state.laserAtlasSprite(),
+            state.concreteAtlasSprite()
         );
     }
 

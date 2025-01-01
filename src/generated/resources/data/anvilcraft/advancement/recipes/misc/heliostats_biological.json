@@ -1,21 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_iron_ingot": {
+    "has_iron_block": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:iron_ingot"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_silver_pressure_plate": {
-      "conditions": {
-        "items": [
-          {
-            "items": "anvilcraft:silver_pressure_plate"
+            "items": "minecraft:iron_block"
           }
         ]
       },
@@ -33,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "anvilcraft:heliostats"
+        "recipe": "anvilcraft:heliostats_biological"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -41,14 +31,13 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_silver_pressure_plate",
       "has_sunflower",
-      "has_iron_ingot"
+      "has_iron_block"
     ]
   ],
   "rewards": {
     "recipes": [
-      "anvilcraft:heliostats"
+      "anvilcraft:heliostats_biological"
     ]
   }
 }

@@ -1,30 +1,23 @@
 package dev.dubhe.anvilcraft.client.renderer.laser;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.dubhe.anvilcraft.api.rendering.CacheableBlockEntityRenderer;
 import dev.dubhe.anvilcraft.block.entity.BaseLaserBlockEntity;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public class LaserRenderer implements CacheableBlockEntityRenderer<BaseLaserBlockEntity> {
 
-    public static final LaserRenderer INSTANCE = new LaserRenderer();
-
     @Override
-    public void compileRenderType(
+    public void render(
         BaseLaserBlockEntity blockEntity,
-        RenderType renderType,
-        BufferBuilder bufferBuilder,
+        MultiBufferSource.BufferSource buffer,
         PoseStack poseStack
     ) {
         LaserState laserState = LaserState.create(blockEntity, poseStack);
-        if (laserState != null) {
-            float width = LaserCompiler.laserWidth(laserState);
-            LaserCompiler.compileStage(
+        if (laserState != null){
+            LaserCompiler.compile(
                 laserState,
-                bufferBuilder,
-                renderType,
-                width
+                buffer::getBuffer
             );
         }
     }

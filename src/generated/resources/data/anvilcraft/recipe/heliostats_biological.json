@@ -1,21 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "group": "anvilcraft:heliostats",
   "key": {
-    "A": {
-      "item": "anvilcraft:silver_pressure_plate"
-    },
-    "B": {
+    "F": {
       "item": "minecraft:sunflower"
     },
-    "C": {
-      "item": "minecraft:iron_ingot"
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "S": {
+      "tag": "c:plates/silver"
     }
   },
   "pattern": [
-    "A",
-    "B",
-    "C"
+    "S S",
+    "SFS",
+    " I "
   ],
   "result": {
     "count": 8,

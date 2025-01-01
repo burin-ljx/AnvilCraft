@@ -98,7 +98,7 @@ public class ItemDetectorBlock extends BetterBaseEntityBlock implements EntityBl
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (level.isClientSide ||
             (oldState.is(this) && state.getValue(FACING) == oldState.getValue(FACING))) return;
-        if (oldState.is(this) && level.getBlockEntity(pos) instanceof ItemDetectorBlockEntity blockEntity) {
+        if (level.getBlockEntity(pos) instanceof ItemDetectorBlockEntity blockEntity) {
             blockEntity.recalcDetectionRange();
         }
         if (state.getValue(POWERED)) this.updateNeighborsInFront(level, pos, state);

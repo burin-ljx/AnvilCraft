@@ -1,0 +1,28 @@
+{
+  "values": [
+    "minecraft:stone",
+    "minecraft:deepslate",
+    "minecraft:andesite",
+    "minecraft:granite",
+    "minecraft:diorite",
+    "minecraft:netherrack",
+    "minecraft:blackstone",
+    "minecraft:end_stone",
+    "minecraft:ice",
+    "minecraft:raw_iron_block",
+    "minecraft:oxidized_copper",
+    "minecraft:iron_ore",
+    "minecraft:deepslate_iron_ore",
+    "minecraft:copper_ore",
+    "minecraft:deepslate_copper_ore",
+    "minecraft:gold_ore",
+    "minecraft:deepslate_gold_ore",
+    "anvilcraft:void_stone",
+    "anvilcraft:end_dust",
+    "anvilcraft:cursed_gold_block",
+    "anvilcraft:deepslate_tin_ore",
+    "anvilcraft:deepslate_zinc_ore",
+    "anvilcraft:deepslate_lead_ore",
+    "anvilcraft:deepslate_uranium_ore"
+  ]
+}
