@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.integration.jei.AnvilCraftJeiPlugin;
-import dev.dubhe.anvilcraft.integration.jei.util.BlockTagDisplayHelper;
+import dev.dubhe.anvilcraft.integration.jei.util.BlockTagUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRecipeUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRenderHelper;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
@@ -126,7 +126,7 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
             Either<TagKey<Block>, Block> input = recipe.inputs.get(i);
             AtomicReference<BlockState> renderedState = new AtomicReference<>();
             input.ifRight(r -> renderedState.set(r.defaultBlockState()))
-                .ifLeft(tag -> BlockTagDisplayHelper.getDisplay(tag)
+                .ifLeft(tag -> BlockTagUtil.getDisplay(tag)
                     .ifPresent(block -> renderedState.set(block.defaultBlockState())));
             if(renderedState.get() != null){
                 RenderHelper.renderBlock(
@@ -159,10 +159,10 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
 
         if (mouseX >= 40 && mouseX <= 58) {
             if (mouseY >= 24 && mouseY < 42) {
-                tooltip.addAll(BlockTagDisplayHelper.getTooltipsForInput(recipe.inputs.getFirst()));
+                tooltip.addAll(BlockTagUtil.getTooltipsForInput(recipe.inputs.getFirst()));
             }
             if (mouseY >= 42 && mouseY <= 52) {
-                tooltip.addAll(BlockTagDisplayHelper.getTooltipsForInput(recipe.inputs.getLast()));
+                tooltip.addAll(BlockTagUtil.getTooltipsForInput(recipe.inputs.getLast()));
             }
         }
         if (mouseX >= 100 && mouseX <= 120) {
