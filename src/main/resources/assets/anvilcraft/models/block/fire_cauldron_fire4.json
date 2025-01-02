@@ -3,25 +3,25 @@
 	"parent": "minecraft:block/campfire",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "block/campfire_fire",
-		"particle": "block/campfire_fire"
+		"0": "minecraft:block/campfire_fire",
+		"particle": "minecraft:block/campfire_fire"
 	},
 	"elements": [
 		{
-			"from": [8, 12, 0.8],
-			"to": [8, 28, 15.2],
+			"from": [8, 15, 0.8],
+			"to": [8, 31, 15.2],
 			"shade": false,
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 19, 8], "rescale": true},
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 22, 8], "rescale": true},
 			"faces": {
 				"east": {"uv": [0, 0, 16, 16], "texture": "#0"},
 				"west": {"uv": [0, 0, 16, 16], "texture": "#0"}
 			}
 		},
 		{
-			"from": [0.8, 12, 8],
-			"to": [15.2, 28, 8],
+			"from": [0.8, 15, 8],
+			"to": [15.2, 31, 8],
 			"shade": false,
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 19, 8], "rescale": true},
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 22, 8], "rescale": true},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
 				"south": {"uv": [0, 0, 16, 16], "texture": "#0"}
