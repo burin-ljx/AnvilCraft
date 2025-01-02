@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.integration.jei.category.BeaconConversionCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.EndPortalConversionCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.JewelCraftingCategory;
+import dev.dubhe.anvilcraft.integration.jei.category.VoidDecayCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.BlockCompressCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.BlockCrushCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.BoilingCategory;
@@ -28,6 +29,7 @@ import dev.dubhe.anvilcraft.integration.jei.recipe.CementStainingRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.ColoredConcreteRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.EndPortalConversionRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.MeshRecipeGroup;
+import dev.dubhe.anvilcraft.integration.jei.recipe.VoidDecayRecipe;
 import dev.dubhe.anvilcraft.recipe.JewelCraftingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCrushRecipe;
@@ -77,6 +79,8 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         createRecipeType("end_portal_conversion", EndPortalConversionRecipe.class);
     public static final RecipeType<BeaconConversionRecipe> BEACON_CONVERSION =
         createRecipeType("beacon_conversion", BeaconConversionRecipe.class);
+    public static final RecipeType<VoidDecayRecipe> VOID_DECAY =
+        createRecipeType("void_decay", VoidDecayRecipe.class);
 
     public static final RecipeType<RecipeHolder<BlockCompressRecipe>> BLOCK_COMPRESS =
         createRecipeHolderType("block_compress");
@@ -124,6 +128,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         JewelCraftingCategory.registerRecipes(registration);
         EndPortalConversionCategory.registerRecipes(registration);
         BeaconConversionCategory.registerRecipes(registration);
+        VoidDecayCategory.registerRecipes(registration);
 
         registration.addItemStackInfo(
             new ItemStack(ModItems.GEODE.get()),
@@ -167,6 +172,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         JewelCraftingCategory.registerRecipeCatalysts(registration);
         EndPortalConversionCategory.registerRecipeCatalysts(registration);
         BeaconConversionCategory.registerRecipeCatalysts(registration);
+        VoidDecayCategory.registerRecipeCatalysts(registration);
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
 
@@ -203,6 +209,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new JewelCraftingCategory(guiHelper));
         registration.addRecipeCategories(new EndPortalConversionCategory(guiHelper));
         registration.addRecipeCategories(new BeaconConversionCategory(guiHelper));
+        registration.addRecipeCategories(new VoidDecayCategory(guiHelper));
     }
 
     @Override

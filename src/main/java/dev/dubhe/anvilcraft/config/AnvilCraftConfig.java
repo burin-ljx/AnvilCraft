@@ -16,6 +16,11 @@ public class AnvilCraftConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(max = 64, min = 1)
     public int anvilEfficiency = 64;
 
+    @Comment("Maximum radius of giant anvil's shock behavior")
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.BoundedDiscrete(max = 16, min = 4)
+    public int giantAnvilMaxShockRadius = 16;
+
     @Comment("Maximum depth a lightning strike can reach")
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.BoundedDiscrete(max = 16, min = 1)

@@ -129,7 +129,27 @@ public class ItemTagLoader {
         provider.addTag(ModItemTags.EXPLOSION_PROOF)
                 .add(findResourceKey(ModBlocks.EARTH_CORE_SHARD_BLOCK.asItem()))
                 .add(findResourceKey(ModBlocks.EARTH_CORE_SHARD_ORE.asItem()))
-                .add(ModItems.EARTH_CORE_SHARD.getKey());
+                .add(ModItems.EARTH_CORE_SHARD.getKey())
+                .add(findResourceKey(ModBlocks.EMBER_ANVIL.asItem()))
+                .add(findResourceKey(ModBlocks.EMBER_SMITHING_TABLE.asItem()))
+                .add(findResourceKey(ModBlocks.EMBER_GRINDSTONE.asItem()))
+                .add(findResourceKey(ModBlocks.EMBER_METAL_BLOCK.asItem()))
+                .add(findResourceKey(ModBlocks.EMBER_GLASS.asItem()))
+                .add(findResourceKey(ModBlocks.CUT_EMBER_METAL_STAIRS.asItem()))
+                .add(findResourceKey(ModBlocks.CUT_EMBER_METAL_SLAB.asItem()))
+                .add(findResourceKey(ModBlocks.CUT_EMBER_METAL_PILLAR.asItem()))
+                .add(findResourceKey(ModBlocks.CUT_EMBER_METAL_BLOCK.asItem()))
+                .add(ModItems.EMBER_ANVIL_HAMMER.getKey())
+                .add(ModItems.EMBER_METAL_AXE.getKey())
+                .add(ModItems.EMBER_METAL_HOE.getKey())
+                .add(ModItems.EMBER_METAL_INGOT.getKey())
+                .add(ModItems.EMBER_METAL_NUGGET.getKey())
+                .add(ModItems.EMBER_METAL_SHOVEL.getKey())
+                .add(ModItems.EMBER_METAL_SWORD.getKey())
+                .add(ModItems.EMBER_METAL_PICKAXE.getKey())
+                .add(ModItems.NEUTRONIUM_INGOT.getKey())
+                .add(ModItems.STABLE_NEUTRONIUM_INGOT.getKey())
+                .add(ModItems.CHARGED_NEUTRONIUM_INGOT.getKey());
     }
 
     private static ResourceKey<Item> findResourceKey(Item item) {

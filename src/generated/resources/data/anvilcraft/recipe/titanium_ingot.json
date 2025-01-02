@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "group": "anvilcraft:titanium_ingot",
   "key": {
     "A": {
       "tag": "c:nuggets/titanium"

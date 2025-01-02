@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
+  "group": "anvilcraft:zinc_ingot",
   "ingredients": [
     {
       "item": "anvilcraft:zinc_block"

@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  "category": "building",
   "key": {
     "A": {
       "item": "anvilcraft:cut_royal_steel_block"

@@ -55,6 +55,12 @@ public class JeiLang {
         provider.add("gui.anvilcraft.category.beacon_conversion.activate", "Use this item to activate beacon");
         provider.add("gui.anvilcraft.category.beacon_conversion.beacon_base", "Use this block as beacon base");
 
+        provider.add("gui.anvilcraft.category.void_decay", "Void Decay");
+        provider.add("gui.anvilcraft.category.void_decay.random_tick", "The block at center will be converted when received random tick");
+        provider.add("gui.anvilcraft.category.void_decay.center", "Put this block at center");
+        provider.add("gui.anvilcraft.category.void_decay.around", "Put this block adjacent to the center block");
+        provider.add("gui.anvilcraft.category.void_decay.not_consumed", "Not consumed in conversion");
+
         provider.add("jei.anvilcraft.info.geode_1", "Finds Amethyst Geodes nearby when using.");
         provider.add("jei.anvilcraft.info.geode_2", "Dropped by Budding Amethyst blocks.");
         provider.add("jei.anvilcraft.info.geode_3", "You can also find it in the Bonus Chest");
