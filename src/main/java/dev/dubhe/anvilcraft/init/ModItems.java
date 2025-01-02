@@ -608,7 +608,8 @@ public class ModItems {
     // 诅咒黄金系
     public static final ItemEntry<CursedItem> CURSED_GOLD_INGOT = REGISTRATE
         .item("cursed_gold_ingot", CursedItem::new)
-        .tag(ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(ItemTags.BEACON_PAYMENT_ITEMS,
+            ItemTags.PIGLIN_LOVED)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.CURSED_GOLD_BLOCK)
@@ -631,6 +632,7 @@ public class ModItems {
         .register();
     public static final ItemEntry<CursedItem> CURSED_GOLD_NUGGET = REGISTRATE
         .item("cursed_gold_nugget", CursedItem::new)
+        .tag(ItemTags.PIGLIN_LOVED)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItems.CURSED_GOLD_INGOT)
