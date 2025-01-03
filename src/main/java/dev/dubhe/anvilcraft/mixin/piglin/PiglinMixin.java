@@ -38,7 +38,7 @@ public abstract class PiglinMixin extends AbstractPiglin {
 
     @Override
     public boolean isConverting() {
-        if (this.getOffhandItem().getItem() instanceof ICursed) {
+        if (this.getData(ModDataAttachments.ZOMBIFICATED_BY_CURSE)) {
             return true;
         }
         return super.isConverting();
