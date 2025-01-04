@@ -14,10 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -25,10 +22,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class HoneyCauldronBlock extends LayeredCauldronBlock implements IHammerRemovable {
+public class HoneyCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable {
 
     public HoneyCauldronBlock(Properties properties) {
-        super(Biome.Precipitation.NONE, ModInteractionMap.HONEY, properties);
+        super(properties, ModInteractionMap.HONEY);
     }
 
     @Override
@@ -50,24 +47,6 @@ public class HoneyCauldronBlock extends LayeredCauldronBlock implements IHammerR
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-    }
-
-    @Override
-    public void handlePrecipitation(
-        BlockState state,
-        Level level,
-        BlockPos pos,
-        Biome.Precipitation precipitation
-    ) {
-    }
-
-    @Override
-    protected boolean canReceiveStalactiteDrip(Fluid fluid) {
-        return false;
-    }
-
-    @Override
-    protected void receiveStalactiteDrip(BlockState state, Level level, BlockPos pos, Fluid fluid) {
     }
 
     @Override

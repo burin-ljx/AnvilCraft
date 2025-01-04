@@ -37,7 +37,7 @@ public class ModInteractionMap {
                 hand,
                 stack,
                 ModItems.OIL_BUCKET.asStack(),
-                (s) -> s.getValue(OilCauldronBlock.LEVEL) == 3,
+                (s) -> s.getValue(OilCauldronBlock.LEVEL) == 4,
                 SoundEvents.BUCKET_FILL
             )
         );
@@ -79,7 +79,7 @@ public class ModInteractionMap {
                 interactionHand,
                 itemStack,
                 Items.LAVA_BUCKET.getDefaultInstance(),
-                (state) -> state.getValue(LayeredCauldronBlock.LEVEL) == 3,
+                (state) -> state.getValue(LayeredCauldronBlock.LEVEL) == 4,
                 SoundEvents.BUCKET_FILL
             )
         );
@@ -102,7 +102,7 @@ public class ModInteractionMap {
             (state, level, pos, player, hand, stack) -> {
                 if (!level.isClientSide()) {
                     player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, Items.HONEY_BOTTLE.getDefaultInstance()));
-                    LayeredCauldronBlock.lowerFillLevel(state, level, pos);
+                    HoneyCauldronBlock.lowerFillLevel(state, level, pos);
                     level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS);
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
                 }
@@ -113,7 +113,7 @@ public class ModInteractionMap {
             Items.HONEY_BOTTLE,
             (state, level, pos, player, hand, stack) -> {
                 int honeyLevel = state.getValue(HoneyCauldronBlock.LEVEL);
-                if (honeyLevel < 3) {
+                if (honeyLevel < 4) {
                     level.setBlockAndUpdate(pos, state.cycle(HoneyCauldronBlock.LEVEL));
                     stack.shrink(1);
                     ItemStack backBottle = new ItemStack(Items.GLASS_BOTTLE);
@@ -165,7 +165,7 @@ public class ModInteractionMap {
                 player,
                 hand,
                 stack,
-                ModBlocks.OIL_CAULDRON.getDefaultState().setValue(OilCauldronBlock.LEVEL, 3),
+                ModBlocks.OIL_CAULDRON.getDefaultState().setValue(OilCauldronBlock.LEVEL, 4),
                 SoundEvents.BUCKET_EMPTY
             )
         );

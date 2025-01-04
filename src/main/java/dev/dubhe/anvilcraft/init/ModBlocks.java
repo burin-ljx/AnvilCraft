@@ -132,7 +132,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -2942,7 +2941,7 @@ public class ModBlocks {
         .block("lava_cauldron", LavaCauldronBlock::new)
         .initialProperties(() -> Blocks.LAVA_CAULDRON)
         .properties(properties ->
-            properties.lightLevel(blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) * 5))
+            properties.lightLevel(blockState -> blockState.getValue(LavaCauldronBlock.LEVEL) * 4))
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
