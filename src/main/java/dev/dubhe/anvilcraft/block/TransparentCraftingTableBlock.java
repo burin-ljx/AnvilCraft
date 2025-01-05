@@ -75,11 +75,13 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        if (oldState.is(this)) return;
         travelAndCheck(level, pos);
     }
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (newState.is(this)) return;
         for (Direction direction : Util.HORIZONTAL_DIRECTIONS) {
             travelAndCheck(level, pos.relative(direction));
         }
