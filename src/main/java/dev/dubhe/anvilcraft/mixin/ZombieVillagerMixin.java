@@ -35,8 +35,12 @@ abstract public class ZombieVillagerMixin extends Zombie {
     )
     private void discountForALlPlayers(Villager villager, ServerLevel serverLevel, Operation<Void> original){
         if (this.conversionStarter.equals(ModDispenserBehavior.ANVILCRAFT_DISPENSER)) {
-            serverLevel.players().forEach(p ->
-                serverLevel.onReputationEvent(ReputationEventType.ZOMBIE_VILLAGER_CURED, p, villager));
+                serverLevel.getServer()
+                    .getPlayerList()
+                    .getPlayers()
+                    .forEach(p -> {
+                        serverLevel.onReputationEvent(ReputationEventType.ZOMBIE_VILLAGER_CURED, p, villager);
+                    });
             this.conversionStarter = null;
         }
         original.call(villager, serverLevel);
