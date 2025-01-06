@@ -578,6 +578,8 @@
   "text.autoconfig.anvilcraft.option.renderBloomEffect.@Tooltip": "Bloom effect on laser and power transmitter lines.",
   "text.autoconfig.anvilcraft.option.renderPowerTransmitterLines": "Render Power Transmitter Lines",
   "text.autoconfig.anvilcraft.option.renderPowerTransmitterLines.@Tooltip": "Render lines between power transmitters",
+  "text.autoconfig.anvilcraft.option.transparentCraftingTableMaxMatrixSize": "Transparent Crafting Table Max Matrix Size",
+  "text.autoconfig.anvilcraft.option.transparentCraftingTableMaxMatrixSize.@Tooltip": "Maximum size for connecting transparent crafting table to form matrix",
   "text.autoconfig.anvilcraft.title": "AnvilCraft Config",
   "tooltip.anvilcraft.grid_information.consumer_stats": "Power Consumer Stats:",
   "tooltip.anvilcraft.grid_information.input_power": "  Power Consumption: %d",
