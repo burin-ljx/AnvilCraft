@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -94,11 +95,11 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
         }
         // 旋转90
         flag = true;
-        input.rotate();
         for (int x = 0; x < size && flag; x++) {
             for (int y = 0; y < size && flag; y++) {
                 for (int z = 0; z < size && flag; z++) {
-                    if (!pattern.getPredicate(x, y, z).test(input.getBlockState(z, y, size - 1 - x))) {
+                    if (!pattern.getPredicate(x, y, z).test(
+                        input.getBlockState(z, y, size - 1 - x).rotate(Rotation.CLOCKWISE_90))) {
                         flag = false;
                     }
                 }
@@ -109,11 +110,11 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
         }
         // 旋转180
         flag = true;
-        input.rotate();
         for (int x = 0; x < size && flag; x++) {
             for (int y = 0; y < size && flag; y++) {
                 for (int z = 0; z < size && flag; z++) {
-                    if (!pattern.getPredicate(x, y, z).test(input.getBlockState(size - 1 - x, y, size - 1 - z))) {
+                    if (!pattern.getPredicate(x, y, z).test(
+                        input.getBlockState(size - 1 - x, y, size - 1 - z).rotate(Rotation.CLOCKWISE_180))) {
                         flag = false;
                     }
                 }
@@ -124,22 +125,17 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
         }
         // 旋转270
         flag = true;
-        input.rotate();
         for (int x = 0; x < size && flag; x++) {
             for (int y = 0; y < size && flag; y++) {
                 for (int z = 0; z < size && flag; z++) {
-                    if (!pattern.getPredicate(x, y, z).test(input.getBlockState(size - 1 - z, y, x))) {
+                    if (!pattern.getPredicate(x, y, z).test(
+                        input.getBlockState(size - 1 - z, y, x).rotate(Rotation.COUNTERCLOCKWISE_90))) {
                         flag = false;
                     }
                 }
             }
         }
-        if (flag) {
-            return true;
-        }
-        // 旋转到无旋转
-        input.rotate();
-        return false;
+        return flag;
     }
 
     @Override

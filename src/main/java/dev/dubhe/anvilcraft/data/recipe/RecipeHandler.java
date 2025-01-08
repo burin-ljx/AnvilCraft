@@ -17,6 +17,7 @@ public class RecipeHandler {
         ItemInjectRecipeLoader.init(provider);
         SqueezingRecipeLoader.init(provider);
         MultiBlockRecipeLoader.init(provider);
+        MultiBlockConversionRecipeLoader.init(provider);
         MobTransformRecipeLoader.init(provider);
         ConcreteRecipeLoader.init(provider);
         MineralFountainRecipeLoader.init(provider);
