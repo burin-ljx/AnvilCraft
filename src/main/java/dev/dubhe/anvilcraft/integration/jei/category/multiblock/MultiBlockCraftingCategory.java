@@ -316,7 +316,8 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.GIANT_ANVIL), AnvilCraftJeiPlugin.MULTI_BLOCK);
+        registration.addRecipeCatalyst(ModBlocks.GIANT_ANVIL.asStack(), AnvilCraftJeiPlugin.MULTI_BLOCK);
+        registration.addRecipeCatalyst(ModBlocks.SPACE_OVERCOMPRESSOR.asStack(), AnvilCraftJeiPlugin.MULTI_BLOCK);
     }
 
     private static class JeiButton<T> implements IJeiGuiEventListener {
