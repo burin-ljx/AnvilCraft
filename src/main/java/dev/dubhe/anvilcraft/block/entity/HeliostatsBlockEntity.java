@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -25,10 +24,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public class HeliostatsBlockEntity extends BlockEntity {
     @Getter
     private BlockPos irritatePos;
@@ -87,7 +89,7 @@ public class HeliostatsBlockEntity extends BlockEntity {
         return validatePos(pos).isWorking();
     }
 
-    private WorkResult validatePos(BlockPos irritatePos) {
+    private WorkResult validatePos(@Nullable BlockPos irritatePos) {
         normalVector3f = new Vector3f();
         if (level == null) return WorkResult.UNKNOWN;
         if (level.isClientSide && Minecraft.getInstance().player == null) return WorkResult.UNKNOWN;
