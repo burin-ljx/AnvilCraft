@@ -5,6 +5,7 @@ import dev.dubhe.anvilcraft.api.event.item.UseMagnetEvent;
 import dev.dubhe.anvilcraft.api.item.IChargerChargeable;
 import dev.dubhe.anvilcraft.init.ModItems;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -28,6 +29,9 @@ public class MagnetItem extends Item implements IChargerChargeable {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             @NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
+        if (level.isClientSide) {
+            Minecraft.getInstance().gameRenderer.displayItemActivation(ModItems.AMULET_BOX.asStack());
+        }
         ItemStack item = player.getItemInHand(usedHand);
         double radius = AnvilCraft.config.magnetItemAttractsRadius;
         UseMagnetEvent event = new UseMagnetEvent(level, player, radius);
