@@ -2,6 +2,7 @@
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/cube",
 	"render_type": "minecraft:cutout",
+	"ambientocclusion": false,
 	"textures": {
 		"0": "anvilcraft:block/electromagnetic_ring_in",
 		"1": "anvilcraft:block/electromagnetic_ring_out",
