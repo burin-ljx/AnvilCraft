@@ -4,17 +4,17 @@
 	"render_type": "minecraft:cutout",
 	"ambientocclusion": false,
 	"textures": {
-		"0": "anvilcraft:block/electromagnetic_ring_in",
-		"1": "anvilcraft:block/electromagnetic_ring_out",
-		"2": "anvilcraft:block/electromagnetic_ring_inner",
-		"3": "anvilcraft:block/electromagnetic_ring_outer",
-		"4": "anvilcraft:block/electromagnetic_ring_pipe",
-		"5": "anvilcraft:block/electromagnetic_ring_center",
-		"6": "anvilcraft:block/electromagnetic_ring_center_inner",
-		"7": "anvilcraft:block/electromagnetic_ring_direction",
-		"8": "anvilcraft:block/electromagnetic_ring_center_side",
-		"particle": "anvilcraft:block/electromagnetic_ring_outer",
-		"state": "anvilcraft:block/electromagnetic_ring_on"
+		"0": "anvilcraft:block/acceleration_ring_in",
+		"1": "anvilcraft:block/acceleration_ring_out",
+		"2": "anvilcraft:block/acceleration_ring_inner",
+		"3": "anvilcraft:block/acceleration_ring_outer",
+		"4": "anvilcraft:block/acceleration_ring_pipe",
+		"5": "anvilcraft:block/acceleration_ring_center",
+		"6": "anvilcraft:block/acceleration_ring_center_inner",
+		"7": "anvilcraft:block/acceleration_ring_direction",
+		"8": "anvilcraft:block/acceleration_ring_center_side",
+		"particle": "anvilcraft:block/acceleration_ring_outer",
+		"state": "anvilcraft:block/acceleration_ring_on"
 	},
 	"elements": [
 		{

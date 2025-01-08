@@ -2,6 +2,6 @@
 	"parent": "anvilcraft:block/electromagnetic_ring",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"state": "anvilcraft:block/electromagnetic_ring_overload"
+		"state": "anvilcraft:block/acceleration_ring_off"
 	}
 }
