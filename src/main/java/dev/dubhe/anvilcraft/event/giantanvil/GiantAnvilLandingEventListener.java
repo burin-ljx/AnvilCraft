@@ -318,9 +318,9 @@ public class GiantAnvilLandingEventListener {
      */
     private static BlockPos rotatePos(BlockPos pos, int size, Rotation rotation) {
         return switch (rotation) {
-            case CLOCKWISE_90 -> new BlockPos(pos.getZ(), pos.getY(), size - 1 - pos.getX());
+            case COUNTERCLOCKWISE_90 -> new BlockPos(pos.getZ(), pos.getY(), size - 1 - pos.getX());
             case CLOCKWISE_180 -> new BlockPos(size - 1 - pos.getX(), pos.getY(), size - 1 - pos.getZ());
-            case COUNTERCLOCKWISE_90 -> new BlockPos(size - 1 - pos.getZ(), pos.getY(), pos.getX());
+            case CLOCKWISE_90 -> new BlockPos(size - 1 - pos.getZ(), pos.getY(), pos.getX());
             default -> pos;
         };
     }
@@ -399,9 +399,9 @@ public class GiantAnvilLandingEventListener {
                     for (int z = 0; z < size; z++) {
                         for (int x = 0; x < size; x++) {
                             switch (rotation) {
-                                case CLOCKWISE_90 -> mpos.set(x0 + z, y0 + y, z0 + (size - 1 - x));
+                                case COUNTERCLOCKWISE_90 -> mpos.set(x0 + z, y0 + y, z0 + (size - 1 - x));
                                 case CLOCKWISE_180 -> mpos.set(x0 + (size - 1 - x), y0 + y, z0 + (size - 1 - z));
-                                case COUNTERCLOCKWISE_90 -> mpos.set(x0 + (size - 1 - z), y0 + y, z0 + x);
+                                case CLOCKWISE_90 -> mpos.set(x0 + (size - 1 - z), y0 + y, z0 + x);
                                 default -> mpos.set(x0 + x, y0 + y, z0 + z);
                             }
                             BlockState newState = outputPattern.getPredicate(x, y, z).getDefaultState().rotate(rotation);
@@ -409,11 +409,11 @@ public class GiantAnvilLandingEventListener {
                         }
                     }
                 }
-                entity.ifPresent(e -> {
+                entity.ifPresent(entityType -> {
                     BlockPos offset = rotatePos(value.getModifySpawnerAction().get().toPos(), size, rotation);
                     Optional.ofNullable(level.getBlockEntity(inputCorner.offset(offset)))
                         .filter(be -> be instanceof Spawner)
-                        .ifPresent(be -> ((Spawner) be).setEntityId(e, level.getRandom()));
+                        .ifPresent(be -> ((Spawner) be).setEntityId(entityType, level.getRandom()));
                 });
             });
     }

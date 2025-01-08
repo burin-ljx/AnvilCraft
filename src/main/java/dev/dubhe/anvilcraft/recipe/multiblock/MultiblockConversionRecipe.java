@@ -116,7 +116,7 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
             }
         }
         if (flag) {
-            matchedRotation = Rotation.CLOCKWISE_90;
+            matchedRotation = Rotation.COUNTERCLOCKWISE_90;
             return true;
         }
         // 旋转180
@@ -148,7 +148,7 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
             }
         }
         if (flag) {
-            matchedRotation = Rotation.COUNTERCLOCKWISE_90;
+            matchedRotation = Rotation.CLOCKWISE_90;
             return true;
         }
         return false;
