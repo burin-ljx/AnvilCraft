@@ -717,23 +717,6 @@ public class ModItems {
     public static final ItemEntry<Item> SEA_HEART_SHELL_SHARD =
         REGISTRATE.item("sea_heart_shell_shard", Item::new).register();
 
-    public static final ItemEntry<Item> MAGNETOELECTRIC_CORE = REGISTRATE
-        .item("magnetoelectric_core", Item::new)
-        .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', Tags.Items.INGOTS_COPPER)
-                .define('B', Tags.Items.GLASS_BLOCKS)
-                .define('C', ModBlocks.HOLLOW_MAGNET_BLOCK)
-                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HOLLOW_MAGNET_BLOCK))
-                .save(provider);
-        })
-        .model((ctx, provider) -> {
-        })
-        .register();
-
     public static final ItemEntry<Item> TUNGSTEN_NUGGET = REGISTRATE
         .item("tungsten_nugget", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
