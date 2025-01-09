@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.recipe.multiblock;
 
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 
+import dev.dubhe.anvilcraft.recipe.IDatagen;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,11 +23,13 @@ import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MultiblockRecipe implements Recipe<MultiblockInput> {
+public class MultiblockRecipe implements Recipe<MultiblockInput>, IDatagen {
     public final BlockPattern pattern;
     public final ItemStack result;
 
@@ -136,6 +139,55 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
             }
         }
         return flag;
+    }
+
+    @Override
+    public String toDatagen() {
+        StringBuilder codeBuilder = new StringBuilder("MultiblockRecipe.builder(\"%s\", %d)"
+            .formatted(BuiltInRegistries.ITEM.getKey(result.getItem()), result.getCount()));
+        codeBuilder.append("\n");
+
+        for (List<String> layer : this.pattern.getLayers()) {
+            codeBuilder.append("    .layer(");
+            codeBuilder.append(layer.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(", ")));
+            codeBuilder.append(")");
+            codeBuilder.append("\n");
+        }
+        this.pattern.getSymbols().forEach((symbol, predicate) -> {
+            codeBuilder.append("    .symbol(");
+            codeBuilder.append("'").append(symbol).append("'");
+            codeBuilder.append(", ");
+            if (predicate.getProperties().isEmpty()) {
+                codeBuilder.append("\"");
+                codeBuilder.append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()));
+                codeBuilder.append("\"");
+                codeBuilder.append(")");
+            } else {
+                codeBuilder.append("BlockPredicateWithState.of(");
+                codeBuilder.append("\"");
+                codeBuilder.append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()));
+                codeBuilder.append("\"");
+                codeBuilder.append(")");
+                codeBuilder.append("\n");
+                predicate.getProperties().forEach((property, value) -> {
+                    codeBuilder.append("        .hasState(");
+                    codeBuilder.append("\"").append(property.getName()).append("\"");
+                    codeBuilder.append(", ");
+                    codeBuilder.append("\"").append(BlockPredicateWithState.getNameOf(value)).append("\"");
+                    codeBuilder.append(")");
+                    codeBuilder.append("\n");
+                });
+                codeBuilder.append("    )");
+            }
+            codeBuilder.append("\n");
+        });
+        codeBuilder.append("    .save(provider);");
+        return codeBuilder.toString();
+    }
+
+    @Override
+    public String getSuggestedName() {
+        return BuiltInRegistries.ITEM.getKey(this.result.getItem()).getPath();
     }
 
     @Override

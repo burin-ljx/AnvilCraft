@@ -44,16 +44,16 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BitSetDiscreteVoxelShape;
+import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 import static dev.dubhe.anvilcraft.util.Util.HORIZONTAL_DIRECTIONS;
 
@@ -384,9 +384,6 @@ public class GiantAnvilLandingEventListener {
                 Rotation rotation = value.getMatchedRotation();
                 BlockPattern outputPattern = value.getOutputPattern();
                 BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos();
-                int x0 = inputCorner.getX();
-                int y0 = inputCorner.getY();
-                int z0 = inputCorner.getZ();
                 Optional<EntityType<?>> entity = value.getModifySpawnerAction()
                     .map(ModifySpawnerAction::fromPos)
                     .map(pos -> rotatePos(pos, size, rotation))
@@ -399,16 +396,48 @@ public class GiantAnvilLandingEventListener {
                     for (int z = 0; z < size; z++) {
                         for (int x = 0; x < size; x++) {
                             switch (rotation) {
-                                case COUNTERCLOCKWISE_90 -> mpos.set(x0 + z, y0 + y, z0 + (size - 1 - x));
-                                case CLOCKWISE_180 -> mpos.set(x0 + (size - 1 - x), y0 + y, z0 + (size - 1 - z));
-                                case CLOCKWISE_90 -> mpos.set(x0 + (size - 1 - z), y0 + y, z0 + x);
-                                default -> mpos.set(x0 + x, y0 + y, z0 + z);
+                                case COUNTERCLOCKWISE_90 -> mpos.setWithOffset(inputCorner, z, y, size - 1 - x);
+                                case CLOCKWISE_180 -> mpos.setWithOffset(inputCorner, size - 1 - x, y, size - 1 - z);
+                                case CLOCKWISE_90 -> mpos.setWithOffset(inputCorner, size - 1 - z, y, x);
+                                default -> mpos.setWithOffset(inputCorner, x, y, z);
                             }
                             BlockState newState = outputPattern.getPredicate(x, y, z).getDefaultState().rotate(rotation);
                             level.setBlock(mpos, newState, 18);
                         }
                     }
                 }
+                // NC update (Block#neighborChanged) after structure converted
+                for (int y = 0; y < size; y++) {
+                    for (int z = 0; z < size; z++) {
+                        for (int x = 0; x < size; x++) {
+                            if (x > 0 && x < size - 1 && y > 0 && y < size - 1 && z > 0 && z < size - 1) continue;
+                            mpos.setWithOffset(inputCorner, x, y, z);
+                            level.blockUpdated(mpos, input.getBlockState(x, y, z).getBlock());
+                            BlockState newState = level.getBlockState(mpos);
+                            if (newState.hasAnalogOutputSignal()) {
+                                level.updateNeighbourForOutputSignal(mpos, newState.getBlock());
+                            }
+                        }
+                    }
+                }
+                // PP update (Block#updateShape) after structure converted
+                // copy and modified from StructureTemplate#updateShapeAtEdge
+                DiscreteVoxelShape shape = BitSetDiscreteVoxelShape.withFilledBounds(
+                    size, size, size,
+                    0, 0, 0,
+                    size, size, size
+                );
+                BlockPos.MutableBlockPos mpos2 = new BlockPos.MutableBlockPos();
+                shape.forAllFaces(
+                    (direction, x, y, z) -> {
+                        BlockPos innerPos = mpos.setWithOffset(inputCorner, x, y, z);
+                        BlockPos outerPos = mpos2.setWithOffset(innerPos, direction);
+                        level.neighborShapeChanged(direction.getOpposite(), level.getBlockState(innerPos),
+                            outerPos, innerPos, 3, 512);
+                        level.neighborShapeChanged(direction, level.getBlockState(outerPos),
+                            innerPos, outerPos, 3, 512);
+                    }
+                );
                 entity.ifPresent(entityType -> {
                     BlockPos offset = rotatePos(value.getModifySpawnerAction().get().toPos(), size, rotation);
                     Optional.ofNullable(level.getBlockEntity(inputCorner.offset(offset)))

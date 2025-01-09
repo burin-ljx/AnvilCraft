@@ -3,10 +3,12 @@ package dev.dubhe.anvilcraft.recipe.multiblock;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
+import dev.dubhe.anvilcraft.recipe.IDatagen;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -24,12 +26,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
+public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDatagen {
     private final BlockPattern inputPattern;
     private final BlockPattern outputPattern;
     private final Optional<ModifySpawnerAction> modifySpawnerAction;
@@ -85,7 +89,7 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
     @Override
     public boolean matches(MultiblockInput input, Level level) {
         int size = input.size();
-        if (inputPattern.getLayers().size() != size) {
+        if (this.getSize() != size) {
             return false;
         }
         // 无旋转
@@ -154,9 +158,69 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
         return false;
     }
 
+    public int getSize(){
+        return this.inputPattern.getSize();
+    }
+
+    public Block centerOutput(){
+        int t = this.getSize() / 2;
+        return this.getOutputPattern().getPredicate(t, t, t).getBlock();
+    }
+
     @Override
     public ItemStack assemble(MultiblockInput input, HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
+    }
+
+    private static void datagenForPattern(StringBuilder codeBuilder, BlockPattern pattern, String role) {
+        for (List<String> layer : pattern.getLayers()) {
+            codeBuilder.append("    .")
+                .append(role)
+                .append("Layer(")
+                .append(layer.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(", ")))
+                .append(")\n");
+        }
+        pattern.getSymbols().forEach((symbol, predicate) -> {
+            codeBuilder.append("    .")
+                .append(role)
+                .append("Symbol('")
+                .append(symbol)
+                .append("', ");
+            if (predicate.getProperties().isEmpty()) {
+                codeBuilder.append("\"")
+                    .append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()))
+                    .append("\")");
+            } else {
+                codeBuilder.append("BlockPredicateWithState.of(\"")
+                    .append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()))
+                    .append("\")\n");
+                predicate.getProperties().forEach((property, value) -> {
+                    codeBuilder.append("        .hasState(\"")
+                        .append(property.getName())
+                        .append("\", \"")
+                        .append(BlockPredicateWithState.getNameOf(value))
+                        .append("\")\n");
+                });
+                codeBuilder.append("    )");
+            }
+            codeBuilder.append("\n");
+        });
+    }
+
+    @Override
+    public String toDatagen() {
+        StringBuilder codeBuilder = new StringBuilder("MultiblockRecipe.builder()\n");
+
+        datagenForPattern(codeBuilder, this.inputPattern, "input");
+        datagenForPattern(codeBuilder, this.outputPattern, "output");
+
+        codeBuilder.append("    .save(provider);");
+        return codeBuilder.toString();
+    }
+
+    @Override
+    public String getSuggestedName() {
+        return BuiltInRegistries.BLOCK.getKey(this.centerOutput()).getPath();
     }
 
     public static class Builder extends AbstractRecipeBuilder<MultiblockConversionRecipe> {
@@ -190,30 +254,30 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
             return this.symbol(symbol, BlockPredicateWithState.of(blockName));
         }
 
-        public Builder symbolForInput(char symbol, BlockPredicateWithState predicate) {
+        public Builder inputSymbol(char symbol, BlockPredicateWithState predicate) {
             inputPattern.symbol(symbol, predicate);
             return this;
         }
 
-        public Builder symbolForInput(char symbol, Block block) {
-            return this.symbolForInput(symbol, BlockPredicateWithState.of(block));
+        public Builder inputSymbol(char symbol, Block block) {
+            return this.inputSymbol(symbol, BlockPredicateWithState.of(block));
         }
 
-        public Builder symbolForInput(char symbol, String blockName) {
-            return this.symbolForInput(symbol, BlockPredicateWithState.of(blockName));
+        public Builder inputSymbol(char symbol, String blockName) {
+            return this.inputSymbol(symbol, BlockPredicateWithState.of(blockName));
         }
 
-        public Builder symbolForOutput(char symbol, BlockPredicateWithState predicate) {
+        public Builder outputSymbol(char symbol, BlockPredicateWithState predicate) {
             outputPattern.symbol(symbol, predicate);
             return this;
         }
 
-        public Builder symbolForOutput(char symbol, Block block) {
-            return this.symbolForOutput(symbol, BlockPredicateWithState.of(block));
+        public Builder outputSymbol(char symbol, Block block) {
+            return this.outputSymbol(symbol, BlockPredicateWithState.of(block));
         }
 
-        public Builder symbolForOutput(char symbol, String blockName) {
-            return this.symbolForOutput(symbol, BlockPredicateWithState.of(blockName));
+        public Builder outputSymbol(char symbol, String blockName) {
+            return this.outputSymbol(symbol, BlockPredicateWithState.of(blockName));
         }
 
         public Builder modifySpawnerAction(ModifySpawnerAction postAction) {
@@ -228,6 +292,11 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput> {
 
         @Override
         public void validate(ResourceLocation pId) {
+            if (inputPattern.getSize() != outputPattern.getSize()) {
+                throw new IllegalArgumentException(("Input size must be same as output size: %s " +
+                    "input size: %d, output size: %d")
+                    .formatted(pId, inputPattern.getSize(), outputPattern.getSize()));
+            }
             if (!inputPattern.checkSymbols()) {
                 throw new IllegalArgumentException("Input pattern must contain all valid symbols: " + pId);
             }

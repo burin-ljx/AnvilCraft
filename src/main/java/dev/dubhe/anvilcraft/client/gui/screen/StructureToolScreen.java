@@ -1,12 +1,26 @@
 package dev.dubhe.anvilcraft.client.gui.screen;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonElement;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.JsonOps;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.block.GiantAnvilBlock;
+import dev.dubhe.anvilcraft.block.LargeCakeBlock;
+import dev.dubhe.anvilcraft.block.OverseerBlock;
+import dev.dubhe.anvilcraft.block.RemoteTransmissionPoleBlock;
+import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
+import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
+import dev.dubhe.anvilcraft.init.ModComponents;
+import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.inventory.StructureToolMenu;
-import dev.dubhe.anvilcraft.item.StructureToolItem;
+import dev.dubhe.anvilcraft.recipe.IDatagen;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPattern;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
+import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockConversionRecipe;
 import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
-
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -16,7 +30,6 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,11 +38,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import com.google.gson.JsonElement;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.serialization.JsonOps;
-import lombok.Setter;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -45,7 +54,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
+
+import static dev.dubhe.anvilcraft.item.StructureToolItem.StructureData;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -56,14 +67,27 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
     private static final WidgetSprites SPRITES = new WidgetSprites(
         AnvilCraft.of("widget/structure_tool/button"), AnvilCraft.of("widget/structure_tool/button_highlighted"));
 
+    private static final Component REGULAR_RECIPE_TOOLTIP =
+        Component.translatable("screen.anvilcraft.structure_tool.regular_recipe");
+    private static final Component CONVERSION_RECIPE_TOOLTIP =
+        Component.translatable("screen.anvilcraft.structure_tool.conversion_recipe");
+    private static final Component CONVERSION_OUTPUT_TOOLTIP =
+        Component.translatable("screen.anvilcraft.structure_tool.conversion_output");
+    private static final List<Component> RESULT_SLOT_TOOLTIPS = ImmutableList.of(
+        REGULAR_RECIPE_TOOLTIP,
+        CONVERSION_RECIPE_TOOLTIP,
+        CONVERSION_OUTPUT_TOOLTIP
+    );
+
     private static char currentSymbol;
 
     private ImageButton dataGenButton;
     private ImageButton kubejsButton;
     private ImageButton jsonButton;
+    private static final int SLOT_ID_RESULT = 36;
 
     @Setter
-    private StructureToolItem.StructureData structureData;
+    private StructureData structureData;
 
     public StructureToolScreen(StructureToolMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -77,49 +101,9 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         int offsetY = (this.height - this.imageHeight) / 2;
 
         dataGenButton = addRenderableWidget(new ImageButton(offsetX + 122, offsetY + 21, 46, 16, SPRITES, button -> {
-            MultiblockRecipe recipe = toRecipe();
-            if (recipe != null) {
-                ItemStack result = recipe.getResult();
-                StringBuilder codeBuilder = new StringBuilder("MultiblockRecipe.builder(\"%s\", %d)"
-                    .formatted(BuiltInRegistries.ITEM.getKey(result.getItem()), result.getCount()));
-                codeBuilder.append("\n");
-
-                for (List<String> layer : recipe.pattern.getLayers()) {
-                    codeBuilder.append("    .layer(");
-                    codeBuilder.append(layer.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(", ")));
-                    codeBuilder.append(")");
-                    codeBuilder.append("\n");
-                }
-                recipe.pattern.getSymbols().forEach((symbol, predicate) -> {
-                    codeBuilder.append("    .symbol(");
-                    codeBuilder.append("'").append(symbol).append("'");
-                    codeBuilder.append(", ");
-                    if (predicate.getProperties().isEmpty()) {
-                        codeBuilder.append("\"");
-                        codeBuilder.append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()));
-                        codeBuilder.append("\"");
-                        codeBuilder.append(")");
-                    } else {
-                        codeBuilder.append("BlockPredicateWithState.of(");
-                        codeBuilder.append("\"");
-                        codeBuilder.append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()));
-                        codeBuilder.append("\"");
-                        codeBuilder.append(")");
-                        codeBuilder.append("\n");
-                        predicate.getProperties().forEach((stateName, stateValue) -> {
-                            codeBuilder.append("        .hasState(");
-                            codeBuilder.append("\"").append(stateName).append("\"");
-                            codeBuilder.append(", ");
-                            codeBuilder.append("\"").append(stateValue).append("\"");
-                            codeBuilder.append(")");
-                            codeBuilder.append("\n");
-                        });
-                        codeBuilder.append("    )");
-                    }
-                    codeBuilder.append("\n");
-                });
-                codeBuilder.append("    .save(provider);");
-                minecraft.keyboardHandler.setClipboard(codeBuilder.toString());
+            Recipe<?> recipe = toRecipe();
+            if (recipe instanceof IDatagen datagenRecipe) {
+                minecraft.keyboardHandler.setClipboard(datagenRecipe.toDatagen());
                 minecraft.player.displayClientMessage(
                     Component.translatable("message.anvilcraft.copied_to_clipboard"),
                     false
@@ -141,10 +125,13 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
             button.setFocused(false);
         }));
         jsonButton = addRenderableWidget(new ImageButton(offsetX + 122, offsetY + 53, 46, 16, SPRITES, button -> {
-            MultiblockRecipe recipe = toRecipe();
+            Recipe<?> recipe = toRecipe();
             if (recipe != null) {
-                ItemStack result = recipe.getResult();
-                String pathString = getFilePath(BuiltInRegistries.ITEM.getKey(result.getItem()).getPath(), "*.json");
+                String defaultName = switch (recipe) {
+                    case IDatagen datagenRecipe -> datagenRecipe.getSuggestedName();
+                    default -> Integer.toHexString(recipe.hashCode());
+                };
+                String pathString = getFilePath(defaultName, "*.json");
                 if (pathString != null) {
                     Path path = Paths.get(pathString);
                     JsonElement json = Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).getOrThrow();
@@ -252,6 +239,16 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
     }
 
     @Override
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        if (this.hoveredSlot != null &&
+            this.hoveredSlot.index == SLOT_ID_RESULT  &&
+            !this.hoveredSlot.hasItem()) {
+            guiGraphics.renderComponentTooltip(font, RESULT_SLOT_TOOLTIPS, x, y);
+        }
+        super.renderTooltip(guiGraphics, x, y);
+    }
+
+    @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
@@ -268,58 +265,118 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         }
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Nullable
-    private MultiblockRecipe toRecipe() {
-        BlockPattern pattern = toBlockPattern();
-        ItemStack result = menu.slots.get(4 * 9).getItem().copy();
-        if (pattern != null && !result.isEmpty()) {
-            return new MultiblockRecipe(pattern, result);
+    private Recipe<?> toRecipe() {
+        BlockPattern inputPattern = this.toBlockPattern(this.structureData);
+        if (inputPattern == null) return null;
+        ItemStack result = menu.slots.get(SLOT_ID_RESULT).getItem().copy();
+        if (result.is(ModItems.STRUCTURE_TOOL)) {
+            StructureData outputData = result.get(ModComponents.STRUCTURE_DATA);
+            if (outputData == null) return null;
+            if (!outputData.isCube()) {
+                minecraft.player.displayClientMessage(
+                    Component.translatable("tooltip.anvilcraft.item.structure_tool.must_cube")
+                        .withStyle(ChatFormatting.RED),
+                    false);
+                return null;
+            }
+            if (!outputData.isOddCubeWithinSize(15)) {
+                minecraft.player.displayClientMessage(
+                    Component.translatable("tooltip.anvilcraft.item.structure_tool.must_cube")
+                        .withStyle(ChatFormatting.RED),
+                    false);
+                return null;
+            }
+            if (this.structureData.getSizeX() != outputData.getSizeX()) {
+                minecraft.player.displayClientMessage(
+                    Component.translatable("tooltip.anvilcraft.item.structure_tool.inconsistent_size")
+                        .withStyle(ChatFormatting.RED),
+                    false);
+                return null;
+            }
+            BlockPattern outputPattern = this.toBlockPattern(outputData, true);
+            if (outputPattern == null) return null;
+            return new MultiblockConversionRecipe(inputPattern, outputPattern);
+        } else if (!result.isEmpty()) {
+            return new MultiblockRecipe(inputPattern, result);
         }
         return null;
     }
 
+    public static final Set<Property<?>> DEFAULT_RECORDED_PROPERTIES = ImmutableSet.of(
+        // about block's orientation
+        BlockStateProperties.FACING,
+        BlockStateProperties.FACING_HOPPER,
+        BlockStateProperties.HORIZONTAL_FACING,
+        BlockStateProperties.VERTICAL_DIRECTION,
+        BlockStateProperties.ROTATION_16,
+        BlockStateProperties.ORIENTATION,
+        BlockStateProperties.RAIL_SHAPE,
+        BlockStateProperties.RAIL_SHAPE_STRAIGHT,
+        // about block's attachment
+        BlockStateProperties.ATTACH_FACE,
+        BlockStateProperties.BELL_ATTACHMENT,
+        BlockStateProperties.HANGING,
+        // about fluid state
+        BlockStateProperties.WATERLOGGED,
+        // about piston state
+        BlockStateProperties.EXTENDED,
+        BlockStateProperties.PISTON_TYPE,
+        // about doors and trapdoors' openness
+        BlockStateProperties.OPEN,
+        // about count of items need for place
+        BlockStateProperties.FLOWER_AMOUNT,
+        BlockStateProperties.CANDLES,
+        BlockStateProperties.EGGS,
+        BlockStateProperties.PICKLES,
+        BlockStateProperties.LAYERS,
+        BlockStateProperties.LIT,
+        BlockStateProperties.LEVEL_CAULDRON,
+        // about part of multipart blocks
+        BlockStateProperties.BED_PART,
+        BlockStateProperties.HALF,
+        GiantAnvilBlock.CUBE,
+        GiantAnvilBlock.HALF,
+        RemoteTransmissionPoleBlock.HALF,
+        TransmissionPoleBlock.HALF,
+        TeslaTowerBlock.HALF,
+        OverseerBlock.HALF,
+        LargeCakeBlock.HALF
+    );
+
+    private BlockPredicateWithState buildPredicate(BlockState state, boolean recordAllStates) {
+        BlockPredicateWithState predicate = BlockPredicateWithState.of(state.getBlock());
+        state.getProperties().stream()
+            .filter(p -> recordAllStates || DEFAULT_RECORDED_PROPERTIES.contains(p))
+            .forEach(p -> predicate.copyPropertyFrom(state, p));
+        return predicate;
+    }
+
+    @Nullable
+    private BlockPattern toBlockPattern(@Nullable StructureData data) {
+        return this.toBlockPattern(data, false);
+    }
+
     @SuppressWarnings("DataFlowIssue")
     @Nullable
-    private BlockPattern toBlockPattern() {
+    private BlockPattern toBlockPattern(@Nullable StructureData data, boolean recordAllStates) {
         ClientLevel level = minecraft.level;
-        if (structureData != null && level != null) {
+        if (data != null && level != null) {
             BlockPattern pattern = BlockPattern.create();
             currentSymbol = '@';
-            for (int y = structureData.getMinY(); y <= structureData.getMaxY(); y++) {
+            BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos();
+            for (int y = data.getMinY(); y <= data.getMaxY(); y++) {
                 List<String> layer = new ArrayList<>();
-                for (int z = structureData.getMinZ(); z <= structureData.getMaxZ(); z++) {
+                for (int z = data.getMinZ(); z <= data.getMaxZ(); z++) {
                     StringBuilder sb = new StringBuilder();
-                    for (int x = structureData.getMinX(); x <= structureData.getMaxX(); x++) {
-                        BlockState state = level.getBlockState(new BlockPos(x, y, z));
+                    for (int x = data.getMinX(); x <= data.getMaxX(); x++) {
+                        BlockState state = level.getBlockState(mpos.set(x, y, z));
                         if (state.is(Blocks.AIR)) {
                             sb.append(' ');
                             continue;
                         }
-                        BlockPredicateWithState predicate = BlockPredicateWithState.of(state.getBlock());
-                        if (state.hasProperty(BlockStateProperties.FACING)) {
-                            predicate.hasState(
-                                BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING));
-                        }
-                        if (state.hasProperty(BlockStateProperties.FACING_HOPPER)) {
-                            predicate.hasState(
-                                BlockStateProperties.FACING_HOPPER,
-                                state.getValue(BlockStateProperties.FACING_HOPPER));
-                        }
-                        if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-                            predicate.hasState(
-                                BlockStateProperties.HORIZONTAL_FACING,
-                                state.getValue(BlockStateProperties.HORIZONTAL_FACING));
-                        }
-                        if (state.hasProperty(BlockStateProperties.AXIS)) {
-                            predicate.hasState(BlockStateProperties.AXIS, state.getValue(BlockStateProperties.AXIS));
-                        }
-                        if (state.hasProperty(BlockStateProperties.SLAB_TYPE)) {
-                            predicate.hasState(
-                                BlockStateProperties.SLAB_TYPE, state.getValue(BlockStateProperties.SLAB_TYPE));
-                        }
-                        if (state.hasProperty(BlockStateProperties.HALF)) {
-                            predicate.hasState(BlockStateProperties.HALF, state.getValue(BlockStateProperties.HALF));
-                        }
+                        BlockPredicateWithState predicate = this.buildPredicate(state, recordAllStates);
                         sb.append(getAndPutSymbol(pattern.getSymbols(), predicate));
                     }
                     layer.add(sb.toString());

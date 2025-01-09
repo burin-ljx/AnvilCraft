@@ -70,6 +70,10 @@ public class BlockPredicateWithState implements Predicate<BlockState> {
         return this;
     }
 
+    public <T extends Comparable<T>> BlockPredicateWithState copyPropertyFrom(BlockState state, Property<T> property) {
+        return this.hasState(property, state.getValue(property));
+    }
+
     public BlockPredicateWithState hasState(String stateName, String stateValue) {
         Property<?> property = this.block.getStateDefinition().getProperty(stateName);
         this.properties.put(property, Optional.ofNullable(property)
@@ -134,11 +138,15 @@ public class BlockPredicateWithState implements Predicate<BlockState> {
         return this.defaultState;
     }
 
+    public static String getNameOf(Object value) {
+        return value instanceof StringRepresentable representable ?
+            representable.getSerializedName() : value.toString();
+    }
+
     private Raw toRaw() {
         Map<String, String> propertiesMap = new HashMap<>();
         this.properties.forEach((property, value) -> {
-            propertiesMap.put(property.getName(), value instanceof StringRepresentable representable ?
-                representable.getSerializedName() : value.toString());
+            propertiesMap.put(property.getName(), getNameOf(value));
         });
         return new Raw(this.block, propertiesMap);
     }
