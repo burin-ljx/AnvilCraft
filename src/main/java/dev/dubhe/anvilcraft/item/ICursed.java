@@ -39,6 +39,10 @@ public interface ICursed {
         }
     }
 
+    default boolean isPiglinCurrency(ItemStack stack) {
+        return true;
+    }
+
     /**
      * 统计诅咒物品数量
      *

@@ -74,4 +74,14 @@ public class ColorUtil {
 
         return new int[]{red, green, blue};
     }
+
+    public static int mulValue(int rgb, float ratio) {
+        int r = (rgb >> 16) & 255;
+        int g = (rgb >> 8) & 255;
+        int b = rgb & 255;
+        r = (int) (r * ratio);
+        g = (int) (g * ratio);
+        b = (int) (b * ratio);
+        return (r << 16) | (g << 8) | b;
+    }
 }

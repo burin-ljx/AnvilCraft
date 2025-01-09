@@ -1,106 +1,106 @@
 {
   "variants": {
     "facing=down,overload=false,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring",
+      "model": "anvilcraft:block/acceleration_ring",
       "x": 180
     },
     "facing=east,overload=false,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring",
+      "model": "anvilcraft:block/acceleration_ring",
       "x": 90,
       "y": 90
     },
     "facing=north,overload=false,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring",
+      "model": "anvilcraft:block/acceleration_ring",
       "x": 90
     },
     "facing=south,overload=false,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring",
+      "model": "anvilcraft:block/acceleration_ring",
       "x": 90,
       "y": 180
     },
     "facing=up,overload=false,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring"
+      "model": "anvilcraft:block/acceleration_ring"
     },
     "facing=west,overload=false,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring",
+      "model": "anvilcraft:block/acceleration_ring",
       "x": 90,
       "y": 270
     },
     "facing=down,overload=true,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring_overload",
+      "model": "anvilcraft:block/acceleration_ring_overload",
       "x": 180
     },
     "facing=east,overload=true,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring_overload",
+      "model": "anvilcraft:block/acceleration_ring_overload",
       "x": 90,
       "y": 90
     },
     "facing=north,overload=true,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring_overload",
+      "model": "anvilcraft:block/acceleration_ring_overload",
       "x": 90
     },
     "facing=south,overload=true,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring_overload",
+      "model": "anvilcraft:block/acceleration_ring_overload",
       "x": 90,
       "y": 180
     },
     "facing=up,overload=true,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring_overload"
+      "model": "anvilcraft:block/acceleration_ring_overload"
     },
     "facing=west,overload=true,switch=on": {
-      "model": "anvilcraft:block/electromagnetic_ring_overload",
+      "model": "anvilcraft:block/acceleration_ring_overload",
       "x": 90,
       "y": 270
     },
     "facing=down,overload=false,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 180
     },
     "facing=east,overload=false,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90,
       "y": 90
     },
     "facing=north,overload=false,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90
     },
     "facing=south,overload=false,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90,
       "y": 180
     },
     "facing=up,overload=false,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off"
+      "model": "anvilcraft:block/acceleration_ring_off"
     },
     "facing=west,overload=false,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90,
       "y": 270
     },
     "facing=down,overload=true,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 180
     },
     "facing=east,overload=true,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90,
       "y": 90
     },
     "facing=north,overload=true,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90
     },
     "facing=south,overload=true,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90,
       "y": 180
     },
     "facing=up,overload=true,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off"
+      "model": "anvilcraft:block/acceleration_ring_off"
     },
     "facing=west,overload=true,switch=off": {
-      "model": "anvilcraft:block/electromagnetic_ring_off",
+      "model": "anvilcraft:block/acceleration_ring_off",
       "x": 90,
       "y": 270
     }

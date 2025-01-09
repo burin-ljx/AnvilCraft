@@ -106,6 +106,11 @@ public class AnvilCraftConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(max = 60, min = 1)
     public int loadMonitor = 10;
 
+    @Comment("Maximum size for connecting transparent crafting table to form matrix")
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.BoundedDiscrete(max = 32, min = 3)
+    public int transparentCraftingTableMaxMatrixSize = 15;
+
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public PowerConverter powerConverter = new PowerConverter();
 
@@ -123,6 +128,10 @@ public class AnvilCraftConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(max = 20, min = 1)
     @SerializedName("Heliostats detection interval")
     public int heliostatsDetectionInterval = 4;
+
+    @ConfigEntry.Gui.Tooltip
+    @Comment("Heliostats render sunflower head model in Sunflower Plains biome")
+    public boolean heliostatsSunflowerModel = true;
 
     @ConfigEntry.Gui.Tooltip
     @Comment("Do not render power component tooltip when jade present")

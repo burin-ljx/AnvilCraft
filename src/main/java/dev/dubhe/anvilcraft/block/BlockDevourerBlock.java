@@ -1,15 +1,17 @@
 package dev.dubhe.anvilcraft.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.util.AabbUtil;
-
+import dev.dubhe.anvilcraft.util.AnvilUtil;
+import dev.dubhe.anvilcraft.util.BreakBlockUtil;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -30,16 +32,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-
-import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
+import java.util.List;
 
 import static dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer.anvilCraftBlockPlacer;
 
+@MethodsReturnNonnullByDefault
 public class BlockDevourerBlock extends DirectionalBlock implements HammerRotateBehavior, IHammerRemovable {
 
     public static final VoxelShape NORTH_SHAPE = Block.box(0, 0, 8, 16, 16, 16);
@@ -64,7 +64,7 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
     }
 
     @Override
-    protected MapCodec<? extends DirectionalBlock> codec() {
+    protected @NotNull MapCodec<? extends DirectionalBlock> codec() {
         return simpleCodec(BlockDevourerBlock::new);
     }
 
@@ -89,6 +89,17 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
     }
 
     @Override
+    protected void onPlace(@NotNull BlockState state,
+                           Level level,
+                           @NotNull BlockPos pos,
+                           @NotNull BlockState oldState,
+                           boolean movedByPiston) {
+        if (!level.isClientSide) {
+            checkIfTriggered(level, state, pos);
+        }
+    }
+
+    @Override
     public void tick(
         @NotNull BlockState state,
         @NotNull ServerLevel level,
@@ -107,15 +118,18 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         @NotNull Block neighborBlock,
         @NotNull BlockPos neighborPos,
         boolean movedByPiston) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
+        if (!level.isClientSide) {
+            checkIfTriggered(level, state, pos);
         }
-        boolean bl = state.getValue(TRIGGERED);
-        BlockState changedState = state.setValue(TRIGGERED, !bl);
-        if (bl != level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, changedState, 2);
+    }
+
+    private void checkIfTriggered(Level level, BlockState blockState, BlockPos blockPos) {
+        boolean bl = blockState.getValue(TRIGGERED);
+        BlockState changedState = blockState.setValue(TRIGGERED, !bl);
+        if (bl != level.hasNeighborSignal(blockPos)) {
+            level.setBlock(blockPos, changedState, 2);
             if (!bl) {
-                devourBlock(serverLevel, pos, state.getValue(FACING), 1);
+                devourBlock((ServerLevel) level, blockPos, blockState.getValue(FACING), 1);
             }
         }
     }
@@ -142,6 +156,10 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         };
     }
 
+    public void devourBlock(ServerLevel level, BlockPos devourerPos, Direction devourerDirection, int range) {
+        this.devourBlock(level, devourerPos, devourerDirection, range, null);
+    }
+
     /**
      * 破坏方块
      *
@@ -149,9 +167,15 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
      * @param devourerPos       破坏器坐标
      * @param devourerDirection 破坏方向
      * @param range             破坏半径(正方形)
+     * @param anvil             砸到方块吞噬器的铁砧
      */
-    @SuppressWarnings("unreachable")
-    public void devourBlock(ServerLevel level, BlockPos devourerPos, Direction devourerDirection, int range) {
+    @SuppressWarnings({"unreachable", "unused"})
+    public void devourBlock(
+        ServerLevel level,
+        BlockPos devourerPos,
+        Direction devourerDirection,
+        int range,
+        Block anvil) {
         BlockPos outputPos = devourerPos.relative(devourerDirection.getOpposite());
         BlockPos devourCenterPos = devourerPos.relative(devourerDirection);
         IItemHandler itemHandler = level.getCapability(
@@ -174,51 +198,45 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
                 devourCenterPos.relative(Direction.DOWN, range).relative(Direction.SOUTH, range));
             default -> devourBlockBoundingBox = new AABB(devourCenterPos);
         }
-        boolean isDropOriginalPlace = itemHandler == null && !level.noCollision(aabb);
+        boolean insertEnabled = itemHandler != null;
+        boolean dropOriginalPlace = !level.noCollision(aabb);
         devourBlockPosList = BlockPos.betweenClosedStream(devourBlockBoundingBox)
             .map(blockPos -> new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ()))
             .map(BlockPos::new)
             .toList();
         for (BlockPos devourBlockPos : devourBlockPosList) {
-            BlockState devouBlockState = level.getBlockState(devourBlockPos);
-            if (devouBlockState.isAir()) continue;
-            if (devouBlockState.getBlock().defaultDestroyTime() < 0) continue;
-            if (!isDropOriginalPlace) {
-                for (ItemStack itemStack :
-                    Block.getDrops(devouBlockState, level, devourBlockPos, level.getBlockEntity(devourBlockPos))) {
-                    if (devouBlockState.is(ModBlockTags.BLOCK_DEVOURER_PROBABILITY_DROPPING)
-                        && level.random.nextDouble() > 0.05) break;
-                    if (itemHandler != null) {
-                        ItemStack outItemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, true);
-                        if (outItemStack.isEmpty()) {
-                            ItemHandlerHelper.insertItem(itemHandler, itemStack, false);
-                        }
-                        isDropOriginalPlace = !outItemStack.isEmpty();
-                    } else {
-                        ItemEntity itemEntity = new ItemEntity(
-                            level,
-                            center.x,
-                            center.y,
-                            center.z,
-                            itemStack,
-                            0,
-                            0,
-                            0
-                        );
-                        itemEntity.setDefaultPickUpDelay();
-                        level.addFreshEntity(itemEntity);
+            BlockState devourBlockState = level.getBlockState(devourBlockPos);
+            if (devourBlockState.isAir()) continue;
+            if (devourBlockState.getBlock().defaultDestroyTime() < 0) continue;
+            if (devourBlockState.is(ModBlockTags.BLOCK_DEVOURER_PROBABILITY_DROPPING)
+                && level.random.nextDouble() > 0.05) {
+                level.destroyBlock(devourBlockPos, false);
+                continue;
+            }
+            List<ItemStack> dropList = switch (anvil) {
+                case null -> BreakBlockUtil.drop(level, devourBlockPos);
+                case RoyalAnvilBlock $ -> BreakBlockUtil.dropSilkTouch(level, devourBlockPos);
+                case EmberAnvilBlock $ -> BreakBlockUtil.dropSmelt(level, devourBlockPos);
+                default -> BreakBlockUtil.drop(level, devourBlockPos);
+            };
+            for (ItemStack itemStack : dropList) {
+                if (insertEnabled) {
+                    ItemStack outItemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, true);
+                    if (outItemStack.isEmpty()) {
+                        itemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, false);
                     }
                 }
+                if (itemStack.isEmpty()) continue;
+                if (dropOriginalPlace) {
+                    Block.popResource(level, devourBlockPos, itemStack);
+                } else {
+                    AnvilUtil.dropItems(List.of(itemStack), level, center);
+                }
             }
-            devouBlockState
+            devourBlockState
                 .getBlock()
-                .playerWillDestroy(level, devourBlockPos, devouBlockState, anvilCraftBlockPlacer.getPlayer());
-            boolean isProbDroppingBlock = devouBlockState.is(ModBlockTags.BLOCK_DEVOURER_PROBABILITY_DROPPING);
-            boolean shouldDropBlock = isDropOriginalPlace && (!isProbDroppingBlock || level.random.nextDouble() <= 0.05);
-            level.destroyBlock(
-                devourBlockPos,
-                shouldDropBlock
-            );
+                .playerWillDestroy(level, devourBlockPos, devourBlockState, anvilCraftBlockPlacer.getPlayer());
+            level.destroyBlock(devourBlockPos, false);
         }
     }
 }

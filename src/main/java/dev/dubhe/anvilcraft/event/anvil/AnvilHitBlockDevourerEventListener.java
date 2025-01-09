@@ -26,10 +26,10 @@ public class AnvilHitBlockDevourerEventListener {
     @SubscribeEvent
     public static void onLand(@NotNull AnvilFallOnLandEvent event) {
         Level level = event.getLevel();
+        if (!(level instanceof ServerLevel serverLevel)) return;
         BlockPos pos = event.getPos().below();
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
-        if (!(level instanceof ServerLevel serverLevel)) return;
         if (block instanceof BlockDevourerBlock devourerBlock && !state.getValue(BlockDevourerBlock.TRIGGERED)) {
             int range = (int) event.getFallDistance() + 2;
             range = Math.min(range, 3);
@@ -39,7 +39,8 @@ public class AnvilHitBlockDevourerEventListener {
                 level.scheduleTick(pos, devourerBlock, 4);
                 return;
             }
-            devourerBlock.devourBlock(serverLevel, pos, state.getValue(BlockDevourerBlock.FACING), range);
+            devourerBlock.devourBlock(serverLevel, pos, state.getValue(BlockDevourerBlock.FACING),
+                range, event.getEntity().getBlockState().getBlock());
             if (state.getValue(BlockDevourerBlock.FACING) == Direction.DOWN
                     && level.getBlockState(pos.below()).getBlock().defaultDestroyTime() >= 0) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);

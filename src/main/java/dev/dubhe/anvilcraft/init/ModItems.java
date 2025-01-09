@@ -610,7 +610,8 @@ public class ModItems {
     // 诅咒黄金系
     public static final ItemEntry<CursedItem> CURSED_GOLD_INGOT = REGISTRATE
         .item("cursed_gold_ingot", CursedItem::new)
-        .tag(ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(ItemTags.BEACON_PAYMENT_ITEMS,
+            ItemTags.PIGLIN_LOVED)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.CURSED_GOLD_BLOCK)
@@ -633,6 +634,7 @@ public class ModItems {
         .register();
     public static final ItemEntry<CursedItem> CURSED_GOLD_NUGGET = REGISTRATE
         .item("cursed_gold_nugget", CursedItem::new)
+        .tag(ItemTags.PIGLIN_LOVED)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItems.CURSED_GOLD_INGOT)
@@ -718,23 +720,6 @@ public class ModItems {
         REGISTRATE.item("sea_heart_shell", Item::new).register();
     public static final ItemEntry<Item> SEA_HEART_SHELL_SHARD =
         REGISTRATE.item("sea_heart_shell_shard", Item::new).register();
-
-    public static final ItemEntry<Item> MAGNETOELECTRIC_CORE = REGISTRATE
-        .item("magnetoelectric_core", Item::new)
-        .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', Tags.Items.INGOTS_COPPER)
-                .define('B', Tags.Items.GLASS_BLOCKS)
-                .define('C', ModBlocks.HOLLOW_MAGNET_BLOCK)
-                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HOLLOW_MAGNET_BLOCK))
-                .save(provider);
-        })
-        .model((ctx, provider) -> {
-        })
-        .register();
 
     public static final ItemEntry<Item> TUNGSTEN_NUGGET = REGISTRATE
         .item("tungsten_nugget", Item::new)

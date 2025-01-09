@@ -28,24 +28,27 @@
     "RecipeManagerMixin",
     "ServerLevelMixin",
     "VillagerMixin",
+    "ZombieVillagerMixin",
     "accessor.BaseSpawnerAccessor",
     "forge.FallingBlockEntityMixin",
     "forge.LevelChunkMixin",
     "forge.LightningBoltMixin",
-    "forge.PistonMovingBlockEntityMixin"
+    "forge.PistonMovingBlockEntityMixin",
+    "piglin.AbstractPiglinMixin",
+    "piglin.PiglinMixin"
   ],
   "client": [
     "ClientLevelMixin",
     "GameRendererMixin",
     "ItemInHandRendererMixin",
+    "LevelChunkMixin",
     "LevelRendererMixin",
     "MinecraftClientMixin",
     "MouseHandlerMixin",
     "SectionCompilerMixin",
     "SoundEngineMixin",
     "compat.EmbChunkBuilderMeshingTaskMixin",
-    "compat.SodiumChunkBuilderMeshingTaskMixin",
-    "LevelChunkMixin"
+    "compat.SodiumChunkBuilderMeshingTaskMixin"
   ],
   "plugin": "dev.dubhe.anvilcraft.mixin.plugin.AnvilCraftMixinPlugin",
   "injectors": {

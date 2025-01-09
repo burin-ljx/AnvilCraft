@@ -95,6 +95,17 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
     }
 
     @Override
+    protected void onPlace(@NotNull BlockState state,
+                           Level level,
+                           @NotNull BlockPos pos,
+                           @NotNull BlockState oldState,
+                           boolean movedByPiston) {
+        if (!level.isClientSide) {
+            checkIfTriggered(level, state, pos);
+        }
+    }
+
+    @Override
     public void tick(
         @NotNull BlockState state,
         @NotNull ServerLevel level,
@@ -115,17 +126,20 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
         @NotNull Block neighborBlock,
         @NotNull BlockPos neighborPos,
         boolean movedByPiston) {
-        if (level.isClientSide) {
-            return;
+        if (!level.isClientSide) {
+            checkIfTriggered(level, state, pos);
         }
-        boolean triggered = state.getValue(TRIGGERED);
-        BlockState changedState = state.setValue(TRIGGERED, !triggered);
-        if (triggered != level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, changedState, 2);
+    }
+
+    private void checkIfTriggered(Level level, BlockState blockState, BlockPos blockPos) {
+        boolean triggered = blockState.getValue(TRIGGERED);
+        BlockState changedState = blockState.setValue(TRIGGERED, !triggered);
+        if (triggered != level.hasNeighborSignal(blockPos)) {
+            level.setBlock(blockPos, changedState, 2);
             if (triggered) {
                 return;
             }
-            placeBlock(1, level, pos, state.getValue(ORIENTATION));
+            placeBlock(1, level, blockPos, blockState.getValue(ORIENTATION));
         }
     }
 

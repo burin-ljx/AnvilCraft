@@ -1,8 +1,8 @@
 {
 	"credit": "Made by XeKr with Blockbench",
 	"textures": {
-		"0": "anvilcraft:item/magnetoelectric_core",
-		"particle": "anvilcraft:item/magnetoelectric_core"
+		"0": "anvilcraft:block/magnetoelectric_core",
+		"particle": "anvilcraft:block/magnetoelectric_core"
 	},
 	"elements": [
 		{
