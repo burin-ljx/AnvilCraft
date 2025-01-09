@@ -27,6 +27,7 @@ import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
 import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
+import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
 import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
@@ -132,7 +133,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -462,12 +462,12 @@ public class ModBlocks {
                 .pattern("BBB")
                 .define('A', Items.TERRACOTTA)
                 .define('B', Items.IRON_INGOT)
-                .define('C', ModItems.MAGNETOELECTRIC_CORE)
+                .define('C', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.TERRACOTTA), AnvilCraftDatagen.has(Items.TERRACOTTA))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Items.IRON_INGOT))
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .save(provider);
         })
         .register();
@@ -493,12 +493,12 @@ public class ModBlocks {
                 .pattern("A")
                 .pattern("B")
                 .pattern("C")
-                .define('A', ModItems.MAGNETOELECTRIC_CORE)
+                .define('A', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .define('B', Items.LIGHTNING_ROD)
                 .define('C', Items.IRON_BLOCK)
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.LIGHTNING_ROD), AnvilCraftDatagen.has(Items.LIGHTNING_ROD))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_BLOCK), AnvilCraftDatagen.has(Items.IRON_BLOCK))
@@ -529,12 +529,12 @@ public class ModBlocks {
                 .pattern("A")
                 .pattern("B")
                 .pattern("C")
-                .define('A', ModItems.MAGNETOELECTRIC_CORE)
+                .define('A', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .define('B', ModBlocks.TRANSMISSION_POLE)
                 .define('C', Items.ANVIL)
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(ModBlocks.TRANSMISSION_POLE),
                     AnvilCraftDatagen.has(ModBlocks.TRANSMISSION_POLE))
@@ -598,11 +598,11 @@ public class ModBlocks {
                 .pattern("B")
                 .pattern("A")
                 .define('A', Items.IRON_INGOT)
-                .define('B', ModItems.MAGNETOELECTRIC_CORE)
+                .define('B', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Items.IRON_INGOT))
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .save(provider);
         })
         .register();
@@ -619,12 +619,12 @@ public class ModBlocks {
                 .pattern(" A ")
                 .pattern("B B")
                 .pattern("CCC")
-                .define('A', ModItems.MAGNETOELECTRIC_CORE)
+                .define('A', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .define('B', Items.COPPER_INGOT)
                 .define('C', Items.IRON_INGOT)
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.COPPER_INGOT), AnvilCraftDatagen.has(Items.COPPER_INGOT))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Items.IRON_INGOT))
@@ -686,11 +686,11 @@ public class ModBlocks {
                 .pattern("A")
                 .pattern("B")
                 .define('A', Items.COMPASS)
-                .define('B', ModItems.MAGNETOELECTRIC_CORE)
+                .define('B', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.COMPASS), AnvilCraftDatagen.has(Items.COMPASS))
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .save(provider);
         })
         .register();
@@ -769,11 +769,11 @@ public class ModBlocks {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("A")
                 .pattern("B")
-                .define('A', ModItems.MAGNETOELECTRIC_CORE)
+                .define('A', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .define('B', Items.COPPER_BLOCK)
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .save(provider);
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("A")
@@ -853,7 +853,7 @@ public class ModBlocks {
                 .pattern("AEA")
                 .define('A', Items.GLASS)
                 .define('B', Items.CRAFTER)
-                .define('D', ModItems.MAGNETOELECTRIC_CORE)
+                .define('D', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .define('E', ModItems.CIRCUIT_BOARD)
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.GLASS),
@@ -862,8 +862,8 @@ public class ModBlocks {
                     AnvilCraftDatagen.hasItem(Items.CRAFTER),
                     AnvilCraftDatagen.has(Items.CRAFTER)
                 ).unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE)
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 ).unlockedBy(
                     AnvilCraftDatagen.hasItem(ModItems.CIRCUIT_BOARD),
                     AnvilCraftDatagen.has(ModItems.CIRCUIT_BOARD)
@@ -886,10 +886,10 @@ public class ModBlocks {
                 .define('A', Items.IRON_INGOT)
                 .define('B', ModItems.MAGNET)
                 .define('C', Items.HOPPER)
-                .define('D', ModItems.MAGNETOELECTRIC_CORE)
+                .define('D', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Items.IRON_INGOT))
                 .unlockedBy(AnvilCraftDatagen.hasItem(ModItems.MAGNET), AnvilCraftDatagen.has(ModItems.MAGNET))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.HOPPER), AnvilCraftDatagen.has(Items.HOPPER))
@@ -939,13 +939,13 @@ public class ModBlocks {
                 .pattern("ABA")
                 .pattern("CCC")
                 .define('A', Items.COPPER_INGOT)
-                .define('B', ModItems.MAGNETOELECTRIC_CORE)
+                .define('B', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
                 .define('C', Items.IRON_INGOT)
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.COPPER_INGOT), AnvilCraftDatagen.has(Items.COPPER_INGOT))
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModItems.MAGNETOELECTRIC_CORE),
-                    AnvilCraftDatagen.has(ModItems.MAGNETOELECTRIC_CORE))
+                    AnvilCraftDatagen.hasItem(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK))
                 .unlockedBy(AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Items.IRON_INGOT))
                 .save(provider);
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get())
@@ -1425,6 +1425,26 @@ public class ModBlocks {
                 .save(provider);
         })
         .register();
+
+    public static final BlockEntry<MagnetoElectricCoreBlock> MAGNETO_ELECTRIC_CORE_BLOCK = REGISTRATE
+            .block("magnetoelectric_core", MagnetoElectricCoreBlock::new)
+            .initialProperties(() -> Blocks.COPPER_BLOCK)
+            .properties((properties) -> properties.lightLevel((blockState) -> 6).noOcclusion())
+            .blockstate((ctx, provider) -> {})
+            .simpleItem()
+            .recipe((ctx, provider) -> {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                    .pattern("ABA")
+                    .pattern("BCB")
+                    .pattern("ABA")
+                    .define('A', Tags.Items.INGOTS_COPPER)
+                    .define('B', Tags.Items.GLASS_BLOCKS)
+                    .define('C', ModBlocks.HOLLOW_MAGNET_BLOCK)
+                    .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HOLLOW_MAGNET_BLOCK))
+                    .save(provider);
+            })
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
+            .register();
 
     static {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_BUILD_BLOCK.getKey());
@@ -2943,7 +2963,7 @@ public class ModBlocks {
         .block("lava_cauldron", LavaCauldronBlock::new)
         .initialProperties(() -> Blocks.LAVA_CAULDRON)
         .properties(properties ->
-            properties.lightLevel(blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) * 5))
+            properties.lightLevel(blockState -> blockState.getValue(LavaCauldronBlock.LEVEL) * 4))
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))

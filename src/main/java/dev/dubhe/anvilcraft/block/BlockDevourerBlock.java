@@ -64,7 +64,7 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
     }
 
     @Override
-    protected MapCodec<? extends DirectionalBlock> codec() {
+    protected @NotNull MapCodec<? extends DirectionalBlock> codec() {
         return simpleCodec(BlockDevourerBlock::new);
     }
 
@@ -89,6 +89,17 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
     }
 
     @Override
+    protected void onPlace(@NotNull BlockState state,
+                           Level level,
+                           @NotNull BlockPos pos,
+                           @NotNull BlockState oldState,
+                           boolean movedByPiston) {
+        if (!level.isClientSide) {
+            checkIfTriggered(level, state, pos);
+        }
+    }
+
+    @Override
     public void tick(
         @NotNull BlockState state,
         @NotNull ServerLevel level,
@@ -107,15 +118,18 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         @NotNull Block neighborBlock,
         @NotNull BlockPos neighborPos,
         boolean movedByPiston) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
+        if (!level.isClientSide) {
+            checkIfTriggered(level, state, pos);
         }
-        boolean bl = state.getValue(TRIGGERED);
-        BlockState changedState = state.setValue(TRIGGERED, !bl);
-        if (bl != level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, changedState, 2);
+    }
+
+    private void checkIfTriggered(Level level, BlockState blockState, BlockPos blockPos) {
+        boolean bl = blockState.getValue(TRIGGERED);
+        BlockState changedState = blockState.setValue(TRIGGERED, !bl);
+        if (bl != level.hasNeighborSignal(blockPos)) {
+            level.setBlock(blockPos, changedState, 2);
             if (!bl) {
-                devourBlock(serverLevel, pos, state.getValue(FACING), 1);
+                devourBlock((ServerLevel) level, blockPos, blockState.getValue(FACING), 1);
             }
         }
     }

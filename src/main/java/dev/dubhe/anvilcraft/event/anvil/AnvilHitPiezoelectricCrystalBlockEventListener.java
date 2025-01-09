@@ -26,7 +26,7 @@ public class AnvilHitPiezoelectricCrystalBlockEventListener {
         Level level = event.getLevel();
         Block block = level.getBlockState(anvilPos.below()).getBlock();
         if (block instanceof PiezoelectricCrystalBlock piezoelectricCrystalBlock) {
-            piezoelectricCrystalBlock.onHitByAnvil(event.getFallDistance(), level, anvilPos.below());
+            piezoelectricCrystalBlock.onHitByAnvil(event.getEntity(), event.getFallDistance(), level, anvilPos.below());
         }
     }
 }

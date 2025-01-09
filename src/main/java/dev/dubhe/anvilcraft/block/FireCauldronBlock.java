@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 
@@ -22,9 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FireCauldronBlock extends LayeredCauldronBlock implements IHammerRemovable {
+public class FireCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable {
     public FireCauldronBlock(Properties properties) {
-        super(Biome.Precipitation.NONE, CauldronInteraction.EMPTY, properties);
+        super(properties, CauldronInteraction.EMPTY);
     }
 
     @Override

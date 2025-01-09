@@ -8,20 +8,20 @@
 	},
 	"elements": [
 		{
-			"from": [8, 8, 0.8],
-			"to": [8, 24, 15.2],
+			"from": [8, 6, 0.8],
+			"to": [8, 22, 15.2],
 			"shade": false,
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 15, 8], "rescale": true},
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 13, 8], "rescale": true},
 			"faces": {
 				"east": {"uv": [0, 0, 16, 16], "texture": "#0"},
 				"west": {"uv": [0, 0, 16, 16], "texture": "#0"}
 			}
 		},
 		{
-			"from": [0.8, 8, 8],
-			"to": [15.2, 24, 8],
+			"from": [0.8, 6, 8],
+			"to": [15.2, 22, 8],
 			"shade": false,
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 15, 8], "rescale": true},
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 13, 8], "rescale": true},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
 				"south": {"uv": [0, 0, 16, 16], "texture": "#0"}

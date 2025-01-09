@@ -39,7 +39,7 @@ public class ModInteractionMap {
                 hand,
                 stack,
                 ModItems.OIL_BUCKET.asStack(),
-                (s) -> s.getValue(OilCauldronBlock.LEVEL) == 3,
+                (s) -> s.getValue(OilCauldronBlock.LEVEL) == 4,
                 SoundEvents.BUCKET_FILL
             )
         );
@@ -81,7 +81,7 @@ public class ModInteractionMap {
                 interactionHand,
                 itemStack,
                 Items.LAVA_BUCKET.getDefaultInstance(),
-                (state) -> state.getValue(LayeredCauldronBlock.LEVEL) == 3,
+                (state) -> state.getValue(LayeredCauldronBlock.LEVEL) == 4,
                 SoundEvents.BUCKET_FILL
             )
         );
@@ -107,6 +107,7 @@ public class ModInteractionMap {
                     player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, Items.HONEY_BOTTLE.getDefaultInstance()));
                     player.awardStat(Stats.USE_CAULDRON);
                     player.awardStat(Stats.ITEM_USED.get(item));
+                    HoneyCauldronBlock.lowerFillLevel(state, level, pos);
                     LayeredCauldronBlock.lowerFillLevel(state, level, pos);
                     level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS);
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
@@ -118,7 +119,7 @@ public class ModInteractionMap {
             Items.HONEY_BOTTLE,
             (state, level, pos, player, hand, stack) -> {
                 int honeyLevel = state.getValue(HoneyCauldronBlock.LEVEL);
-                if (honeyLevel >= 3) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                if (honeyLevel >= 4) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
                 if (!level.isClientSide()) {
                     player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(Items.GLASS_BOTTLE)));
                     player.awardStat(Stats.FILL_CAULDRON);
@@ -169,7 +170,7 @@ public class ModInteractionMap {
                 player,
                 hand,
                 stack,
-                ModBlocks.OIL_CAULDRON.getDefaultState().setValue(OilCauldronBlock.LEVEL, 3),
+                ModBlocks.OIL_CAULDRON.getDefaultState().setValue(OilCauldronBlock.LEVEL, 4),
                 SoundEvents.BUCKET_EMPTY
             )
         );

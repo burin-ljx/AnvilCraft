@@ -130,6 +130,10 @@ public class AnvilCraftConfig implements ConfigData {
     public int heliostatsDetectionInterval = 4;
 
     @ConfigEntry.Gui.Tooltip
+    @Comment("Heliostats render sunflower head model in Sunflower Plains biome")
+    public boolean heliostatsSunflowerModel = true;
+
+    @ConfigEntry.Gui.Tooltip
     @Comment("Do not render power component tooltip when jade present")
     public boolean doNotShowTooltipWhenJadePresent = true;
 
