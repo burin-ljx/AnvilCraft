@@ -17,11 +17,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -33,9 +31,9 @@ import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LavaCauldronBlock extends LayeredCauldronBlock implements IHammerRemovable, BucketPickup {
+public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable, BucketPickup {
     public LavaCauldronBlock(Properties properties) {
-        super(Biome.Precipitation.NONE, ModInteractionMap.LAYERED_LAVA, properties);
+        super(properties, ModInteractionMap.LAYERED_LAVA);
     }
 
     @Override
