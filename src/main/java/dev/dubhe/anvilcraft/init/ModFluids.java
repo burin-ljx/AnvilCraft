@@ -2,12 +2,14 @@ package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.Color;
+import dev.dubhe.anvilcraft.util.ColorUtil;
 import dev.dubhe.anvilcraft.util.ModClientFluidTypeExtensionImpl;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.bus.api.IEventBus;
@@ -162,14 +164,26 @@ public class ModFluids {
     }
 
     public static void onRegisterFluidType(RegisterClientExtensionsEvent e) {
-        e.registerFluidType(new ModClientFluidTypeExtensionImpl(AnvilCraft.of("block/oil")), OIL_TYPE);
+        e.registerFluidType(new ModClientFluidTypeExtensionImpl(
+            AnvilCraft.of("block/oil"),
+            AnvilCraft.of("block/oil_flow"),
+            0x1B061F,
+            1.0f
+        ), OIL_TYPE);
         for (Color color : Color.values()) {
-            e.registerFluidType(
-                new ModClientFluidTypeExtensionImpl(AnvilCraft.of("block/%s_cement".formatted(color))),
-                CEMENT_TYPES.get(color)
-            );
+            e.registerFluidType(new ModClientFluidTypeExtensionImpl(
+                AnvilCraft.of("block/%s_cement".formatted(color)),
+                AnvilCraft.of("block/%s_cement".formatted(color)),
+                ColorUtil.mulValue(((DyeItem) color.dyeItem()).getDyeColor().getTextColor(), 0.6f),
+                1.0f
+            ), CEMENT_TYPES.get(color));
         }
-        e.registerFluidType(new ModClientFluidTypeExtensionImpl(AnvilCraft.of("block/melt_gem")), MELT_GEM_TYPE);
+        e.registerFluidType(new ModClientFluidTypeExtensionImpl(
+            AnvilCraft.of("block/melt_gem"),
+            AnvilCraft.of("block/melt_gem_flow"),
+            0xB7EEDE,
+            2.0f
+        ), MELT_GEM_TYPE);
     }
 
 }

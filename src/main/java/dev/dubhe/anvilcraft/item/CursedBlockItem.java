@@ -22,4 +22,9 @@ public class CursedBlockItem extends BlockItem implements ICursed {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         ICursed.super.inventoryTick(stack, level, entity, slotId, isSelected);
     }
+
+    @Override
+    public boolean isPiglinCurrency(ItemStack stack) {
+        return ICursed.super.isPiglinCurrency(stack);
+    }
 }

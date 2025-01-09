@@ -131,7 +131,7 @@ public class SuperHeatingBehavior implements IAnvilBehavior {
                     BlastingRecipe recipe = blastingRecipe.get().value();
                     int count = recipe.result.getCount()
                         * inputStack.getCount()
-                        * (RecipeUtil.ingredientMatchingTags(recipe.ingredient, ModItemTags.RAW_ORES, ModItemTags.ORES) ? 2 : 1);
+                        * (inputStack.is(ModItemTags.RAW_ORES) || inputStack.is(ModItemTags.ORES) ? 2 : 1);
                     resultStacks.add(recipe.result.copyWithCount(count));
                     itemEntity.discard();
                     continue;
@@ -147,7 +147,7 @@ public class SuperHeatingBehavior implements IAnvilBehavior {
                     SmeltingRecipe recipe = smeltingRecipe.get().value();
                     int count = recipe.result.getCount()
                         * inputStack.getCount()
-                        * (RecipeUtil.ingredientMatchingTags(recipe.ingredient, ModItemTags.RAW_ORES, ModItemTags.ORES) ? 2 : 1);
+                        * (inputStack.is(ModItemTags.RAW_ORES) || inputStack.is(ModItemTags.ORES) ? 2 : 1);
                     resultStacks.add(recipe.result.copyWithCount(count));
                     itemEntity.discard();
                 }

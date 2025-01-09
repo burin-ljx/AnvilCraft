@@ -22,7 +22,12 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.horse.SkeletonHorse;
+import net.minecraft.world.entity.animal.horse.ZombieHorse;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
@@ -196,6 +201,9 @@ public class CorruptedBeaconBlockEntity extends BlockEntity {
         Entity result = recipe.apply(level.random, livingEntity, level);
         if (result == null) return;
         livingEntity.discard();
+        if (result instanceof ZombieHorse || result instanceof SkeletonHorse) {
+            ((AbstractHorse) result).setTamed(true);
+        }
         level.tryAddFreshEntityWithPassengers(result);
     }
 

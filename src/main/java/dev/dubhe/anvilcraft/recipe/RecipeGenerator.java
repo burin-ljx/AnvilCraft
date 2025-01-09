@@ -23,7 +23,9 @@ import java.util.Optional;
 import static dev.dubhe.anvilcraft.util.Util.generateUniqueRecipeSuffix;
 
 public class RecipeGenerator {
+
     private static final Logger logger = LogUtils.getLogger();
+    private static final String HASH_TO_CHAR = "0123456789abcdefghijklmnopqrstuv";
 
     private static ResourceLocation generateRecipeId(
         RecipeType<?> recipeType,
@@ -31,9 +33,23 @@ public class RecipeGenerator {
     ) {
         logger.debug("Generating anvil recipe for {}", recipeHolder.id());
         logger.debug("Recipe type of {} is {}", recipeHolder.id(), recipeType);
-        ResourceLocation newId = AnvilCraft.of(recipeHolder.id().getPath() + generateUniqueRecipeSuffix());
+        ResourceLocation newId = hashRecipeId(recipeHolder.id());
         logger.debug("New id of {} is {}", recipeHolder.id(), newId);
         return newId;
+    }
+
+    private static ResourceLocation hashRecipeId(ResourceLocation rl) {
+        long hash = 0;
+        for (char c : rl.toString().toCharArray()) {
+            hash *= 19980731;
+            hash += c;
+        }
+        StringBuilder hashedId = new StringBuilder(rl.getPath());
+        hashedId.append("_generated_");
+        for (int i = 0; i < 13; i++) {
+            hashedId.append(HASH_TO_CHAR.charAt((int)(hash >>> (5 * i)) & 31));
+        }
+        return AnvilCraft.of(hashedId.toString());
     }
 
     public static Optional<RecipeHolder<?>> handleVanillaRecipe(

@@ -1,9 +1,9 @@
 package dev.dubhe.anvilcraft.block;
 
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModMenuTypes;
-import dev.dubhe.anvilcraft.util.Util;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,8 +29,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @MethodsReturnNonnullByDefault
@@ -75,126 +73,109 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        travelAndCheck(level, pos);
+        if (oldState.is(this)) return;
+        if (this.tryFormMatrix(level, pos)) {
+            return;
+        }
+        if (state.getValue(TYPE) != Type.SINGLE) level.setBlockAndUpdate(pos, state.setValue(TYPE, Type.SINGLE));
+        Direction.Plane.HORIZONTAL.stream()
+            .map(pos::relative)
+            .filter(poz -> {
+                BlockState adjacentState = level.getBlockState(poz);
+                return adjacentState.is(this) && adjacentState.getValue(TYPE) != Type.SINGLE;
+            })
+            .forEach(poz -> deformMatrix(level, poz));
     }
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        for (Direction direction : Util.HORIZONTAL_DIRECTIONS) {
-            travelAndCheck(level, pos.relative(direction));
+        if (newState.is(this)) return;
+        if (state.getValue(TYPE) != Type.SINGLE) {
+            this.deformMatrix(level, pos);
+            return;
         }
-    }
-
-
-    private static void travelAndCheck(Level level, BlockPos pos) {
-        List<BlockPos> posList = new ArrayList<>();
-        BlockPos.breadthFirstTraversal(
-            pos,
-            Integer.MAX_VALUE,
-            Integer.MAX_VALUE,
-            Util::acceptHorizontalDirections,
-            blockPos -> {
-                BlockState blockState = level.getBlockState(blockPos);
-                if (blockState.is(ModBlocks.TRANSPARENT_CRAFTING_TABLE)) {
-                    posList.add(blockPos);
-                    return true;
-                }
-                return false;
-            }
-        );
-        if (!posList.isEmpty()) {
-            checkPosAndUpdate(level, posList);
-        }
+        Direction.Plane.HORIZONTAL.stream()
+            .map(pos::relative)
+            .forEach(poz -> this.tryFormMatrix(level, poz));
     }
 
     /**
-     * 检查给定坐标是否是矩形，且更新他们的方块状态
+     * 以某个方块为起始点，尝试构建一个有透明工作台组成的矩阵。
+     * 若与该方块相连的所有透明工作台不构成一个长方形，构建失败。
      *
-     * @param level   level
-     * @param posList 方块列表
+     * @param level 尝试构建矩阵的维度
+     * @param pos 尝试构建矩阵的方块位置
+     * @return 是否成功构建透明工作台矩阵
      */
-    private static void checkPosAndUpdate(Level level, List<BlockPos> posList) {
-        int minX = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE;
-        int minZ = Integer.MAX_VALUE;
-        int maxZ = Integer.MIN_VALUE;
-
-        int posY = posList.getFirst().getY();
-
-        for (BlockPos pos : posList) {
-            minX = Math.min(minX, pos.getX());
-            maxX = Math.max(maxX, pos.getX());
-            minZ = Math.min(minZ, pos.getZ());
-            maxZ = Math.max(maxZ, pos.getZ());
-        }
-
-        // 检查区域内是否全部为水晶工作台
-        boolean flag = true;
-        for (int x = minX; x <= maxX && flag; x++) {
-            for (int z = minZ; z <= maxZ && flag; z++) {
-                BlockPos checkPos = new BlockPos(x, posY, z);
-                if (!level.getBlockState(checkPos).is(ModBlocks.TRANSPARENT_CRAFTING_TABLE)) {
-                    flag = false;
-                }
+    private boolean tryFormMatrix(Level level, BlockPos pos) {
+        if (!level.getBlockState(pos).is(this)) return false;
+        int maxSize = AnvilCraft.config.transparentCraftingTableMaxMatrixSize;
+        int x0 = pos.getX();
+        int y0 = pos.getY();
+        int z0 = pos.getZ();
+        BlockPos.MutableBlockPos mpos = pos.mutable();
+        int xMin = x0;
+        int xMax = x0;
+        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) xMin--;
+        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) xMax++;
+        int xSize = xMax - xMin + 1;
+        if (xSize < 2 || xSize > maxSize) return false;
+        int zMin = z0;
+        int zMax = z0;
+        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) zMin--;
+        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) zMax++;
+        int zSize = zMax - zMin + 1;
+        if (zSize < 2 || zSize > maxSize) return false;
+        for (int x = xMin; x <= xMax; x++) {
+            if (x == x0) continue;
+            for (int z = zMin; z <= zMax; z++) {
+                if (z == z0) continue;
+                if (!level.getBlockState(mpos.set(x, y0, z)).is(this)) return false;
             }
         }
-
-        int width = maxX - minX + 1;
-        int height = maxZ - minZ + 1;
-
-        if (flag && width > 1 && height > 1) {
-            // 修改状态
-            // center
-            for (int x = minX + 1; x <= maxX - 1; x++) {
-                for (int z = minZ + 1; z <= maxZ - 1; z++) {
-                    BlockPos pos = new BlockPos(x, posY, z);
-                    level.setBlockAndUpdate(pos, ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.CENTER));
-                }
+        for (int x = xMin; x <= xMax; x++) {
+            if (level.getBlockState(mpos.set(x, y0, zMin - 1)).is(this)) return false;
+            if (level.getBlockState(mpos.set(x, y0, zMax + 1)).is(this)) return false;
+        }
+        for (int z = zMin; z <= zMax; z++) {
+            if (level.getBlockState(mpos.set(xMin - 1, y0, z)).is(this)) return false;
+            if (level.getBlockState(mpos.set(xMax + 1, y0, z)).is(this)) return false;
+        }
+        for (int x = xMin; x <= xMax; x++) {
+            for (int z = zMin; z <= zMax; z++) {
+                int xIndex = x == xMax ? 2 : x > xMin ? 1 : 0;
+                int zIndex = z == zMax ? 2 : z > zMin ? 1 : 0;
+                BlockState state = level.getBlockState(mpos.set(x, y0, z));
+                level.setBlockAndUpdate(mpos, state.setValue(TYPE, Type.LOOKUP[xIndex][zIndex]));
             }
+        }
+        return true;
+    }
 
-            // corner
-            level.setBlockAndUpdate(
-                new BlockPos(minX, posY, minZ),
-                ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.CORNER_NORTH_WEST)
-            );
-            level.setBlockAndUpdate(
-                new BlockPos(maxX, posY, minZ),
-                ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.CORNER_NORTH_EAST)
-            );
-            level.setBlockAndUpdate(
-                new BlockPos(minX, posY, maxZ),
-                ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.CORNER_SOUTH_WEST)
-            );
-            level.setBlockAndUpdate(
-                new BlockPos(maxX, posY, maxZ),
-                ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.CORNER_SOUTH_EAST)
-            );
-
-            //side
-            for (int z = minZ + 1; z <= maxZ - 1; z++) {
-                level.setBlockAndUpdate(
-                    new BlockPos(minX, posY, z),
-                    ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.SIDE_WEST)
-                );
-                level.setBlockAndUpdate(
-                    new BlockPos(maxX, posY, z),
-                    ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.SIDE_EAST)
-                );
-            }
-            for (int x = minX + 1; x <= maxX - 1; x++) {
-                level.setBlockAndUpdate(
-                    new BlockPos(x, posY, minZ),
-                    ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.SIDE_NORTH)
-                );
-                level.setBlockAndUpdate(
-                    new BlockPos(x, posY, maxZ),
-                    ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState().setValue(TYPE, Type.SIDE_SOUTH)
-                );
-            }
-        } else {
-            // 恢复无连接状态
-            for (BlockPos pos : posList) {
-                level.setBlockAndUpdate(pos, ModBlocks.TRANSPARENT_CRAFTING_TABLE.getDefaultState());
+    /**
+     * 以某个方块为起始点，尝试移除该方块所属的透明工作台组成的矩阵。
+     *
+     * @param level 尝试移除矩阵的维度
+     * @param pos 尝试移除矩阵的方块位置
+     */
+    private void deformMatrix(Level level, BlockPos pos) {
+        int x0 = pos.getX();
+        int y0 = pos.getY();
+        int z0 = pos.getZ();
+        BlockPos.MutableBlockPos mpos = pos.mutable();
+        int xMin = x0;
+        int xMax = x0;
+        while (level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) xMin--;
+        while (level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) xMax++;
+        int zMin = z0;
+        int zMax = z0;
+        while (level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) zMin--;
+        while (level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) zMax++;
+        for (int x = xMin; x <= xMax; x++) {
+            for (int z = zMin; z <= zMax; z++) {
+                BlockState state = level.getBlockState(mpos.set(x, y0, z));
+                if (!state.is(this)) continue;
+                level.setBlockAndUpdate(mpos, state.setValue(TYPE, Type.SINGLE));
             }
         }
     }
@@ -210,6 +191,24 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
         CORNER_NORTH_EAST("corner_ne"),
         CORNER_SOUTH_WEST("corner_sw"),
         CORNER_SOUTH_EAST("corner_se");
+
+        public static final Type[][] LOOKUP = {
+            {
+                CORNER_NORTH_WEST,
+                SIDE_WEST,
+                CORNER_SOUTH_WEST
+            },
+            {
+                SIDE_NORTH,
+                CENTER,
+                SIDE_SOUTH
+            },
+            {
+                CORNER_NORTH_EAST,
+                SIDE_EAST,
+                CORNER_SOUTH_EAST
+            }
+        };
 
         final String serializedName;
 

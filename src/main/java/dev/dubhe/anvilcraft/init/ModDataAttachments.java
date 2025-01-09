@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.init;
 
+import com.mojang.serialization.Codec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -23,7 +24,10 @@ public class ModDataAttachments {
             "discount_rate", () -> AttachmentType.builder(() -> 0f).build());
 
     public static final Supplier<AttachmentType<Boolean>> IMMUNE_TO_LIGHTNING = ATTACHMENT_TYPES.register(
-            "immune_to_lightning", () -> AttachmentType.builder(() -> false).build());
+        "immune_to_lightning", () -> AttachmentType.builder(() -> false).build());
+
+    public static final Supplier<AttachmentType<Boolean>> ZOMBIFICATED_BY_CURSE = ATTACHMENT_TYPES.register(
+        "zombificated_by_curse", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).build());
 
     public static void register(IEventBus eventBus) {
         ATTACHMENT_TYPES.register(eventBus);

@@ -2075,6 +2075,7 @@ public class ModBlocks {
         .block("cursed_gold_block", Block::new)
         .initialProperties(() -> Blocks.GOLD_BLOCK)
         .item(CursedBlockItem::new)
+        .tag(ItemTags.PIGLIN_LOVED)
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_IRON_TOOL,
