@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.integration.jei.AnvilCraftJeiPlugin;
+import dev.dubhe.anvilcraft.integration.jei.drawable.JeiButton;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRecipeUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
@@ -16,8 +17,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -46,7 +45,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -61,7 +59,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -82,7 +79,9 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     private final IDrawable icon;
     private final IDrawable slot;
     private final IDrawable layerUp;
+    private final IDrawable layerUpHovered;
     private final IDrawable layerDown;
+    private final IDrawable layerDownHovered;
     private final IDrawable renderSwitchOn;
     private final IDrawable renderSwitchOff;
     private final IDrawable arrowOut;
@@ -96,10 +95,18 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
                         AnvilCraft.of("textures/gui/container/insight/insight_layer_up.png"), 0, 0, 10, 10)
                 .setTextureSize(10, 20)
                 .build();
+        layerUpHovered = helper.drawableBuilder(
+                AnvilCraft.of("textures/gui/container/insight/insight_layer_up.png"), 0, 10, 10, 10)
+            .setTextureSize(10, 20)
+            .build();
         layerDown = helper.drawableBuilder(
                         AnvilCraft.of("textures/gui/container/insight/insight_layer_down.png"), 0, 0, 10, 10)
                 .setTextureSize(10, 20)
                 .build();
+        layerDownHovered = helper.drawableBuilder(
+                AnvilCraft.of("textures/gui/container/insight/insight_layer_down.png"), 0, 10, 10, 10)
+            .setTextureSize(10, 20)
+            .build();
         renderSwitchOff = helper.drawableBuilder(
                         AnvilCraft.of("textures/gui/container/insight/insight_layer_switch.png"), 0, 0, 10, 10)
                 .setTextureSize(10, 20)
@@ -256,8 +263,8 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
             component =
                     Component.translatable("gui.anvilcraft.category.multiblock.single_layer", visibleLayer + 1, sizeY);
             renderSwitchOn.draw(guiGraphics, 125, 10);
-            layerUp.draw(guiGraphics, 137, 10);
-            layerDown.draw(guiGraphics, 149, 10);
+            this.layerUpButton(mouseX, mouseY).draw(guiGraphics, 137, 10);
+            this.layerDownButton(mouseX, mouseY).draw(guiGraphics, 149, 10);
         }
         pose.pushPose();
         pose.scale(0.8f, 0.8f, 0.8f);
@@ -272,6 +279,14 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
                 slot.draw(guiGraphics, j * 18, START_HEIGHT + i * 18);
             }
         }
+    }
+
+    private IDrawable layerUpButton(double mouseX, double mouseY) {
+        return (mouseX >= 137 && mouseX <= 147 && mouseY >= 10 && mouseY <= 20) ? layerUpHovered : layerUp;
+    }
+
+    private IDrawable layerDownButton(double mouseX, double mouseY) {
+        return (mouseX >= 149 && mouseX <= 159 && mouseY >= 10 && mouseY <= 20) ? layerDownHovered : layerDown;
     }
 
     @Override
@@ -323,33 +338,4 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
         registration.addRecipeCatalyst(ModBlocks.SPACE_OVERCOMPRESSOR.asStack(), AnvilCraftJeiPlugin.MULTI_BLOCK);
     }
 
-    private static class JeiButton<T> implements IJeiGuiEventListener {
-        private final Consumer<T> onClickCallback;
-        private final int x;
-        private final int y;
-        private final int size;
-        private final T metadataKey;
-
-        public JeiButton(int x, int y, int size, Consumer<T> onClickCallback, T metadataKey) {
-            this.onClickCallback = onClickCallback;
-            this.x = x;
-            this.y = y;
-            this.size = size;
-            this.metadataKey = metadataKey;
-        }
-
-        @Override
-        public ScreenRectangle getArea() {
-            return new ScreenRectangle(new ScreenPosition(x, y), size, size);
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (button == 0) {
-                onClickCallback.accept(metadataKey);
-                return true;
-            }
-            return false;
-        }
-    }
 }

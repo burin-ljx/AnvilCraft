@@ -23,6 +23,7 @@ import dev.dubhe.anvilcraft.integration.jei.category.anvil.SqueezingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.StampingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.SuperHeatingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.TimeWarpCategory;
+import dev.dubhe.anvilcraft.integration.jei.category.multiblock.MultiBlockConversionCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.multiblock.MultiBlockCraftingCategory;
 import dev.dubhe.anvilcraft.integration.jei.recipe.BeaconConversionRecipe;
 import dev.dubhe.anvilcraft.integration.jei.recipe.CementStainingRecipe;
@@ -43,6 +44,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.SqueezingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.StampingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SuperHeatingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
+import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockConversionRecipe;
 import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
 
 import mezz.jei.api.constants.RecipeTypes;
@@ -98,9 +100,13 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
     public static final RecipeType<RecipeHolder<BulgingRecipe>> BULGING = createRecipeHolderType("bulging");
     public static final RecipeType<RecipeHolder<TimeWarpRecipe>> TIME_WARP = createRecipeHolderType("time_warp");
 
-    public static final RecipeType<RecipeHolder<MultiblockRecipe>> MULTI_BLOCK = createRecipeHolderType("multiblock");
+    public static final RecipeType<RecipeHolder<MultiblockRecipe>> MULTI_BLOCK =
+        createRecipeHolderType("multiblock");
+    public static final RecipeType<RecipeHolder<MultiblockConversionRecipe>> MULTIBLOCK_CONVERSION =
+        createRecipeHolderType("multiblock_conversion");
 
-    public static final RecipeType<RecipeHolder<JewelCraftingRecipe>> JEWEL_CRAFTING = createRecipeHolderType("jewel_crafting");
+    public static final RecipeType<RecipeHolder<JewelCraftingRecipe>> JEWEL_CRAFTING =
+        createRecipeHolderType("jewel_crafting");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -125,6 +131,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         BulgingCategory.registerRecipes(registration);
         TimeWarpCategory.registerRecipes(registration);
         MultiBlockCraftingCategory.registerRecipes(registration);
+        MultiBlockConversionCategory.registerRecipes(registration);
         JewelCraftingCategory.registerRecipes(registration);
         EndPortalConversionCategory.registerRecipes(registration);
         BeaconConversionCategory.registerRecipes(registration);
@@ -169,6 +176,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         BulgingCategory.registerRecipeCatalysts(registration);
         TimeWarpCategory.registerRecipeCatalysts(registration);
         MultiBlockCraftingCategory.registerRecipeCatalysts(registration);
+        MultiBlockConversionCategory.registerRecipeCatalysts(registration);
         JewelCraftingCategory.registerRecipeCatalysts(registration);
         EndPortalConversionCategory.registerRecipeCatalysts(registration);
         BeaconConversionCategory.registerRecipeCatalysts(registration);
@@ -206,6 +214,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new BulgingCategory(guiHelper));
         registration.addRecipeCategories(new TimeWarpCategory(guiHelper));
         registration.addRecipeCategories(new MultiBlockCraftingCategory(guiHelper));
+        registration.addRecipeCategories(new MultiBlockConversionCategory(guiHelper));
         registration.addRecipeCategories(new JewelCraftingCategory(guiHelper));
         registration.addRecipeCategories(new EndPortalConversionCategory(guiHelper));
         registration.addRecipeCategories(new BeaconConversionCategory(guiHelper));
