@@ -164,7 +164,6 @@ public class RenderHelper {
         poseStack.popPose();
     }
 
-    //test for spectral anvil conversion recipe:
     public static void renderLevelLike(
             LevelLike level,
             GuiGraphics guiGraphics,

@@ -209,7 +209,7 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDat
 
     @Override
     public String toDatagen() {
-        StringBuilder codeBuilder = new StringBuilder("MultiblockRecipe.builder()\n");
+        StringBuilder codeBuilder = new StringBuilder("MultiblockConversionRecipe.builder()\n");
 
         datagenForPattern(codeBuilder, this.inputPattern, "input");
         datagenForPattern(codeBuilder, this.outputPattern, "output");

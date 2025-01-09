@@ -312,6 +312,8 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         BlockStateProperties.VERTICAL_DIRECTION,
         BlockStateProperties.ROTATION_16,
         BlockStateProperties.ORIENTATION,
+        BlockStateProperties.AXIS,
+        BlockStateProperties.HORIZONTAL_AXIS,
         BlockStateProperties.RAIL_SHAPE,
         BlockStateProperties.RAIL_SHAPE_STRAIGHT,
         // about block's attachment
