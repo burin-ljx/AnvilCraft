@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.integration.jade.provider;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity;
+import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +20,8 @@ public enum SpaceOvercompressorProvider implements IBlockComponentProvider, ISer
         CompoundTag serverData = blockAccessor.getServerData();
         if (serverData.contains("storedMass")) {
             long mass = serverData.getLong("storedMass");
-            iTooltip.add(Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass", mass));
+            iTooltip.add(Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass",
+                MassInjectRecipe.displayStoredMass(mass)));
         }
     }
 

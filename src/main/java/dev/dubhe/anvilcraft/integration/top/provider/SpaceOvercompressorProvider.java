@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.integration.top.provider;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity;
+import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
@@ -35,8 +36,8 @@ public enum SpaceOvercompressorProvider implements IProbeInfoProvider {
             .ifPresent(b -> {
                 SpaceOvercompressorBlockEntity blockEntity = (SpaceOvercompressorBlockEntity) b;
                 long mass = blockEntity.getStoredMass();
-                iProbeInfo.text(
-                    Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass", mass));
+                iProbeInfo.text(Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass",
+                        MassInjectRecipe.displayStoredMass(mass)));
             });
     }
 }

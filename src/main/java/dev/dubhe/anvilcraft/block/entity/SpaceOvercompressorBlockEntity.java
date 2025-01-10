@@ -1,9 +1,8 @@
 package dev.dubhe.anvilcraft.block.entity;
 
-import dev.dubhe.anvilcraft.api.tooltip.providers.IBlockEntityTooltipProvider;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
-import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItems;
+import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import dev.dubhe.anvilcraft.util.AnvilUtil;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -11,21 +10,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @Getter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SpaceOvercompressorBlockEntity extends BlockEntity implements IBlockEntityTooltipProvider {
+public class SpaceOvercompressorBlockEntity extends BlockEntity {
 
     public static long NEUTRONIUM_INGOT_MASS = 30_000_000;
     public static int MAX_OUTPUT_PER_TIME = 640;
@@ -44,13 +44,35 @@ public class SpaceOvercompressorBlockEntity extends BlockEntity implements IBloc
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putLong("storedMass", storedMass);
+        tag.putLong("storedMass", this.storedMass);
     }
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         this.storedMass = tag.getLong("storedMass");
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag compound = new CompoundTag();
+        compound.putLong("storedMass", this.storedMass);
+        return compound;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void setChanged() {
+        Level level = this.level;
+        if (level != null) {
+            BlockState state = this.getBlockState();
+            level.sendBlockUpdated(this.getBlockPos(), state, state, 2);
+        }
+        super.setChanged();
     }
 
     public void injectMass(long mass) {
@@ -72,35 +94,7 @@ public class SpaceOvercompressorBlockEntity extends BlockEntity implements IBloc
     }
 
     public Component displayStoredMass() {
-        return displayStoredMass(this.storedMass);
+        return MassInjectRecipe.displayStoredMass(this.storedMass);
     }
 
-    public static Component displayStoredMass(long mass) {
-        if (mass <= 0) return Component.literal("0");
-        if (mass % 100 == 0) return Component.literal(String.valueOf(mass / 100));
-        if (mass % 10 == 0) return Component.literal(String.valueOf(mass / 100) + '.' + (mass % 100) / 10);
-        return Component.literal(String.valueOf(mass / 100) + '.' + (mass % 100));
-    }
-
-    @Override
-    public boolean accepts(BlockEntity entity) {
-        return entity instanceof SpaceOvercompressorBlockEntity;
-    }
-
-    @Override
-    public List<Component> tooltip(BlockEntity e) {
-        if (!(e instanceof SpaceOvercompressorBlockEntity thiz)) return List.of();
-        return List.of(Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass",
-            thiz.displayStoredMass()));
-    }
-
-    @Override
-    public ItemStack icon(BlockEntity entity) {
-        return ModBlocks.SPACE_OVERCOMPRESSOR.asStack();
-    }
-
-    @Override
-    public int priority() {
-        return 0;
-    }
 }
