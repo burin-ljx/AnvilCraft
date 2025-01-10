@@ -245,7 +245,7 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
         pose.pushPose();
         pose.scale(0.8f, 0.8f, 0.8f);
         int textX = Math.round(WIDTH / 0.8f - minecraft.font.width(component) - 5);
-        guiGraphics.drawString(minecraft.font, component, textX, 0, 0xf0f0f0, true);
+        guiGraphics.drawString(minecraft.font, component, textX, 0, 0xFF000000, false);
         pose.popPose();
         arrowOut.draw(guiGraphics, 110, 60);
         slot.draw(guiGraphics, 129, 69);

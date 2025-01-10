@@ -37,7 +37,7 @@ public enum SpaceOvercompressorProvider implements IProbeInfoProvider {
                 SpaceOvercompressorBlockEntity blockEntity = (SpaceOvercompressorBlockEntity) b;
                 long mass = blockEntity.getStoredMass();
                 iProbeInfo.text(Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass",
-                        MassInjectRecipe.displayStoredMass(mass)));
+                        MassInjectRecipe.displayMassValue(mass)));
             });
     }
 }

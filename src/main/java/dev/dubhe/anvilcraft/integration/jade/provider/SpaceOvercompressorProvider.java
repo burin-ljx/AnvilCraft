@@ -21,7 +21,7 @@ public enum SpaceOvercompressorProvider implements IBlockComponentProvider, ISer
         if (serverData.contains("storedMass")) {
             long mass = serverData.getLong("storedMass");
             iTooltip.add(Component.translatable("tooltip.anvilcraft.space_overcompressor.stored_mass",
-                MassInjectRecipe.displayStoredMass(mass)));
+                MassInjectRecipe.displayMassValue(mass)));
         }
     }
 

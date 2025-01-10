@@ -6,8 +6,6 @@ import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -41,18 +39,18 @@ public class MassInjectRecipeLoader {
             .put(ModItemTags.URANIUM_INGOTS, 180)
             .put(ModItemTags.TUNGSTEN_INGOTS, 190)
             .put(Tags.Items.INGOTS_GOLD, 190)
-            .put(ModItemTags.TITANIUM_BLOCKS, 500)
-            .put(ModItemTags.ZINC_BLOCKS, 700)
-            .put(ModItemTags.TIN_BLOCKS, 700)
+            .put(ModItemTags.STORAGE_BLOCKS_TITANIUM, 500)
+            .put(ModItemTags.STORAGE_BLOCKS_ZINC, 700)
+            .put(ModItemTags.STORAGE_BLOCKS_TIN, 700)
             .put(Tags.Items.STORAGE_BLOCKS_IRON, 800)
-            .put(ModItemTags.BRONZE_BLOCKS, 800)
-            .put(ModItemTags.BRASS_BLOCKS, 800)
+            .put(ModItemTags.STORAGE_BLOCKS_BRONZE, 800)
+            .put(ModItemTags.STORAGE_BLOCKS_BRASS, 800)
             .put(Tags.Items.STORAGE_BLOCKS_COPPER, 900)
-            .put(ModItemTags.SILVER_BLOCKS, 1000)
-            .put(ModItemTags.LEAD_BLOCKS, 1100)
+            .put(ModItemTags.STORAGE_BLOCKS_SILVER, 1000)
+            .put(ModItemTags.STORAGE_BLOCKS_LEAD, 1100)
             .put(Tags.Items.INGOTS_NETHERITE, 1500)
-            .put(ModItemTags.URANIUM_BLOCKS, 1800)
-            .put(ModItemTags.TUNGSTEN_BLOCKS, 1900)
+            .put(ModItemTags.STORAGE_BLOCKS_URANIUM, 1800)
+            .put(ModItemTags.STORAGE_BLOCKS_TUNGSTEN, 1900)
             .put(Tags.Items.STORAGE_BLOCKS_GOLD, 1900)
             .put(Tags.Items.STORAGE_BLOCKS_NETHERITE, 15000)
             .build();

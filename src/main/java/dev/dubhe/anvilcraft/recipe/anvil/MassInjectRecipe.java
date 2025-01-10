@@ -55,11 +55,20 @@ public class MassInjectRecipe extends SingleItemRecipe {
         return new Builder();
     }
 
-    public static Component displayStoredMass(long mass) {
+    public Component displayMassValue() {
+        return displayMassValue(this.mass);
+    }
+
+    public static Component displayMassValue(long mass) {
         if (mass <= 0) return Component.literal("0");
         if (mass % 100 == 0) return Component.literal(String.valueOf(mass / 100));
         if (mass % 10 == 0) return Component.literal(String.valueOf(mass / 100) + '.' + (mass % 100) / 10);
-        return Component.literal(String.valueOf(mass / 100) + '.' + (mass % 100));
+        long rem = mass % 100;
+        return Component.literal((mass / 100) + (rem < 10 ? ".0" : ".") + (mass % 100));
+    }
+
+    public Ingredient getIngredient(){
+        return this.ingredient;
     }
 
     @Override

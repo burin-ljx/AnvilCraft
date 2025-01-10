@@ -207,7 +207,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
         pose.pushPose();
         pose.scale(0.8f, 0.8f, 0.8f);
         int textX = Math.round(WIDTH / 0.8f - minecraft.font.width(currentModeTooltip) - 5);
-        guiGraphics.drawString(minecraft.font, currentModeTooltip, textX, 0, 0xf0f0f0, true);
+        guiGraphics.drawString(minecraft.font, currentModeTooltip, textX, 0, 0xFF000000, false);
         pose.popPose();
         this.displayModeButton(mouseX, mouseY).draw(guiGraphics, 149, 10);
 
@@ -266,7 +266,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
         pose.pushPose();
         pose.scale(0.8f, 0.8f, 0.8f);
         textX = Math.round(WIDTH / 0.8f - minecraft.font.width(component) - 5);
-        guiGraphics.drawString(minecraft.font, component, textX, 25, 0xf0f0f0, true);
+        guiGraphics.drawString(minecraft.font, component, textX, 25, 0xFF000000, false);
         pose.popPose();
         this.renderSwitchButton(rendered).draw(guiGraphics, 125, 30);
         if (!rendered.isAllLayersVisible()) {

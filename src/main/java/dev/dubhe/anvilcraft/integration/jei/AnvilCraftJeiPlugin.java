@@ -18,6 +18,7 @@ import dev.dubhe.anvilcraft.integration.jei.category.anvil.CookingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemCompressCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemCrushCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemInjectCategory;
+import dev.dubhe.anvilcraft.integration.jei.category.anvil.MassInjectCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.MeshRecipeCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.SqueezingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.StampingCategory;
@@ -40,6 +41,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.CookingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCompressRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCrushRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
+import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SqueezingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.StampingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SuperHeatingRecipe;
@@ -88,6 +90,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         createRecipeHolderType("block_compress");
     public static final RecipeType<RecipeHolder<BlockCrushRecipe>> BLOCK_CRUSH = createRecipeHolderType("block_crush");
     public static final RecipeType<RecipeHolder<ItemInjectRecipe>> ITEM_INJECT = createRecipeHolderType("item_inject");
+    public static final RecipeType<RecipeHolder<MassInjectRecipe>> MASS_INJECT = createRecipeHolderType("mass_inject");
     public static final RecipeType<RecipeHolder<ItemCompressRecipe>> ITEM_COMPRESS =
         createRecipeHolderType("item_compress");
     public static final RecipeType<RecipeHolder<ItemCrushRecipe>> ITEM_CRUSH = createRecipeHolderType("item_crush");
@@ -120,6 +123,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         BlockCrushCategory.registerRecipes(registration);
         SqueezingCategory.registerRecipes(registration);
         ItemInjectCategory.registerRecipes(registration);
+        MassInjectCategory.registerRecipes(registration);
         ItemCompressCategory.registerRecipes(registration);
         ItemCrushCategory.registerRecipes(registration);
         CookingCategory.registerRecipes(registration);
@@ -165,6 +169,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         BlockCrushCategory.registerRecipeCatalysts(registration);
         SqueezingCategory.registerRecipeCatalysts(registration);
         ItemInjectCategory.registerRecipeCatalysts(registration);
+        MassInjectCategory.registerRecipeCatalysts(registration);
         ItemCompressCategory.registerRecipeCatalysts(registration);
         ItemCrushCategory.registerRecipeCatalysts(registration);
         CookingCategory.registerRecipeCatalysts(registration);
@@ -203,6 +208,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new BlockCrushCategory(guiHelper));
         registration.addRecipeCategories(new SqueezingCategory(guiHelper));
         registration.addRecipeCategories(new ItemInjectCategory(guiHelper));
+        registration.addRecipeCategories(new MassInjectCategory(guiHelper));
         registration.addRecipeCategories(new ItemCompressCategory(guiHelper));
         registration.addRecipeCategories(new ItemCrushCategory(guiHelper));
         registration.addRecipeCategories(new CookingCategory(guiHelper));

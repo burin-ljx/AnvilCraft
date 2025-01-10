@@ -28,6 +28,7 @@ import java.util.List;
 public class SpaceOvercompressorBlockEntity extends BlockEntity {
 
     public static long NEUTRONIUM_INGOT_MASS = 30_000_000;
+    public static long DISPLAYED_MASS = NEUTRONIUM_INGOT_MASS / 100;
     public static int MAX_OUTPUT_PER_TIME = 640;
     private long storedMass = 0;
 
@@ -94,7 +95,7 @@ public class SpaceOvercompressorBlockEntity extends BlockEntity {
     }
 
     public Component displayStoredMass() {
-        return MassInjectRecipe.displayStoredMass(this.storedMass);
+        return MassInjectRecipe.displayMassValue(this.storedMass);
     }
 
 }
