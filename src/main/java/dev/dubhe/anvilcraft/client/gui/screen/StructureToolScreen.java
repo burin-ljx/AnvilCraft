@@ -20,6 +20,7 @@ import dev.dubhe.anvilcraft.recipe.multiblock.BlockPattern;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
 import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockConversionRecipe;
 import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
+import dev.dubhe.anvilcraft.util.BlockStateUtil;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -35,9 +36,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
@@ -283,7 +287,7 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
             }
             if (!outputData.isOddCubeWithinSize(15)) {
                 minecraft.player.displayClientMessage(
-                    Component.translatable("tooltip.anvilcraft.item.structure_tool.must_cube")
+                    Component.translatable("tooltip.anvilcraft.item.structure_tool.must_odd")
                         .withStyle(ChatFormatting.RED),
                     false);
                 return null;
@@ -316,6 +320,7 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         BlockStateProperties.HORIZONTAL_AXIS,
         BlockStateProperties.RAIL_SHAPE,
         BlockStateProperties.RAIL_SHAPE_STRAIGHT,
+        BlockStateProperties.HALF,
         // about block's attachment
         BlockStateProperties.ATTACH_FACE,
         BlockStateProperties.BELL_ATTACHMENT,
@@ -335,9 +340,10 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         BlockStateProperties.LAYERS,
         BlockStateProperties.LIT,
         BlockStateProperties.LEVEL_CAULDRON,
+        BlockStateProperties.UP,
         // about part of multipart blocks
         BlockStateProperties.BED_PART,
-        BlockStateProperties.HALF,
+        BlockStateProperties.DOUBLE_BLOCK_HALF,
         GiantAnvilBlock.CUBE,
         GiantAnvilBlock.HALF,
         RemoteTransmissionPoleBlock.HALF,
@@ -348,9 +354,13 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
     );
 
     private BlockPredicateWithState buildPredicate(BlockState state, boolean recordAllStates) {
-        BlockPredicateWithState predicate = BlockPredicateWithState.of(state.getBlock());
+        Block block = state.getBlock();
+        BlockPredicateWithState predicate = BlockPredicateWithState.of(block);
         state.getProperties().stream()
-            .filter(p -> recordAllStates || DEFAULT_RECORDED_PROPERTIES.contains(p))
+            .filter(p -> recordAllStates || DEFAULT_RECORDED_PROPERTIES.contains(p)
+                || (BlockStateUtil.isMultifaceLike(block) &&
+                    p instanceof BooleanProperty &&
+                    PipeBlock.PROPERTY_BY_DIRECTION.containsValue(p)))
             .forEach(p -> predicate.copyPropertyFrom(state, p));
         return predicate;
     }

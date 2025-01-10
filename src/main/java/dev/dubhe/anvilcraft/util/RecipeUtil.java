@@ -226,74 +226,17 @@ public class RecipeUtil {
         @SuppressWarnings("DataFlowIssue")
         LevelLike levelLike = new LevelLike(Minecraft.getInstance().level);
 
-        for (int x = 0; x < pattern.getSize(); x++) {
-            for (int y = 0; y < pattern.getSize(); y++) {
-                for (int z = 0; z < pattern.getSize(); z++) {
+        int size = pattern.getSize();
+        for (int y = size - 1; y >= 0; y--) {
+            for (int x = size - 1; x >= 0; x--) {
+                for (int z = size - 1; z >= 0; z--) {
                     BlockPredicateWithState predicate = pattern.getPredicate(x, y, z);
                     BlockState state = predicate.getDefaultState();
-//                    for (Property<?> property :
-//                        predicate.getBlock().getStateDefinition().getProperties()) {
-//                        if (predicate.hasProperty(property)) {
-//                            switch (property) {
-//                                case IntegerProperty integerProperty -> {
-//                                    Integer value = predicate.getPropertyValue(integerProperty);
-//                                    if (value != null) {
-//                                        state = state.setValue(integerProperty, value);
-//                                    }
-//                                }
-//                                case BooleanProperty boolProperty -> {
-//                                    Boolean value = predicate.getPropertyValue(boolProperty);
-//                                    if (value != null) {
-//                                        state = state.setValue(boolProperty, value);
-//                                    }
-//                                }
-//                                case DirectionProperty directionProperty -> {
-//                                    Direction value = predicate.getPropertyValue(directionProperty);
-//                                    if (value != null) {
-//                                        state = state.setValue(directionProperty, value);
-//                                    }
-//                                }
-//                                case EnumProperty<?> enumProperty -> {
-//                                    if (enumProperty.getValueClass() == Direction.Axis.class) {
-//                                        EnumProperty<Direction.Axis> axisProperty =
-//                                            (EnumProperty<Direction.Axis>) enumProperty;
-//                                        Direction.Axis value = predicate.getPropertyValue(axisProperty);
-//                                        if (value != null) {
-//                                            state = state.setValue(axisProperty, value);
-//                                        }
-//                                    }
-//                                }
-//                                default -> {
-//                                }
-//                            }
-//                        }
-//                    }
+                    if (state.isAir() && Math.max(levelLike.horizontalSize(), levelLike.verticalSize()) >= size) continue;
                     levelLike.setBlockState(new BlockPos(x, y, z), state);
                 }
             }
         }
-        // levelLike.setBlockState(new BlockPos(1, 1, 1), Blocks.TNT.defaultBlockState());
-        // levelLike.setBlockState(new BlockPos(1, 0, 1), Blocks.REDSTONE_BLOCK.defaultBlockState());
-        //
-        // levelLike.setBlockState(new BlockPos(2, 2, 2), Blocks.DIAMOND_BLOCK.defaultBlockState());
-        // levelLike.setBlockState(new BlockPos(2, 1, 2), ModBlocks.HEAVY_IRON_BLOCK.getDefaultState());
-        // levelLike.setBlockState(new BlockPos(2, 0, 2), ModBlocks.HEAVY_IRON_COLUMN.getDefaultState());
-        //
-        // for (int i = 0; i < 4; i++) {
-        //     levelLike.setBlockState(new BlockPos(3, i, 3), Blocks.NETHERITE_BLOCK.defaultBlockState());
-        // }
-        //
-        // for (int i = 0; i <= 4; i++) {
-        //     levelLike.setBlockState(new BlockPos(4, i, 4), Blocks.GLASS.defaultBlockState());
-        // }
-        //
-        // for (int x = 0; x < 5; x++) {
-        //     for (int z = 0; z < 5; z++) {
-        //         levelLike.setBlockState(
-        //                 new BlockPos(x, 0, z), Blocks.WATER.defaultBlockState().setValue(LiquidBlock.LEVEL, 8));
-        //     }
-        // }
-        // levelLike.setBlockState(BlockPos.ZERO, ModBlocks.MENGER_SPONGE.getDefaultState());
 
         return levelLike;
     }

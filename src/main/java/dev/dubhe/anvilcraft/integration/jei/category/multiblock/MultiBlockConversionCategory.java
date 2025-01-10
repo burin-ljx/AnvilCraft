@@ -8,14 +8,10 @@ import dev.dubhe.anvilcraft.integration.jei.AnvilCraftJeiPlugin;
 import dev.dubhe.anvilcraft.integration.jei.drawable.JeiButton;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRecipeUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
-import dev.dubhe.anvilcraft.recipe.multiblock.BlockPattern;
-import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
 import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockConversionRecipe;
 import dev.dubhe.anvilcraft.util.LevelLike;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotDrawable;
@@ -33,10 +29,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
@@ -53,12 +47,15 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
     public static final int WIDTH = 162;
     public static final int HEIGHT = 136;
     public static final int SCALE_FAC_OVERVIEW = 55;
-    public static final int SCALE_FAC_LARGE = 90;
+    public static final int SCALE_FAC_LARGE = 96;
     private static final Component TITLE = Component.translatable("gui.anvilcraft.category.multiblock_conversion");
     private static final Component ALL_LAYERS =
         Component.translatable("gui.anvilcraft.category.multiblock.all_layers");
     private final Map<RecipeHolder<MultiblockConversionRecipe>, LevelLike> cacheInput = new HashMap<>();
     private final Map<RecipeHolder<MultiblockConversionRecipe>, LevelLike> cacheOutput = new HashMap<>();
+
+    private final static Comparator<ItemStack> BY_COUNT_DECREASING =
+        Comparator.comparing(ItemStack::getCount).thenComparing(ItemStack::getDescriptionId).reversed();
 
     private final Lazy<IDrawable> background;
     private final IDrawable icon;
@@ -176,48 +173,23 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
         cacheOutput.computeIfAbsent(recipe,
             it -> RecipeUtil.asLevelLike(it.value().getOutputPattern()));
 
-        Comparator<Object2IntMap.Entry<Block>> comparator =
-            Comparator.comparing(Object2IntMap.Entry::getIntValue);
+        List<ItemStack> inputItems = recipe.value().getInputPattern().toIngredientList();
+        inputItems.sort(BY_COUNT_DECREASING);
 
-        List<Object2IntMap.Entry<Block>> inputBlocks = mergeIngredients(recipe.value().getInputPattern())
-            .object2IntEntrySet().stream()
-            .sorted(comparator.reversed())
-            .toList();
-
-        for (int i = 0; i < inputBlocks.size(); i++) {
-            var entry = inputBlocks.get(i);
+        for (int i = 0; i < inputItems.size(); i++) {
+            ItemStack stack = inputItems.get(i);
             builder.addSlot(RecipeIngredientRole.INPUT, this.inputSlotPosX(i) + 1, this.slotPosY(i) + 1)
-                .addItemStack(new ItemStack(entry.getKey(), entry.getIntValue()));
+                .addItemStack(stack);
         }
 
-        List<Object2IntMap.Entry<Block>> outputBlocks = mergeIngredients(recipe.value().getOutputPattern())
-            .object2IntEntrySet().stream()
-            .sorted(comparator.reversed())
-            .toList();
+        List<ItemStack> outputItems = recipe.value().getOutputPattern().toIngredientList();
+        outputItems.sort(BY_COUNT_DECREASING);
 
-        for (int i = 0; i < outputBlocks.size(); i++) {
-            var entry = outputBlocks.get(i);
+        for (int i = 0; i < outputItems.size(); i++) {
+            ItemStack stack = outputItems.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, this.outputSlotPosX(i) + 1, this.slotPosY(i) + 1)
-                .addItemStack(new ItemStack(entry.getKey(), entry.getIntValue()));
+                .addItemStack(stack);
         }
-    }
-
-    private Object2IntMap<Block> mergeIngredients(BlockPattern pattern) {
-        Object2IntMap<Block> blocks = new Object2IntOpenHashMap<>();
-        for (List<String> layer : pattern.getLayers()) {
-            for (String s : layer) {
-                for (int i = 0; i < s.length(); i++) {
-                    char c = s.charAt(i);
-                    if (c == ' ') continue;
-                    BlockPredicateWithState bySymbol =
-                        pattern.getBySymbol(c);
-                    if (bySymbol != null) {
-                        blocks.mergeInt(bySymbol.getBlock(), 1, Integer::sum);
-                    }
-                }
-            }
-        }
-        return blocks;
     }
 
     @Override
@@ -234,9 +206,10 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
                 this.displayMode.getDiscription());
         pose.pushPose();
         pose.scale(0.8f, 0.8f, 0.8f);
-        guiGraphics.drawString(minecraft.font, currentModeTooltip, 0, 0, 0xf0f0f0, true);
+        int textX = Math.round(WIDTH / 0.8f - minecraft.font.width(currentModeTooltip) - 5);
+        guiGraphics.drawString(minecraft.font, currentModeTooltip, textX, 0, 0xf0f0f0, true);
         pose.popPose();
-        this.displayModeButton(mouseX, mouseY).draw(guiGraphics, 5, 10);
+        this.displayModeButton(mouseX, mouseY).draw(guiGraphics, 149, 10);
 
         LevelLike input = cacheInput.computeIfAbsent(recipe,
             it -> RecipeUtil.asLevelLike(it.value().getInputPattern()));
@@ -261,8 +234,8 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
                 boolean modifiedOutput = !output.isAllLayersVisible();
                 input.setAllLayersVisible(true);
                 output.setAllLayersVisible(true);
-                RenderHelper.renderLevelLike(input, guiGraphics, 44, 44, SCALE_FAC_OVERVIEW, 2.0f);
-                RenderHelper.renderLevelLike(output, guiGraphics, 128, 44, SCALE_FAC_OVERVIEW, 2.0f);
+                RenderHelper.renderLevelLike(input, guiGraphics, 36, 44, SCALE_FAC_OVERVIEW, 2.0f);
+                RenderHelper.renderLevelLike(output, guiGraphics, 120, 44, SCALE_FAC_OVERVIEW, 2.0f);
                 if (modifiedInput) {
                     input.setAllLayersVisible(false);
                 }
@@ -273,7 +246,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
                     slot.draw(guiGraphics, this.inputSlotPosX(i), this.slotPosY(i));
                     slot.draw(guiGraphics, this.outputSlotPosX(i), this.slotPosY(i));
                 }
-                arrowOut.draw(guiGraphics, 76, 30);
+                arrowOut.draw(guiGraphics, 68, 30);
                 break;
             case INPUT:
                 break;
@@ -288,17 +261,17 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
                 drawable.setPosition(-1000, -1000);
             }
         }
-        RenderHelper.renderLevelLike(rendered, guiGraphics, 80, 75, SCALE_FAC_LARGE, 2.0f);
+        RenderHelper.renderLevelLike(rendered, guiGraphics, 80, 86, SCALE_FAC_LARGE, 2.0f);
         Component component = this.layerTooltip(rendered);
         pose.pushPose();
         pose.scale(0.8f, 0.8f, 0.8f);
-        int textX = Math.round(WIDTH / 0.8f - minecraft.font.width(component) - 5);
-        guiGraphics.drawString(minecraft.font, component, textX, 0, 0xf0f0f0, true);
+        textX = Math.round(WIDTH / 0.8f - minecraft.font.width(component) - 5);
+        guiGraphics.drawString(minecraft.font, component, textX, 25, 0xf0f0f0, true);
         pose.popPose();
-        this.renderSwitchButton(rendered).draw(guiGraphics, 125, 10);
+        this.renderSwitchButton(rendered).draw(guiGraphics, 125, 30);
         if (!rendered.isAllLayersVisible()) {
-            this.layerUpButton(mouseX, mouseY).draw(guiGraphics, 137, 10);
-            this.layerDownButton(mouseX, mouseY).draw(guiGraphics, 149, 10);
+            this.layerUpButton(mouseX, mouseY).draw(guiGraphics, 137, 30);
+            this.layerDownButton(mouseX, mouseY).draw(guiGraphics, 149, 30);
         }
     }
 
@@ -307,15 +280,15 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
     }
 
     private IDrawable layerUpButton(double mouseX, double mouseY) {
-        return (mouseX >= 137 && mouseX <= 147 && mouseY >= 10 && mouseY <= 20) ? layerUpHovered : layerUp;
+        return (mouseX >= 137 && mouseX < 147 && mouseY >= 30 && mouseY < 40) ? layerUpHovered : layerUp;
     }
 
     private IDrawable layerDownButton(double mouseX, double mouseY) {
-        return (mouseX >= 149 && mouseX <= 159 && mouseY >= 10 && mouseY <= 20) ? layerDownHovered : layerDown;
+        return (mouseX >= 149 && mouseX < 159 && mouseY >= 30 && mouseY < 40) ? layerDownHovered : layerDown;
     }
 
     private IDrawable displayModeButton(double mouseX, double mouseY) {
-        boolean hovered = (mouseX >= 5 && mouseX <= 15 && mouseY >= 10 && mouseY <= 20);
+        boolean hovered = (mouseX >= 149 && mouseX < 159 && mouseY >= 10 && mouseY < 20);
         return switch (this.displayMode) {
             case OVERVIEW -> hovered ? modeOverviewHovered : modeOverview;
             case INPUT -> hovered ? modeInputHovered : modeInput;
@@ -347,7 +320,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
         IRecipeExtrasBuilder builder, RecipeHolder<MultiblockConversionRecipe> recipe, IFocusGroup focuses) {
         builder.addGuiEventListener(new JeiButton<>(
             125,
-            10,
+            30,
             10,
             it -> {
                 switch (this.displayMode) {
@@ -367,7 +340,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
 
         builder.addGuiEventListener(new JeiButton<>(
             137,
-            10,
+            30,
             10,
             it -> {
                 switch (this.displayMode) {
@@ -387,7 +360,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
 
         builder.addGuiEventListener(new JeiButton<>(
             149,
-            10,
+            30,
             10,
             it -> {
                 switch (this.displayMode) {
@@ -406,7 +379,7 @@ public class MultiBlockConversionCategory implements IRecipeCategory<RecipeHolde
             recipe));
 
         builder.addGuiEventListener(new JeiButton<>(
-            5,
+            149,
             10,
             10,
             MultiBlockConversionCategory::cycleDisplayMode,

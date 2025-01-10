@@ -34,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
@@ -181,7 +182,7 @@ public class RenderHelper {
 
         pose.pushPose();
         pose.translate(xPos, yPos, 100);
-        float scaleX = scaleFactor / (float) Math.sqrt(sizeX * sizeX * 2);
+        float scaleX = scaleFactor / (sizeX * Mth.SQRT_OF_TWO);
         float scaleY = scaleFactor / (float) sizeY;
         float scale = Math.min(scaleY, scaleX);
         pose.scale(-scale, -scale, -scale);
@@ -190,7 +191,7 @@ public class RenderHelper {
         pose.mulPose(Axis.XP.rotationDegrees(-30));
 
         float offsetX = (float) -sizeX / 2;
-        float offsetZ = (float) -sizeY / 2 + 1;
+        float offsetZ = (float) -sizeX / 2 + 1;
         float rotationY = (clientLevel.getGameTime() + tracker.getGameTimeDeltaPartialTick(true)) * rotationSpeed;
 
         pose.translate(-offsetX, 0, -offsetZ);

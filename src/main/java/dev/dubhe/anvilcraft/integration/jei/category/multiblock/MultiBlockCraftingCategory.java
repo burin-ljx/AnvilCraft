@@ -1,5 +1,9 @@
 package dev.dubhe.anvilcraft.integration.jei.category.multiblock;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
@@ -7,12 +11,21 @@ import dev.dubhe.anvilcraft.integration.jei.AnvilCraftJeiPlugin;
 import dev.dubhe.anvilcraft.integration.jei.drawable.JeiButton;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRecipeUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
-import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
 import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
 import dev.dubhe.anvilcraft.util.LevelLike;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
-
 import dev.dubhe.anvilcraft.util.VertexConsumerWithPose;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -25,48 +38,32 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
-import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<MultiblockRecipe>> {
     private static final Component TITLE = Component.translatable("gui.anvilcraft.category.multiblock");
     private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
+
+    private final static Comparator<ItemStack> BY_COUNT_DECREASING =
+        Comparator.comparing(ItemStack::getCount).thenComparing(ItemStack::getDescriptionId).reversed();
 
     public static final int WIDTH = 162;
     public static final int START_HEIGHT = 100;
@@ -143,37 +140,16 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
         builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 70)
                 .addItemStack(recipe.value().getResult().copy());
 
-        Comparator<Object2IntMap.Entry<Block>> comparator = Comparator.comparing(Object2IntMap.Entry::getIntValue);
+        List<ItemStack> ingredientList = recipe.value().getPattern().toIngredientList();
+        ingredientList.sort(BY_COUNT_DECREASING);
 
-        List<Object2IntMap.Entry<Block>> blocks = mergeInputs(recipe).object2IntEntrySet().stream()
-                .sorted(comparator.reversed())
-                .toList();
-
-        for (int i = 0; i < blocks.size(); i++) {
-            var entry = blocks.get(i);
+        for (int i = 0; i < ingredientList.size(); i++) {
+            ItemStack stack = ingredientList.get(i);
             int row = i / 9;
             int col = i % 9;
             builder.addSlot(RecipeIngredientRole.INPUT, col * 18 + 1, START_HEIGHT + row * 18 + 1)
-                    .addItemStack(new ItemStack(entry.getKey(), entry.getIntValue()));
+                    .addItemStack(stack);
         }
-    }
-
-    private Object2IntMap<Block> mergeInputs(RecipeHolder<MultiblockRecipe> recipeHolder) {
-        Object2IntMap<Block> blocks = new Object2IntOpenHashMap<>();
-        for (List<String> layer : recipeHolder.value().getPattern().getLayers()) {
-            for (String s : layer) {
-                for (int i = 0; i < s.length(); i++) {
-                    char c = s.charAt(i);
-                    if (c == ' ') continue;
-                    BlockPredicateWithState bySymbol =
-                            recipeHolder.value().getPattern().getBySymbol(c);
-                    if (bySymbol != null) {
-                        blocks.mergeInt(bySymbol.getBlock(), 1, Integer::sum);
-                    }
-                }
-            }
-        }
-        return blocks;
     }
 
     @Override
@@ -200,7 +176,7 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
         int sizeX = level.horizontalSize();
         int sizeY = level.verticalSize();
 
-        float scaleX = SCALE_FAC / (float) Math.sqrt(sizeX * sizeX * 2);
+        float scaleX = SCALE_FAC / (sizeX * Mth.SQRT_OF_TWO);
         float scaleY = SCALE_FAC / (float) sizeY;
         float scale = Math.min(scaleY, scaleX);
 
@@ -213,7 +189,7 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
         pose.mulPose(Axis.XP.rotationDegrees(-30));
 
         float offsetX = (float) -sizeX / 2;
-        float offsetZ = (float) -sizeY / 2 + 1;
+        float offsetZ = (float) -sizeX / 2 + 1;
         float rotationY = (clientLevel.getGameTime() + tracker.getGameTimeDeltaPartialTick(true)) * 2f;
 
         pose.translate(-offsetX, 0, -offsetZ);
@@ -282,11 +258,11 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     }
 
     private IDrawable layerUpButton(double mouseX, double mouseY) {
-        return (mouseX >= 137 && mouseX <= 147 && mouseY >= 10 && mouseY <= 20) ? layerUpHovered : layerUp;
+        return (mouseX >= 137 && mouseX < 147 && mouseY >= 10 && mouseY < 20) ? layerUpHovered : layerUp;
     }
 
     private IDrawable layerDownButton(double mouseX, double mouseY) {
-        return (mouseX >= 149 && mouseX <= 159 && mouseY >= 10 && mouseY <= 20) ? layerDownHovered : layerDown;
+        return (mouseX >= 149 && mouseX < 159 && mouseY >= 10 && mouseY < 20) ? layerDownHovered : layerDown;
     }
 
     @Override
