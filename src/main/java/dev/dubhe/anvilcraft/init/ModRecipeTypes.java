@@ -11,6 +11,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.CookingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCompressRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCrushRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
+import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.MeshRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SqueezingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.StampingRecipe;
@@ -71,6 +72,11 @@ public class ModRecipeTypes {
             registerType("item_inject");
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ItemInjectRecipe>> ITEM_INJECT_SERIALIZER =
             RECIPE_SERIALIZERS.register("item_inject", ItemInjectRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<MassInjectRecipe>> MASS_INJECT_TYPE =
+        registerType("mass_inject");
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MassInjectRecipe>> MASS_INJECT_SERIALIZER =
+        RECIPE_SERIALIZERS.register("mass_inject", MassInjectRecipe.Serializer::new);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<SqueezingRecipe>> SQUEEZING_TYPE =
             registerType("squeezing");

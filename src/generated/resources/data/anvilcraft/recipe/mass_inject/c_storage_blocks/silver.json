@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:storage_blocks/silver"
+      }
+    }
+  ],
+  "type": "anvilcraft:mass_inject",
+  "ingredient": {
+    "tag": "c:storage_blocks/silver"
+  },
+  "mass": 1000
+}
