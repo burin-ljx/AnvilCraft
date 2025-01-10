@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.integration.jade;
 import dev.dubhe.anvilcraft.integration.jade.provider.ItemDetectorProvider;
 import dev.dubhe.anvilcraft.integration.jade.provider.PowerBlockProvider;
 import dev.dubhe.anvilcraft.integration.jade.provider.RubyPrismProvider;
-
+import dev.dubhe.anvilcraft.integration.jade.provider.SpaceOvercompressorProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -19,6 +19,7 @@ public class AnvilCraftJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(PowerBlockProvider.INSTANCE, BlockEntity.class);
         registration.registerBlockDataProvider(RubyPrismProvider.INSTANCE, BlockEntity.class);
         registration.registerBlockDataProvider(ItemDetectorProvider.INSTANCE, BlockEntity.class);
+        registration.registerBlockDataProvider(SpaceOvercompressorProvider.INSTANCE, BlockEntity.class);
     }
 
     @Override
@@ -26,5 +27,6 @@ public class AnvilCraftJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PowerBlockProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(RubyPrismProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(ItemDetectorProvider.INSTANCE, Block.class);
+        registration.registerBlockComponent(SpaceOvercompressorProvider.INSTANCE, Block.class);
     }
 }

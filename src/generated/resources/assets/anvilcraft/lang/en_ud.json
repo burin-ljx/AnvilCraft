@@ -264,6 +264,7 @@
   "config.jade.plugin_anvilcraft.item_detector": "ɹoʇɔǝʇǝᗡ ɯǝʇI",
   "config.jade.plugin_anvilcraft.power_provider": "ɹǝʍoԀ ʇɟɐɹƆ ןıʌuⱯ",
   "config.jade.plugin_anvilcraft.ruby_prism": "ɯsıɹԀ ʎqnᴚ",
+  "config.jade.plugin_anvilcraft.space_overcompressor": "ɹossǝɹdɯoɔɹǝʌO ǝɔɐdS",
   "config.waila.plugin_anvilcraft": "ʇɟɐɹƆ ןıʌuⱯ",
   "config.waila.plugin_anvilcraft.power_provider": "ɹǝʍoԀ ʇɟɐɹƆ ןıʌuⱯ",
   "config.waila.plugin_anvilcraft.warning_percent": "pןoɥsǝɹɥ⟘ buıuɹɐM",
@@ -683,5 +684,6 @@
   "tooltip.anvilcraft.item.transmission_pole": "8 ɟo ɥʇbuǝן uoıssıɯsuɐɹʇ ɐ ɥʇıʍ pıɹb ɹǝʍod ɐ pןınᗺ",
   "tooltip.anvilcraft.jade.item_detector": "%d :ǝbuɐᴚ uoıʇɔǝʇǝᗡ",
   "tooltip.anvilcraft.jade.power_information": "Mʞ %d/%d :pıɹ⅁ ɹǝʍoԀ",
-  "tooltip.anvilcraft.jade.ruby_prism.power": "%d :ןǝʌǝן ɹǝsɐꞀ"
+  "tooltip.anvilcraft.jade.ruby_prism.power": "%d :ןǝʌǝן ɹǝsɐꞀ",
+  "tooltip.anvilcraft.space_overcompressor.stored_mass": "%s :ssɐW pǝɹoʇS"
 }
