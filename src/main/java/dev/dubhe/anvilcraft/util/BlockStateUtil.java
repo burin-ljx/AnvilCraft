@@ -19,8 +19,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CandleCakeBlock;
@@ -35,7 +37,9 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.neoforged.neoforge.fluids.CauldronFluidContent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -123,8 +127,41 @@ public class BlockStateUtil {
         BlockStateProperties.FLOWER_AMOUNT
     );
 
+    /**
+     * 判定一个方块是否像苔藓、发光地衣、幽匿脉络一样，可以在一个方块内放置多个面，
+     * 每个面消耗一个物品。
+     *
+     * @apiNote 注：通过这个方法判定的方块不一定每个面都能放，
+     * 本方法只表明放置该方块所需的物品数量是否与 {@link PipeBlock#PROPERTY_BY_DIRECTION}
+     * 中的方块状态有关。
+     * @param block 需要判定的方块
+     * @return 该方块是否是“多面类”方块
+     */
     public static boolean isMultifaceLike(Block block) {
         return block instanceof MultifaceBlock || block instanceof VineBlock;
+    }
+
+    /**
+     * 对一个炼药锅方块，尝试获取其对应的流体桶。
+     * @apiNote 暂时只判定满的炼药锅，因为不满的炼药锅不一定有对应物品。<br/>
+     * 由于目前的 {@link BlockStateUtil#ingredientsForPlacement(BlockState)} 只打算返回物品列表
+     * （同时返回物品列表和流体列表还是太麻烦了，以后再想办法吧）
+     *
+     * @param cauldron 被判定的炼药锅方块
+     * @param state 被判定的方块状态
+     * @return 炼药锅方块对应的流体桶
+     */
+    private static ItemStack checkCauldron(AbstractCauldronBlock cauldron, BlockState state) {
+        if (cauldron == Blocks.POWDER_SNOW_CAULDRON) {
+            return cauldron.isFull(state) ? Items.POWDER_SNOW_BUCKET.getDefaultInstance() : ItemStack.EMPTY;
+        }
+        return Optional.of(cauldron)
+            .filter(c -> c.isFull(state))
+            .map(CauldronFluidContent::getForBlock)
+            .map(c -> c.fluid)
+            .map(Fluid::getBucket)
+            .map(Item::getDefaultInstance)
+            .orElse(ItemStack.EMPTY);
     }
 
     /**
@@ -147,16 +184,13 @@ public class BlockStateUtil {
         };
         if (state.hasProperty(DOUBLE_BLOCK_HALF) && state.getValue(DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             baseItem = ItemStack.EMPTY;
-        }
-        if (state.hasProperty(BED_PART) && state.getValue(BED_PART) != BedPart.HEAD) {
+        } else if (state.hasProperty(BED_PART) && state.getValue(BED_PART) != BedPart.HEAD) {
             baseItem = ItemStack.EMPTY;
-        }
-        if (block instanceof AbstractMultiplePartBlock<?> multiplePartBlock &&
+        } else if (block instanceof AbstractMultiplePartBlock<?> multiplePartBlock &&
             !state.getValue(multiplePartBlock.getPart()).getOffset()
                 .equals(multiplePartBlock.getMainPartOffset())) {
             baseItem = ItemStack.EMPTY;
-        }
-        if (!baseItem.isEmpty()) {
+        } else {
             ItemStack baseItemRef = baseItem;
             state.getProperties().stream()
                 .filter(p -> p instanceof IntegerProperty)
@@ -176,6 +210,7 @@ public class BlockStateUtil {
         ItemStack additionalItem = switch (block) {
             case CandleCakeBlock cake -> cake.candleBlock.asItem().getDefaultInstance();
             case FlowerPotBlock pot -> pot.getPotted().asItem().getDefaultInstance();
+            case AbstractCauldronBlock cauldron -> checkCauldron(cauldron, state);
             default -> {
                 FluidState fluidState = state.getFluidState();
                 if (fluidState.isSource()) {

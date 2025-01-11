@@ -3018,6 +3018,7 @@ public class ModBlocks {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
     public static final BlockEntry<MeltGemCauldron> MELT_GEM_CAULDRON = REGISTRATE
@@ -3028,6 +3029,7 @@ public class ModBlocks {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
     public static final BlockEntry<HoneyCauldronBlock> HONEY_CAULDRON = REGISTRATE
@@ -3037,6 +3039,7 @@ public class ModBlocks {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
     public static final BlockEntry<ObsidianCauldron> OBSIDIDAN_CAULDRON = REGISTRATE
@@ -3047,6 +3050,7 @@ public class ModBlocks {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
     public static final BlockEntry<OilCauldronBlock> OIL_CAULDRON = REGISTRATE
@@ -3056,6 +3060,7 @@ public class ModBlocks {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
     public static final BlockEntry<FireCauldronBlock> FIRE_CAULDRON = REGISTRATE
@@ -3066,6 +3071,7 @@ public class ModBlocks {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
 
@@ -3271,6 +3277,7 @@ public class ModBlocks {
             })
             .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
             .register();
     }
 
