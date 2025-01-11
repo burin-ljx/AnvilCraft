@@ -432,8 +432,11 @@ public class GiantAnvilLandingEventListener {
                     (direction, x, y, z) -> {
                         BlockPos innerPos = mpos.setWithOffset(inputCorner, x, y, z);
                         BlockPos outerPos = mpos2.setWithOffset(innerPos, direction);
-                        level.neighborShapeChanged(direction.getOpposite(), level.getBlockState(innerPos),
-                            outerPos, innerPos, 3, 512);
+                        BlockState innerState = level.getBlockState(innerPos);
+                        if (innerState != input.getBlockState(x, y, z)) {
+                            level.neighborShapeChanged(direction.getOpposite(), level.getBlockState(innerPos),
+                                outerPos, innerPos, 3, 512);
+                        }
                         level.neighborShapeChanged(direction, level.getBlockState(outerPos),
                             innerPos, outerPos, 3, 512);
                     }
