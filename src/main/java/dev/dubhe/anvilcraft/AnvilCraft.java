@@ -65,9 +65,6 @@ public class AnvilCraft {
     public static final Registrate REGISTRATE = Registrate.create(MOD_ID);
 
     public AnvilCraft(IEventBus modEventBus) {
-//        List<?> list = List.of(1, 2, 3);
-//        ((List<Object>) list).add(4);
-//        LOGGER.debug("list after add: {}", list);
         ModItemGroups.register(modEventBus);
         ModBlocks.register();
         ModFluids.register(modEventBus);
