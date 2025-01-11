@@ -2099,7 +2099,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_ZINC)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_ZINC)
+        .tag(ModItemTags.STORAGE_BLOCKS_ZINC,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2120,7 +2121,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_TIN)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_TIN)
+        .tag(ModItemTags.STORAGE_BLOCKS_TIN,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2141,7 +2143,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_TITANIUM)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_TITANIUM)
+        .tag(ModItemTags.STORAGE_BLOCKS_TITANIUM,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2160,7 +2163,8 @@ public class ModBlocks {
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.STORAGE_BLOCKS_TUNGSTEN)
+        .tag(ModItemTags.STORAGE_BLOCKS_TUNGSTEN,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.BEACON_BASE_BLOCKS,
@@ -2184,7 +2188,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_LEAD)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_LEAD)
+        .tag(ModItemTags.STORAGE_BLOCKS_LEAD,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2205,7 +2210,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_SILVER)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_SILVER)
+        .tag(ModItemTags.STORAGE_BLOCKS_SILVER,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2226,7 +2232,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_URANIUM)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_URANIUM)
+        .tag(ModItemTags.STORAGE_BLOCKS_URANIUM,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2247,7 +2254,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_BRONZE)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_BRONZE)
+        .tag(ModItemTags.STORAGE_BLOCKS_BRONZE,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2268,7 +2276,8 @@ public class ModBlocks {
             BlockTags.BEACON_BASE_BLOCKS,
             ModBlockTags.STORAGE_BLOCKS_BRASS)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_BRASS)
+        .tag(ModItemTags.STORAGE_BLOCKS_BRASS,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
@@ -2675,7 +2684,8 @@ public class ModBlocks {
         )
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_ZINC)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_ZINC)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_ZINC,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
     public static final BlockEntry<Block> RAW_TIN = REGISTRATE
@@ -2691,7 +2701,8 @@ public class ModBlocks {
             .save(provider))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_TIN)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_TIN)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_TIN,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
     public static final BlockEntry<Block> RAW_TITANIUM = REGISTRATE
@@ -2709,7 +2720,8 @@ public class ModBlocks {
             .save(provider))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_TITANIUM)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_TITANIUM)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_TITANIUM,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
     public static final BlockEntry<Block> RAW_TUNGSTEN = REGISTRATE
@@ -2727,7 +2739,8 @@ public class ModBlocks {
             .save(provider))
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_TUNGSTEN)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_TUNGSTEN,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_TUNGSTEN)
         .register();
@@ -2744,7 +2757,8 @@ public class ModBlocks {
             .save(provider))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_LEAD)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_LEAD)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_LEAD,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
     public static final BlockEntry<Block> RAW_SILVER = REGISTRATE
@@ -2761,7 +2775,8 @@ public class ModBlocks {
             .save(provider))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_SILVER)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_SILVER)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_SILVER,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
     public static final BlockEntry<Block> RAW_URANIUM = REGISTRATE
@@ -2779,7 +2794,8 @@ public class ModBlocks {
             .save(provider))
         .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.STORAGE_BLOCKS_RAW_URANIUM)
         .item()
-        .tag(ModItemTags.STORAGE_BLOCKS_RAW_URANIUM)
+        .tag(ModItemTags.STORAGE_BLOCKS_RAW_URANIUM,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
     // ores
@@ -2934,7 +2950,8 @@ public class ModBlocks {
             .save(provider))
         .item()
         .tag(ModItemTags.VOID_RESISTANT,
-            ModItemTags.STORAGE_BLOCKS_VOID_MATTER)
+            ModItemTags.STORAGE_BLOCKS_VOID_MATTER,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_DIAMOND_TOOL,
@@ -2957,7 +2974,8 @@ public class ModBlocks {
             .save(provider))
         .item()
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.STORAGE_BLOCKS_EARTH_CORE_SHARD)
+        .tag(ModItemTags.STORAGE_BLOCKS_EARTH_CORE_SHARD,
+            Tags.Items.STORAGE_BLOCKS)
         .build()
         .tag(
             BlockTags.MINEABLE_WITH_PICKAXE,

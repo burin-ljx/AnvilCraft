@@ -136,10 +136,10 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
         pose.scale(0.8f, 0.8f, 1.0f);
         guiGraphics.drawString(Minecraft.getInstance().font,
             Component.translatable(KEY_MASS_VALUE, recipe.displayMassValue()),
-            0, 56, 0xFF000000, false);
+            0, 10, 0xFF000000, false);
         guiGraphics.drawString(Minecraft.getInstance().font,
             Component.translatable(KEY_ITEMS_NEEDED, Math.ceilDiv(NEUTRONIUM_INGOT_MASS, recipe.getMass())),
-            0, 69, 0xFF000000, false);
+            0, 70, 0xFF000000, false);
         pose.popPose();
     }
 

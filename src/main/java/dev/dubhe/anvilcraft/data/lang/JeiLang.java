@@ -32,7 +32,7 @@ public class JeiLang {
         provider.add("gui.anvilcraft.category.mass_inject", "Mass Inject");
         provider.add("gui.anvilcraft.category.mass_inject.mass_value", "Mass Value: %s");
         provider.add("gui.anvilcraft.category.mass_inject.mass_needed",
-            "This item will be produced after total mass value injected reached %s");
+            "This item will be produced after total mass value injected reaches %s");
         provider.add("gui.anvilcraft.category.mass_inject.items_needed", "Items Needed: %s");
 
         provider.add("gui.anvilcraft.category.cement_staining", "Cement Staining");

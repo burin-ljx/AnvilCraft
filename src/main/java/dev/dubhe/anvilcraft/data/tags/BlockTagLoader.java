@@ -122,7 +122,7 @@ public class BlockTagLoader {
             .addTag(Tags.Blocks.GLASS_PANES)
             .addTag(BlockTags.REPLACEABLE);
 
-        provider.addTag(ModBlockTags.INCORRECT_FOR_AMYTHEST_TOOL)
+        provider.addTag(ModBlockTags.INCORRECT_FOR_AMETHYST_TOOL)
             .addTag(BlockTags.INCORRECT_FOR_STONE_TOOL);
 
         provider.addTag(ModBlockTags.INCORRECT_FOR_EMBER_TOOL);

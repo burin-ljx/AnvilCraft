@@ -303,7 +303,7 @@
   "gui.anvilcraft.category.jewel_crafting": "Jewel Crafting",
   "gui.anvilcraft.category.mass_inject": "Mass Inject",
   "gui.anvilcraft.category.mass_inject.items_needed": "Items Needed: %s",
-  "gui.anvilcraft.category.mass_inject.mass_needed": "This item will be produced after total mass value injected reached %s",
+  "gui.anvilcraft.category.mass_inject.mass_needed": "This item will be produced after total mass value injected reaches %s",
   "gui.anvilcraft.category.mass_inject.mass_value": "Mass Value: %s",
   "gui.anvilcraft.category.max_output": "Max: %s",
   "gui.anvilcraft.category.mesh": "Mesh",
