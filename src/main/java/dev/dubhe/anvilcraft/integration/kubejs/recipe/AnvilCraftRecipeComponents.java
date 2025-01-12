@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.integration.kubejs.recipe;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
@@ -15,7 +16,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public class AnvilCraftRecipeComponents {
-    public static final RecipeComponent<Either<TagKey<Block>, Block>> EITHER_BLOCK = new RecipeComponent<Either<TagKey<Block>, Block>>() {
+    public static final RecipeComponent<Either<TagKey<Block>, Block>> EITHER_BLOCK = new RecipeComponent<>() {
         @Override
         public Codec<Either<TagKey<Block>, Block>> codec() {
             return Codec.xor(TagKey.hashedCodec(Registries.BLOCK), CodecUtil.BLOCK_CODEC);
@@ -43,6 +44,19 @@ public class AnvilCraftRecipeComponents {
             }
 
             return Either.right(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(s)));
+        }
+    };
+
+    public static final RecipeComponent<ChanceItemStack> CHANCE_ITEM_STACK = new RecipeComponent<>() {
+
+        @Override
+        public Codec<ChanceItemStack> codec() {
+            return ChanceItemStack.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(ChanceItemStack.class);
         }
     };
 }
