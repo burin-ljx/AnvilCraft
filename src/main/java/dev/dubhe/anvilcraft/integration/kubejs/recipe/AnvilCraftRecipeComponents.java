@@ -45,6 +45,11 @@ public class AnvilCraftRecipeComponents {
 
             return Either.right(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(s)));
         }
+
+        @Override
+        public String toString() {
+            return "either_block";
+        }
     };
 
     public static final RecipeComponent<ChanceItemStack> CHANCE_ITEM_STACK = new RecipeComponent<>() {
@@ -57,6 +62,29 @@ public class AnvilCraftRecipeComponents {
         @Override
         public TypeInfo typeInfo() {
             return TypeInfo.of(ChanceItemStack.class);
+        }
+
+        @Override
+        public String toString() {
+            return "chance_item_stack";
+        }
+    };
+
+    public static final RecipeComponent<ResourceLocation> RESOURCE_LOCATION = new RecipeComponent<>() {
+
+        @Override
+        public Codec<ResourceLocation> codec() {
+            return ResourceLocation.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(ResourceLocation.class);
+        }
+
+        @Override
+        public String toString() {
+            return "resource_location";
         }
     };
 }

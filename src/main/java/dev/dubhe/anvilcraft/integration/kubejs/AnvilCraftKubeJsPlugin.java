@@ -27,6 +27,8 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
     @Override
     public void registerRecipeComponents(RecipeComponentFactoryRegistry registry) {
         registry.register(AnvilCraftRecipeComponents.EITHER_BLOCK);
+        registry.register(AnvilCraftRecipeComponents.CHANCE_ITEM_STACK);
+        registry.register(AnvilCraftRecipeComponents.RESOURCE_LOCATION);
     }
 
     @Override
