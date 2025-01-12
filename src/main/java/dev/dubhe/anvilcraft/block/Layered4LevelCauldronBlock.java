@@ -23,6 +23,7 @@ public class Layered4LevelCauldronBlock extends AbstractCauldronBlock {
     );
 
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 1, 4);
+    public static final int MAX_FILL_LEVEL = 4;
 
     public Layered4LevelCauldronBlock(Properties properties, CauldronInteraction.InteractionMap interactions) {
         super(properties, interactions);
