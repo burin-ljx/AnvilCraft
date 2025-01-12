@@ -30,15 +30,15 @@ public interface ItemProcessRecipeSchema {
             return requires(ingredient, 1);
         }
 
-        public ItemProcessKubeRecipe result(ChanceItemStack stack) {
+        public ItemProcessKubeRecipe result(ItemStack stack, float chance) {
             if (getValue(RESULTS) == null) setValue(RESULTS, new ArrayList<>());
-            getValue(RESULTS).add(stack);
+            getValue(RESULTS).add(ChanceItemStack.of(stack).withChance(chance));
             save();
             return this;
         }
 
         public ItemProcessKubeRecipe result(ItemStack stack) {
-            return result(ChanceItemStack.of(stack));
+            return result(stack, 1.0f);
         }
     }
     
