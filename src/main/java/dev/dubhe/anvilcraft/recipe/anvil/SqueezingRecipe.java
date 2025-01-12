@@ -87,7 +87,7 @@ public class SqueezingRecipe implements Recipe<SqueezingRecipe.Input> {
                 return false;
             }
         }
-        return input.inputBlock == inputBlock;
+        return input.inputBlock == inputBlock && (input.cauldronState.is(cauldron) || input.cauldronState.is(Blocks.CAULDRON));
     }
 
     @Override
