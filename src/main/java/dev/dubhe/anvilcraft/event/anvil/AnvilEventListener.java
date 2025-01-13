@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilHurtEntityEvent;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
+import dev.dubhe.anvilcraft.block.Layered4LevelCauldronBlock;
 import dev.dubhe.anvilcraft.block.RoyalAnvilBlock;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
@@ -159,6 +160,12 @@ public class AnvilEventListener {
                             BlockState newState = belowState.setValue(
                                 LayeredCauldronBlock.LEVEL,
                                 belowState.getValue(LayeredCauldronBlock.LEVEL) + 1);
+                            level.setBlockAndUpdate(belowPos, newState);
+                        }
+                        if (belowState.getBlock() instanceof Layered4LevelCauldronBlock) {
+                            BlockState newState = belowState.setValue(
+                                Layered4LevelCauldronBlock.LEVEL,
+                                belowState.getValue(Layered4LevelCauldronBlock.LEVEL) + 1);
                             level.setBlockAndUpdate(belowPos, newState);
                         }
                     }
