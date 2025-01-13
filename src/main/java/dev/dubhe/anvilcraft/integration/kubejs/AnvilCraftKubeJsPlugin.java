@@ -4,7 +4,11 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.BlockCompressRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.BlockCrushRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.BulgingRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.ItemInjectRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.ItemProcessRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.MeshRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.SqueezingRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.SuperHeatingRecipeSchema;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
@@ -29,6 +33,7 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
         registry.register(AnvilCraftRecipeComponents.EITHER_BLOCK);
         registry.register(AnvilCraftRecipeComponents.CHANCE_ITEM_STACK);
         registry.register(AnvilCraftRecipeComponents.RESOURCE_LOCATION);
+        registry.register(AnvilCraftRecipeComponents.NUMBER_PROVIDER);
     }
 
     @Override
@@ -41,6 +46,10 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
         registry.register(AnvilCraft.of("item_crush"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("stamping"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("super_heating"), SuperHeatingRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("item_inject"), ItemInjectRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("mesh"), MeshRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("squeezing"), SqueezingRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("bulging"), BulgingRecipeSchema.SCHEMA);
     }
 
 }

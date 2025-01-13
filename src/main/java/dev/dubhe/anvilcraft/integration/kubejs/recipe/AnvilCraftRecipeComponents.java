@@ -14,6 +14,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 
 public class AnvilCraftRecipeComponents {
     public static final RecipeComponent<Either<TagKey<Block>, Block>> EITHER_BLOCK = new RecipeComponent<>() {
@@ -85,6 +87,24 @@ public class AnvilCraftRecipeComponents {
         @Override
         public String toString() {
             return "resource_location";
+        }
+    };
+
+    public static final RecipeComponent<NumberProvider> NUMBER_PROVIDER = new RecipeComponent<>() {
+
+        @Override
+        public Codec<NumberProvider> codec() {
+            return NumberProviders.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(NumberProvider.class);
+        }
+
+        @Override
+        public String toString() {
+            return "number_provider";
         }
     };
 }
