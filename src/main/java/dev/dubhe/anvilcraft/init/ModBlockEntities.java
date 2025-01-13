@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.block.entity.ChuteBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.CorruptedBeaconBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.CrabTrapBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.CreativeGeneratorBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.FireCauldronBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeaterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeliostatsBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.InductionLightBlockEntity;
@@ -40,6 +41,11 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 
 public class ModBlockEntities {
+    public static final BlockEntityEntry<FireCauldronBlockEntity> FIRE_CAULDRON = REGISTRATE
+            .blockEntity("fire_cauldron", FireCauldronBlockEntity::new)
+            .validBlock(ModBlocks.FIRE_CAULDRON)
+            .register();
+
     public static final BlockEntityEntry<BatchCrafterBlockEntity> BATCH_CRAFTER = REGISTRATE
         .blockEntity("batch_crafter", BatchCrafterBlockEntity::new)
         .renderer(() -> BatchCrafterRenderer::new)

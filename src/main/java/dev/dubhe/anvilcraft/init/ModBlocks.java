@@ -29,6 +29,7 @@ import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
 import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
 import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
 import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
+import dev.dubhe.anvilcraft.block.PlasmaJetsBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailBlock;
 import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
 import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
@@ -169,6 +170,12 @@ import static dev.dubhe.anvilcraft.api.power.IPowerComponent.SWITCH;
 
 @SuppressWarnings({"unused", "CodeBlock2Expr"})
 public class ModBlocks {
+    public static final BlockEntry<PlasmaJetsBlock> PLASMA_JETS_BLOCK = REGISTRATE
+            .block("plasma_jets", PlasmaJetsBlock::new)
+            .properties((properties) -> properties.lightLevel((blockState) -> 16).noLootTable().noCollission().strength(-1.0f).replaceable())
+            .blockstate((ctx, provider) -> {})
+            .lang((ctx) -> "block.anvilcraft.plasma_jets", "Plasma Jets")
+            .register();
 
     static {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_FUNCTION_BLOCK.getKey());
