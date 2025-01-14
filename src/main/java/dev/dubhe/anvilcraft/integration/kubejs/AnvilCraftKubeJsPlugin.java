@@ -11,8 +11,12 @@ import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.MeshRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.SqueezingRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.SuperHeatingRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.multiblock.MultiblockRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.transform.MobTransformRecipeSchema;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPredicateWithState;
+import dev.dubhe.anvilcraft.recipe.transform.NumericTagValuePredicate;
+import dev.dubhe.anvilcraft.recipe.transform.TagModification;
+import dev.dubhe.anvilcraft.recipe.transform.TransformOptions;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
@@ -29,6 +33,10 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
     public void registerBindings(BindingRegistry bindings) {
         bindings.add("ChanceItemStack", ChanceItemStack.class);
         bindings.add("BlockPredicateWithState", BlockPredicateWithState.class);
+
+        bindings.add("ValueFunction", NumericTagValuePredicate.ValueFunction.class);
+        bindings.add("ModifyOperation", TagModification.ModifyOperation.class);
+        bindings.add("TransformOptions", TransformOptions.class);
     }
 
     @Override
@@ -38,6 +46,11 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
         registry.register(AnvilCraftRecipeComponents.RESOURCE_LOCATION);
         registry.register(AnvilCraftRecipeComponents.NUMBER_PROVIDER);
         registry.register(AnvilCraftRecipeComponents.BLOCK_PATTERN);
+        registry.register(AnvilCraftRecipeComponents.ENTITY_TYPE);
+        registry.register(AnvilCraftRecipeComponents.TRANSFORM_RESULT);
+        registry.register(AnvilCraftRecipeComponents.NUMERIC_TAG_VALUE_PREDICATE);
+        registry.register(AnvilCraftRecipeComponents.TAG_MODIFICATION);
+        registry.register(AnvilCraftRecipeComponents.TRANSFORM_OPTIONS);
     }
 
     @Override
@@ -56,6 +69,8 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
         registry.register(AnvilCraft.of("bulging"), BulgingRecipeSchema.SCHEMA);
 
         registry.register(AnvilCraft.of("multiblock"), MultiblockRecipeSchema.SCHEMA);
+
+        registry.register(AnvilCraft.of("mob_transform"), MobTransformRecipeSchema.SCHEMA);
     }
 
 }

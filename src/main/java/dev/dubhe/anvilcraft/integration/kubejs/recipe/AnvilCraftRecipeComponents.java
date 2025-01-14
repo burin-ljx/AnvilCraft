@@ -5,6 +5,10 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.multiblock.BlockPattern;
+import dev.dubhe.anvilcraft.recipe.transform.NumericTagValuePredicate;
+import dev.dubhe.anvilcraft.recipe.transform.TagModification;
+import dev.dubhe.anvilcraft.recipe.transform.TransformOptions;
+import dev.dubhe.anvilcraft.recipe.transform.TransformResult;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
@@ -14,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
@@ -124,6 +129,95 @@ public class AnvilCraftRecipeComponents {
         @Override
         public String toString() {
             return "block_pattern";
+        }
+    };
+
+    public static final RecipeComponent<EntityType<?>> ENTITY_TYPE = new RecipeComponent<>() {
+
+        @Override
+        public Codec<EntityType<?>> codec() {
+            return CodecUtil.ENTITY_CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(EntityType.class);
+        }
+
+        @Override
+        public String toString() {
+            return "entity_type";
+        }
+    };
+
+    public static final RecipeComponent<TransformResult> TRANSFORM_RESULT = new RecipeComponent<>() {
+
+        @Override
+        public Codec<TransformResult> codec() {
+            return TransformResult.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(TransformResult.class);
+        }
+
+        @Override
+        public String toString() {
+            return "transform_result";
+        }
+    };
+
+    public static final RecipeComponent<NumericTagValuePredicate> NUMERIC_TAG_VALUE_PREDICATE = new RecipeComponent<>() {
+
+        @Override
+        public Codec<NumericTagValuePredicate> codec() {
+            return NumericTagValuePredicate.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(NumericTagValuePredicate.class);
+        }
+
+        @Override
+        public String toString() {
+            return "numeric_tag_value_predicate";
+        }
+    };
+
+    public static final RecipeComponent<TagModification> TAG_MODIFICATION = new RecipeComponent<>() {
+
+        @Override
+        public Codec<TagModification> codec() {
+            return TagModification.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(TagModification.class);
+        }
+
+        @Override
+        public String toString() {
+            return "tag_modification";
+        }
+    };
+
+    public static final RecipeComponent<TransformOptions> TRANSFORM_OPTIONS = new RecipeComponent<>() {
+        @Override
+        public Codec<TransformOptions> codec() {
+            return TransformOptions.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(TransformOptions.class);
+        }
+
+        @Override
+        public String toString() {
+            return "transform_options";
         }
     };
 }
