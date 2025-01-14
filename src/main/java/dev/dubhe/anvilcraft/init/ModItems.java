@@ -521,16 +521,9 @@ public class ModItems {
         .item("tin_can", Item::new)
         .register();
     public static final ItemEntry<CannedFoodItem> CANNED_FOOD = REGISTRATE
-        .item("canned_food", CannedFoodItem::new)
+        .item("canned_food", p -> new CannedFoodItem(p, TIN_CAN))
         .properties(properties -> properties.stacksTo(16))
-        .model((ctx, provider) -> {})
         .tag(Tags.Items.FOODS)
-        .register();
-    public static final ItemEntry<Item> CANNED_FOOD_DUMMY = REGISTRATE
-        .item("canned_food_dummy", Item::new)
-        .properties(properties -> properties.stacksTo(16))
-        .model((ctx, provider) -> {})
-        .removeTab(ModItemGroups.ANVILCRAFT_TOOL.getKey())
         .register();
 
     public static final ItemEntry<SeedsPackItem> SEEDS_PACK =
