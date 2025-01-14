@@ -288,6 +288,7 @@ public class ModBlocks {
         })
         .simpleItem()
         .tag(BlockTags.ANVIL,
+            ModBlockTags.NON_MAGNETIC,
             ModBlockTags.CANT_BROKEN_ANVIL,
             BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
@@ -1111,7 +1112,7 @@ public class ModBlocks {
     public static final BlockEntry<BlockComparatorBlock> BLOCK_COMPARATOR = REGISTRATE
         .block("block_comparator", BlockComparatorBlock::new)
         .initialProperties(() -> Blocks.OBSERVER)
-        .properties(p -> p.noOcclusion())
+        .properties(BlockBehaviour.Properties::noOcclusion)
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
@@ -1132,7 +1133,7 @@ public class ModBlocks {
     public static final BlockEntry<ItemDetectorBlock> ITEM_DETECTOR = REGISTRATE
         .block("item_detector", ItemDetectorBlock::new)
         .initialProperties(() -> Blocks.DAYLIGHT_DETECTOR)
-        .properties(p -> p.noOcclusion())
+        .properties(BlockBehaviour.Properties::noOcclusion)
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get())
@@ -1343,7 +1344,7 @@ public class ModBlocks {
     public static final BlockEntry<MineralFountainBlock> MINERAL_FOUNTAIN = REGISTRATE
         .block("mineral_fountain", MineralFountainBlock::new)
         .initialProperties(() -> Blocks.REINFORCED_DEEPSLATE)
-        .properties(properties -> properties.noLootTable())
+        .properties(BlockBehaviour.Properties::noLootTable)
         .simpleItem()
         .blockstate((context, provider) -> provider.simpleBlock(
             context.get(),

@@ -48,7 +48,6 @@ abstract class AnvilBlockMixin extends FallingBlock {
     }
 
     @Override
-    
     public void neighborChanged(
             @NotNull BlockState state,
             @NotNull Level level,

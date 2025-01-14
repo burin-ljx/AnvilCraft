@@ -163,10 +163,17 @@ public class BlockTagLoader {
 
         //mekanism integration
         provider.addTag(ModBlockTags.MEKANISM_CARDBOARD_BOX_BLACKLIST)
-            .add(ModBlocks.GIANT_ANVIL.getKey())
-            .add(ModBlocks.TRANSMISSION_POLE.getKey())
-            .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
-            .add(ModBlocks.TESLA_TOWER.getKey())
-            .add(ModBlocks.OVERSEER_BLOCK.getKey());
+                .add(ModBlocks.GIANT_ANVIL.getKey())
+                .add(ModBlocks.TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.TESLA_TOWER.getKey())
+                .add(ModBlocks.OVERSEER_BLOCK.getKey());
+
+        provider.addTag(ModBlockTags.MEKANISM_CARDBOARD_BOX_BLACKLIST)
+                .add(ModBlocks.GIANT_ANVIL.getKey())
+                .add(ModBlocks.TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.TESLA_TOWER.getKey())
+                .add(ModBlocks.OVERSEER_BLOCK.getKey());
     }
 }
