@@ -18,8 +18,8 @@ public interface ItemInjectRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class ItemInjectKubeRecipe extends KubeRecipe {
         public ItemInjectKubeRecipe requires(Ingredient ingredient, int count) {
+            if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
-                if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
                 getValue(INGREDIENTS).add(ingredient);
             }
             save();

@@ -17,8 +17,8 @@ public interface JewelCraftingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class JewelCraftingKubeRecipe extends KubeRecipe {
         public JewelCraftingKubeRecipe requires(Ingredient ingredient, int count) {
+            if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
-                if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
                 getValue(INGREDIENTS).add(ingredient);
             }
             save();

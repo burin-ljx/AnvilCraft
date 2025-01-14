@@ -22,8 +22,8 @@ public interface SuperHeatingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class SuperHeatingKubeRecipe extends KubeRecipe {
         public SuperHeatingKubeRecipe requires(Ingredient ingredient, int count) {
+            if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
-                if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
                 getValue(INGREDIENTS).add(ingredient);
             }
             save();
