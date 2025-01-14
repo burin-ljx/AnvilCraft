@@ -28,26 +28,26 @@ public class CanningFoodRecipe extends CustomRecipe {
 
     public boolean isValidFood(ItemStack foodStack) {
         if (foodStack.is(ModItems.CANNED_FOOD)) return false;
-        return Optional.ofNullable(foodStack.get(DataComponents.FOOD))
+        return Optional.ofNullable(foodStack.getFoodProperties(null))
             .filter(f -> f.nutrition() > 0f)
             .isPresent();
     }
 
     public boolean matches(CraftingInput input, Level level) {
         if (input.ingredientCount() != 2) return false;
-        int canIndex = IntStream.range(0, input.ingredientCount())
+        int canIndex = IntStream.range(0, input.size())
             .filter(i -> input.getItem(i).is(ModItems.TIN_CAN))
             .findFirst().orElse(-1);
         if (canIndex == -1) return false;
-        int foodIndex = IntStream.range(0, input.ingredientCount())
+        int foodIndex = IntStream.range(0, input.size())
             .filter(i -> this.isValidFood(input.getItem(i)))
             .findFirst().orElse(canIndex);
         return foodIndex != canIndex;
     }
 
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack foodStack = IntStream.range(0, input.ingredientCount())
-            .filter(i -> input.getItem(i).has(DataComponents.FOOD))
+        ItemStack foodStack = IntStream.range(0, input.size())
+            .filter(i -> this.isValidFood(input.getItem(i)))
             .mapToObj(input::getItem)
             .findFirst()
             .orElseThrow();
@@ -57,21 +57,21 @@ public class CanningFoodRecipe extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInput input) {
-        NonNullList<ItemStack> remaingItems = NonNullList.withSize(input.size(), ItemStack.EMPTY);
+        NonNullList<ItemStack> remainingItems = NonNullList.withSize(input.size(), ItemStack.EMPTY);
 
-        for (int i = 0; i < remaingItems.size(); i++) {
+        for (int i = 0; i < remainingItems.size(); i++) {
             ItemStack item = input.getItem(i);
             if (item.hasCraftingRemainingItem()) {
-                remaingItems.set(i, item.getCraftingRemainingItem());
+                remainingItems.set(i, item.getCraftingRemainingItem());
             } else {
                 int finalI = i;
                 Optional.ofNullable(item.get(DataComponents.FOOD))
                     .flatMap(FoodProperties::usingConvertsTo)
-                    .ifPresent(stack -> remaingItems.set(finalI, stack.copy()));
+                    .ifPresent(stack -> remainingItems.set(finalI, stack.copy()));
             }
         }
 
-        return remaingItems;
+        return remainingItems;
     }
 
     /**

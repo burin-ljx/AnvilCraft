@@ -36,7 +36,7 @@ public class CannedFoodItem extends Item implements IExtraItemDisplay {
             canStack.set(DataComponents.RARITY, displayStack.get(DataComponents.RARITY));
         }
         canStack.set(ModComponents.DISPLAY_ITEM, new StoredItem(displayStack));
-        FoodProperties copiedFood = displayStack.get(DataComponents.FOOD);
+        FoodProperties copiedFood = displayStack.getFoodProperties(null);
         if (copiedFood != null) {
             canStack.set(DataComponents.FOOD, new FoodProperties.Builder()
                 .nutrition(copiedFood.nutrition())
