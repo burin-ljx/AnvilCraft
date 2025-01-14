@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.util;
 import dev.dubhe.anvilcraft.block.CementCauldronBlock;
 import dev.dubhe.anvilcraft.block.FireCauldronBlock;
 import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
+import dev.dubhe.anvilcraft.block.Layered4LevelCauldronBlock;
 import dev.dubhe.anvilcraft.block.OilCauldronBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.init.ModBlocks;
@@ -81,7 +82,7 @@ public class ModInteractionMap {
                 interactionHand,
                 itemStack,
                 Items.LAVA_BUCKET.getDefaultInstance(),
-                (state) -> state.getValue(LayeredCauldronBlock.LEVEL) == 4,
+                (state) -> state.getValue(Layered4LevelCauldronBlock.LEVEL) == 4,
                 SoundEvents.BUCKET_FILL
             )
         );

@@ -36,6 +36,8 @@ public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHa
         super(properties, ModInteractionMap.LAYERED_LAVA);
     }
 
+
+
     @Override
     public ItemInteractionResult useItemOn(
             ItemStack stack,
@@ -83,14 +85,14 @@ public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHa
         if (level.isClientSide) {
             return;
         }
-        if (state.getValue(LEVEL) == 3) {
+        if (this.isFull(state)) {
             level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
         }
     }
 
     @Override
     public ItemStack pickupBlock(@Nullable Player player, LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-        if (blockState.getValue(LEVEL) == 3) {
+        if (this.isFull(blockState)) {
             return Items.LAVA_BUCKET.getDefaultInstance();
         }
         return ItemStack.EMPTY;

@@ -1,5 +1,8 @@
 package dev.dubhe.anvilcraft.recipe.anvil;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -7,14 +10,15 @@ import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 import dev.dubhe.anvilcraft.recipe.anvil.input.IItemsInput;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
-
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.codec.StreamDecoder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -30,23 +34,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @MethodsReturnNonnullByDefault
@@ -163,7 +157,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
     public int getMaxCraftTime(Input pInput, List<Ingredient> ingredient) {
         int times = RecipeUtil.getMaxCraftTime(pInput, ingredient);
         if (produceFluid || consumeFluid || fromWater) {
-            times = times >= 1 ? 1 : 0;
+            times = Math.min(times, 1);
         }
         return times;
     }
@@ -175,7 +169,7 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
         }
         int times = RecipeUtil.getMaxCraftTime(pInput, ingredients);
         if (produceFluid || consumeFluid || fromWater) {
-            times = times >= 1 ? 1 : 0;
+            times = Math.min(times, 1);
         }
         cacheInput = pInput;
         cacheMaxCraftTime = times < AnvilCraft.config.anvilEfficiency ? times : AnvilCraft.config.anvilEfficiency;
