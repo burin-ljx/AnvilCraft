@@ -25,7 +25,7 @@ public interface IExtraItemDisplay {
 
     /**
      * 渲染的额外物品相对于<b>左侧</b>的水平偏移量。
-     * 返回0.0相当于对其自齐最左侧，返回1.0相当于对齐自身最右侧。
+     * 返回0相当于对其自齐最左侧，返回16相当于对齐自身最右侧。
      *
      * @param stack 需判断偏移量的物品
      * @return 水平偏移量
@@ -33,8 +33,8 @@ public interface IExtraItemDisplay {
     int xOffset(ItemStack stack);
 
     /**
-     * 渲染的额外物品相对于<b>下侧</b>的垂直偏移量。
-     * 返回0.0相当于对齐自身最下侧，返回1.0相当于对齐自身最上侧。
+     * 渲染的额外物品相对于<b>上侧</b>的垂直偏移量。
+     * 返回0相当于对齐自身最上侧，返回16相当于对齐自身最下侧。
      *
      * @param stack 需判断偏移量的物品
      * @return 垂直偏移量

@@ -33,19 +33,6 @@ public abstract class GuiGraphicsMixin{
         @Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, int x, int y, int seed, int guiOffset
     ) {}
 
-//    @WrapOperation(
-//        method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;" +
-//        "Lnet/minecraft/world/item/ItemStack;IIII)V",
-//        at = @At (
-//            value = "INVOKE",
-//            target = "Lnet/minecraft/client/resources/model/BakedModel;usesBlockLight()Z"
-//        )
-//    )
-//    private boolean makeModelFlat(BakedModel instance, Operation<Boolean> original,
-//        @Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, int x, int y, int seed, int guiOffset){
-//        return original.call(instance) && !(stack.getItem() instanceof IExtraItemDisplay);
-//    }
-
     @Inject(
         method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;" +
             "Lnet/minecraft/world/item/ItemStack;IIII)V",
