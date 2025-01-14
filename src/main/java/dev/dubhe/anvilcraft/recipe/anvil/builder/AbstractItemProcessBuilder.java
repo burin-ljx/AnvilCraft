@@ -68,6 +68,22 @@ public abstract class AbstractItemProcessBuilder<T extends AbstractItemProcessRe
         return this;
     }
 
+    public AbstractItemProcessBuilder<T> result(ItemLike item) {
+        return this.result(item.asItem().getDefaultInstance());
+    }
+
+    public AbstractItemProcessBuilder<T> result(ItemLike item, int count) {
+        ItemStack stack = item.asItem().getDefaultInstance();
+        stack.setCount(count);
+        return this.result(stack);
+    }
+
+    public AbstractItemProcessBuilder<T> result(ItemLike item, int count, float chance) {
+        ItemStack stack = item.asItem().getDefaultInstance();
+        stack.setCount(count);
+        return this.result(ChanceItemStack.of(stack).withChance(chance));
+    }
+
     @Override
     public void validate(ResourceLocation pId) {
         if (ingredients.isEmpty() || ingredients.size() > 9) {

@@ -1,11 +1,11 @@
 package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.api.item.IExtraItemDisplay;
 import dev.dubhe.anvilcraft.item.DiskItem;
 import dev.dubhe.anvilcraft.item.HasMobBlockItem;
 import dev.dubhe.anvilcraft.item.HeliostatsItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
-
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -16,23 +16,28 @@ import java.util.function.Consumer;
 public class ModComponents {
 
     public static final DeferredRegister<DataComponentType<?>> DR =
-            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AnvilCraft.MOD_ID);
+        DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AnvilCraft.MOD_ID);
 
     public static final DataComponentType<DiskItem.DiskData> DISK_DATA =
-            register("disk_data", b -> b.persistent(DiskItem.DiskData.CODEC)
-                    .networkSynchronized(DiskItem.DiskData.STREAM_CODEC));
+        register("disk_data", b -> b.persistent(DiskItem.DiskData.CODEC)
+            .networkSynchronized(DiskItem.DiskData.STREAM_CODEC));
 
     public static final DataComponentType<HasMobBlockItem.SavedEntity> SAVED_ENTITY =
-            register("saved_entity", b -> b.persistent(HasMobBlockItem.SavedEntity.CODEC)
-                    .networkSynchronized(HasMobBlockItem.SavedEntity.STREAM_CODEC));
+        register("saved_entity", b -> b.persistent(HasMobBlockItem.SavedEntity.CODEC)
+            .networkSynchronized(HasMobBlockItem.SavedEntity.STREAM_CODEC));
 
     public static final DataComponentType<HeliostatsItem.HeliostatsData> HELIOSTATS_DATA =
-            register("heliostats_data", b -> b.persistent(HeliostatsItem.HeliostatsData.CODEC)
-                    .networkSynchronized(HeliostatsItem.HeliostatsData.STREAM_CODEC));
+        register("heliostats_data", b -> b.persistent(HeliostatsItem.HeliostatsData.CODEC)
+            .networkSynchronized(HeliostatsItem.HeliostatsData.STREAM_CODEC));
 
     public static final DataComponentType<StructureToolItem.StructureData> STRUCTURE_DATA =
-            register("structure_data", b -> b.persistent(StructureToolItem.StructureData.CODEC)
-                    .networkSynchronized(StructureToolItem.StructureData.STREAM_CODEC));
+        register("structure_data", b -> b.persistent(StructureToolItem.StructureData.CODEC)
+            .networkSynchronized(StructureToolItem.StructureData.STREAM_CODEC));
+
+    public static final DataComponentType<IExtraItemDisplay.StoredItem> DISPLAY_ITEM =
+        register("display_item",
+            b -> b.persistent(IExtraItemDisplay.StoredItem.CODEC)
+            .networkSynchronized(IExtraItemDisplay.StoredItem.STREAM_CODEC));
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();
