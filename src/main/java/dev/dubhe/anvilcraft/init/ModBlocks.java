@@ -287,10 +287,12 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .simpleItem()
-        .tag(BlockTags.ANVIL,
-            ModBlockTags.NON_MAGNETIC,
-            ModBlockTags.CANT_BROKEN_ANVIL,
-            BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(
+                BlockTags.ANVIL,
+                ModBlockTags.NON_MAGNETIC,
+                ModBlockTags.CANT_BROKEN_ANVIL,
+                BlockTags.MINEABLE_WITH_PICKAXE
+        )
         .register();
 
     public static final BlockEntry<? extends Block> ROYAL_ANVIL = REGISTRATE
