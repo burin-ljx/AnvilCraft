@@ -10,6 +10,8 @@ import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.ItemProcessRecipeSch
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.MeshRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.SqueezingRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil.SuperHeatingRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.mineral.MineralFountainChanceRecipeSchema;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.mineral.MineralFountainRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.multiblock.MultiblockRecipeSchema;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.transform.MobTransformRecipeSchema;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -71,6 +73,9 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
         registry.register(AnvilCraft.of("multiblock"), MultiblockRecipeSchema.SCHEMA);
 
         registry.register(AnvilCraft.of("mob_transform"), MobTransformRecipeSchema.SCHEMA);
+
+        registry.register(AnvilCraft.of("mineral_fountain"), MineralFountainRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("mineral_fountain_chance"), MineralFountainChanceRecipeSchema.SCHEMA);
     }
 
 }
