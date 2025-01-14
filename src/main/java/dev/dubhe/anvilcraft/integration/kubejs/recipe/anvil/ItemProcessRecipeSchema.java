@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ItemProcessRecipeSchema {
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"DataFlowIssue", "unused"})
     class ItemProcessKubeRecipe extends KubeRecipe {
         public ItemProcessKubeRecipe requires(Ingredient ingredient, int count) {
             for (int i = 0; i < count; i++) {
@@ -48,6 +48,7 @@ public interface ItemProcessRecipeSchema {
     
     RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, RESULTS)
         .factory(new KubeRecipeFactory(AnvilCraft.of("item_process"), ItemProcessKubeRecipe.class, ItemProcessKubeRecipe::new))
+        .constructor(INGREDIENTS, RESULTS)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

@@ -10,6 +10,7 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import net.minecraft.world.level.block.Block;
 
 public interface SqueezingRecipeSchema {
+    @SuppressWarnings("unused")
     class SqueezingKubeRecipe extends KubeRecipe {
         public SqueezingKubeRecipe inputBlock(Block block) {
             setValue(INPUT_BLOCK, block);
@@ -36,6 +37,7 @@ public interface SqueezingRecipeSchema {
 
     RecipeSchema SCHEMA = new RecipeSchema(INPUT_BLOCK, RESULT_BLOCK, CAULDRON)
         .factory(new KubeRecipeFactory(AnvilCraft.of("squeezing"), SqueezingKubeRecipe.class, SqueezingKubeRecipe::new))
+        .constructor(INPUT_BLOCK, RESULT_BLOCK, CAULDRON)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }
