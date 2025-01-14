@@ -23,23 +23,6 @@ public class CannedFoodItem extends Item implements IExtraItemDisplay {
         this.canItem = canItem;
     }
 
-    //TODO: remove comments
-
-//    @Override
-//    public @NotNull InteractionResultHolder<ItemStack> use(
-//        @NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
-//        ItemStack canItem = player.getItemInHand(usedHand);
-//        if (usedHand != InteractionHand.MAIN_HAND) return InteractionResultHolder.pass(canItem);
-//        if (!level.isClientSide) {
-//            ItemStack offHandItem = player.getItemInHand(InteractionHand.OFF_HAND);
-//            if (!offHandItem.isEmpty()) {
-//                this.setFood(canItem, offHandItem);
-//                player.getInventory().setChanged();
-//            }
-//        }
-//        return InteractionResultHolder.sidedSuccess(canItem, level.isClientSide);
-//    }
-
     @Override
     public ItemStack getDisplayedItem(ItemStack stack) {
         return Optional.ofNullable(stack.get(ModComponents.DISPLAY_ITEM))
@@ -53,7 +36,7 @@ public class CannedFoodItem extends Item implements IExtraItemDisplay {
             canStack.set(DataComponents.RARITY, displayStack.get(DataComponents.RARITY));
         }
         canStack.set(ModComponents.DISPLAY_ITEM, new StoredItem(displayStack));
-        FoodProperties copiedFood = foodStack.get(DataComponents.FOOD);
+        FoodProperties copiedFood = displayStack.get(DataComponents.FOOD);
         if (copiedFood != null) {
             canStack.set(DataComponents.FOOD, new FoodProperties.Builder()
                 .nutrition(copiedFood.nutrition())
