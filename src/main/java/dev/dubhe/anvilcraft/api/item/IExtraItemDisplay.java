@@ -8,8 +8,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * 继承该接口的物品可用于在自身的材质上方，额外渲染另一个物品。<br/>
- * 注意：额外渲染不允许<b>任何</b>嵌套。一层也不行。
+ * 继承该接口的物品可用于在GUI内部，于自身上方额外渲染另一个物品。<br/>
+ * 注意：额外渲染嵌套层数过深时不会继续渲染。
  *
  */
 
