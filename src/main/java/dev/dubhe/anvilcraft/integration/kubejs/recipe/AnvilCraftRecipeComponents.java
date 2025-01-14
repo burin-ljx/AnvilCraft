@@ -4,6 +4,7 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
+import dev.dubhe.anvilcraft.recipe.multiblock.BlockPattern;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
@@ -105,6 +106,24 @@ public class AnvilCraftRecipeComponents {
         @Override
         public String toString() {
             return "number_provider";
+        }
+    };
+
+    public static final RecipeComponent<BlockPattern> BLOCK_PATTERN = new RecipeComponent<>() {
+
+        @Override
+        public Codec<BlockPattern> codec() {
+            return BlockPattern.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(BlockPattern.class);
+        }
+
+        @Override
+        public String toString() {
+            return "block_pattern";
         }
     };
 }
