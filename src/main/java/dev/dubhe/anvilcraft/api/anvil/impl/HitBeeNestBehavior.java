@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.api.anvil.impl;
 
 import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
+import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -36,10 +37,10 @@ public class HitBeeNestBehavior implements IAnvilBehavior {
             level.setBlockAndUpdate(potPos, level.getBlockState(potPos).setValue(LayeredCauldronBlock.LEVEL, 1));
         } else {
             if (pot.is(ModBlocks.HONEY_CAULDRON.get())) {
-                int cauldronHoneyLevel = pot.getValue(LayeredCauldronBlock.LEVEL);
+                int cauldronHoneyLevel = pot.getValue(HoneyCauldronBlock.LEVEL);
                 level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 2));
-                if (cauldronHoneyLevel < LayeredCauldronBlock.MAX_FILL_LEVEL) {
-                    level.setBlockAndUpdate(potPos, pot.setValue(LayeredCauldronBlock.LEVEL, cauldronHoneyLevel + 1));
+                if (cauldronHoneyLevel < HoneyCauldronBlock.MAX_FILL_LEVEL) {
+                    level.setBlockAndUpdate(potPos, pot.setValue(HoneyCauldronBlock.LEVEL, cauldronHoneyLevel + 1));
                 } else {
                     level.setBlockAndUpdate(potPos, Blocks.CAULDRON.defaultBlockState());
                     returnItems(level, potPos, List.of(Items.HONEY_BLOCK.getDefaultInstance()));
