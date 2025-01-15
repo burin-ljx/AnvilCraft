@@ -1,8 +1,8 @@
 package dev.dubhe.anvilcraft.util;
 
 import dev.dubhe.anvilcraft.block.CementCauldronBlock;
-import dev.dubhe.anvilcraft.block.FireCauldronBlock;
 import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
+import dev.dubhe.anvilcraft.block.Layered4LevelCauldronBlock;
 import dev.dubhe.anvilcraft.block.OilCauldronBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.init.ModBlocks;
@@ -17,7 +17,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public class ModInteractionMap {
@@ -39,18 +38,14 @@ public class ModInteractionMap {
                 hand,
                 stack,
                 ModItems.OIL_BUCKET.asStack(),
-                (s) -> s.getValue(OilCauldronBlock.LEVEL) == 4,
+                (s) -> ModBlocks.OIL_CAULDRON.get().isFull(state),
                 SoundEvents.BUCKET_FILL
             )
         );
         oilInteractionMap.put(
             Items.FLINT_AND_STEEL,
             (state, level, pos, player, hand, stack) -> {
-                level.setBlockAndUpdate(
-                    pos,
-                    ModBlocks.FIRE_CAULDRON.getDefaultState()
-                        .setValue(FireCauldronBlock.LEVEL, state.getValue(OilCauldronBlock.LEVEL))
-                );
+                OilCauldronBlock.burn(level, pos, state);
                 stack.hurtAndBreak(2, player, LivingEntity.getSlotForHand(hand));
                 level.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS);
                 return ItemInteractionResult.sidedSuccess(level.isClientSide());
@@ -59,11 +54,7 @@ public class ModInteractionMap {
         oilInteractionMap.put(
             Items.FIRE_CHARGE,
             (state, level, pos, player, hand, stack) -> {
-                level.setBlockAndUpdate(
-                    pos,
-                    ModBlocks.FIRE_CAULDRON.getDefaultState()
-                        .setValue(FireCauldronBlock.LEVEL, state.getValue(OilCauldronBlock.LEVEL))
-                );
+                OilCauldronBlock.burn(level, pos, state);
                 stack.shrink(1);
                 level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS);
                 return ItemInteractionResult.sidedSuccess(level.isClientSide());
@@ -81,7 +72,7 @@ public class ModInteractionMap {
                 interactionHand,
                 itemStack,
                 Items.LAVA_BUCKET.getDefaultInstance(),
-                (state) -> state.getValue(LayeredCauldronBlock.LEVEL) == 4,
+                (state) -> ModBlocks.LAVA_CAULDRON.get().isFull(state),
                 SoundEvents.BUCKET_FILL
             )
         );
@@ -107,8 +98,7 @@ public class ModInteractionMap {
                     player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, Items.HONEY_BOTTLE.getDefaultInstance()));
                     player.awardStat(Stats.USE_CAULDRON);
                     player.awardStat(Stats.ITEM_USED.get(item));
-                    HoneyCauldronBlock.lowerFillLevel(state, level, pos);
-                    LayeredCauldronBlock.lowerFillLevel(state, level, pos);
+                    Layered4LevelCauldronBlock.lowerFillLevel(state, level, pos);
                     level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS);
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
                 }
@@ -118,8 +108,9 @@ public class ModInteractionMap {
         honeyInteractionMap.put(
             Items.HONEY_BOTTLE,
             (state, level, pos, player, hand, stack) -> {
-                int honeyLevel = state.getValue(HoneyCauldronBlock.LEVEL);
-                if (honeyLevel >= 4) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                if (ModBlocks.HONEY_CAULDRON.get().isFull(state)) {
+                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                }
                 if (!level.isClientSide()) {
                     player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(Items.GLASS_BOTTLE)));
                     player.awardStat(Stats.FILL_CAULDRON);
@@ -170,7 +161,7 @@ public class ModInteractionMap {
                 player,
                 hand,
                 stack,
-                ModBlocks.OIL_CAULDRON.getDefaultState().setValue(OilCauldronBlock.LEVEL, 4),
+                ModBlocks.OIL_CAULDRON.get().fullFilled(),
                 SoundEvents.BUCKET_EMPTY
             )
         );

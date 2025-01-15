@@ -1,9 +1,14 @@
 package dev.dubhe.anvilcraft.recipe.anvil;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import dev.dubhe.anvilcraft.util.CodecUtil;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,15 +23,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -72,16 +69,8 @@ public class SqueezingRecipe implements Recipe<SqueezingRecipe.Input> {
 
     @Override
     public boolean matches(Input input, Level level) {
-        if (!input.cauldronState.is(Blocks.CAULDRON)) {
-            if (input.cauldronState.hasProperty(LayeredCauldronBlock.LEVEL)) {
-                if (input.cauldronState.getValue(LayeredCauldronBlock.LEVEL) >= 3) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        return input.inputBlock == inputBlock;
+        return input.inputBlock == inputBlock &&
+            CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, 1);
     }
 
     @Override

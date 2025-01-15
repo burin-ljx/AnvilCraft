@@ -2959,7 +2959,7 @@ public class ModBlocks {
         .defaultLoot()
         .register();
 
-    public static final BlockEntry<? extends Block> LAVA_CAULDRON = REGISTRATE
+    public static final BlockEntry<LavaCauldronBlock> LAVA_CAULDRON = REGISTRATE
         .block("lava_cauldron", LavaCauldronBlock::new)
         .initialProperties(() -> Blocks.LAVA_CAULDRON)
         .properties(properties ->

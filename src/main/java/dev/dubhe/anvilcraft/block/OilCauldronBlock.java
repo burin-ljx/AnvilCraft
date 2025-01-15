@@ -16,7 +16,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -29,45 +28,24 @@ public class OilCauldronBlock extends Layered4LevelCauldronBlock implements IHam
         super(properties, ModInteractionMap.OIL);
     }
 
+    public static void burn(Level level, BlockPos pos, BlockState beforeConvert){
+        level.setBlockAndUpdate(pos, ModBlocks.FIRE_CAULDRON.get().copyLevelFrom(beforeConvert));
+    }
+
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (entity.getType().equals(EntityType.ARROW) && entity.isOnFire()) {
-            level.setBlockAndUpdate(
-                pos,
-                ModBlocks.FIRE_CAULDRON
-                    .getDefaultState()
-                    .setValue(
-                        LayeredCauldronBlock.LEVEL,
-                        level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL)
-                    )
-            );
+            burn(level, pos, state);
             return;
         }
-        if (entity instanceof ItemEntity itemEntity) {
-            if (itemEntity.getItem().is(ModItemTags.FIRE_STARTER)) {
-                level.setBlockAndUpdate(
-                    pos,
-                    ModBlocks.FIRE_CAULDRON
-                        .getDefaultState()
-                        .setValue(
-                            LayeredCauldronBlock.LEVEL,
-                            level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL)
-                        )
-                );
-                itemEntity.getItem().setCount(itemEntity.getItem().getCount() - 1);
-                return;
-            }
-            if (itemEntity.getItem().is(ModItemTags.UNBROKEN_FIRE_STARTER)) {
-                level.setBlockAndUpdate(
-                    pos,
-                    ModBlocks.FIRE_CAULDRON
-                        .getDefaultState()
-                        .setValue(
-                            LayeredCauldronBlock.LEVEL,
-                            level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL)
-                        )
-                );
-            }
+        if (!(entity instanceof ItemEntity itemEntity)) return;
+        if (itemEntity.getItem().is(ModItemTags.FIRE_STARTER)) {
+            burn(level, pos, state);
+            itemEntity.getItem().setCount(itemEntity.getItem().getCount() - 1);
+            return;
+        }
+        if (itemEntity.getItem().is(ModItemTags.UNBROKEN_FIRE_STARTER)) {
+            burn(level, pos, state);
         }
     }
 

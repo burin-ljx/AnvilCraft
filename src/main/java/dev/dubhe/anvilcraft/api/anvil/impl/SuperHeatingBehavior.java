@@ -11,6 +11,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.SuperHeatingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.input.ItemProcessInput;
 import dev.dubhe.anvilcraft.util.AnvilUtil;
 
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -56,15 +57,12 @@ public class SuperHeatingBehavior implements IAnvilBehavior {
 
             ItemProcessInput input = new ItemProcessInput(items.values().stream().toList());
 
-            Optional<RecipeHolder<SuperHeatingRecipe>> recipeOptional = level.getRecipeManager()
-                .getRecipeFor(
-                    ModRecipeTypes.SUPER_HEATING_TYPE.get(),
-                    input,
-                    level
-                );
+            Optional<SuperHeatingRecipe> recipeOptional = level.getRecipeManager()
+                .getRecipeFor(ModRecipeTypes.SUPER_HEATING_TYPE.get(), input, level)
+                .map(RecipeHolder::value);
             if (recipeOptional.isPresent()) {
-                RecipeHolder<SuperHeatingRecipe> recipe = recipeOptional.get();
-                int times = recipe.value().getMaxCraftTime(input);
+                SuperHeatingRecipe recipe = recipeOptional.get();
+                int times = recipe.getMaxCraftTime(input);
                 Object2IntMap<Item> results = new Object2IntOpenHashMap<>();
                 LootContext context;
                 boolean needDoubleResult = false;
@@ -74,7 +72,7 @@ public class SuperHeatingBehavior implements IAnvilBehavior {
                     return false;
                 }
                 for (int i = 0; i < times; i++) {
-                    for (Ingredient ingredient : recipe.value().getIngredients()) {
+                    for (Ingredient ingredient : recipe.getIngredients()) {
                         for (ItemStack stack : items.values()) {
                             if (stack.is(ModItemTags.RAW_ORES) || stack.is(ModItemTags.ORES)){
                                 needDoubleResult = true;
@@ -85,11 +83,11 @@ public class SuperHeatingBehavior implements IAnvilBehavior {
                             }
                         }
                     }
-                    if (recipe.value().blockResult != Blocks.AIR) {
+                    if (recipe.blockResult != Blocks.AIR) {
                         level.setBlockAndUpdate(
-                            hitBlockPos, recipe.value().blockResult.defaultBlockState());
+                            hitBlockPos, CauldronUtil.fullState(recipe.blockResult));
                     }
-                    for (ChanceItemStack stack : recipe.value().getResults()) {
+                    for (ChanceItemStack stack : recipe.getResults()) {
                         int amount = stack.getStack().getCount() * stack.getAmount().getInt(context);
                         results.mergeInt(stack.getStack().getItem(), amount, Integer::sum);
                     }
@@ -99,7 +97,7 @@ public class SuperHeatingBehavior implements IAnvilBehavior {
                     results.object2IntEntrySet().stream()
                         .map(entry -> new ItemStack(entry.getKey(), entry.getIntValue()))
                         .peek(it -> {
-                            if (finalNeedDoubleResult && recipe.value().isGenerated()){
+                            if (finalNeedDoubleResult && recipe.isGenerated()){
                                 it.setCount(it.getCount() * 2);
                             }
                         })

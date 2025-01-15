@@ -9,19 +9,8 @@ import dev.dubhe.anvilcraft.integration.jei.util.JeiRenderHelper;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiSlotUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
 import dev.dubhe.anvilcraft.recipe.anvil.BoilingRecipe;
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.neoforged.neoforge.common.util.Lazy;
-
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -32,6 +21,15 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,8 +51,7 @@ public class BoilingCategory implements IRecipeCategory<RecipeHolder<BoilingReci
 
     public BoilingCategory(IGuiHelper helper) {
         background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
-        icon = new DrawableBlockStateIcon(
-                Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3),
+        icon = new DrawableBlockStateIcon(CauldronUtil.fullState(Blocks.WATER_CAULDRON),
                 Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
         slot = helper.getSlotDrawable();
         title = Component.translatable("gui.anvilcraft.category.boiling");
@@ -108,7 +105,7 @@ public class BoilingCategory implements IRecipeCategory<RecipeHolder<BoilingReci
                 RenderHelper.SINGLE_BLOCK);
         RenderHelper.renderBlock(
                 guiGraphics,
-                Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3),
+                CauldronUtil.fullState(Blocks.WATER_CAULDRON),
                 81,
                 30,
                 10,

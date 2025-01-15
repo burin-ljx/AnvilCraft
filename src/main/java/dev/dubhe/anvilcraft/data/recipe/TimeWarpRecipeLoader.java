@@ -94,7 +94,7 @@ public class TimeWarpRecipeLoader {
             )
             .requiredFluidLevel(3)
             .consumeFluid(true)
-            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_0"));
+            .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_0"));
 
         TimeWarpRecipe.builder()
             .requires(ModItemTags.NETHERITE_BLOCK)
@@ -107,7 +107,7 @@ public class TimeWarpRecipeLoader {
             )
             .requiredFluidLevel(3)
             .consumeFluid(true)
-            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_1"));
+            .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_1"));
 
         TimeWarpRecipe.builder()
             .requires(ModItemTags.NETHERITE_BLOCK)
@@ -120,7 +120,7 @@ public class TimeWarpRecipeLoader {
             )
             .requiredFluidLevel(3)
             .consumeFluid(true)
-            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_2"));
+            .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_2"));
 
         TimeWarpRecipe.builder()
             .requires(ModItemTags.NETHERITE_BLOCK)
@@ -133,7 +133,7 @@ public class TimeWarpRecipeLoader {
             )
             .requiredFluidLevel(3)
             .consumeFluid(true)
-            .save(provider, AnvilCraft.of("timewarp/ember_metal_nugget_3"));
+            .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_3"));
     }
 
     private static void timeWarp(
