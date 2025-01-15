@@ -3,6 +3,8 @@ package dev.dubhe.anvilcraft.init;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.IPowerComponent.Switch;
 import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
+import dev.dubhe.anvilcraft.block.AbstractStateAddableMultiplePartBlock;
+import dev.dubhe.anvilcraft.block.AccelerationRingBlock;
 import dev.dubhe.anvilcraft.block.ActiveSilencerBlock;
 import dev.dubhe.anvilcraft.block.ArrowBlock;
 import dev.dubhe.anvilcraft.block.BatchCrafterBlock;
@@ -95,10 +97,12 @@ import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
+import dev.dubhe.anvilcraft.block.state.DirectionCube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical4PartHalf;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
 import dev.dubhe.anvilcraft.item.AbstractMultiplePartBlockItem;
+import dev.dubhe.anvilcraft.item.AbstractStateAddableMultiplePartBlockItem;
 import dev.dubhe.anvilcraft.item.CursedBlockItem;
 import dev.dubhe.anvilcraft.item.EndDustBlockItem;
 import dev.dubhe.anvilcraft.item.HasMobBlockItem;
@@ -106,10 +110,12 @@ import dev.dubhe.anvilcraft.item.HeliostatsItem;
 import dev.dubhe.anvilcraft.item.PlaceInWaterBlockItem;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 import dev.dubhe.anvilcraft.item.TeslaTowerItem;
+import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
 import dev.dubhe.anvilcraft.util.DangerUtil;
 
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -144,6 +150,7 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -1428,6 +1435,29 @@ public class ModBlocks {
                 .save(provider);
         })
         .register();
+
+    public static final BlockEntry<AccelerationRingBlock> ACCELERATION_RING = REGISTRATE
+            .block("acceleration_ring", AccelerationRingBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .loot(AbstractStateAddableMultiplePartBlock::loot)
+            .properties(BlockBehaviour.Properties::noOcclusion)
+            .recipe((ctx, provider) -> {
+                MultiblockRecipe.builder("anvilcraft:acceleration_ring", 1)
+                        .layer("ABA", "B B", "ABA")
+                        .layer("CDC", "D D", "CDC")
+                        .layer("ABA", "B B", "ABA")
+                        .symbol('A', "minecraft:copper_block")
+                        .symbol('B', "anvilcraft:heavy_iron_block")
+                        .symbol('C', "anvilcraft:magnetoelectric_core")
+                        .symbol('D', "anvilcraft:tungsten_block")
+                        .save(provider);
+            })
+            .item(AbstractStateAddableMultiplePartBlockItem<DirectionCube3x3PartHalf, DirectionProperty, Direction>::new)
+            .build()
+            .blockstate((ctx, provider) -> {
+            })
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .register();
 
     public static final BlockEntry<MagnetoElectricCoreBlock> MAGNETO_ELECTRIC_CORE_BLOCK = REGISTRATE
             .block("magnetoelectric_core", MagnetoElectricCoreBlock::new)

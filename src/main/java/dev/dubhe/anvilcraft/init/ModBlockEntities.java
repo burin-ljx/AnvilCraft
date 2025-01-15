@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.init;
 
+import dev.dubhe.anvilcraft.block.entity.AccelerationRingBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ActiveSilencerBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.BatchCrafterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ChargeCollectorBlockEntity;
@@ -183,6 +184,11 @@ public class ModBlockEntities {
     public static final BlockEntityEntry<TeslaTowerBlockEntity> TESLA_TOWER = REGISTRATE
             .blockEntity("tesla_tower", TeslaTowerBlockEntity::createBlockEntity)
             .validBlocks(ModBlocks.TESLA_TOWER)
+            .register();
+
+    public static final BlockEntityEntry<AccelerationRingBlockEntity> ACCELERATION_RING = REGISTRATE
+            .blockEntity("acceleration_ring", AccelerationRingBlockEntity::createBlockEntity)
+            .validBlocks(ModBlocks.ACCELERATION_RING)
             .register();
 
     public static void register() {
