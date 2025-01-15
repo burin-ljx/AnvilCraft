@@ -5,7 +5,9 @@ import com.google.common.collect.ImmutableMap;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.event.anvil.GiantAnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
+import dev.dubhe.anvilcraft.api.power.IPowerComponent;
 import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
+import dev.dubhe.anvilcraft.block.state.DirectionCube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.GiantAnvilCube;
 import dev.dubhe.anvilcraft.entity.FallingGiantAnvilEntity;
 import dev.dubhe.anvilcraft.init.ModBlocks;
@@ -302,6 +304,8 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
         BlockPos pos,
         RandomSource random
     ) {
+        BlockState ringState = level.getBlockState(pos.subtract(state.getValue(HALF).getOffset()).above(3));
+        if (ringState.hasProperty(AccelerationRingBlock.HALF) && ringState.getValue(AccelerationRingBlock.HALF) == DirectionCube3x3PartHalf.BOTTOM_CENTER && ringState.getValue(AccelerationRingBlock.SWITCH) == IPowerComponent.Switch.ON && !ringState.getValue(AccelerationRingBlock.OVERLOAD)) return;
         if (state.getValue(HALF) != Cube3x3PartHalf.BOTTOM_CENTER) return;
         for (Cube3x3PartHalf part : getParts()) {
             if (part.getOffsetY() != 0) continue;
@@ -335,7 +339,6 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
                 512
             );
         }));
-
         FallingBlockEntity fallingBlockEntity = FallingGiantAnvilEntity.fall(level, above, state1, false);
         this.falling(fallingBlockEntity);
     }
