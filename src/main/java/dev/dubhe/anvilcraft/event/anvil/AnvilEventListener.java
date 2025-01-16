@@ -120,6 +120,7 @@ public class AnvilEventListener {
         Map<ItemEntity, ItemStack> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos.above())).stream()
             .map(it -> Map.entry(it, it.getItem()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (items.isEmpty()) return;
         ItemInjectRecipe.Input input =
             new ItemInjectRecipe.Input(items.values().stream().toList(), state.getBlock());
         level.getRecipeManager()

@@ -83,7 +83,7 @@ public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHa
         if (level.isClientSide) {
             return;
         }
-        if (state.getValue(LEVEL) == 3) {
+        if (this.isFull(state)) {
             level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
         }
     }

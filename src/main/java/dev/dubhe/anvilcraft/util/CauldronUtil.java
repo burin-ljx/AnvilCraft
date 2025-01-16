@@ -110,13 +110,12 @@ public class CauldronUtil {
         if (state.hasProperty(LEVEL_4)) {
             return state.setValue(LEVEL_4, Math.min(4, cauldronLevel));
         }
-        CauldronFluidContent content = CauldronFluidContent.getForBlock(cauldron);
-        if (content != null) {
-            if (content.levelProperty != null) {
-                return state.setValue(content.levelProperty, Math.min(content.maxLevel, cauldronLevel));
-            }
-        }
-        return state;
+        return Optional.of(cauldron)
+            .map(CauldronFluidContent::getForBlock)
+            .filter(content -> content.levelProperty != null)
+            .map(content -> state.setValue(content.levelProperty,
+                Math.min(content.maxLevel, cauldronLevel)))
+            .orElse(state);
     }
 
     /**
