@@ -89,15 +89,8 @@ public class TimeWarpBehavior implements IAnvilBehavior {
                 })
                 .forEach(it -> {
                     ItemEntity old = it.getKey();
-                    ItemEntity itemEntity = new ItemEntity(
-                        old.level(),
-                        old.getX(),
-                        old.getY(),
-                        old.getZ(),
-                        it.getValue()
-                    );
                     old.discard();
-                    old.level().addFreshEntity(itemEntity);
+                    AnvilUtil.dropItems(List.of(it.getValue()), level, old.blockPosition().getCenter());
                 });
             return true;
         }
