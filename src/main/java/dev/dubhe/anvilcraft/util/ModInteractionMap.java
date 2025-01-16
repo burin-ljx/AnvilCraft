@@ -73,7 +73,7 @@ public class ModInteractionMap {
                 itemStack,
                 Items.LAVA_BUCKET.getDefaultInstance(),
                 (state) -> ModBlocks.LAVA_CAULDRON.get().isFull(state),
-                SoundEvents.BUCKET_FILL
+                SoundEvents.BUCKET_FILL_LAVA
             )
         );
 
