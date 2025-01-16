@@ -45,7 +45,7 @@ public class ModInteractionMap {
         oilInteractionMap.put(
             Items.FLINT_AND_STEEL,
             (state, level, pos, player, hand, stack) -> {
-                OilCauldronBlock.burn(level, pos, state);
+                OilCauldronBlock.ignite(level, pos, state);
                 stack.hurtAndBreak(2, player, LivingEntity.getSlotForHand(hand));
                 level.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS);
                 return ItemInteractionResult.sidedSuccess(level.isClientSide());
@@ -54,7 +54,7 @@ public class ModInteractionMap {
         oilInteractionMap.put(
             Items.FIRE_CHARGE,
             (state, level, pos, player, hand, stack) -> {
-                OilCauldronBlock.burn(level, pos, state);
+                OilCauldronBlock.ignite(level, pos, state);
                 stack.shrink(1);
                 level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS);
                 return ItemInteractionResult.sidedSuccess(level.isClientSide());
