@@ -4,7 +4,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.entity.AnimateAscendingBlockEntity;
 
-import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.init.ModBlockTags;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -63,7 +63,6 @@ public class MagnetBlock extends Block implements IHammerRemovable {
     }
 
     @Override
-
     public void neighborChanged(
         BlockState state,
         Level level,
@@ -97,7 +96,7 @@ public class MagnetBlock extends Block implements IHammerRemovable {
             currentPos = currentPos.below();
             BlockState state1 = level.getBlockState(currentPos);
 
-            if (state1.is(BlockTags.ANVIL) && !state1.is(ModBlocks.SPECTRAL_ANVIL)) {
+            if (state1.is(BlockTags.ANVIL) && !state1.is(ModBlockTags.NON_MAGNETIC)) {
                 level.destroyBlock(magnetPos.below(), true);
                 level.setBlockAndUpdate(magnetPos.below(), state1);
                 level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
@@ -109,7 +108,7 @@ public class MagnetBlock extends Block implements IHammerRemovable {
                 level.getEntitiesOfClass(FallingBlockEntity.class, new AABB(currentPos));
             for (FallingBlockEntity entity : entities) {
                 BlockState state2 = entity.getBlockState();
-                if (state2.is(BlockTags.ANVIL) && !state2.is(ModBlocks.SPECTRAL_ANVIL)) {
+                if (state2.is(BlockTags.ANVIL) && !state2.is(ModBlockTags.NON_MAGNETIC)) {
                     level.destroyBlock(magnetPos.below(), true);
                     level.setBlockAndUpdate(magnetPos.below(), state2);
                     entity.remove(Entity.RemovalReason.DISCARDED);

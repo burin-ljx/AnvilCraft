@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.recipe.anvil;
 
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;

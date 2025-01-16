@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable{
+public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable {
     public LavaCauldronBlock(Properties properties) {
         super(properties, ModInteractionMap.LAYERED_LAVA);
     }

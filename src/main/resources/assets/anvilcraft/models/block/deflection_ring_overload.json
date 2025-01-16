@@ -1,0 +1,6 @@
+{
+	"parent": "anvilcraft:block/deflection_ring",
+	"textures": {
+		"state": "anvilcraft:block/deflection_ring_overload"
+	}
+}

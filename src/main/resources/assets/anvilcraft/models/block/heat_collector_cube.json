@@ -2,8 +2,8 @@
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/block",
 	"textures": {
-		"particle": "anvilcraft:block/thermoelectric_collector_head",
-		"head": "anvilcraft:block/thermoelectric_collector_head"
+		"particle": "anvilcraft:block/heat_collector_head",
+		"head": "anvilcraft:block/heat_collector_head"
 	},
 	"elements": [
 		{
