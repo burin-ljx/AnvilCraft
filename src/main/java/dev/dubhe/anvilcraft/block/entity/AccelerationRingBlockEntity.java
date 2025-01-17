@@ -149,15 +149,15 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
             level.getEntitiesOfClass(Entity.class, aabb,
                     entity -> (entity instanceof FallingBlockEntity fallingBlockEntity && fallingBlockEntity.getBlockState().is(BlockTags.ANVIL) && !fallingBlockEntity.getBlockState().is(ModBlockTags.NON_MAGNETIC)
                             || entity instanceof Projectile))
-                    .forEach(fallingBlockEntity -> fallingBlockEntity.setNoGravity(false));
+                    .forEach(entity -> entity.setNoGravity(false));
             return;
         }
         for (BlockPos pos : blockPoses) {
             BlockState fallState = level.getBlockState(pos);
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
-            FallingBlockEntity.fall(level, pos, fallState).setNoGravity(true);
+            FallingBlockEntity.fall(level, pos, fallState).setNoGravity(true);;
         }
-        BlockPos end = getBlockPos().relative(direction, 2);
+        BlockPos end = getBlockPos().relative(direction.getOpposite(), 1);
         checkPos.move(direction);
         AABB aabb = new AABB(
                 checkPos.getX() + 1,
@@ -173,8 +173,25 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
         );
         for (Entity entity : entities) {
             entity.setNoGravity(true);
-            if (entity.getDeltaMovement().get(direction.getAxis()) > 16) continue;
-            entity.setDeltaMovement(entity.getDeltaMovement().add(new Vec3(0.16f, 0.16f, 0.16f).multiply(Vec3.atLowerCornerOf(direction.getNormal()))));
+            if (Math.abs(entity.getDeltaMovement().get(direction.getAxis())) > 16) continue;
+            Vec3 fixMovement = getBlockPos().getCenter().subtract(
+                    entity instanceof FallingBlockEntity ? entity.position().add(0, 0.5, 0) : entity.position()
+            );
+            Vec3 deltaMovement = entity.getDeltaMovement();
+            fixMovement = switch (direction.getAxis()) {
+                case X -> fixMovement.multiply(0, 1, 1);
+                case Y -> fixMovement.multiply(1, 0, 1);
+                case Z -> fixMovement.multiply(1, 1, 0);
+            };
+            deltaMovement = switch (direction.getAxis()) {
+                case X -> deltaMovement.multiply(1, 0, 0);
+                case Y -> deltaMovement.multiply(0, 1, 0);
+                case Z -> deltaMovement.multiply(0, 0, 1);
+            };
+            fixMovement = fixMovement.multiply(0.2, 0.2, 0.2);
+            deltaMovement = deltaMovement.add(fixMovement);
+            deltaMovement = deltaMovement.add(new Vec3(0.16f, 0.16f, 0.16f).multiply(Vec3.atLowerCornerOf(direction.getNormal())));
+            entity.setDeltaMovement(deltaMovement);
         }
     }
 
@@ -239,6 +256,8 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
         for (Cube3x3PartHalf part : Cube3x3PartHalf.values()) {
             if (!isFallingGiantAnvil)
                 level.setBlock(giantAnvilPos.offset(part.getOffset()), Blocks.AIR.defaultBlockState(), 2);
+        }
+        for (Cube3x3PartHalf part : Cube3x3PartHalf.values()) {
             level.setBlockAndUpdate(newPos.offset(part.getOffset()), ModBlocks.GIANT_ANVIL.getDefaultState()
                     .setValue(GiantAnvilBlock.HALF, part)
                     .setValue(GiantAnvilBlock.CUBE, part.equals(Cube3x3PartHalf.MID_CENTER) ? GiantAnvilCube.CENTER : GiantAnvilCube.CORNER)
@@ -249,6 +268,6 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
 
     @Override
     public int getInputPower() {
-        return isWork() ? 256 : 0;
+        return getBlockState().getValue(AccelerationRingBlock.SWITCH) == Switch.ON ? 256 : 0;
     }
 }
