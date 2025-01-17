@@ -24,6 +24,7 @@ import dev.dubhe.anvilcraft.block.entity.ResentfulAmberBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.RubyLaserBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.RubyPrismBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.SimpleChuteBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.TeslaTowerBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ThermoelectricConverterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.TransmissionPoleBlockEntity;
@@ -181,9 +182,14 @@ public class ModBlockEntities {
         .register();
 
     public static final BlockEntityEntry<TeslaTowerBlockEntity> TESLA_TOWER = REGISTRATE
-            .blockEntity("tesla_tower", TeslaTowerBlockEntity::createBlockEntity)
-            .validBlocks(ModBlocks.TESLA_TOWER)
-            .register();
+        .blockEntity("tesla_tower", TeslaTowerBlockEntity::createBlockEntity)
+        .validBlocks(ModBlocks.TESLA_TOWER)
+        .register();
+
+    public static final BlockEntityEntry<SpaceOvercompressorBlockEntity> SPACE_OVERCOMPRESSOR = REGISTRATE
+        .<SpaceOvercompressorBlockEntity>blockEntity("space_overcompressor", SpaceOvercompressorBlockEntity::new)
+        .validBlocks(ModBlocks.SPACE_OVERCOMPRESSOR)
+        .register();
 
     public static void register() {
     }

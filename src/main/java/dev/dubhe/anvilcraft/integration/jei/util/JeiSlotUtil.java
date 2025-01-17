@@ -108,7 +108,7 @@ public class JeiSlotUtil {
             int startX = 2;
             int startY = 15;
             for (int index = 0; index < inputSize; index++) {
-                int row = index / 2;
+                int row = index / 3;
                 int col = index % 3;
                 addSlotWithCount(builder, startX + 18 * col, startY + 18 * row, mergedIngredients.get(index));
             }

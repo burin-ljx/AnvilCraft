@@ -1,13 +1,20 @@
 package dev.dubhe.anvilcraft.recipe.anvil;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 import dev.dubhe.anvilcraft.recipe.anvil.input.IItemsInput;
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
-
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -26,22 +33,12 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @MethodsReturnNonnullByDefault
@@ -57,6 +54,8 @@ public class BulgingRecipe implements Recipe<BulgingRecipe.Input> {
     public final boolean isSimple;
     private Input cacheInput;
     private int cacheMaxCraftTime;
+
+    private static final BlockState FULL_WATER_CAULDRON = CauldronUtil.fullState(Blocks.WATER_CAULDRON);
 
     public BulgingRecipe(
         NonNullList<Ingredient> ingredients,
@@ -109,30 +108,13 @@ public class BulgingRecipe implements Recipe<BulgingRecipe.Input> {
     @Override
     public boolean matches(Input input, Level level) {
         if (fromWater) {
-            if (input.cauldronState.is(Blocks.WATER_CAULDRON)) {
-                if (input.cauldronState.getValue(LayeredCauldronBlock.LEVEL) < 3) {
-                    return false;
-                }
-            }
+            if (input.cauldronState != FULL_WATER_CAULDRON) return false;
         } else {
-            if (consumeFluid) {
-                if (!input.cauldronState.is(cauldron)) {
-                    return false;
-                }
+            if (consumeFluid && !CauldronUtil.compatibleForDrain(input.cauldronState, this.cauldron, 1)) {
+                return false;
             }
-            if (produceFluid) {
-                if (!input.cauldronState.is(cauldron) && !input.cauldronState.is(Blocks.CAULDRON)) {
-                    return false;
-                }
-                if (input.cauldronState.is(cauldron)) {
-                    if (input.cauldronState.hasProperty(LayeredCauldronBlock.LEVEL)) {
-                        if (input.cauldronState.getValue(LayeredCauldronBlock.LEVEL) >= 3) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
+            if (produceFluid && !CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, 1)) {
+                return false;
             }
         }
         return getMaxCraftTime(input) >= 1;

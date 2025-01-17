@@ -60,7 +60,7 @@ public class ModBlockTags {
     public static final TagKey<Block> STORAGE_BLOCKS_BRONZE = bindC("storage_blocks/bronze");
     public static final TagKey<Block> STORAGE_BLOCKS_BRASS = bindC("storage_blocks/brass");
 
-    public static final TagKey<Block> INCORRECT_FOR_AMYTHEST_TOOL = bind("incorrect_for_amythest_tool");
+    public static final TagKey<Block> INCORRECT_FOR_AMETHYST_TOOL = bind("incorrect_for_amethyst_tool");
     public static final TagKey<Block> INCORRECT_FOR_EMBER_TOOL = bind("incorrect_for_ember_tool");
 
     //mekanism tags

@@ -16,12 +16,12 @@ import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 public class SuperHeatingRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {
         SuperHeatingRecipe.builder()
-                .blockResult(ModBlocks.LAVA_CAULDRON.get())
+                .blockResult(Blocks.LAVA_CAULDRON)
                 .requires(Items.COBBLESTONE, 4)
                 .requires(ModItems.LIME_POWDER)
                 .save(provider, AnvilCraft.of("super_heating/lava_from_cobblestone"));
         SuperHeatingRecipe.builder()
-                .blockResult(ModBlocks.LAVA_CAULDRON.get())
+                .blockResult(Blocks.LAVA_CAULDRON)
                 .requires(Tags.Items.STONES, 4)
                 .requires(ModItems.LIME_POWDER)
                 .save(provider, AnvilCraft.of("super_heating/lava_from_stone"));
