@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
 
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -92,7 +93,7 @@ public class TimeWarpRecipeLoader {
                     ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(4)).withChance(0.25f)
                 )
             )
-            .requiredFluidLevel(3)
+            .requiredFluidLevel(CauldronUtil.maxLevel(ModBlocks.FIRE_CAULDRON.get()))
             .consumeFluid(true)
             .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_0"));
 
@@ -105,7 +106,7 @@ public class TimeWarpRecipeLoader {
                     ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(9))
                 )
             )
-            .requiredFluidLevel(3)
+            .requiredFluidLevel(CauldronUtil.maxLevel(ModBlocks.FIRE_CAULDRON.get()))
             .consumeFluid(true)
             .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_1"));
 
@@ -118,7 +119,7 @@ public class TimeWarpRecipeLoader {
                     ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(12))
                 )
             )
-            .requiredFluidLevel(3)
+            .requiredFluidLevel(CauldronUtil.maxLevel(ModBlocks.FIRE_CAULDRON.get()))
             .consumeFluid(true)
             .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_2"));
 
@@ -131,7 +132,7 @@ public class TimeWarpRecipeLoader {
                     ChanceItemStack.of(ModItems.EMBER_METAL_NUGGET.asStack(15))
                 )
             )
-            .requiredFluidLevel(3)
+            .requiredFluidLevel(CauldronUtil.maxLevel(ModBlocks.FIRE_CAULDRON.get()))
             .consumeFluid(true)
             .save(provider, AnvilCraft.of("time_warp/ember_metal_nugget_3"));
     }

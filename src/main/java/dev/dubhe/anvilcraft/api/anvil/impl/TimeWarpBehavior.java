@@ -32,6 +32,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -95,10 +96,13 @@ public class TimeWarpBehavior implements IAnvilBehavior {
             return true;
         }
         TimeWarpRecipe.Input input = new TimeWarpRecipe.Input(items.values().stream().toList(), hitBlockState);
-        Optional<RecipeHolder<TimeWarpRecipe>> recipeOptional = level.getRecipeManager()
-            .getRecipeFor(ModRecipeTypes.TIME_WARP_TYPE.get(), input, level);
+        Optional<TimeWarpRecipe> recipeOptional = level.getRecipeManager()
+            .getRecipesFor(ModRecipeTypes.TIME_WARP_TYPE.get(), input, level)
+            .stream()
+            .map(RecipeHolder::value)
+            .max(Comparator.comparingInt(recipe -> recipe.getIngredients().size()));
         if (recipeOptional.isEmpty()) return false;
-        TimeWarpRecipe recipe = recipeOptional.get().value();
+        TimeWarpRecipe recipe = recipeOptional.get();
         int times = recipe.getMaxCraftTime(input);
         Object2IntMap<Item> results = new Object2IntOpenHashMap<>();
         LootContext context;
@@ -129,7 +133,7 @@ public class TimeWarpBehavior implements IAnvilBehavior {
             hitBlockPos.getCenter()
         );
         if (recipe.isConsumeFluid()) {
-            CauldronUtil.drain(level, hitBlockPos, recipe.getCauldron(), 1, false);
+            CauldronUtil.drain(level, hitBlockPos, recipe.getCauldron(), recipe.getRequiredFluidLevel(), false);
         }
         if (recipe.isProduceFluid()) {
             CauldronUtil.fill(level, hitBlockPos, recipe.getCauldron(), 1, false);

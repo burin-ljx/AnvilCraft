@@ -17,7 +17,7 @@
     }
   ],
   "produce_fluid": false,
-  "requiredFluidLevel": 3,
+  "requiredFluidLevel": 4,
   "results": [
     {
       "amount": 1.0,

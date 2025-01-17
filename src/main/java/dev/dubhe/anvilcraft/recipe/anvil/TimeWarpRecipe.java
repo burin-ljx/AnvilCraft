@@ -111,15 +111,13 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean matches(Input input, Level level) {
-        if (consumeFluid) {
-            if (!CauldronUtil.compatibleForDrain(input.cauldronState, this.cauldron, this.requiredFluidLevel)) {
+        if (this.requiredFluidLevel > 0 &&
+            !CauldronUtil.compatibleForDrain(input.cauldronState, this.cauldron, this.requiredFluidLevel)) {
                 return false;
-            }
         }
-        if (produceFluid) {
-            if (!CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, this.requiredFluidLevel)) {
+        if (this.produceFluid &&
+            !CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, this.requiredFluidLevel)) {
                 return false;
-            }
         }
         int normalCraftCount = getMaxCraftTime(input);
         if (exactIngredients.isEmpty()){
@@ -315,7 +313,17 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
 
         @Override
         public TimeWarpRecipe buildRecipe() {
-            return new TimeWarpRecipe(ingredients, Optional.of(exactIngredients), cauldron, results, produceFluid, consumeFluid, requiredFluidLevel);
+            if (consumeFluid) {
+                requiredFluidLevel = Math.max(requiredFluidLevel, 1);
+            }
+            return new TimeWarpRecipe(ingredients,
+                Optional.of(exactIngredients),
+                cauldron,
+                results,
+                produceFluid,
+                consumeFluid,
+                requiredFluidLevel
+            );
         }
 
         @Override

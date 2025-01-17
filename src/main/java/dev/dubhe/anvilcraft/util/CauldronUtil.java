@@ -20,7 +20,7 @@ import java.util.Optional;
  *
  * @apiNote 本类中所有的名为 {@code cauldronContent}的方法参数代表“炼药锅内容物”，传入的是一种非空的炼药锅方块。
  * 它是一个类似于“流体”的抽象概念，但由于细雪炼药锅装的不是流体，我们不能用{@code Fluid}作为参数。<br/>
- * 本类的大部分方法在 {@code cauldronContent} 方法参数不是一种炼药锅时不会抛出异常，而是返回一些默认值。
+ * 本类的大部分方法在 {@code cauldronContent} 方法参数不是一种炼药锅时不会抛出异常，而是返回一些默认值。<br/>
  */
 public class CauldronUtil {
 
@@ -169,6 +169,7 @@ public class CauldronUtil {
      * @return 成功添加的炼药锅内容物的层数
      */
     public static int fill(Level level, BlockPos pos, Block cauldronContent, int fillLevel, boolean simulate) {
+        if (fillLevel <= 0) return 0;
         BlockState state = level.getBlockState(pos);
         int remainSpace = remainSpaceFor(state, cauldronContent);
         if (remainSpace <= 0) return 0;
@@ -193,6 +194,7 @@ public class CauldronUtil {
      * @return 提取到的炼药锅内容物的层数
      */
     public static int drain(Level level, BlockPos pos, Block cauldronContent, int drainLevel, boolean simulate) {
+        if (drainLevel <= 0) return 0;
         BlockState state = level.getBlockState(pos);
         if (!compatibleFor(state, cauldronContent)) return 0;
         int currentLevel = currentLevel(state);
@@ -215,6 +217,7 @@ public class CauldronUtil {
      * @return 若能提取出指定层数的炼药锅内容物，返回 {@code true}
      */
     public static boolean compatibleForDrain(BlockState state, Block cauldronContent, int drainLevel) {
+        if (drainLevel <= 0) return true;
         return compatibleFor(state, cauldronContent) && currentLevel(state) >= drainLevel;
     }
 
@@ -229,6 +232,7 @@ public class CauldronUtil {
      * @return 若能完整地添加指定层数的炼药锅内容物，返回 {@code true}
      */
     public static boolean compatibleForFill(BlockState state, Block cauldronContent, int fillLevel) {
+        if (fillLevel <= 0) return true;
         return remainSpaceFor(state, cauldronContent) >= fillLevel;
     }
 }
