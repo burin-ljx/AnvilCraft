@@ -2,14 +2,13 @@
   "type": "anvilcraft:time_warp",
   "cauldron": "anvilcraft:fire_cauldron",
   "consume_fluid": true,
-  "from_water": false,
   "ingredients": [
     {
       "tag": "anvilcraft:netherite_block"
     }
   ],
   "produce_fluid": false,
-  "requiredFluidLevel": 3,
+  "requiredFluidLevel": 4,
   "results": [
     {
       "amount": 1.0,

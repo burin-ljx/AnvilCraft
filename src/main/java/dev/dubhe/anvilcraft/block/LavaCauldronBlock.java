@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.block;
 
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
-
 import dev.dubhe.anvilcraft.util.ModInteractionMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -76,7 +75,7 @@ public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHa
         if (level.isClientSide) {
             return;
         }
-        if (state.getValue(LEVEL) == 4) {
+        if (this.isFull(state)) {
             level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
         }
     }
