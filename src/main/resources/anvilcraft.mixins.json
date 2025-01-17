@@ -37,7 +37,9 @@
     "forge.LightningBoltMixin",
     "forge.PistonMovingBlockEntityMixin",
     "piglin.AbstractPiglinMixin",
-    "piglin.PiglinMixin"
+    "piglin.PiglinMixin",
+    "piston.PistonBaseBlockMixin",
+    "piston.PistonMovingBlockEntityMixin"
   ],
   "client": [
     "ClientLevelMixin",

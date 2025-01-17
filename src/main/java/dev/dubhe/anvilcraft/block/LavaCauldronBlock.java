@@ -6,8 +6,6 @@ import dev.dubhe.anvilcraft.util.ModInteractionMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -15,23 +13,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import org.jetbrains.annotations.Nullable;
-
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable, BucketPickup {
+public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHammerRemovable {
     public LavaCauldronBlock(Properties properties) {
         super(properties, ModInteractionMap.LAYERED_LAVA);
     }
@@ -83,21 +76,8 @@ public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHa
         if (level.isClientSide) {
             return;
         }
-        if (state.getValue(LEVEL) == 3) {
+        if (state.getValue(LEVEL) == 4) {
             level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
         }
-    }
-
-    @Override
-    public ItemStack pickupBlock(@Nullable Player player, LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-        if (blockState.getValue(LEVEL) == 3) {
-            return Items.LAVA_BUCKET.getDefaultInstance();
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public Optional<SoundEvent> getPickupSound() {
-        return Optional.of(SoundEvents.BUCKET_FILL_LAVA);
     }
 }

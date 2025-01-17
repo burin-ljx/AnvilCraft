@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.recipe.anvil;
 
+import dev.dubhe.anvilcraft.block.Layered4LevelCauldronBlock;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 import dev.dubhe.anvilcraft.util.CodecUtil;
@@ -73,15 +74,20 @@ public class SqueezingRecipe implements Recipe<SqueezingRecipe.Input> {
     @Override
     public boolean matches(Input input, Level level) {
         if (!input.cauldronState.is(Blocks.CAULDRON)) {
-            if (input.cauldronState.hasProperty(LayeredCauldronBlock.LEVEL)) {
+            if (input.cauldronState.getBlock() instanceof LayeredCauldronBlock) {
                 if (input.cauldronState.getValue(LayeredCauldronBlock.LEVEL) >= 3) {
+                    return false;
+                }
+            }
+            if (input.cauldronState.getBlock() instanceof Layered4LevelCauldronBlock) {
+                if (input.cauldronState.getValue(Layered4LevelCauldronBlock.LEVEL) >= 4) {
                     return false;
                 }
             } else {
                 return false;
             }
         }
-        return input.inputBlock == inputBlock;
+        return input.inputBlock == inputBlock && (input.cauldronState.is(cauldron) || input.cauldronState.is(Blocks.CAULDRON));
     }
 
     @Override

@@ -18,6 +18,7 @@ public class ModBlockTags {
     public static final TagKey<Block> REDSTONE_TORCH = bind("redstone_torch");
     public static final TagKey<Block> MUSHROOM_BLOCK = bind("mushroom_block");
     public static final TagKey<Block> CANT_BROKEN_ANVIL = bind("cant_broken_anvil");
+    public static final TagKey<Block> NON_MAGNETIC = bind("non_magnetic");
     public static final TagKey<Block> HAMMER_REMOVABLE = bind("hammer_removable");
     public static final TagKey<Block> HAMMER_CHANGEABLE = bind("hammer_changeable");
     public static final TagKey<Block> OVERSEER_BASE = bind("overseer_base");
