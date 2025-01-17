@@ -1,8 +1,8 @@
 {
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/cube",
-	"render_type": "minecraft:cutout",
 	"ambientocclusion": false,
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "anvilcraft:block/acceleration_ring_in",
 		"1": "anvilcraft:block/acceleration_ring_out",

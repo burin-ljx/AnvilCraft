@@ -2,11 +2,11 @@
 	"credit": "Made by XeKr with Blockbench",
 	"parent": "minecraft:block/block",
 	"textures": {
-		"3": "anvilcraft:block/thermoelectric_collector_head",
-		"particle": "anvilcraft:block/thermoelectric_collector_side",
-		"base": "anvilcraft:block/thermoelectric_collector_side",
-		"top": "anvilcraft:block/thermoelectric_collector_top",
-		"bottom": "anvilcraft:block/thermoelectric_collector_bottom"
+		"3": "anvilcraft:block/heat_collector_head",
+		"particle": "anvilcraft:block/heat_collector_side",
+		"base": "anvilcraft:block/heat_collector_side",
+		"top": "anvilcraft:block/heat_collector_top",
+		"bottom": "anvilcraft:block/heat_collector_bottom"
 	},
 	"elements": [
 		{

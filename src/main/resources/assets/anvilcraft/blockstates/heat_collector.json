@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "anvilcraft:block/heat_collector_base"
+		}
+	}
+}

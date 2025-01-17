@@ -43,6 +43,12 @@ repositories {
             includeGroup "dev.latvian.apps"
         }
     }
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.rtyley"
+        }
+    }
     maven { // TOP
         name = "k-4u Maven"
         url "https://maven.k-4u.nl"
