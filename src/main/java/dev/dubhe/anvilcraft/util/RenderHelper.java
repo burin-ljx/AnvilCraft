@@ -34,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
@@ -62,7 +63,7 @@ import java.util.Optional;
 public class RenderHelper {
 
     private static final int MAX_CACHE_SIZE = 64;
-    private static final LinkedHashMap<BlockState, BlockEntity> BLOCK_ENTITY_CHACE = new LinkedHashMap<>();
+    private static final LinkedHashMap<BlockState, BlockEntity> BLOCK_ENTITY_CACHE = new LinkedHashMap<>();
     private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
     private static final Vector3f L1 = new Vector3f(0.4F, 0.0F, 1.0F).normalize();
     private static final Vector3f L2 = new Vector3f(-0.4F, 1.0F, -0.2F).normalize();
@@ -92,16 +93,8 @@ public class RenderHelper {
         if (currentClientLevel == null) return;
         getCachedBlockEntity(blockState).ifPresent(blockEntity -> {
             blockEntity.setLevel(currentClientLevel);
-            BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance()
-                .getBlockEntityRenderDispatcher().getRenderer(blockEntity);
-            if (renderer == null) return;
-            renderer.render(
-                blockEntity,
-                getPartialTick(),
-                poseStack,
-                buffers,
-                0xF000F0,
-                OverlayTexture.NO_OVERLAY);
+            blockEntity.setBlockState(blockState);
+            renderBlockEntity(blockEntity, poseStack, buffers);
         });
     };
 
@@ -164,7 +157,6 @@ public class RenderHelper {
         poseStack.popPose();
     }
 
-    //test for spectral anvil conversion recipe:
     public static void renderLevelLike(
             LevelLike level,
             GuiGraphics guiGraphics,
@@ -182,7 +174,7 @@ public class RenderHelper {
 
         pose.pushPose();
         pose.translate(xPos, yPos, 100);
-        float scaleX = scaleFactor / (float) Math.sqrt(sizeX * sizeX * 2);
+        float scaleX = scaleFactor / (sizeX * Mth.SQRT_OF_TWO);
         float scaleY = scaleFactor / (float) sizeY;
         float scale = Math.min(scaleY, scaleX);
         pose.scale(-scale, -scale, -scale);
@@ -191,7 +183,7 @@ public class RenderHelper {
         pose.mulPose(Axis.XP.rotationDegrees(-30));
 
         float offsetX = (float) -sizeX / 2;
-        float offsetZ = (float) -sizeY / 2 + 1;
+        float offsetZ = (float) -sizeX / 2 + 1;
         float rotationY = (clientLevel.getGameTime() + tracker.getGameTimeDeltaPartialTick(true)) * rotationSpeed;
 
         pose.translate(-offsetX, 0, -offsetZ);
@@ -229,6 +221,9 @@ public class RenderHelper {
                     blockRenderer.renderBatched(state, pos, level, pose, vertex, false, RANDOM, ModelData.EMPTY, type);
                 }
             }
+
+            Optional.ofNullable(level.getBlockEntity(pos))
+                .ifPresent(blockEntity -> renderBlockEntity(blockEntity, pose, buffers));
             pose.popPose();
         }
         buffers.endBatch();
@@ -247,18 +242,32 @@ public class RenderHelper {
 
     private static Optional<BlockEntity> getCachedBlockEntity(BlockState state) {
         if (!state.hasBlockEntity()) return Optional.empty();
-        if (BLOCK_ENTITY_CHACE.containsKey(state)) return Optional.of(BLOCK_ENTITY_CHACE.get(state));
+        if (BLOCK_ENTITY_CACHE.containsKey(state)) return Optional.of(BLOCK_ENTITY_CACHE.get(state));
         Optional<BlockEntity> opt = Optional.of(state.getBlock())
             .filter(b -> b instanceof EntityBlock)
             .map(b -> ((EntityBlock)b).newBlockEntity(BlockPos.ZERO, state));
         opt.ifPresent(be -> {
-            BLOCK_ENTITY_CHACE.put(state, be);
-            if (BLOCK_ENTITY_CHACE.size() > MAX_CACHE_SIZE) {
-                BLOCK_ENTITY_CHACE.pollFirstEntry();
+            BLOCK_ENTITY_CACHE.put(state, be);
+            if (BLOCK_ENTITY_CACHE.size() > MAX_CACHE_SIZE) {
+                BLOCK_ENTITY_CACHE.pollFirstEntry();
             }
         });
         return opt;
     }
+
+    private static void renderBlockEntity(
+        BlockEntity blockEntity,
+        PoseStack pose,
+        MultiBufferSource.BufferSource buffers) {
+        BlockEntityRenderer<BlockEntity> renderer = Minecraft.getInstance()
+            .getBlockEntityRenderDispatcher().getRenderer(blockEntity);
+        if (renderer == null) return;
+        try {
+            renderer.render(blockEntity, getPartialTick(), pose, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+        } catch (Exception ignored) {
+        }
+    }
+
 
     public static void renderItemWithTransparency(ItemStack stack, PoseStack poseStack, int x, int y, float alpha) {
         renderItemWithTransparency(Minecraft.getInstance().player, Minecraft.getInstance().level, poseStack, stack, x, y, alpha);

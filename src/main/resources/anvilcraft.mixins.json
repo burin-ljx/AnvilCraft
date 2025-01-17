@@ -30,6 +30,8 @@
     "VillagerMixin",
     "ZombieVillagerMixin",
     "accessor.BaseSpawnerAccessor",
+    "accessor.CropBlockAccessor",
+    "accessor.GrowingPlantAccessor",
     "forge.FallingBlockEntityMixin",
     "forge.LevelChunkMixin",
     "forge.LightningBoltMixin",

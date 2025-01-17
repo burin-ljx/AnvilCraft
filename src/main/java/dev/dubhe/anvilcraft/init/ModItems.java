@@ -47,6 +47,7 @@ import dev.dubhe.anvilcraft.item.UtusanItem;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -520,7 +521,8 @@ public class ModItems {
     public static final ItemEntry<StructureToolItem> STRUCTURE_TOOL = REGISTRATE
         .item("structure_tool", StructureToolItem::new)
         .model((ctx, provider) -> provider.generated(ctx::get, ResourceLocation.parse("item/paper")))
-        .properties(properties -> properties.stacksTo(1))
+        .properties(properties -> properties.stacksTo(1)
+            .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true))
         .register();
 
     static {
