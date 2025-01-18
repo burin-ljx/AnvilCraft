@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.block.pressurePlate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,19 +10,23 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.Set;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MonsterCountPressurePlateBlock extends PowerLevelPressurePlateBlock {
-    public MonsterCountPressurePlateBlock(
-            BlockSetType type, Properties properties) {
-        super(type, properties);
+public class EntityCountPressurePlateBlock extends PowerLevelPressurePlateBlock {
+    private final Set<Class<? extends Entity>> entityClasses = Sets.newHashSet();
+
+    @SafeVarargs
+    public EntityCountPressurePlateBlock(Properties properties, Class<? extends Entity>... entityClasses) {
+        super(BlockSetType.IRON, properties);
+        Collections.addAll(this.entityClasses, entityClasses);
     }
 
     @Override
     protected Set<Class<? extends Entity>> getEntityClasses() {
-        return ImmutableSet.of(LivingEntity.class);
+        return this.entityClasses;
     }
 
     @Override

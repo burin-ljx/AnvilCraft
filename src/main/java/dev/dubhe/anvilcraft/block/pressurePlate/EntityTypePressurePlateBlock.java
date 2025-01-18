@@ -17,9 +17,8 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class EntityTypePressurePlateBlock extends PowerLevelPressurePlateBlock {
-    public EntityTypePressurePlateBlock(
-            BlockSetType type, Properties properties) {
-        super(type, properties);
+    public EntityTypePressurePlateBlock(Properties properties) {
+        super(BlockSetType.IRON, properties);
     }
 
     @Override
