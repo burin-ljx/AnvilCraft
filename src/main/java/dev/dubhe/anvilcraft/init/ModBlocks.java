@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.init;
 
+import com.tterrag.registrate.util.nullness.NonNullFunction;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.IPowerComponent.Switch;
 import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
@@ -93,11 +94,21 @@ import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.ContinuousPressingPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.EntityCountPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.EntityTypePressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.FireImmunePressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.HealthPercentPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.ItemDurabilityPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.PlayerHungerPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.PlayerInventoryPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.pressurePlate.PowerLevelPressurePlateBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical4PartHalf;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
+import dev.dubhe.anvilcraft.data.tags.TagsHandler;
 import dev.dubhe.anvilcraft.item.AbstractMultiplePartBlockItem;
 import dev.dubhe.anvilcraft.item.CursedBlockItem;
 import dev.dubhe.anvilcraft.item.EndDustBlockItem;
@@ -108,10 +119,12 @@ import dev.dubhe.anvilcraft.item.ResinBlockItem;
 import dev.dubhe.anvilcraft.item.TeslaTowerItem;
 import dev.dubhe.anvilcraft.util.DangerUtil;
 
+import dev.dubhe.anvilcraft.util.DataGenUtil;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -134,7 +147,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -143,7 +155,6 @@ import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -3227,12 +3238,14 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull BlockEntry<? extends PressurePlateBlock> registerOtherCopperPressurePlate(
-        String prefix, @NotNull Block block) {
+    private static @NotNull BlockEntry<? extends ContinuousPressingPressurePlateBlock> registerOtherCopperPressurePlate(
+            String prefix, @NotNull Block block,
+            NonNullFunction<BlockBehaviour.Properties, ? extends ContinuousPressingPressurePlateBlock> plateBlockFactory
+    ) {
         ResourceLocation location = BuiltInRegistries.BLOCK.getKey(block);
         String id = prefix + "copper" + "_pressure_plate";
         return REGISTRATE
-            .block(id, (properties) -> new PressurePlateBlock(BlockSetType.OAK, properties))
+            .block(id, plateBlockFactory)
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.HAMMER_REMOVABLE)
             .initialProperties(() -> block)
             .properties(properties -> properties
@@ -3241,8 +3254,8 @@ public class ModBlocks {
                 .noCollission()
                 .strength(0.5f)
                 .pushReaction(PushReaction.DESTROY))
-            .blockstate((ctx, provider) -> provider.pressurePlateBlock(
-                ctx.get(),
+            .blockstate((ctx, provider) -> DataGenUtil.powerLevelPressurePlate(
+                provider, ctx.get(),
                 ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
             .item()
             .tag(ModItemTags.PLATES, ModItemTags.bindC("copper" + "_plates"))
@@ -3251,14 +3264,17 @@ public class ModBlocks {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static @NotNull BlockEntry<? extends PressurePlateBlock> registerPressurePlate(
-        String type, @NotNull Supplier<? extends Block> block, Item... ingredients) {
+    private static @NotNull BlockEntry<? extends PowerLevelPressurePlateBlock> registerPressurePlate(
+            String type, @NotNull Supplier<? extends Block> block,
+            NonNullFunction<BlockBehaviour.Properties, ? extends PowerLevelPressurePlateBlock> plateBlockFactory,
+            Item... ingredients
+    ) {
         ResourceLocation location;
         if (block instanceof BlockEntry<? extends Block> entry) location = entry.getId();
         else location = BuiltInRegistries.BLOCK.getKey(block.get());
         String id = type + "_pressure_plate";
         return REGISTRATE
-            .block(id, (properties) -> new PressurePlateBlock(BlockSetType.OAK, properties))
+            .block(id, plateBlockFactory)
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.HAMMER_REMOVABLE)
             .initialProperties(block::get)
             .properties(properties -> properties
@@ -3267,8 +3283,8 @@ public class ModBlocks {
                 .noCollission()
                 .strength(0.5f)
                 .pushReaction(PushReaction.DESTROY))
-            .blockstate((ctx, provider) -> provider.pressurePlateBlock(
-                ctx.get(),
+            .blockstate((ctx, provider) -> DataGenUtil.powerLevelPressurePlate(
+                provider, ctx.get(),
                 ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
             .item()
             .tag(ModItemTags.PLATES, ModItemTags.bindC(type + "_plates"))
@@ -3290,14 +3306,17 @@ public class ModBlocks {
     }
 
     @SafeVarargs
-    private static @NotNull BlockEntry<? extends PressurePlateBlock> registerPressurePlate(
-        String type, @NotNull Supplier<? extends Block> block, TagKey<Item>... ingredients) {
+    private static @NotNull BlockEntry<? extends PowerLevelPressurePlateBlock> registerPressurePlate(
+            String type, @NotNull Supplier<? extends Block> block,
+            NonNullFunction<BlockBehaviour.Properties, ? extends PowerLevelPressurePlateBlock> plateBlockFactory,
+            TagKey<Item>... ingredients
+    ) {
         ResourceLocation location;
         if (block instanceof BlockEntry<? extends Block> entry) location = entry.getId();
         else location = BuiltInRegistries.BLOCK.getKey(block.get());
         String id = type + "_pressure_plate";
         return REGISTRATE
-            .block(id, (properties) -> new PressurePlateBlock(BlockSetType.OAK, properties))
+            .block(id, plateBlockFactory)
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.HAMMER_REMOVABLE)
             .initialProperties(block::get)
             .properties(properties -> properties
@@ -3306,8 +3325,8 @@ public class ModBlocks {
                 .noCollission()
                 .strength(0.5f)
                 .pushReaction(PushReaction.DESTROY))
-            .blockstate((ctx, provider) -> provider.pressurePlateBlock(
-                ctx.get(),
+            .blockstate((ctx, provider) -> DataGenUtil.powerLevelPressurePlate(
+                provider, ctx.get(),
                 ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
             .item()
             .tag(ModItemTags.PLATES, ModItemTags.bindC("plates/" + type), ModItemTags.PLATES)
@@ -3435,32 +3454,102 @@ public class ModBlocks {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_FUNCTION_BLOCK.getKey());
     }
 
-    public static final BlockEntry<? extends PressurePlateBlock> COPPER_PRESSURE_PLATE =
-        registerPressurePlate("copper", () -> Blocks.COPPER_BLOCK, Items.COPPER_INGOT);
-    public static final BlockEntry<? extends PressurePlateBlock> EXPOSED_COPPER_PRESSURE_PLATE =
-        registerOtherCopperPressurePlate("exposed_", Blocks.EXPOSED_COPPER);
-    public static final BlockEntry<? extends PressurePlateBlock> WEATHERED_COPPER_PRESSURE_PLATE =
-        registerOtherCopperPressurePlate("weathered_", Blocks.WEATHERED_COPPER);
-    public static final BlockEntry<? extends PressurePlateBlock> OXIDIZED_COPPER_PRESSURE_PLATE =
-        registerOtherCopperPressurePlate("oxidized_", Blocks.OXIDIZED_COPPER);
-    public static final BlockEntry<? extends PressurePlateBlock> TUNGSTEN_PRESSURE_PLATE =
-        registerPressurePlate("tungsten", TUNGSTEN_BLOCK, ModItemTags.TUNGSTEN_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> TITANIUM_PRESSURE_PLATE =
-        registerPressurePlate("titanium", TITANIUM_BLOCK, ModItemTags.TITANIUM_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> ZINC_PRESSURE_PLATE =
-        registerPressurePlate("zinc", ZINC_BLOCK, ModItemTags.ZINC_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> TIN_PRESSURE_PLATE =
-        registerPressurePlate("tin", TIN_BLOCK, ModItemTags.TIN_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> LEAD_PRESSURE_PLATE =
-        registerPressurePlate("lead", LEAD_BLOCK, ModItemTags.LEAD_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> SILVER_PRESSURE_PLATE =
-        registerPressurePlate("silver", SILVER_BLOCK, ModItemTags.SILVER_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> URANIUM_PRESSURE_PLATE =
-        registerPressurePlate("uranium", URANIUM_BLOCK, ModItemTags.URANIUM_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> BRONZE_PRESSURE_PLATE =
-        registerPressurePlate("bronze", BRONZE_BLOCK, ModItemTags.BRONZE_INGOTS);
-    public static final BlockEntry<? extends PressurePlateBlock> BRASS_PRESSURE_PLATE =
-        registerPressurePlate("brass", BRASS_BLOCK, ModItemTags.BRASS_INGOTS);
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> COPPER_PRESSURE_PLATE =
+        registerPressurePlate(
+                "copper", () -> Blocks.COPPER_BLOCK,
+                properties -> new ContinuousPressingPressurePlateBlock(properties) {
+                    @Override
+                    protected int getMaxCooldownTime() {
+                        return 10;
+                    }
+                },
+                Items.COPPER_INGOT
+        );
+    public static final BlockEntry<? extends ContinuousPressingPressurePlateBlock> EXPOSED_COPPER_PRESSURE_PLATE =
+        registerOtherCopperPressurePlate(
+                "exposed_", Blocks.EXPOSED_COPPER,
+                properties -> new ContinuousPressingPressurePlateBlock(properties) {
+                    @Override
+                    protected int getMaxCooldownTime() {
+                        return 20;
+                    }
+                });
+    public static final BlockEntry<? extends ContinuousPressingPressurePlateBlock> WEATHERED_COPPER_PRESSURE_PLATE =
+        registerOtherCopperPressurePlate(
+                "weathered_", Blocks.WEATHERED_COPPER,
+                properties -> new ContinuousPressingPressurePlateBlock(properties) {
+                    @Override
+                    protected int getMaxCooldownTime() {
+                        return 40;
+                    }
+                });
+    public static final BlockEntry<? extends ContinuousPressingPressurePlateBlock> OXIDIZED_COPPER_PRESSURE_PLATE =
+        registerOtherCopperPressurePlate(
+                "oxidized_", Blocks.OXIDIZED_COPPER,
+                properties -> new ContinuousPressingPressurePlateBlock(properties) {
+                    @Override
+                    protected int getMaxCooldownTime() {
+                        return 80;
+                    }
+                });
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> TUNGSTEN_PRESSURE_PLATE =
+        registerPressurePlate(
+                "tungsten", TUNGSTEN_BLOCK,
+                FireImmunePressurePlateBlock::new,
+                ModItemTags.TUNGSTEN_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> TITANIUM_PRESSURE_PLATE =
+        registerPressurePlate(
+                "titanium", TITANIUM_BLOCK,
+                properties -> new ItemDurabilityPressurePlateBlock(properties, false),
+                ModItemTags.TITANIUM_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> ZINC_PRESSURE_PLATE =
+        registerPressurePlate(
+                "zinc", ZINC_BLOCK,
+                properties -> new HealthPercentPressurePlateBlock(properties, false),
+                ModItemTags.ZINC_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> TIN_PRESSURE_PLATE =
+        registerPressurePlate(
+                "tin", TIN_BLOCK,
+                properties -> new HealthPercentPressurePlateBlock(properties, true),
+                ModItemTags.TIN_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> LEAD_PRESSURE_PLATE =
+        registerPressurePlate(
+                "lead", LEAD_BLOCK,
+                EntityTypePressurePlateBlock::new,
+                ModItemTags.LEAD_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> SILVER_PRESSURE_PLATE =
+        registerPressurePlate(
+                "silver", SILVER_BLOCK,
+                properties -> new EntityCountPressurePlateBlock(
+                        properties, entity -> entity.getType().is(TagKey.create(
+                                Registries.ENTITY_TYPE,
+                                ResourceLocation.withDefaultNamespace("undead")
+                ))),
+                ModItemTags.SILVER_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> URANIUM_PRESSURE_PLATE =
+        registerPressurePlate(
+                "uranium", URANIUM_BLOCK,
+                properties -> new ItemDurabilityPressurePlateBlock(properties, false),
+                ModItemTags.URANIUM_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> BRONZE_PRESSURE_PLATE =
+        registerPressurePlate(
+                "bronze", BRONZE_BLOCK,
+                PlayerInventoryPressurePlateBlock::new,
+                ModItemTags.BRONZE_INGOTS
+        );
+    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> BRASS_PRESSURE_PLATE =
+        registerPressurePlate(
+                "brass", BRASS_BLOCK,
+                PlayerHungerPressurePlateBlock::new,
+                ModItemTags.BRASS_INGOTS
+        );
 
     public static void register() {
     }
