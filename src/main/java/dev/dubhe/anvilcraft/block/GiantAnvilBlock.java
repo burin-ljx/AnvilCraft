@@ -35,6 +35,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -238,7 +240,6 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
         builder.add(HALF, CUBE);
     }
 
-    @Nullable
     public static BlockState damage(BlockState state) {
         return state;
     }
@@ -324,7 +325,7 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
             }
         }
 
-        UPDATE_OFFSET.forEach((direction, offestList) -> offestList.forEach(offset -> {
+        UPDATE_OFFSET.forEach((direction, offsetList) -> offsetList.forEach(offset -> {
             BlockPos updatedPos = pos.offset(offset);
             BlockPos fromPos = updatedPos.relative(direction);
             level.neighborShapeChanged(direction,
@@ -404,5 +405,15 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
             (syncId, inventory, player) ->
                 new AnvilMenu(syncId, inventory, ContainerLevelAccess.create(level, pos)),
             CONTAINER_TITLE);
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(HALF, state.getValue(HALF).rotate(rotation));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.setValue(HALF, state.getValue(HALF).mirror(mirror));
     }
 }
