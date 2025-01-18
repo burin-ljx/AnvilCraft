@@ -81,8 +81,7 @@ public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
 
     @Override
     protected int getSignalStrength(Level level, BlockPos pos) {
-        Set<Class<? extends Entity>> entityClasses = getEntityClasses();
-        return getEntitiesCount(level, TOUCH_AABB.move(pos), entityClasses) > 0 ? 15 : 0;
+        return getSignalStrength(level, TOUCH_AABB.move(pos), getEntityClasses());
     }
 
     protected Set<Class<? extends Entity>> getEntityClasses() {
@@ -95,17 +94,17 @@ public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
         return newSet;
     }
 
-    protected int getEntitiesCount(Level level, AABB box, Set<Class<? extends Entity>> entityClasses) {
-        int result = 0;
+    protected int getSignalStrength(Level level, AABB box, Set<Class<? extends Entity>> entityClasses) {
+        int count = 0;
 
         for (Class<? extends Entity> entityClass : entityClasses) {
-            result += level.getEntitiesOfClass(
+            count += level.getEntitiesOfClass(
                     entityClass, box,
                     EntitySelector.NO_SPECTATORS.and(entity -> !entity.isIgnoringBlockTriggers())
             ).size();
         }
 
-        return result;
+        return count > 0 ? 15 : 0;
     }
 
     private void updateSignal(Level level, BlockPos pos, BlockState state, int currentSignal, int expectedSignal) {

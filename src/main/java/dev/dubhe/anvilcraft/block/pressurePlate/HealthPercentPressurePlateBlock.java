@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.block.pressurePlate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.BlockPos;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +15,7 @@ import net.minecraft.world.phys.AABB;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
+@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class HealthPercentPressurePlateBlock extends PowerLevelPressurePlateBlock {
     private final boolean useMinPercent;
@@ -25,12 +26,16 @@ public class HealthPercentPressurePlateBlock extends PowerLevelPressurePlateBloc
     }
 
     @Override
-    protected int getSignalStrength(Level level, BlockPos pos) {
-        Pair<Float, Float> minAndMaxHealthPercent = getEntitiesHealthPercentMinAndMax(
-                level, TOUCH_AABB.move(pos),
-                ImmutableSet.of(LivingEntity.class)
-        );
-        float value = this.useMinPercent ? minAndMaxHealthPercent.getFirst() : minAndMaxHealthPercent.getSecond();
+    protected Set<Class<? extends Entity>> getEntityClasses() {
+        return ImmutableSet.of(LivingEntity.class);
+    }
+
+    @Override
+    protected int getSignalStrength(
+            Level level, AABB box, Set<Class<? extends Entity>> entityClasses
+    ) {
+        Pair<Float, Float> minAndMax = getEntitiesHealthPercentMinAndMax(level, box, entityClasses);
+        float value = this.useMinPercent ? minAndMax.getFirst() : minAndMax.getSecond();
         return (int) (value * 15);
     }
 
