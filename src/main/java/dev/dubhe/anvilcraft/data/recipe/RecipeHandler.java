@@ -24,5 +24,6 @@ public class RecipeHandler {
         MineralFountainRecipeLoader.init(provider);
         VanillaRecipesLoader.init(provider);
         JewelCraftingRecipeLoader.init(provider);
+        SpecialCraftingRecipeLoader.init(provider);
     }
 }

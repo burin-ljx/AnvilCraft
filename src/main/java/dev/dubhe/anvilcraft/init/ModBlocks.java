@@ -1218,8 +1218,11 @@ public class ModBlocks {
         .properties(BlockBehaviour.Properties::noOcclusion)
         .blockstate((ctx, provider) -> {
         })
-        .simpleItem()
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .item()
+        .tag(Tags.Items.VILLAGER_JOB_SITES)
+        .build()
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            Tags.Blocks.VILLAGER_JOB_SITES)
         .lang("Jewel Crafting Table")
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())

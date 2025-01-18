@@ -28,6 +28,8 @@ public class LavaCauldronBlock extends Layered4LevelCauldronBlock implements IHa
         super(properties, ModInteractionMap.LAYERED_LAVA);
     }
 
+
+
     @Override
     public ItemInteractionResult useItemOn(
             ItemStack stack,

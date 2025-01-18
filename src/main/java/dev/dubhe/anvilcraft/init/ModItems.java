@@ -11,6 +11,7 @@ import dev.dubhe.anvilcraft.item.AmethystPickaxeItem;
 import dev.dubhe.anvilcraft.item.AmethystShovelItem;
 import dev.dubhe.anvilcraft.item.AmethystSwordItem;
 import dev.dubhe.anvilcraft.item.AnvilHammerItem;
+import dev.dubhe.anvilcraft.item.CannedFoodItem;
 import dev.dubhe.anvilcraft.item.CapacitorItem;
 import dev.dubhe.anvilcraft.item.CrabClawItem;
 import dev.dubhe.anvilcraft.item.CursedItem;
@@ -516,6 +517,16 @@ public class ModItems {
         .register();
     public static final ItemEntry<UtusanItem> UTUSAN =
         REGISTRATE.item("utusan", UtusanItem::new).register();
+
+    public static final ItemEntry<Item> TIN_CAN = REGISTRATE
+        .item("tin_can", Item::new)
+        .register();
+    public static final ItemEntry<CannedFoodItem> CANNED_FOOD = REGISTRATE
+        .item("canned_food", p -> new CannedFoodItem(p, TIN_CAN))
+        .properties(properties -> properties.stacksTo(16))
+        .tag(Tags.Items.FOODS)
+        .register();
+
     public static final ItemEntry<SeedsPackItem> SEEDS_PACK =
         REGISTRATE.item("seeds_pack", SeedsPackItem::new).register();
     public static final ItemEntry<StructureToolItem> STRUCTURE_TOOL = REGISTRATE
