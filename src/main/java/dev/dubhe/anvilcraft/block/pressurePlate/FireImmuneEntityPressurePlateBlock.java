@@ -17,9 +17,8 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FireImmuneEntityPressurePlateBlock extends PowerLevelPressurePlateBlock {
-    public FireImmuneEntityPressurePlateBlock(
-            BlockSetType type, Properties properties) {
-        super(type, properties);
+    public FireImmuneEntityPressurePlateBlock(Properties properties) {
+        super(BlockSetType.IRON, properties);
     }
 
     @Override

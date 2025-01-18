@@ -66,7 +66,7 @@ public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
         return state.getValue(POWER);
     }
 
-    private void checkPressed(@Nullable Entity entity, Level level, BlockPos pos, BlockState state, int currentSignal) {
+    protected void checkPressed(@Nullable Entity entity, Level level, BlockPos pos, BlockState state, int currentSignal) {
         int expectedSignal = this.getSignalStrength(level, pos);
         boolean isActivating = currentSignal > 0;
         boolean needActivate = expectedSignal > 0;
@@ -107,7 +107,7 @@ public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
         return count > 0 ? 15 : 0;
     }
 
-    private void updateSignal(Level level, BlockPos pos, BlockState state, int currentSignal, int expectedSignal) {
+    protected void updateSignal(Level level, BlockPos pos, BlockState state, int currentSignal, int expectedSignal) {
         if (currentSignal != expectedSignal) {
             BlockState blockstate = this.setSignalForState(state, expectedSignal);
             level.setBlock(pos, blockstate, 2);
@@ -116,7 +116,7 @@ public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
         }
     }
 
-    private void sendEvent(@Nullable Entity entity, Level level, BlockPos pos, boolean isActivating, boolean needActivate) {
+    protected void sendEvent(@Nullable Entity entity, Level level, BlockPos pos, boolean isActivating, boolean needActivate) {
         if (!needActivate && isActivating) {
             level.playSound(null, pos, this.type.pressurePlateClickOff(), SoundSource.BLOCKS);
             level.gameEvent(entity, GameEvent.BLOCK_DEACTIVATE, pos);

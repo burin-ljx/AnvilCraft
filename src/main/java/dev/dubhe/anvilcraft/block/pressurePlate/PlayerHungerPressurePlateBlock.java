@@ -16,9 +16,8 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class PlayerHungerPressurePlateBlock extends PowerLevelPressurePlateBlock {
-    public PlayerHungerPressurePlateBlock(
-            BlockSetType type, Properties properties) {
-        super(type, properties);
+    public PlayerHungerPressurePlateBlock(Properties properties) {
+        super(BlockSetType.IRON, properties);
     }
 
     @Override
