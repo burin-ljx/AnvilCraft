@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
@@ -12,31 +14,27 @@ import net.minecraft.world.phys.AABB;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class EntityCountPressurePlateBlock extends PowerLevelPressurePlateBlock {
-    private final Set<Class<? extends Entity>> entityClasses = Sets.newHashSet();
+    private final Predicate<Entity> filter;
 
-    @SafeVarargs
-    public EntityCountPressurePlateBlock(Properties properties, Class<? extends Entity>... entityClasses) {
+    public EntityCountPressurePlateBlock(Properties properties, Predicate<Entity> filter) {
         super(BlockSetType.IRON, properties);
-        Collections.addAll(this.entityClasses, entityClasses);
-    }
-
-    @Override
-    protected Set<Class<? extends Entity>> getEntityClasses() {
-        return this.entityClasses;
+        this.filter = filter;
     }
 
     @Override
     protected int getSignalStrength(Level level, AABB box, Set<Class<? extends Entity>> entityClasses) {
-        int result = 0;
+        return Math.clamp(getEntityCountWithFilter(level, box, this.filter), 0, 15);
+    }
 
-        for (Class<? extends Entity> entityClass : entityClasses) {
-            result += getEntityCount(level, box, entityClass);
-        }
-
-        return Math.clamp(result, 0, 15);
+    protected static int getEntityCountWithFilter(Level level, AABB box, Predicate<Entity> filter) {
+        return level.getEntitiesOfClass(
+                Entity.class, box,
+                EntitySelector.NO_SPECTATORS.and(filter)
+        ).size();
     }
 }

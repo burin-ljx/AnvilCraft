@@ -17,10 +17,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class ContinuousPressingPressurePlateBlock extends PowerLevelPressurePlateBlock {
-    public static final IntegerProperty COOLDOWN_TIME_DEFAULT = IntegerProperty.create("cooldown_time", 0, 10);
-
     @Getter
-    protected IntegerProperty cooldownTimeProperty = COOLDOWN_TIME_DEFAULT;
+    protected IntegerProperty cooldownTimeProperty;
     @Getter
     protected int cooldownTime = getMaxCooldownTime();
 
