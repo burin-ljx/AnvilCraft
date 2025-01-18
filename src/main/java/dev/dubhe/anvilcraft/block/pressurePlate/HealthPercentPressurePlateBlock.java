@@ -18,11 +18,11 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class HealthPercentPressurePlateBlock extends PowerLevelPressurePlateBlock {
-    private final boolean useMinPercent;
+    private final boolean useMin;
 
-    public HealthPercentPressurePlateBlock(Properties properties, boolean useMinPercent) {
+    public HealthPercentPressurePlateBlock(Properties properties, boolean useMin) {
         super(BlockSetType.IRON, properties);
-        this.useMinPercent = useMinPercent;
+        this.useMin = useMin;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class HealthPercentPressurePlateBlock extends PowerLevelPressurePlateBloc
             Level level, AABB box, Set<Class<? extends Entity>> entityClasses
     ) {
         Pair<Float, Float> minAndMax = getEntitiesHealthPercentMinAndMax(level, box, entityClasses);
-        float value = this.useMinPercent ? minAndMax.getFirst() : minAndMax.getSecond();
+        float value = this.useMin ? minAndMax.getFirst() : minAndMax.getSecond();
         return (int) (value * 15);
     }
 

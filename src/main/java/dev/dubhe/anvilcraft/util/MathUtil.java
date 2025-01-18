@@ -51,4 +51,9 @@ public class MathUtil {
     public static float angleDegrees(Vector2f from, Vector2f to) {
         return (float) toDegrees(angle(from, to));
     }
+
+    public static float safeDivide(float a, float b) {
+        if (a == b) return 1;
+        return a / b;
+    }
 }
