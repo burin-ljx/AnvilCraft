@@ -232,7 +232,6 @@ public class SimpleChuteBlock
             ((level1, blockPos, blockState, blockEntity) -> blockEntity.tick()));
     }
 
-
     @Override
     public VoxelShape getShape(
         BlockState blockState,

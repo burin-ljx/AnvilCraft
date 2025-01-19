@@ -44,12 +44,14 @@ public abstract class BaseChuteBlockEntity
     extends BaseMachineBlockEntity
     implements IFilterBlockEntity, IDiskCloneable, IItemHandlerHolder {
 
-    private int cooldown = 0;
-    private final FilteredItemStackHandler itemHandler = new FilteredItemStackHandler(9) {
+    protected int cooldown = 0;
+    protected final FilteredItemStackHandler itemHandler = new FilteredItemStackHandler(9) {
         @Override
         public void onContentsChanged(int slot) {
-            if (level.isClientSide) return;
-            setChanged();
+            assert level != null;
+            if (!level.isClientSide) {
+                setChanged();
+            }
         }
     };
 
@@ -147,7 +149,7 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
-        if (cooldown <= 0) {
+        if (cooldown == 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
                 IItemHandler source = findItemHandler(
