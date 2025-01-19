@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.block.pressurePlate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import dev.dubhe.anvilcraft.util.MathUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -11,9 +12,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
+import org.antlr.v4.runtime.misc.IntegerList;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,19 +43,19 @@ public class ItemDurabilityPressurePlateBlock extends PowerLevelPressurePlateBlo
     }
 
     protected static Pair<Float, Float> getItemDurabilityPercentMinAndMax(Level level, AABB box) {
-        float min = 0F;
-        float max = 0F;
+        TreeSet<Float> set = Sets.newTreeSet();
         for (ItemEntity item : level.getEntitiesOfClass(
                 ItemEntity.class, box,
                 EntitySelector.NO_SPECTATORS.and(entity -> !entity.isIgnoringBlockTriggers())
         )) {
             ItemStack stack = item.getItem();
-            float durabilityPercent = MathUtil.safeDivide(stack.getDamageValue(), stack.getMaxDamage());
-
-            min = Math.min(min, durabilityPercent);
-            max = Math.max(max, durabilityPercent);
+            set.add(MathUtil.safeDivide(stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()));
         }
 
-        return new Pair<>(Math.max(min, 0), Math.min(max, 1));
+        try {
+            return new Pair<>(Math.max(set.getFirst(), 0), Math.min(set.getLast(), 1));
+        } catch (NoSuchElementException ignored) {
+            return new Pair<>(0F, 0F);
+        }
     }
 }

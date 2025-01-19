@@ -13,7 +13,9 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -48,21 +50,25 @@ public class HealthPercentPressurePlateBlock extends PowerLevelPressurePlateBloc
             ));
         }
 
-        float min = 0F;
-        float max = 0F;
+        TreeSet<Float> set = Sets.newTreeSet();
         for (Entity entity : entities) {
-            float healthPercent = 0F;
+            float healthPercent;
 
             if (entity instanceof LivingEntity living) {
                 healthPercent = living.getHealth() / living.getMaxHealth();
             } else if (entity instanceof EnderDragonPart part) {
                 healthPercent = part.getParent().getHealth() / part.getParent().getHealth();
+            } else {
+                continue;
             }
 
-            min = Math.min(min, healthPercent);
-            max = Math.max(max, healthPercent);
+            set.add(healthPercent);
         }
 
-        return new Pair<>(Math.max(min, 0), Math.min(max, 1));
+        try {
+            return new Pair<>(Math.max(set.getFirst(), 0), Math.min(set.getLast(), 1));
+        } catch (NoSuchElementException ignored) {
+            return new Pair<>(0F, 0F);
+        }
     }
 }

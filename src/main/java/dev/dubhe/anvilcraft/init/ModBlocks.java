@@ -3539,7 +3539,7 @@ public class ModBlocks {
     public static final BlockEntry<? extends PowerLevelPressurePlateBlock> URANIUM_PRESSURE_PLATE =
         registerPressurePlate(
                 "uranium", URANIUM_BLOCK,
-                properties -> new ItemDurabilityPressurePlateBlock(properties, false),
+                properties -> new ItemDurabilityPressurePlateBlock(properties, true),
                 ModItemTags.URANIUM_INGOTS
         );
     public static final BlockEntry<? extends PowerLevelPressurePlateBlock> BRONZE_PRESSURE_PLATE =
