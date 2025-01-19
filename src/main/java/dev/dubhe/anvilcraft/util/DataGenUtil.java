@@ -2,19 +2,17 @@ package dev.dubhe.anvilcraft.util;
 
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import dev.dubhe.anvilcraft.block.pressurePlate.PowerLevelPressurePlateBlock;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.PressurePlateBlock;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 
 public class DataGenUtil {
     public static void powerLevelPressurePlate(
-            RegistrateBlockstateProvider provider, PressurePlateBlock block, ResourceLocation texture
+            RegistrateBlockstateProvider provider, ResourceLocation id,
+            PowerLevelPressurePlateBlock block, ResourceLocation texture
     ) {
-        ResourceLocation key = BuiltInRegistries.BLOCK.getKey(block);
-        ModelFile pressurePlate = provider.models().pressurePlate(key.getPath(), texture);
-        ModelFile pressurePlateDown = provider.models().pressurePlateDown(key.getPath() + "_down", texture);
+        ModelFile pressurePlate = provider.models().pressurePlate(id.getPath(), texture);
+        ModelFile pressurePlateDown = provider.models().pressurePlateDown(id.getPath() + "_down", texture);
 
         provider.getVariantBuilder(block)
                 .partialState().with(PowerLevelPressurePlateBlock.POWER, 0).addModels(new ConfiguredModel(pressurePlate))

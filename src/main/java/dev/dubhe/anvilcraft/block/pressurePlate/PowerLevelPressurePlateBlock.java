@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BasePressurePlateBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +30,7 @@ import java.util.Set;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
+public class PowerLevelPressurePlateBlock extends BasePressurePlateBlock {
     public static final MapCodec<PowerLevelPressurePlateBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     BlockSetType.CODEC.fieldOf("block_set_type").forGetter(block -> block.type), propertiesCodec()
@@ -39,8 +40,13 @@ public class PowerLevelPressurePlateBlock extends PressurePlateBlock {
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     public PowerLevelPressurePlateBlock(BlockSetType type, Properties properties) {
-        super(type, properties);
+        super(properties, type);
         this.registerDefaultState(this.stateDefinition.any().setValue(POWER, 0));
+    }
+
+    @Override
+    protected MapCodec<? extends BasePressurePlateBlock> codec() {
+        return CODEC;
     }
 
     @Override

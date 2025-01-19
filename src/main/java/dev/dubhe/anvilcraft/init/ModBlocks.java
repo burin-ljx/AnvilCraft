@@ -107,7 +107,6 @@ import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical3PartHalf;
 import dev.dubhe.anvilcraft.block.state.Vertical4PartHalf;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
-import dev.dubhe.anvilcraft.data.tags.TagsHandler;
 import dev.dubhe.anvilcraft.item.AbstractMultiplePartBlockItem;
 import dev.dubhe.anvilcraft.item.CursedBlockItem;
 import dev.dubhe.anvilcraft.item.EndDustBlockItem;
@@ -3283,8 +3282,9 @@ public class ModBlocks {
                 .strength(0.5f)
                 .pushReaction(PushReaction.DESTROY))
             .blockstate((ctx, provider) -> DataGenUtil.powerLevelPressurePlate(
-                provider, ctx.get(),
-                ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
+                provider, ctx.getId(), ctx.get(),
+                ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())
+            ))
             .item()
             .tag(ModItemTags.PLATES, ModItemTags.bindC(type + "_plates"))
             .build()
@@ -3325,8 +3325,9 @@ public class ModBlocks {
                 .strength(0.5f)
                 .pushReaction(PushReaction.DESTROY))
             .blockstate((ctx, provider) -> DataGenUtil.powerLevelPressurePlate(
-                provider, ctx.get(),
-                ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
+                provider, ctx.getId(), ctx.get(),
+                ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())
+            ))
             .item()
             .tag(ModItemTags.PLATES, ModItemTags.bindC("plates/" + type), ModItemTags.PLATES)
             .initialProperties(
