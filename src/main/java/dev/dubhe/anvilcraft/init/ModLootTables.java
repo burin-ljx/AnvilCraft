@@ -1,12 +1,16 @@
 package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModLootTables {
     public static final ResourceKey<LootTable> CRAB_TRAP_COMMON = key("gameplay/crab_trap/common");
@@ -17,6 +21,8 @@ public class ModLootTables {
     public static final ResourceKey<LootTable> CRAB_TRAP_JUNGLE = key("gameplay/crab_trap/jungle");
 
     public static final ResourceKey<LootTable> ADVANCEMENT_ROOT = key("advancement/root");
+
+    public static final Map<EntityType<?>, LootTable> BEHEADING_LOOT = new HashMap<>();
 
     public static final ResourceKey<LootTable> BEHEADING_WITHER_SKELETON = beheadingKey(EntityType.WITHER_SKELETON);
     public static final ResourceKey<LootTable> BEHEADING_ZOMBIE = beheadingKey(EntityType.ZOMBIE);
@@ -33,5 +39,13 @@ public class ModLootTables {
     private static ResourceKey<LootTable> beheadingKey(EntityType<?> entityType) {
         ResourceLocation entityId = EntityType.getKey(entityType);
         return key("entities/beheading/" + entityId.getNamespace() + '/' + entityId.getPath());
+    }
+
+    public static LootTable getBeheadingLoot(Entity entity) {
+        MinecraftServer server = entity.level().getServer();
+        if (server == null) return LootTable.EMPTY;
+        EntityType<?> entityType = entity.getType();
+        return BEHEADING_LOOT.computeIfAbsent(entityType,
+            e -> server.reloadableRegistries().getLootTable(beheadingKey(entityType)));
     }
 }
