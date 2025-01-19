@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.block;
 import dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.block.entity.RubyPrismBlockEntity;
+import dev.dubhe.anvilcraft.block.piston.IMoveableEntityBlock;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -32,8 +33,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class RubyPrismBlock extends BaseLaserBlock implements IHammerRemovable, HammerRotateBehavior {
+@MethodsReturnNonnullByDefault// 
+public class RubyPrismBlock extends BaseLaserBlock implements IHammerRemovable, HammerRotateBehavior, IMoveableEntityBlock {
     public static final VoxelShape UP_MODEL =
         Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(2, 4, 2, 14, 14, 14), Block.box(4, 14, 4, 12, 16, 12));
     public static final VoxelShape DOWN_MODEL =

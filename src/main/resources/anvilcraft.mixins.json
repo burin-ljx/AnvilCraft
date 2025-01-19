@@ -30,16 +30,21 @@
     "VillagerMixin",
     "ZombieVillagerMixin",
     "accessor.BaseSpawnerAccessor",
+    "accessor.CropBlockAccessor",
+    "accessor.GrowingPlantAccessor",
     "forge.FallingBlockEntityMixin",
     "forge.LevelChunkMixin",
     "forge.LightningBoltMixin",
     "forge.PistonMovingBlockEntityMixin",
     "piglin.AbstractPiglinMixin",
-    "piglin.PiglinMixin"
+    "piglin.PiglinMixin",
+    "piston.PistonBaseBlockMixin",
+    "piston.PistonMovingBlockEntityMixin"
   ],
   "client": [
     "ClientLevelMixin",
     "GameRendererMixin",
+    "GuiGraphicsMixin",
     "ItemInHandRendererMixin",
     "LevelChunkMixin",
     "LevelRendererMixin",

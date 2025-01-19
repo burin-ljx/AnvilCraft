@@ -5,9 +5,7 @@ import dev.dubhe.anvilcraft.api.rendering.CacheableBERenderingPipeline;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.network.LaserEmitPacket;
-
 import lombok.Getter;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +29,6 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.PacketDistributor;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -273,7 +270,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
         if (irradiateBlockPos == null) return;
         if (!(level.getBlockEntity(irradiateBlockPos) instanceof BaseLaserBlockEntity irradiateBlockEntity)) return;
         irradiateBlockEntity.onCancelingIrradiation(this);
-        if (level instanceof ClientLevel) {
+        if (level.isClientSide()) {
             CacheableBERenderingPipeline.getInstance().update(this);
         }
     }
@@ -303,7 +300,7 @@ public abstract class BaseLaserBlockEntity extends BlockEntity {
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        if (level instanceof ClientLevel) {
+        if (this.level != null && this.level.isClientSide()) {
             CacheableBERenderingPipeline.getInstance().update(this);
         }
     }

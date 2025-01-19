@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.world.level.Level;
@@ -13,6 +14,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class Layered4LevelCauldronBlock extends AbstractCauldronBlock {
     public static final MapCodec<Layered4LevelCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(
         p_308829_ -> p_308829_.group(
@@ -22,7 +28,9 @@ public class Layered4LevelCauldronBlock extends AbstractCauldronBlock {
             .apply(p_308829_, Layered4LevelCauldronBlock::new)
     );
 
-    public static final IntegerProperty LEVEL = IntegerProperty.create("level", 1, 4);
+    public static final int MAX_LEVEL = 4;
+
+    public static final IntegerProperty LEVEL = IntegerProperty.create("level", 1, MAX_LEVEL);
 
     public Layered4LevelCauldronBlock(Properties properties, CauldronInteraction.InteractionMap interactions) {
         super(properties, interactions);
@@ -43,7 +51,7 @@ public class Layered4LevelCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public boolean isFull(BlockState state) {
-        return state.getValue(LEVEL) == 4;
+        return state.getValue(LEVEL) == MAX_LEVEL;
     }
 
     @Override
@@ -59,5 +67,16 @@ public class Layered4LevelCauldronBlock extends AbstractCauldronBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LEVEL);
+    }
+
+    public BlockState copyLevelFrom(BlockState otherCauldron) {
+        return this.defaultBlockState().setValue(LEVEL, Optional.of(otherCauldron)
+            .filter(state -> state.getBlock() instanceof Layered4LevelCauldronBlock)
+            .map(state -> state.getValue(LEVEL))
+            .orElse(1));
+    }
+
+    public BlockState fullFilled() {
+        return this.defaultBlockState().setValue(LEVEL, MAX_LEVEL);
     }
 }

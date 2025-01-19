@@ -122,7 +122,7 @@ public class BlockTagLoader {
             .addTag(Tags.Blocks.GLASS_PANES)
             .addTag(BlockTags.REPLACEABLE);
 
-        provider.addTag(ModBlockTags.INCORRECT_FOR_AMYTHEST_TOOL)
+        provider.addTag(ModBlockTags.INCORRECT_FOR_AMETHYST_TOOL)
             .addTag(BlockTags.INCORRECT_FOR_STONE_TOOL);
 
         provider.addTag(ModBlockTags.INCORRECT_FOR_EMBER_TOOL);
@@ -163,10 +163,17 @@ public class BlockTagLoader {
 
         //mekanism integration
         provider.addTag(ModBlockTags.MEKANISM_CARDBOARD_BOX_BLACKLIST)
-            .add(ModBlocks.GIANT_ANVIL.getKey())
-            .add(ModBlocks.TRANSMISSION_POLE.getKey())
-            .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
-            .add(ModBlocks.TESLA_TOWER.getKey())
-            .add(ModBlocks.OVERSEER_BLOCK.getKey());
+                .add(ModBlocks.GIANT_ANVIL.getKey())
+                .add(ModBlocks.TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.TESLA_TOWER.getKey())
+                .add(ModBlocks.OVERSEER_BLOCK.getKey());
+
+        provider.addTag(ModBlockTags.MEKANISM_CARDBOARD_BOX_BLACKLIST)
+                .add(ModBlocks.GIANT_ANVIL.getKey())
+                .add(ModBlocks.TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.REMOTE_TRANSMISSION_POLE.getKey())
+                .add(ModBlocks.TESLA_TOWER.getKey())
+                .add(ModBlocks.OVERSEER_BLOCK.getKey());
     }
 }

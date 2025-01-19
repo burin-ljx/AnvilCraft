@@ -29,6 +29,12 @@ public class JeiLang {
 
         provider.add("gui.anvilcraft.category.item_inject", "Item Inject");
 
+        provider.add("gui.anvilcraft.category.mass_inject", "Mass Inject");
+        provider.add("gui.anvilcraft.category.mass_inject.mass_value", "Mass Value: %s");
+        provider.add("gui.anvilcraft.category.mass_inject.mass_needed",
+            "This item will be produced after total mass value injected reaches %s");
+        provider.add("gui.anvilcraft.category.mass_inject.items_needed", "Items Needed: %s");
+
         provider.add("gui.anvilcraft.category.cement_staining", "Cement Staining");
 
         provider.add("gui.anvilcraft.category.concrete", "Concrete");
@@ -45,6 +51,12 @@ public class JeiLang {
         provider.add("gui.anvilcraft.category.multiblock", "Multiblock Crafting");
         provider.add("gui.anvilcraft.category.multiblock.all_layers", "All Layers Visible");
         provider.add("gui.anvilcraft.category.multiblock.single_layer", "Visible Layer: %d of %d");
+
+        provider.add("gui.anvilcraft.category.multiblock_conversion", "Multiblock Conversion");
+        provider.add("gui.anvilcraft.category.multiblock_conversion.current_mode", "Display Mode: %s");
+        provider.add("gui.anvilcraft.category.multiblock_conversion.display_mode.overview", "Overview");
+        provider.add("gui.anvilcraft.category.multiblock_conversion.display_mode.input", "Input");
+        provider.add("gui.anvilcraft.category.multiblock_conversion.display_mode.output", "Output");
 
         provider.add("gui.anvilcraft.category.jewel_crafting", "Jewel Crafting");
 

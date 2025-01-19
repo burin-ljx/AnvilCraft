@@ -13,10 +13,12 @@ import dev.dubhe.anvilcraft.util.RenderHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -92,6 +94,8 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
         BlockCompressRecipe recipe = recipeHolder.value();
         for (Either<TagKey<Block>, Block> input : recipe.inputs) {
             input.ifLeft(tag -> {
+                builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
+                    .addIngredients(BlockTagUtil.toIngredient(tag));
             }).ifRight(block -> {
                 builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
                     .addItemStack(new ItemStack(block));

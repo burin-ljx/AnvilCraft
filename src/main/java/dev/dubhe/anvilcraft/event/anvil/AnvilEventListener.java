@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilHurtEntityEvent;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
+import dev.dubhe.anvilcraft.block.Layered4LevelCauldronBlock;
 import dev.dubhe.anvilcraft.block.RoyalAnvilBlock;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
@@ -13,6 +14,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.BlockCrushRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SqueezingRecipe;
 import dev.dubhe.anvilcraft.util.BreakBlockUtil;
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -23,11 +25,11 @@ import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -119,6 +121,7 @@ public class AnvilEventListener {
         Map<ItemEntity, ItemStack> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos.above())).stream()
             .map(it -> Map.entry(it, it.getItem()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (items.isEmpty()) return;
         ItemInjectRecipe.Input input =
             new ItemInjectRecipe.Input(items.values().stream().toList(), state.getBlock());
         level.getRecipeManager()
@@ -146,25 +149,15 @@ public class AnvilEventListener {
     private static void handleSqueezingRecipe(Level level, final BlockPos pos, BlockState state) {
         BlockPos belowPos = pos.below();
         BlockState belowState = level.getBlockState(belowPos);
-        if (belowState.getBlock() instanceof AbstractCauldronBlock) {
-            SqueezingRecipe.Input input = new SqueezingRecipe.Input(state.getBlock(), belowState);
-            level.getRecipeManager()
-                .getRecipeFor(ModRecipeTypes.SQUEEZING_TYPE.get(), input, level)
-                .ifPresent(recipe -> {
-                    if (belowState.is(Blocks.CAULDRON)) {
-                        level.setBlockAndUpdate(
-                            belowPos, recipe.value().cauldron.defaultBlockState());
-                    } else {
-                        if (belowState.getBlock() instanceof LayeredCauldronBlock) {
-                            BlockState newState = belowState.setValue(
-                                LayeredCauldronBlock.LEVEL,
-                                belowState.getValue(LayeredCauldronBlock.LEVEL) + 1);
-                            level.setBlockAndUpdate(belowPos, newState);
-                        }
-                    }
-                    level.setBlockAndUpdate(pos, recipe.value().resultBlock.defaultBlockState());
-                });
-        }
+        if (!(belowState.getBlock() instanceof AbstractCauldronBlock)) return;
+        SqueezingRecipe.Input input = new SqueezingRecipe.Input(state.getBlock(), belowState);
+        level.getRecipeManager()
+            .getRecipeFor(ModRecipeTypes.SQUEEZING_TYPE.get(), input, level)
+            .map(RecipeHolder::value)
+            .ifPresent(recipe -> {
+                CauldronUtil.fill(level, belowPos, recipe.getCauldron(), 1, false);
+                level.setBlockAndUpdate(pos, recipe.resultBlock.defaultBlockState());
+            });
     }
 
     private static void brokeBlock(@NotNull Level level, BlockPos pos, AnvilFallOnLandEvent event) {

@@ -5,11 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -30,52 +28,6 @@ public record MultiblockInput(List<List<List<BlockState>>> blocks, int size) imp
 
     public void setBlockState(int x, int y, int z, BlockState state) {
         blocks.get(y).get(z).set(x, state);
-    }
-
-    public void rotate() {
-        for (int x = 0; x < size; x++) {
-            for (int y = 0; y < size; y++) {
-                for (int z = 0; z < size; z++) {
-                    BlockState state = getBlockState(x, y, z);
-                    if (state.hasProperty(BlockStateProperties.FACING)) {
-                        setBlockState(
-                                x,
-                                y,
-                                z,
-                                state.setValue(
-                                        BlockStateProperties.FACING,
-                                        rotateHorizontal(state.getValue(BlockStateProperties.FACING))));
-                    }
-                    if (state.hasProperty(BlockStateProperties.FACING_HOPPER)) {
-                        setBlockState(
-                                x,
-                                y,
-                                z,
-                                state.setValue(
-                                        BlockStateProperties.FACING_HOPPER,
-                                        rotateHorizontal(state.getValue(BlockStateProperties.FACING_HOPPER))));
-                    }
-                    if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-                        setBlockState(
-                                x,
-                                y,
-                                z,
-                                state.setValue(
-                                        BlockStateProperties.HORIZONTAL_FACING,
-                                        rotateHorizontal(state.getValue(BlockStateProperties.HORIZONTAL_FACING))));
-                    }
-                    if (state.hasProperty(BlockStateProperties.AXIS)) {
-                        setBlockState(
-                                x,
-                                y,
-                                z,
-                                state.setValue(
-                                        BlockStateProperties.AXIS,
-                                        rotateAxis(state.getValue(BlockStateProperties.AXIS))));
-                    }
-                }
-            }
-        }
     }
 
     private static Direction rotateHorizontal(Direction direction) {

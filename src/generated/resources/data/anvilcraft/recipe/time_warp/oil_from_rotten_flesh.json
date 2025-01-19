@@ -2,7 +2,6 @@
   "type": "anvilcraft:time_warp",
   "cauldron": "anvilcraft:oil_cauldron",
   "consume_fluid": false,
-  "from_water": false,
   "ingredients": [
     {
       "item": "minecraft:rotten_flesh"

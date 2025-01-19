@@ -18,6 +18,7 @@ public class ModBlockTags {
     public static final TagKey<Block> REDSTONE_TORCH = bind("redstone_torch");
     public static final TagKey<Block> MUSHROOM_BLOCK = bind("mushroom_block");
     public static final TagKey<Block> CANT_BROKEN_ANVIL = bind("cant_broken_anvil");
+    public static final TagKey<Block> NON_MAGNETIC = bind("non_magnetic");
     public static final TagKey<Block> HAMMER_REMOVABLE = bind("hammer_removable");
     public static final TagKey<Block> HAMMER_CHANGEABLE = bind("hammer_changeable");
     public static final TagKey<Block> OVERSEER_BASE = bind("overseer_base");
@@ -59,7 +60,7 @@ public class ModBlockTags {
     public static final TagKey<Block> STORAGE_BLOCKS_BRONZE = bindC("storage_blocks/bronze");
     public static final TagKey<Block> STORAGE_BLOCKS_BRASS = bindC("storage_blocks/brass");
 
-    public static final TagKey<Block> INCORRECT_FOR_AMYTHEST_TOOL = bind("incorrect_for_amythest_tool");
+    public static final TagKey<Block> INCORRECT_FOR_AMETHYST_TOOL = bind("incorrect_for_amethyst_tool");
     public static final TagKey<Block> INCORRECT_FOR_EMBER_TOOL = bind("incorrect_for_ember_tool");
 
     //mekanism tags
