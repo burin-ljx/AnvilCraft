@@ -149,7 +149,7 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
-        if (cooldown == 0) {
+        if (cooldown == 1) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
                 IItemHandler source = findItemHandler(
