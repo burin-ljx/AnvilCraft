@@ -94,7 +94,6 @@ import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
-import dev.dubhe.anvilcraft.block.pressurePlate.ContinuousPressingPressurePlateBlock;
 import dev.dubhe.anvilcraft.block.pressurePlate.EntityCountPressurePlateBlock;
 import dev.dubhe.anvilcraft.block.pressurePlate.EntityTypePressurePlateBlock;
 import dev.dubhe.anvilcraft.block.pressurePlate.FireImmunePressurePlateBlock;
@@ -147,6 +146,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -155,6 +155,7 @@ import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -3238,14 +3239,11 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull BlockEntry<? extends ContinuousPressingPressurePlateBlock> registerOtherCopperPressurePlate(
-            String prefix, @NotNull Block block,
-            NonNullFunction<BlockBehaviour.Properties, ? extends ContinuousPressingPressurePlateBlock> plateBlockFactory
-    ) {
+    private static @NotNull BlockEntry<? extends PressurePlateBlock> registerOtherCopperPressurePlate(String prefix, @NotNull Block block) {
         ResourceLocation location = BuiltInRegistries.BLOCK.getKey(block);
         String id = prefix + "copper" + "_pressure_plate";
         return REGISTRATE
-            .block(id, plateBlockFactory)
+            .block(id, properties -> new PressurePlateBlock(BlockSetType.IRON, properties))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.HAMMER_REMOVABLE)
             .initialProperties(() -> block)
             .properties(properties -> properties
@@ -3254,9 +3252,10 @@ public class ModBlocks {
                 .noCollission()
                 .strength(0.5f)
                 .pushReaction(PushReaction.DESTROY))
-            .blockstate((ctx, provider) -> DataGenUtil.powerLevelPressurePlate(
-                provider, ctx.get(),
-                ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())))
+            .blockstate((ctx, provider) -> provider.pressurePlateBlock(
+                ctx.get(),
+                ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "block/" + location.getPath())
+            ))
             .item()
             .tag(ModItemTags.PLATES, ModItemTags.bindC("copper" + "_plates"))
             .build()
@@ -3454,44 +3453,48 @@ public class ModBlocks {
         REGISTRATE.defaultCreativeTab(ModItemGroups.ANVILCRAFT_FUNCTION_BLOCK.getKey());
     }
 
-    public static final BlockEntry<? extends PowerLevelPressurePlateBlock> COPPER_PRESSURE_PLATE =
-        registerPressurePlate(
-                "copper", () -> Blocks.COPPER_BLOCK,
-                properties -> new ContinuousPressingPressurePlateBlock(properties) {
-                    @Override
-                    protected int getMaxCooldownTime() {
-                        return 10;
-                    }
-                },
-                Items.COPPER_INGOT
+    public static final BlockEntry<? extends PressurePlateBlock> COPPER_PRESSURE_PLATE = REGISTRATE
+            .block("copper_pressure_plate", properties -> new PressurePlateBlock(BlockSetType.IRON, properties))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.HAMMER_REMOVABLE)
+            .initialProperties(() -> Blocks.COPPER_BLOCK)
+            .properties(properties -> properties
+                    .forceSolidOn()
+                    .instrument(NoteBlockInstrument.BASS)
+                    .noCollission()
+                    .strength(0.5f)
+                    .pushReaction(PushReaction.DESTROY)
+            )
+            .blockstate((ctx, provider) -> provider.pressurePlateBlock(
+                    ctx.get(),
+                    ResourceLocation.withDefaultNamespace("block/copper_block")
+            ))
+            .item()
+            .tag(ModItemTags.PLATES, ModItemTags.bindC("copper_plates"))
+            .build()
+            .recipe((ctx, provider) -> {
+                ResourceLocation location1 = BuiltInRegistries.ITEM.getKey(Items.COPPER_INGOT);
+                ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ctx.get(), 1)
+                        .pattern("AA")
+                        .define('A', Items.COPPER_INGOT)
+                        .unlockedBy(AnvilCraftDatagen.hasItem(Items.COPPER_INGOT), AnvilCraftDatagen.has(Items.COPPER_INGOT))
+                        .save(
+                                provider,
+                                AnvilCraft.of("copper_pressure_plate_from_"
+                                          + location1.getPath().replace('/', '_')));
+    })
+            .register();
+    public static final BlockEntry<? extends PressurePlateBlock> EXPOSED_COPPER_PRESSURE_PLATE =
+        registerOtherCopperPressurePlate(
+                "exposed_", Blocks.EXPOSED_COPPER
         );
-    public static final BlockEntry<? extends ContinuousPressingPressurePlateBlock> EXPOSED_COPPER_PRESSURE_PLATE =
+    public static final BlockEntry<? extends PressurePlateBlock> WEATHERED_COPPER_PRESSURE_PLATE =
         registerOtherCopperPressurePlate(
-                "exposed_", Blocks.EXPOSED_COPPER,
-                properties -> new ContinuousPressingPressurePlateBlock(properties) {
-                    @Override
-                    protected int getMaxCooldownTime() {
-                        return 20;
-                    }
-                });
-    public static final BlockEntry<? extends ContinuousPressingPressurePlateBlock> WEATHERED_COPPER_PRESSURE_PLATE =
+                "weathered_", Blocks.WEATHERED_COPPER
+        );
+    public static final BlockEntry<? extends PressurePlateBlock> OXIDIZED_COPPER_PRESSURE_PLATE =
         registerOtherCopperPressurePlate(
-                "weathered_", Blocks.WEATHERED_COPPER,
-                properties -> new ContinuousPressingPressurePlateBlock(properties) {
-                    @Override
-                    protected int getMaxCooldownTime() {
-                        return 40;
-                    }
-                });
-    public static final BlockEntry<? extends ContinuousPressingPressurePlateBlock> OXIDIZED_COPPER_PRESSURE_PLATE =
-        registerOtherCopperPressurePlate(
-                "oxidized_", Blocks.OXIDIZED_COPPER,
-                properties -> new ContinuousPressingPressurePlateBlock(properties) {
-                    @Override
-                    protected int getMaxCooldownTime() {
-                        return 80;
-                    }
-                });
+                "oxidized_", Blocks.OXIDIZED_COPPER
+        );
     public static final BlockEntry<? extends PowerLevelPressurePlateBlock> TUNGSTEN_PRESSURE_PLATE =
         registerPressurePlate(
                 "tungsten", TUNGSTEN_BLOCK,
