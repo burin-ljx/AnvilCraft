@@ -1,9 +1,11 @@
 package dev.dubhe.anvilcraft.block;
 
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 
 import dev.dubhe.anvilcraft.block.entity.FireCauldronBlockEntity;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
+import dev.dubhe.anvilcraft.init.ModBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -12,7 +14,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -44,6 +48,12 @@ public class FireCauldronBlock extends Layered4LevelCauldronBlock implements IHa
     public ItemStack getCloneItemStack(
             BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
         return new ItemStack(Items.CAULDRON);
+    }
+
+    @Override
+    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
+        super.destroy(level, pos, state);
+        FireCauldronBlockEntity.clearPlasmaJetsAbove((Level) level, pos, 6);
     }
 
     @Override
