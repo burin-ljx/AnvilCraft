@@ -149,7 +149,8 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
-        if (cooldown == 1) {
+        cooldown--;
+        if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
                 IItemHandler source = findItemHandler(
@@ -238,8 +239,6 @@ public abstract class BaseChuteBlockEntity
                 level.updateNeighbourForOutputSignal(
                     getBlockPos(), getBlockState().getBlock());
             }
-        } else {
-            cooldown--;
         }
     }
 
