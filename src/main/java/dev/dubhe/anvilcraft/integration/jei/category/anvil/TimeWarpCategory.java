@@ -9,21 +9,8 @@ import dev.dubhe.anvilcraft.integration.jei.util.JeiRenderHelper;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiSlotUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
-
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -35,6 +22,17 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,8 +54,7 @@ public class TimeWarpCategory implements IRecipeCategory<RecipeHolder<TimeWarpRe
 
     public TimeWarpCategory(IGuiHelper helper) {
         background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
-        icon = new DrawableBlockStateIcon(
-                Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3),
+        icon = new DrawableBlockStateIcon(Blocks.CAULDRON.defaultBlockState(),
                 ModBlocks.CORRUPTED_BEACON.getDefaultState());
         slot = helper.getSlotDrawable();
         title = Component.translatable("gui.anvilcraft.category.time_warp");
@@ -115,24 +112,10 @@ public class TimeWarpCategory implements IRecipeCategory<RecipeHolder<TimeWarpRe
                 12,
                 RenderHelper.SINGLE_BLOCK);
         BlockState state;
-        if (recipe.isFromWater()) {
-            state = Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
+        if (recipe.isProduceFluid()) {
+            state = Blocks.CAULDRON.defaultBlockState();
         } else {
-            if (recipe.isConsumeFluid()) {
-                if (recipe.getCauldron() instanceof LayeredCauldronBlock) {
-                    state = recipe.getCauldron().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
-                } else {
-                    state = recipe.getCauldron().defaultBlockState();
-                }
-            } else if (recipe.isProduceFluid()) {
-                state = Blocks.CAULDRON.defaultBlockState();
-            } else {
-                if (recipe.getCauldron() instanceof LayeredCauldronBlock) {
-                    state = recipe.getCauldron().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
-                } else {
-                    state = recipe.getCauldron().defaultBlockState();
-                }
-            }
+            state = CauldronUtil.fullState(recipe.getCauldron());
         }
         RenderHelper.renderBlock(guiGraphics, state, 81, 30, 10, 12, RenderHelper.SINGLE_BLOCK);
         RenderHelper.renderBlock(
@@ -165,17 +148,10 @@ public class TimeWarpCategory implements IRecipeCategory<RecipeHolder<TimeWarpRe
             }
         } else {
             if (recipe.isConsumeFluid()) {
-                if (recipe.getCauldron() instanceof LayeredCauldronBlock) {
-                    state = recipe.getCauldron().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 2);
-                } else {
-                    state = Blocks.CAULDRON.defaultBlockState();
-                }
+                state = CauldronUtil.getStateFromContentAndLevel(recipe.getCauldron(),
+                    CauldronUtil.maxLevel(recipe.getCauldron()) - 1);
             } else if (recipe.isProduceFluid()) {
-                if (recipe.getCauldron() instanceof LayeredCauldronBlock) {
-                    state = recipe.getCauldron().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1);
-                } else {
-                    state = recipe.getCauldron().defaultBlockState();
-                }
+                state = CauldronUtil.getStateFromContentAndLevel(recipe.getCauldron(), 1);
             } else {
                 state = recipe.getCauldron().defaultBlockState();
             }
@@ -194,11 +170,7 @@ public class TimeWarpCategory implements IRecipeCategory<RecipeHolder<TimeWarpRe
         if (mouseX >= 72 && mouseX <= 90) {
             if (mouseY >= 24 && mouseY <= 43) {
                 Component text;
-                if (recipe.isFromWater()) {
-                    text = Blocks.WATER_CAULDRON.getName();
-                } else if (recipe.isConsumeFluid()) {
-                    text = recipe.getCauldron().getName();
-                } else if (recipe.isProduceFluid()) {
+                if (recipe.isProduceFluid()) {
                     text = Blocks.CAULDRON.getName();
                 } else {
                     text = recipe.getCauldron().getName();
@@ -215,14 +187,8 @@ public class TimeWarpCategory implements IRecipeCategory<RecipeHolder<TimeWarpRe
             if (mouseY >= 24 && mouseY <= 42) {
                 Component text;
                 if (recipe.getResults().isEmpty()) {
-                    if (recipe.isConsumeFluid()) {
-                        if (recipe.getCauldron() instanceof LayeredCauldronBlock) {
-                            text = recipe.getCauldron().getName();
-                        } else {
-                            text = Blocks.CAULDRON.getName();
-                        }
-                    } else if (recipe.isProduceFluid()) {
-                        text = recipe.getCauldron().getName();
+                    if (recipe.isConsumeFluid() && CauldronUtil.maxLevel(recipe.getCauldron()) <= 1) {
+                        text = Blocks.CAULDRON.getName();
                     } else {
                         text = recipe.getCauldron().getName();
                     }

@@ -10,6 +10,7 @@ public class JadeLang {
         provider.add("config.jade.plugin_anvilcraft.power_provider", "Anvil Craft Power");
         provider.add("config.jade.plugin_anvilcraft.ruby_prism", "Ruby Prism");
         provider.add("config.jade.plugin_anvilcraft.item_detector", "Item Detector");
+        provider.add("config.jade.plugin_anvilcraft.space_overcompressor", "Space Overcompressor");
 
         provider.add("tooltip.anvilcraft.jade.power_information", "Power Grid: %d/%d kW");
         provider.add("tooltip.anvilcraft.jade.ruby_prism.power", "Laser level: %d");

@@ -1,6 +1,9 @@
 package dev.dubhe.anvilcraft.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,26 +13,24 @@ import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
-
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class LevelLike implements BlockAndTintGetter {
     private final Map<BlockPos, BlockState> blocks = new HashMap<>();
+    private final Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
     private final ClientLevel parent;
 
     @Getter
@@ -69,17 +70,27 @@ public class LevelLike implements BlockAndTintGetter {
 
     @Override
     public @Nullable BlockEntity getBlockEntity(BlockPos blockPos) {
-        return null;
+        return blockEntities.get(blockPos);
     }
 
     public void setBlockState(BlockPos pos, BlockState state) {
+        blockEntities.remove(pos);
         blocks.put(pos, state);
+        //BlockEntities stored in LevelLike is only for render
+        //If any block entity don't have its own renderer we don't need to store an instance for it
+        if (state.getBlock() instanceof EntityBlock entityBlock) {
+            BlockEntity blockEntity = entityBlock.newBlockEntity(pos, state);
+            if (blockEntity == null) return;
+            if (Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(blockEntity) == null) return;
+            blockEntity.setLevel(this.parent);
+            blockEntity.setBlockState(state);
+            blockEntities.put(pos, blockEntity);
+        }
     }
 
     public BlockState getBlockState(BlockPos pos) {
         if (!allLayersVisible && pos.getY() != currentVisibleLayer) return Blocks.AIR.defaultBlockState();
-        BlockState state = blocks.get(pos);
-        return state == null ? Blocks.AIR.defaultBlockState() : state;
+        return blocks.getOrDefault(pos, Blocks.AIR.defaultBlockState());
     }
 
     @Override

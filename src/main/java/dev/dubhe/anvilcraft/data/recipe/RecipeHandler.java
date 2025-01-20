@@ -15,12 +15,15 @@ public class RecipeHandler {
         CookingRecipeLoader.init(provider);
         BulgingRecipeLoader.init(provider);
         ItemInjectRecipeLoader.init(provider);
+        MassInjectRecipeLoader.init(provider);
         SqueezingRecipeLoader.init(provider);
         MultiBlockRecipeLoader.init(provider);
+        MultiBlockConversionRecipeLoader.init(provider);
         MobTransformRecipeLoader.init(provider);
         ConcreteRecipeLoader.init(provider);
         MineralFountainRecipeLoader.init(provider);
         VanillaRecipesLoader.init(provider);
         JewelCraftingRecipeLoader.init(provider);
+        SpecialCraftingRecipeLoader.init(provider);
     }
 }

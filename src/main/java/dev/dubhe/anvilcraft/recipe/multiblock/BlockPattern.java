@@ -1,19 +1,24 @@
 package dev.dubhe.anvilcraft.recipe.multiblock;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.dubhe.anvilcraft.util.BlockStateUtil;
 import dev.dubhe.anvilcraft.util.CodecUtil;
-
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.ItemStackMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,8 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @MethodsReturnNonnullByDefault
@@ -113,5 +116,38 @@ public class BlockPattern {
 
     public int getSize() {
         return layers.size();
+    }
+
+    public List<ItemStack> toIngredientList() {
+        Object2IntMap<BlockState> states = new Object2IntOpenHashMap<>();
+        for (List<String> layer : this.getLayers()) {
+            for (String s : layer) {
+                for (int i = 0; i < s.length(); i++) {
+                    char c = s.charAt(i);
+                    if (c == ' ') continue;
+                    BlockPredicateWithState bySymbol = this.getBySymbol(c);
+                    if (bySymbol != null) {
+                        states.mergeInt(bySymbol.getDefaultState(), 1, Integer::sum);
+                    }
+                }
+            }
+        }
+        Map<ItemStack, Integer> ingredients = ItemStackMap.createTypeAndTagMap();
+        states.forEach((state, stateCount) -> {
+            BlockStateUtil.ingredientsForPlacement(state)
+                .forEach(stack -> {
+                int stackCount = stack.getCount();
+                if (stackCount <= 0) return;
+                stack.setCount(1);
+                Integer totalCount = ingredients.computeIfAbsent(stack, $ -> 0);
+                ingredients.put(stack, totalCount + stateCount * stackCount);
+            });
+        });
+        List<ItemStack> resultList = new ArrayList<>();
+        ingredients.forEach((stack, count) -> {
+            stack.setCount(count);
+            resultList.add(stack);
+        });
+        return resultList;
     }
 }

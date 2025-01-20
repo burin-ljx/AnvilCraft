@@ -4,14 +4,13 @@ import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
-import dev.dubhe.anvilcraft.init.ModComponents;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.item.HasMobBlockItem;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.TimeWarpRecipe;
 import dev.dubhe.anvilcraft.util.AnvilUtil;
-
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import dev.dubhe.anvilcraft.util.RecipeUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -26,14 +25,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,38 +81,29 @@ public class TimeWarpBehavior implements IAnvilBehavior {
                     ItemStack itemStack = it.getValue();
                     Entity entity = HasMobBlockItem.getMobFromItem(level, itemStack);
                     if (entity == null) {
-                        return Map.entry(it.getKey(), new ItemStack(ModBlocks.AMBER_BLOCK));
+                        return Map.entry(it.getKey(), itemStack.transmuteCopy(ModBlocks.AMBER_BLOCK));
                     }
-                    ItemStack result = new ItemStack(
-                        entity.getType().getCategory() == MobCategory.MONSTER
-                            && level.getRandom().nextFloat() <= 0.05
-                            ? ModBlocks.RESENTFUL_AMBER_BLOCK.asItem()
-                            : ModBlocks.MOB_AMBER_BLOCK.asItem()
-                    );
-                    HasMobBlockItem.SavedEntity savedEntity = itemStack.getComponents().get(ModComponents.SAVED_ENTITY);
-                    result.set(ModComponents.SAVED_ENTITY, savedEntity);
-                    return Map.entry(it.getKey(), result);
+                    ItemLike amberBlock = entity.getType().getCategory() == MobCategory.MONSTER
+                        && level.getRandom().nextFloat() <= 0.05 ? ModBlocks.RESENTFUL_AMBER_BLOCK
+                        : ModBlocks.MOB_AMBER_BLOCK;
+                    return Map.entry(it.getKey(), itemStack.transmuteCopy(amberBlock));
                 })
                 .forEach(it -> {
                     ItemEntity old = it.getKey();
-                    ItemEntity itemEntity = new ItemEntity(
-                        old.level(),
-                        old.getX(),
-                        old.getY(),
-                        old.getZ(),
-                        it.getValue()
-                    );
                     old.discard();
-                    old.level().addFreshEntity(itemEntity);
+                    AnvilUtil.dropItems(List.of(it.getValue()), level, old.blockPosition().getCenter());
                 });
             return true;
         }
         TimeWarpRecipe.Input input = new TimeWarpRecipe.Input(items.values().stream().toList(), hitBlockState);
-        Optional<RecipeHolder<TimeWarpRecipe>> recipeOptional = level.getRecipeManager()
-            .getRecipeFor(ModRecipeTypes.TIME_WARP_TYPE.get(), input, level);
+        Optional<TimeWarpRecipe> recipeOptional = level.getRecipeManager()
+            .getRecipesFor(ModRecipeTypes.TIME_WARP_TYPE.get(), input, level)
+            .stream()
+            .map(RecipeHolder::value)
+            .max(Comparator.comparingInt(recipe -> recipe.getIngredients().size()));
         if (recipeOptional.isEmpty()) return false;
-        RecipeHolder<TimeWarpRecipe> recipe = recipeOptional.get();
-        int times = recipe.value().getMaxCraftTime(input);
+        TimeWarpRecipe recipe = recipeOptional.get();
+        int times = recipe.getMaxCraftTime(input);
         Object2IntMap<Item> results = new Object2IntOpenHashMap<>();
         LootContext context;
         if (level instanceof ServerLevel serverLevel) {
@@ -122,7 +112,7 @@ public class TimeWarpBehavior implements IAnvilBehavior {
             return false;
         }
         for (int i = 0; i < times; i++) {
-            for (Ingredient ingredient : recipe.value().getIngredients()) {
+            for (Ingredient ingredient : recipe.getIngredients()) {
                 for (ItemStack stack : items.values()) {
                     if (ingredient.test(stack)) {
                         stack.shrink(1);
@@ -130,7 +120,7 @@ public class TimeWarpBehavior implements IAnvilBehavior {
                     }
                 }
             }
-            for (ChanceItemStack stack : recipe.value().getResults()) {
+            for (ChanceItemStack stack : recipe.getResults()) {
                 int amount = stack.getStack().getCount() * stack.getAmount().getInt(context);
                 results.mergeInt(stack.getStack().getItem(), amount, Integer::sum);
             }
@@ -142,40 +132,11 @@ public class TimeWarpBehavior implements IAnvilBehavior {
             level,
             hitBlockPos.getCenter()
         );
-        if (recipe.value().isFromWater()) {
-            level.setBlockAndUpdate(hitBlockPos, recipe.value().getCauldron().defaultBlockState());
-        } else {
-            if (recipe.value().isConsumeFluid()) {
-                if (hitBlockState.hasProperty(LayeredCauldronBlock.LEVEL)) {
-                    int cauldronLevel = hitBlockState.getValue(LayeredCauldronBlock.LEVEL);
-                    cauldronLevel -= Math.max(recipe.value().getRequiredFluidLevel(), 1);
-                    if (cauldronLevel <= 0) {
-                        level.setBlockAndUpdate(hitBlockPos, Blocks.CAULDRON.defaultBlockState());
-                    } else {
-                        level.setBlockAndUpdate(
-                            hitBlockPos,
-                            hitBlockState.setValue(LayeredCauldronBlock.LEVEL, cauldronLevel)
-                        );
-                    }
-                } else {
-                    level.setBlockAndUpdate(hitBlockPos, Blocks.CAULDRON.defaultBlockState());
-                }
-            }
-            if (recipe.value().isProduceFluid()) {
-                if (hitBlockState.hasProperty(LayeredCauldronBlock.LEVEL)) {
-                    int cauldronLevel = hitBlockState.getValue(LayeredCauldronBlock.LEVEL);
-                    cauldronLevel++;
-                    level.setBlockAndUpdate(
-                        hitBlockPos,
-                        hitBlockState.setValue(LayeredCauldronBlock.LEVEL, cauldronLevel)
-                    );
-                } else {
-                    level.setBlockAndUpdate(
-                        hitBlockPos,
-                        recipe.value().getCauldron().defaultBlockState()
-                    );
-                }
-            }
+        if (recipe.isConsumeFluid()) {
+            CauldronUtil.drain(level, hitBlockPos, recipe.getCauldron(), recipe.getRequiredFluidLevel(), false);
+        }
+        if (recipe.isProduceFluid()) {
+            CauldronUtil.fill(level, hitBlockPos, recipe.getCauldron(), 1, false);
         }
         items.forEach((k, v) -> {
             if (v.isEmpty()) {

@@ -10,13 +10,16 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.world.item.MaceItem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -93,12 +96,16 @@ abstract class ItemInHandRendererMixin {
                 ci.cancel();
                 return;
             }
+            boolean flag = hand == InteractionHand.MAIN_HAND;
+            HumanoidArm humanoidarm = flag ? player.getMainArm() : player.getMainArm().getOpposite();
+            boolean flag2 = humanoidarm == HumanoidArm.LEFT;
+            int i = flag2 ? -1 : 1;
             if (this.mainHandItem.isEmpty()) {
                 this.renderItem(
                         player,
                         this.offHandItem,
                         ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
-                        false,
+                        flag2,
                         poseStack,
                         buffer,
                         combinedLight);
@@ -114,7 +121,7 @@ abstract class ItemInHandRendererMixin {
                     if (player.isUsingItem()
                             && player.getUseItemRemainingTicks() > 0
                             && player.getUsedItemHand() == hand) {
-                        poseStack.translate(0, -0.25, 0.05);
+                        poseStack.translate(0, -0.25f, 0.05f);
                     }
                     break;
                 case NONE:
@@ -122,10 +129,11 @@ abstract class ItemInHandRendererMixin {
                 default:
                     return;
             }
+            if(stack.getItem() instanceof FishingRodItem) return;
             this.itemRenderer.render(
                     this.offHandItem,
                     ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
-                    false,
+                    flag2,
                     poseStack,
                     buffer,
                     combinedLight,
@@ -135,14 +143,18 @@ abstract class ItemInHandRendererMixin {
                             .getModelManager()
                             .getModel(isBlockItem ? anvilCraft$HOLDING_BLOCK : anvilCraft$HOLDING_ITEM));
             if (isBlockItem) {
-                poseStack.mulPose(Axis.YP.rotationDegrees(60f));
+                poseStack.mulPose(Axis.YP.rotationDegrees(60f * i));
                 poseStack.mulPose(Axis.XP.rotationDegrees(25f));
                 poseStack.scale(0.5f, 0.5f, 0.5f);
-                poseStack.translate(0.25, 0.4, -0.1);
+                poseStack.translate(0.25f * i, 0.4f, -0.1f);
             } else {
-                poseStack.mulPose(Axis.ZP.rotationDegrees(5f));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(5f * i));
                 poseStack.scale(0.75f, 0.75f, 0.75f);
-                poseStack.translate(0, 0.45, 0.02);
+                poseStack.translate(0, 0.45f, 0.02f);
+                if(stack.getItem() instanceof MaceItem) {
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-10f * i));
+                    poseStack.translate(0.08f * i, -0.1f, 0);
+                }
             }
         }
     }

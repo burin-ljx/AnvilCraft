@@ -1,0 +1,246 @@
+{
+  "type": "anvilcraft:multiblock_conversion",
+  "inputPattern": {
+    "layers": [
+      [
+        "AAA",
+        "AAA",
+        "AAA"
+      ],
+      [
+        "BBB",
+        "BCB",
+        "BBB"
+      ],
+      [
+        "DDD",
+        "DDD",
+        "DDD"
+      ]
+    ],
+    "symbols": {
+      "A": {
+        "block": "anvilcraft:cut_heavy_iron_block"
+      },
+      "B": {
+        "block": "anvilcraft:heavy_iron_plate"
+      },
+      "C": {
+        "block": "anvilcraft:heavy_iron_column"
+      },
+      "D": {
+        "block": "anvilcraft:polished_heavy_iron_block"
+      }
+    }
+  },
+  "outputPattern": {
+    "layers": [
+      [
+        "ABC",
+        "DEF",
+        "GHI"
+      ],
+      [
+        "JKL",
+        "MNO",
+        "PQR"
+      ],
+      [
+        "STU",
+        "VWX",
+        "YZ["
+      ]
+    ],
+    "symbols": {
+      "A": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_wn"
+        }
+      },
+      "B": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_n"
+        }
+      },
+      "C": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_en"
+        }
+      },
+      "D": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_w"
+        }
+      },
+      "E": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_center"
+        }
+      },
+      "F": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_e"
+        }
+      },
+      "G": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_ws"
+        }
+      },
+      "H": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_s"
+        }
+      },
+      "I": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "bottom_es"
+        }
+      },
+      "J": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_wn"
+        }
+      },
+      "K": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_n"
+        }
+      },
+      "L": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_en"
+        }
+      },
+      "M": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_w"
+        }
+      },
+      "N": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "center",
+          "half": "mid_center"
+        }
+      },
+      "O": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_e"
+        }
+      },
+      "P": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_ws"
+        }
+      },
+      "Q": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_s"
+        }
+      },
+      "R": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "mid_es"
+        }
+      },
+      "S": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_wn"
+        }
+      },
+      "T": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_n"
+        }
+      },
+      "U": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_en"
+        }
+      },
+      "V": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_w"
+        }
+      },
+      "W": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_center"
+        }
+      },
+      "X": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_e"
+        }
+      },
+      "Y": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_ws"
+        }
+      },
+      "Z": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_s"
+        }
+      },
+      "[": {
+        "block": "anvilcraft:giant_anvil",
+        "properties": {
+          "cube": "corner",
+          "half": "top_es"
+        }
+      }
+    }
+  }
+}
