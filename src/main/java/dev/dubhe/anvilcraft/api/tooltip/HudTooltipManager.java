@@ -76,7 +76,7 @@ public class HudTooltipManager {
         final int tooltipPosX = screenWidth / 2 + 10;
         final int tooltipPosY = screenHeight / 2 + 10;
         Font font = Minecraft.getInstance().font;
-        IAnvilHammerTooltipProvider currentProvider = determineBlockEntityTooltipProvider(level, blockPos);
+        IAnvilHammerTooltipProvider currentProvider = determineAnvilHammerTooltipProvider(level, blockPos);
         if (currentProvider == null) return;
         List<Component> tooltip = currentProvider.tooltip(level, blockPos);
         if (tooltip == null || tooltip.isEmpty()) return;
@@ -149,7 +149,7 @@ public class HudTooltipManager {
             .orElse(null);
     }
 
-    private IAnvilHammerTooltipProvider determineBlockEntityTooltipProvider(Level level, BlockPos blockPos) {
+    private IAnvilHammerTooltipProvider determineAnvilHammerTooltipProvider(Level level, BlockPos blockPos) {
         return anvilHammerTooltipProviders.stream()
             .filter(it -> it.accepts(level, blockPos))
             .min(Comparator.comparingInt(IAnvilHammerTooltipProvider::priority))
