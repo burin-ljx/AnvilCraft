@@ -35,27 +35,27 @@ public class HudTooltipManager {
     private static final int BACKGROUND_COLOR = 0xCC100010;
     private static final int BORDER_COLOR_TOP = 0x505000ff;
     private static final int BORDER_COLOR_BOTTOM = 0x5028007f;
-    private final List<IAnvilHammerTooltipProvider> blockEntityProviders = new ArrayList<>();
+    private final List<IAnvilHammerTooltipProvider> anvilHammerTooltipProviders = new ArrayList<>();
     private final List<IAffectRangeProvider> affectRangeProviders = new ArrayList<>();
     private final List<IHandHeldItemTooltipProvider> handItemProviders = new ArrayList<>();
 
     static {
-        INSTANCE.registerBlockEntityTooltip(new PowerComponentTooltipProvider());
+        INSTANCE.registerAnvilHammerTooltip(new PowerComponentTooltipProvider());
         INSTANCE.registerAffectRange(new AffectRangeProviderImpl());
-        INSTANCE.registerBlockEntityTooltip(new RubyPrismTooltipProvider());
+        INSTANCE.registerAnvilHammerTooltip(new RubyPrismTooltipProvider());
         INSTANCE.registerHandHeldItemTooltip(new HeliostatsTooltip());
-        INSTANCE.registerBlockEntityTooltip(new HeliostatsTooltipProvider());
-        INSTANCE.registerBlockEntityTooltip(new SpaceOvercompressorTooltipProvider());
+        INSTANCE.registerAnvilHammerTooltip(new HeliostatsTooltipProvider());
+        INSTANCE.registerAnvilHammerTooltip(new SpaceOvercompressorTooltipProvider());
         INSTANCE.registerHandHeldItemTooltip(ModItems.STRUCTURE_TOOL.get());
-        INSTANCE.registerBlockEntityTooltip(new RedstoneElementTooltipProvider());
+        INSTANCE.registerAnvilHammerTooltip(new RedstoneElementTooltipProvider());
     }
 
     private void registerAffectRange(AffectRangeProviderImpl affectRangeProvider) {
         affectRangeProviders.add(affectRangeProvider);
     }
 
-    private void registerBlockEntityTooltip(IAnvilHammerTooltipProvider provider) {
-        blockEntityProviders.add(provider);
+    private void registerAnvilHammerTooltip(IAnvilHammerTooltipProvider provider) {
+        anvilHammerTooltipProviders.add(provider);
     }
 
     private void registerHandHeldItemTooltip(IHandHeldItemTooltipProvider provider) {
@@ -150,7 +150,7 @@ public class HudTooltipManager {
     }
 
     private IAnvilHammerTooltipProvider determineBlockEntityTooltipProvider(Level level, BlockPos blockPos) {
-        return blockEntityProviders.stream()
+        return anvilHammerTooltipProviders.stream()
             .filter(it -> it.accepts(level, blockPos))
             .min(Comparator.comparingInt(IAnvilHammerTooltipProvider::priority))
             .orElse(null);
