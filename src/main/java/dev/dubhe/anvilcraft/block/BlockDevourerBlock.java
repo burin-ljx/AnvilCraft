@@ -176,6 +176,7 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         Direction devourerDirection,
         int range,
         Block anvil) {
+        if (level.hasSignal(devourerPos.relative(level.getBlockState(devourerPos).getValue(FACING)), devourerDirection)) return;
         BlockPos outputPos = devourerPos.relative(devourerDirection.getOpposite());
         BlockPos devourCenterPos = devourerPos.relative(devourerDirection);
         IItemHandler itemHandler = level.getCapability(
