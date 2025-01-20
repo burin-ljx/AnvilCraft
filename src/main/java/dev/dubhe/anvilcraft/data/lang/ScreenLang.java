@@ -63,6 +63,8 @@ public class ScreenLang {
         provider.add("tooltip.anvilcraft.grid_information.overloaded1", "It appears that this grid is overloaded.");
         provider.add("tooltip.anvilcraft.grid_information.overloaded2", "Add more sources or remove the components");
         provider.add("tooltip.anvilcraft.grid_information.overloaded3", "with a high stress impact.");
+        provider.add("tooltip.anvilcraft.redstone_information.power", "Power: %d");
+        provider.add("tooltip.anvilcraft.redstone_information.comparator.mode", "Mode: %s");
 
         provider.add("screen.anvilcraft.active_silencer.title", "Active Silencer");
 

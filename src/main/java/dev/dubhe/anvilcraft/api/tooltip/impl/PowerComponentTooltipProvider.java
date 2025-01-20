@@ -5,7 +5,7 @@ import dev.dubhe.anvilcraft.api.power.IPowerComponent;
 import dev.dubhe.anvilcraft.api.power.PowerComponentInfo;
 import dev.dubhe.anvilcraft.api.power.PowerComponentType;
 import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
-import dev.dubhe.anvilcraft.api.tooltip.providers.IBlockEntityTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IAnvilHammerTooltipProvider;
 import dev.dubhe.anvilcraft.util.Util;
 
 import net.minecraft.ChatFormatting;
@@ -13,35 +13,38 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class PowerComponentTooltipProvider implements IBlockEntityTooltipProvider {
+public class PowerComponentTooltipProvider implements IAnvilHammerTooltipProvider {
 
     public PowerComponentTooltipProvider() {
     }
 
     @Override
-    public boolean accepts(BlockEntity entity) {
+    public boolean accepts(Level level, BlockPos blockPos) {
+        BlockEntity entity = level.getBlockEntity(blockPos);
         return entity instanceof IPowerComponent;
     }
 
     @Override
-    public List<Component> tooltip(BlockEntity e) {
+    public List<Component> tooltip(Level level, BlockPos blockPos) {
+        BlockEntity entity = level.getBlockEntity(blockPos);
         if (Util.jadePresent.get() && AnvilCraft.config.doNotShowTooltipWhenJadePresent) return null;
         boolean overloaded = false;
         BlockPos pos;
-        if (e instanceof IPowerComponent) {
-            if (e.getBlockState().hasProperty(IPowerComponent.OVERLOAD)) {
-                overloaded = e.getBlockState()
+        if (entity instanceof IPowerComponent) {
+            if (entity.getBlockState().hasProperty(IPowerComponent.OVERLOAD)) {
+                overloaded = entity.getBlockState()
                     .getValues()
                     .getOrDefault(IPowerComponent.OVERLOAD, true)
                     .equals(Boolean.TRUE);
             }
-            pos = e.getBlockPos();
+            pos = entity.getBlockPos();
         } else {
             return List.of();
         }
@@ -95,8 +98,8 @@ public class PowerComponentTooltipProvider implements IBlockEntityTooltipProvide
     }
 
     @Override
-    public ItemStack icon(BlockEntity entity) {
-        return entity.getBlockState().getBlock().asItem().getDefaultInstance();
+    public ItemStack icon(Level level, BlockPos blockPos) {
+        return level.getBlockState(blockPos).getBlock().asItem().getDefaultInstance();
     }
 
     @Override

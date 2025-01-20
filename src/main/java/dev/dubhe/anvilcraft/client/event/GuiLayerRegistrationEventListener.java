@@ -1,15 +1,7 @@
 package dev.dubhe.anvilcraft.client.event;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.tooltip.HudTooltipManager;
-import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.item.IEngineerGoggles;
 
 import net.minecraft.client.DeltaTracker;
@@ -17,15 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
 import com.mojang.blaze3d.platform.Window;
-import org.joml.Matrix4f;
 
 public class GuiLayerRegistrationEventListener {
 
@@ -61,9 +50,7 @@ public class GuiLayerRegistrationEventListener {
             if (hit.getType() == HitResult.Type.BLOCK) {
                 BlockPos blockPos = ((BlockHitResult) hit).getBlockPos();
                 if (minecraft.level == null) return;
-                BlockEntity e = minecraft.level.getBlockEntity(blockPos);
-                if (e == null) return;
-                HudTooltipManager.INSTANCE.renderTooltip(guiGraphics, e, partialTick, screenWidth, screenHeight);
+                HudTooltipManager.INSTANCE.renderTooltip(guiGraphics, minecraft.level, blockPos, partialTick, screenWidth, screenHeight);
             }
         });
 

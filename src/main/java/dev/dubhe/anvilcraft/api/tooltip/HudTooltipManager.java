@@ -6,10 +6,11 @@ import dev.dubhe.anvilcraft.api.tooltip.impl.AffectRangeProviderImpl;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltip;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.PowerComponentTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.impl.RedstoneElementTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.RubyPrismTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.SpaceOvercompressorTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IAffectRangeProvider;
-import dev.dubhe.anvilcraft.api.tooltip.providers.IBlockEntityTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.providers.IAnvilHammerTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IHandHeldItemTooltipProvider;
 import dev.dubhe.anvilcraft.init.ModItems;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -33,7 +35,7 @@ public class HudTooltipManager {
     private static final int BACKGROUND_COLOR = 0xCC100010;
     private static final int BORDER_COLOR_TOP = 0x505000ff;
     private static final int BORDER_COLOR_BOTTOM = 0x5028007f;
-    private final List<IBlockEntityTooltipProvider> blockEntityProviders = new ArrayList<>();
+    private final List<IAnvilHammerTooltipProvider> blockEntityProviders = new ArrayList<>();
     private final List<IAffectRangeProvider> affectRangeProviders = new ArrayList<>();
     private final List<IHandHeldItemTooltipProvider> handItemProviders = new ArrayList<>();
 
@@ -45,13 +47,14 @@ public class HudTooltipManager {
         INSTANCE.registerBlockEntityTooltip(new HeliostatsTooltipProvider());
         INSTANCE.registerBlockEntityTooltip(new SpaceOvercompressorTooltipProvider());
         INSTANCE.registerHandHeldItemTooltip(ModItems.STRUCTURE_TOOL.get());
+        INSTANCE.registerBlockEntityTooltip(new RedstoneElementTooltipProvider());
     }
 
     private void registerAffectRange(AffectRangeProviderImpl affectRangeProvider) {
         affectRangeProviders.add(affectRangeProvider);
     }
 
-    private void registerBlockEntityTooltip(IBlockEntityTooltipProvider provider) {
+    private void registerBlockEntityTooltip(IAnvilHammerTooltipProvider provider) {
         blockEntityProviders.add(provider);
     }
 
@@ -64,23 +67,23 @@ public class HudTooltipManager {
      */
     public void renderTooltip(
         GuiGraphics guiGraphics,
-        BlockEntity entity,
+        Level level,
+        BlockPos blockPos,
         float partialTick,
         int screenWidth,
         int screenHeight
     ) {
-        if (entity == null) return;
         final int tooltipPosX = screenWidth / 2 + 10;
         final int tooltipPosY = screenHeight / 2 + 10;
         Font font = Minecraft.getInstance().font;
-        IBlockEntityTooltipProvider currentProvider = determineBlockEntityTooltipProvider(entity);
+        IAnvilHammerTooltipProvider currentProvider = determineBlockEntityTooltipProvider(level, blockPos);
         if (currentProvider == null) return;
-        List<Component> tooltip = currentProvider.tooltip(entity);
+        List<Component> tooltip = currentProvider.tooltip(level, blockPos);
         if (tooltip == null || tooltip.isEmpty()) return;
         renderTooltipWithItemIcon(
             guiGraphics,
             font,
-            currentProvider.icon(entity),
+            currentProvider.icon(level, blockPos),
             tooltip,
             tooltipPosX,
             tooltipPosY,
@@ -146,11 +149,10 @@ public class HudTooltipManager {
             .orElse(null);
     }
 
-    private IBlockEntityTooltipProvider determineBlockEntityTooltipProvider(BlockEntity entity) {
-        if (entity == null) return null;
+    private IAnvilHammerTooltipProvider determineBlockEntityTooltipProvider(Level level, BlockPos blockPos) {
         return blockEntityProviders.stream()
-            .filter(it -> it.accepts(entity))
-            .min(Comparator.comparingInt(IBlockEntityTooltipProvider::priority))
+            .filter(it -> it.accepts(level, blockPos))
+            .min(Comparator.comparingInt(IAnvilHammerTooltipProvider::priority))
             .orElse(null);
     }
 
