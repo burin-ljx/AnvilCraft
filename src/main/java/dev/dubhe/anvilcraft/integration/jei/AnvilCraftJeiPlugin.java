@@ -15,6 +15,7 @@ import dev.dubhe.anvilcraft.integration.jei.category.anvil.BulgingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.CementStainingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ConcreteCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.CookingCategory;
+import dev.dubhe.anvilcraft.integration.jei.category.anvil.CrushingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemCompressCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.UnpackCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemInjectCategory;
@@ -40,6 +41,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.BlockCrushRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BoilingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BulgingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.CookingRecipe;
+import dev.dubhe.anvilcraft.recipe.anvil.CrushingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCompressRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.UnpackRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
@@ -113,6 +115,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
 
     public static final RecipeType<RecipeHolder<JewelCraftingRecipe>> JEWEL_CRAFTING =
         createRecipeHolderType("jewel_crafting");
+    public static final RecipeType<RecipeHolder<CrushingRecipe>> CRUSHING = createRecipeHolderType("crushing");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -143,6 +146,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         EndPortalConversionCategory.registerRecipes(registration);
         BeaconConversionCategory.registerRecipes(registration);
         VoidDecayCategory.registerRecipes(registration);
+        CrushingCategory.registerRecipe(registration);
 
         registration.addItemStackInfo(
             new ItemStack(ModItems.GEODE.get()),
@@ -189,6 +193,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         EndPortalConversionCategory.registerRecipeCatalysts(registration);
         BeaconConversionCategory.registerRecipeCatalysts(registration);
         VoidDecayCategory.registerRecipeCatalysts(registration);
+        CrushingCategory.registerRecipeCatalysts(registration);
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
 
@@ -228,6 +233,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new EndPortalConversionCategory(guiHelper));
         registration.addRecipeCategories(new BeaconConversionCategory(guiHelper));
         registration.addRecipeCategories(new VoidDecayCategory(guiHelper));
+        registration.addRecipeCategories(new CrushingCategory(guiHelper));
     }
 
     @Override

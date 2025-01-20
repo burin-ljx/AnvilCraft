@@ -296,6 +296,7 @@
   "gui.anvilcraft.category.chance": "Chance: %s%%",
   "gui.anvilcraft.category.concrete": "Concrete",
   "gui.anvilcraft.category.cooking": "Cooking",
+  "gui.anvilcraft.category.crushing": "Crushing",
   "gui.anvilcraft.category.end_portal_conversion": "Block Falls Into End Portal",
   "gui.anvilcraft.category.end_portal_conversion.fall_through": "Converted when fall through end portal",
   "gui.anvilcraft.category.item_compress": "Item Compress",

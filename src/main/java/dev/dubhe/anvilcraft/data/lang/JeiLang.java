@@ -21,6 +21,7 @@ public class JeiLang {
         provider.add("gui.anvilcraft.category.boiling", "Boiling");
 
         provider.add("gui.anvilcraft.category.stamping", "Stamping");
+        provider.add("gui.anvilcraft.category.crushing", "Crushing");
 
         provider.add("gui.anvilcraft.category.super_heating", "Super Heating");
         provider.add("gui.anvilcraft.category.super_heating.convert_to", "Convert to %s");
