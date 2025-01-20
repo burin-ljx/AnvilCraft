@@ -21,13 +21,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class StampingPlatformBlock extends Block implements SimpleWaterloggedBlock, IHammerRemovable {
+public class WorkingPlatformBlock extends Block implements SimpleWaterloggedBlock, IHammerRemovable {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape REDUCE_AABB = Shapes.or(
         Block.box(2.0, 12.0, 2.0, 14.0, 16.0, 14.0),
@@ -36,7 +34,7 @@ public class StampingPlatformBlock extends Block implements SimpleWaterloggedBlo
         Block.box(0.0, 0.0, 4.0, 16.0, 10.0, 12.0));
     private static final VoxelShape AABB = Shapes.join(Shapes.block(), REDUCE_AABB, BooleanOp.ONLY_FIRST);
 
-    public StampingPlatformBlock(Properties properties) {
+    public WorkingPlatformBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }
