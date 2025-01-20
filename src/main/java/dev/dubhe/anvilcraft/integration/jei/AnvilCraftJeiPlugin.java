@@ -16,7 +16,7 @@ import dev.dubhe.anvilcraft.integration.jei.category.anvil.CementStainingCategor
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ConcreteCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.CookingCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemCompressCategory;
-import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemCrushCategory;
+import dev.dubhe.anvilcraft.integration.jei.category.anvil.UnpackCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.ItemInjectCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.MassInjectCategory;
 import dev.dubhe.anvilcraft.integration.jei.category.anvil.MeshRecipeCategory;
@@ -41,7 +41,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.BoilingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.BulgingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.CookingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCompressRecipe;
-import dev.dubhe.anvilcraft.recipe.anvil.ItemCrushRecipe;
+import dev.dubhe.anvilcraft.recipe.anvil.UnpackRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.SqueezingRecipe;
@@ -96,7 +96,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
     public static final RecipeType<RecipeHolder<MassInjectRecipe>> MASS_INJECT = createRecipeHolderType("mass_inject");
     public static final RecipeType<RecipeHolder<ItemCompressRecipe>> ITEM_COMPRESS =
         createRecipeHolderType("item_compress");
-    public static final RecipeType<RecipeHolder<ItemCrushRecipe>> ITEM_CRUSH = createRecipeHolderType("item_crush");
+    public static final RecipeType<RecipeHolder<UnpackRecipe>> UNPACK = createRecipeHolderType("unpack");
     public static final RecipeType<RecipeHolder<CookingRecipe>> COOKING = createRecipeHolderType("cooking");
     public static final RecipeType<RecipeHolder<BoilingRecipe>> BOILING = createRecipeHolderType("boiling");
     public static final RecipeType<RecipeHolder<StampingRecipe>> STAMPING = createRecipeHolderType("stamping");
@@ -128,7 +128,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         ItemInjectCategory.registerRecipes(registration);
         MassInjectCategory.registerRecipes(registration);
         ItemCompressCategory.registerRecipes(registration);
-        ItemCrushCategory.registerRecipes(registration);
+        UnpackCategory.registerRecipes(registration);
         CookingCategory.registerRecipes(registration);
         BoilingCategory.registerRecipes(registration);
         StampingCategory.registerRecipes(registration);
@@ -174,7 +174,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         ItemInjectCategory.registerRecipeCatalysts(registration);
         MassInjectCategory.registerRecipeCatalysts(registration);
         ItemCompressCategory.registerRecipeCatalysts(registration);
-        ItemCrushCategory.registerRecipeCatalysts(registration);
+        UnpackCategory.registerRecipeCatalysts(registration);
         CookingCategory.registerRecipeCatalysts(registration);
         BoilingCategory.registerRecipeCatalysts(registration);
         StampingCategory.registerRecipeCatalysts(registration);
@@ -213,7 +213,7 @@ public class AnvilCraftJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new ItemInjectCategory(guiHelper));
         registration.addRecipeCategories(new MassInjectCategory(guiHelper));
         registration.addRecipeCategories(new ItemCompressCategory(guiHelper));
-        registration.addRecipeCategories(new ItemCrushCategory(guiHelper));
+        registration.addRecipeCategories(new UnpackCategory(guiHelper));
         registration.addRecipeCategories(new CookingCategory(guiHelper));
         registration.addRecipeCategories(new BoilingCategory(guiHelper));
         registration.addRecipeCategories(new StampingCategory(guiHelper));

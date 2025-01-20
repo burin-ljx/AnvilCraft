@@ -9,7 +9,7 @@ import dev.dubhe.anvilcraft.api.anvil.impl.HitBeeNestBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.HitCrabTrapBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.HitSpawnerBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ItemCompressBehavior;
-import dev.dubhe.anvilcraft.api.anvil.impl.ItemCrushBehavior;
+import dev.dubhe.anvilcraft.api.anvil.impl.UnpackBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ItemMeshBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ItemStampingBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.MassInjectBehavior;
@@ -80,7 +80,7 @@ public interface IAnvilBehavior {
             state -> state.is(Blocks.IRON_TRAPDOOR)
                 && state.getValue(TrapDoorBlock.HALF) == Half.TOP
                 && !state.getValue(TrapDoorBlock.OPEN),
-            new ItemCrushBehavior()
+            new UnpackBehavior()
         );
         registerBehavior(state -> state.getBlock() instanceof CementCauldronBlock, new CementStainingBehavior());
         registerBehavior(state -> state.getBlock() instanceof CementCauldronBlock, new ConcreteBehavior());
