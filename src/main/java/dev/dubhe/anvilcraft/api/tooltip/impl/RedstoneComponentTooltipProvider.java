@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.properties.ComparatorMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedstoneElementTooltipProvider implements IAnvilHammerTooltipProvider {
+public class RedstoneComponentTooltipProvider implements IAnvilHammerTooltipProvider {
     @Override
     public boolean accepts(Level level, BlockPos blockPos) {
         return level.getBlockState(blockPos).is(Blocks.REDSTONE_WIRE) ||

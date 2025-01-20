@@ -6,7 +6,7 @@ import dev.dubhe.anvilcraft.api.tooltip.impl.AffectRangeProviderImpl;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltip;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.PowerComponentTooltipProvider;
-import dev.dubhe.anvilcraft.api.tooltip.impl.RedstoneElementTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.impl.RedstoneComponentTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.RubyPrismTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.SpaceOvercompressorTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IAffectRangeProvider;
@@ -47,7 +47,7 @@ public class HudTooltipManager {
         INSTANCE.registerAnvilHammerTooltip(new HeliostatsTooltipProvider());
         INSTANCE.registerAnvilHammerTooltip(new SpaceOvercompressorTooltipProvider());
         INSTANCE.registerHandHeldItemTooltip(ModItems.STRUCTURE_TOOL.get());
-        INSTANCE.registerAnvilHammerTooltip(new RedstoneElementTooltipProvider());
+        INSTANCE.registerAnvilHammerTooltip(new RedstoneComponentTooltipProvider());
     }
 
     private void registerAffectRange(AffectRangeProviderImpl affectRangeProvider) {
