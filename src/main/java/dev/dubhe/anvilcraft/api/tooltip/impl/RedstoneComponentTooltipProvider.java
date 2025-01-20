@@ -33,7 +33,11 @@ public class RedstoneComponentTooltipProvider implements IAnvilHammerTooltipProv
             lines.add(Component.translatable("tooltip.anvilcraft.redstone_information.power", power));
         } else if (level.getBlockState(blockPos).is(Blocks.COMPARATOR)) {
             ComparatorMode mode = level.getBlockState(blockPos).getValue(ComparatorBlock.MODE);
-            lines.add(Component.translatable("tooltip.anvilcraft.redstone_information.comparator.mode", mode.getSerializedName()));
+            if (mode == ComparatorMode.COMPARE) {
+                lines.add(Component.translatable("tooltip.anvilcraft.redstone_information.comparator.mode").append(Component.translatable("tooltip.anvilcraft.redstone_information.comparator.mode_compare")));
+            } else if (mode == ComparatorMode.SUBTRACT) {
+                lines.add(Component.translatable("tooltip.anvilcraft.redstone_information.comparator.mode").append(Component.translatable("tooltip.anvilcraft.redstone_information.comparator.mode_subtract")));
+            }
             BlockEntity entity = level.getBlockEntity(blockPos);
             if (entity instanceof ComparatorBlockEntity comparatorBlockEntity) {
                 int power = comparatorBlockEntity.getOutputSignal();

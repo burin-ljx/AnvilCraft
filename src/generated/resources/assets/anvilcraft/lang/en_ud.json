@@ -691,7 +691,9 @@
   "tooltip.anvilcraft.jade.item_detector": "%d :ǝbuɐᴚ uoıʇɔǝʇǝᗡ",
   "tooltip.anvilcraft.jade.power_information": "Mʞ %d/%d :pıɹ⅁ ɹǝʍoԀ",
   "tooltip.anvilcraft.jade.ruby_prism.power": "%d :ןǝʌǝן ɹǝsɐꞀ",
-  "tooltip.anvilcraft.redstone_information.comparator.mode": "%s :ǝpoW",
+  "tooltip.anvilcraft.redstone_information.comparator.mode": " :ǝpoW",
+  "tooltip.anvilcraft.redstone_information.comparator.mode_compare": "ǝɹɐdɯoƆ",
+  "tooltip.anvilcraft.redstone_information.comparator.mode_subtract": "ʇɔɐɹʇqnS",
   "tooltip.anvilcraft.redstone_information.power": "%d :ɹǝʍoԀ",
   "tooltip.anvilcraft.space_overcompressor.stored_mass": "%s :ssɐW pǝɹoʇS"
 }
