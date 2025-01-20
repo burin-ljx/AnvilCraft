@@ -5,6 +5,7 @@ import dev.dubhe.anvilcraft.api.anvil.impl.BulgingBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.CementStainingBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ConcreteBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.CookingBehavior;
+import dev.dubhe.anvilcraft.api.anvil.impl.CrushingBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.HitBeeNestBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.HitCrabTrapBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.HitSpawnerBehavior;
@@ -93,5 +94,6 @@ public interface IAnvilBehavior {
         registerBehavior(ModBlocks.STAMPING_PLATFORM.get(), new ItemStampingBehavior());
         registerBehavior(ModBlocks.SPACE_OVERCOMPRESSOR.get(), new MassInjectBehavior());
         registerBehavior(Blocks.SCAFFOLDING, new ItemMeshBehavior());
+        registerBehavior(ModBlocks.STAMPING_PLATFORM.get(), new CrushingBehavior());
     }
 }
