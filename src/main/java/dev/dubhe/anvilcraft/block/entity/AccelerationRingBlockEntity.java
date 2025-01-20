@@ -136,8 +136,8 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
             }
         }
         if (!found) {
-            BlockPos start = getBlockPos().relative(direction, 3);
-            BlockPos end = getBlockPos().relative(direction, 8);
+            BlockPos start = getBlockPos().relative(direction, 1);
+            BlockPos end = getBlockPos().relative(direction, 17);
             AABB aabb = new AABB(
                     start.getX() + 1,
                     start.getY() + 1,
@@ -146,16 +146,19 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
                     end.getY(),
                     end.getZ()
             );
+            AABB blockBoundingBox = new AABB(start);
             level.getEntitiesOfClass(Entity.class, aabb,
-                    entity -> (entity instanceof FallingBlockEntity fallingBlockEntity && fallingBlockEntity.getBlockState().is(BlockTags.ANVIL) && !fallingBlockEntity.getBlockState().is(ModBlockTags.NON_MAGNETIC)
-                            || entity instanceof Projectile))
+                    (entity -> (entity instanceof FallingBlockEntity fallingBlockEntity && fallingBlockEntity.getBlockState().is(BlockTags.ANVIL) && !fallingBlockEntity.getBlockState().is(ModBlockTags.NON_MAGNETIC)
+                            || entity instanceof Projectile)
+                            && !entity.getBoundingBox().intersects(blockBoundingBox)
+                    ))
                     .forEach(entity -> entity.setNoGravity(false));
             return;
         }
         for (BlockPos pos : blockPoses) {
             BlockState fallState = level.getBlockState(pos);
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
-            FallingBlockEntity.fall(level, pos, fallState).setNoGravity(true);;
+            FallingBlockEntity.fall(level, pos, fallState).setNoGravity(true);
         }
         BlockPos end = getBlockPos().relative(direction.getOpposite(), 1);
         checkPos.move(direction);
