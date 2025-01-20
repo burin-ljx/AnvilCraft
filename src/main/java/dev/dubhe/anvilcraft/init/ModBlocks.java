@@ -88,7 +88,7 @@ import dev.dubhe.anvilcraft.block.RubyPrismBlock;
 import dev.dubhe.anvilcraft.block.SimpleChuteBlock;
 import dev.dubhe.anvilcraft.block.SpaceOvercompressorBlock;
 import dev.dubhe.anvilcraft.block.SpectralAnvilBlock;
-import dev.dubhe.anvilcraft.block.StampingPlatformBlock;
+import dev.dubhe.anvilcraft.block.WorkingPlatformBlock;
 import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
@@ -236,7 +236,7 @@ public class ModBlocks {
         .register();
 
     public static final BlockEntry<? extends Block> STAMPING_PLATFORM = REGISTRATE
-        .block("stamping_platform", StampingPlatformBlock::new)
+        .block("stamping_platform", WorkingPlatformBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .blockstate((ctx, provider) -> {
         })
@@ -257,6 +257,32 @@ public class ModBlocks {
                 .save(provider);
         })
         .register();
+
+    public static final BlockEntry<WorkingPlatformBlock> CRUSHING_PLATFORM = REGISTRATE
+            .block("crushing_table", WorkingPlatformBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate((ctx, provider) -> {})
+            .simpleItem()
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .recipe((ctx, provider) -> {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                        .pattern("BAB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('A', Blocks.GRINDSTONE)
+                        .define('B', Tags.Items.INGOTS_IRON)
+                        .unlockedBy("hasitem", AnvilCraftDatagen.has(Blocks.GRINDSTONE))
+                        .unlockedBy("hasitem", AnvilCraftDatagen.has(Items.IRON_INGOT))
+                        .save(provider, AnvilCraft.of("crushing_table_from_shaped"));
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get())
+                        .requires(Blocks.GRINDSTONE)
+                        .requires(ModBlocks.STAMPING_PLATFORM)
+                        .unlockedBy("hasitem", AnvilCraftDatagen.has(Blocks.GRINDSTONE))
+                        .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.STAMPING_PLATFORM))
+                        .save(provider, AnvilCraft.of("crushing_table_from_shapeless"));
+            })
+            .register();
+
     public static final BlockEntry<? extends Block> CORRUPTED_BEACON = REGISTRATE
         .block("corrupted_beacon", CorruptedBeaconBlock::new)
         .initialProperties(() -> Blocks.BEACON)
