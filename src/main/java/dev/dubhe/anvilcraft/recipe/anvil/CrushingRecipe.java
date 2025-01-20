@@ -28,8 +28,8 @@ public class CrushingRecipe extends AbstractItemProcessRecipe {
     }
 
     @Contract(" -> new")
-    public static @NotNull StampingRecipe.Builder builder() {
-        return new StampingRecipe.Builder();
+    public static @NotNull CrushingRecipe.Builder builder() {
+        return new CrushingRecipe.Builder();
     }
 
     @Override

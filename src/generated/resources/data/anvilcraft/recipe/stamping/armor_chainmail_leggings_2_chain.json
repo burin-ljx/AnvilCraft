@@ -1,0 +1,32 @@
+{
+  "type": "anvilcraft:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:chainmail_leggings"
+    }
+  ],
+  "results": [
+    {
+      "amount": {
+        "type": "minecraft:binomial",
+        "n": 1.0,
+        "p": 0.5
+      },
+      "stack": {
+        "count": 1,
+        "id": "minecraft:chain"
+      }
+    },
+    {
+      "amount": {
+        "type": "minecraft:binomial",
+        "n": 1.0,
+        "p": 0.5
+      },
+      "stack": {
+        "count": 1,
+        "id": "minecraft:chain"
+      }
+    }
+  ]
+}

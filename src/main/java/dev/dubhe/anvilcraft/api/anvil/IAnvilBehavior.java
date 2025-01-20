@@ -94,6 +94,6 @@ public interface IAnvilBehavior {
         registerBehavior(ModBlocks.STAMPING_PLATFORM.get(), new ItemStampingBehavior());
         registerBehavior(ModBlocks.SPACE_OVERCOMPRESSOR.get(), new MassInjectBehavior());
         registerBehavior(Blocks.SCAFFOLDING, new ItemMeshBehavior());
-        registerBehavior(ModBlocks.STAMPING_PLATFORM.get(), new CrushingBehavior());
+        registerBehavior(ModBlocks.CRUSHING_PLATFORM.get(), new CrushingBehavior());
     }
 }

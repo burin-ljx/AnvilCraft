@@ -1,0 +1,21 @@
+{
+  "type": "anvilcraft:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond_shovel"
+    }
+  ],
+  "results": [
+    {
+      "amount": {
+        "type": "minecraft:binomial",
+        "n": 1.0,
+        "p": 0.5
+      },
+      "stack": {
+        "count": 1,
+        "id": "minecraft:diamond"
+      }
+    }
+  ]
+}

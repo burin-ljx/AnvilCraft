@@ -15,7 +15,7 @@ public class CrushingBehavior implements IAnvilBehavior {
                 ModRecipeTypes.CRUSHING_TYPE.get(),
                 level,
                 hitBlockPos,
-                hitBlockPos.getCenter()
+                hitBlockPos.getCenter().add(0, -0.25, 0)
         );
     }
 }

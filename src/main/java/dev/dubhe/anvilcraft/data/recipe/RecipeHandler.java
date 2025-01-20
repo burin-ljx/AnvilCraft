@@ -25,5 +25,6 @@ public class RecipeHandler {
         VanillaRecipesLoader.init(provider);
         JewelCraftingRecipeLoader.init(provider);
         SpecialCraftingRecipeLoader.init(provider);
+        CrushingRecipeLoader.init(provider);
     }
 }
