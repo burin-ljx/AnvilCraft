@@ -3023,7 +3023,8 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.CAULDRONS)
         .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
@@ -3034,7 +3035,8 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.CAULDRONS)
         .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
@@ -3044,18 +3046,20 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.CAULDRONS)
         .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
-    public static final BlockEntry<ObsidianCauldron> OBSIDIDAN_CAULDRON = REGISTRATE
+    public static final BlockEntry<ObsidianCauldron> OBSIDIAN_CAULDRON = REGISTRATE
         .block("obsidian_cauldron", ObsidianCauldron::new)
         .initialProperties(() -> Blocks.OBSIDIAN)
         .properties(it -> it.pushReaction(PushReaction.BLOCK))
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.CAULDRONS)
         .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
@@ -3065,7 +3069,8 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.CAULDRONS)
         .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
@@ -3076,7 +3081,8 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+            BlockTags.CAULDRONS)
         .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
         .register();
 
@@ -3282,7 +3288,8 @@ public class ModBlocks {
                 );
             })
             .loot((tables, block) -> tables.dropOther(block, Items.CAULDRON))
-            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE,
+                BlockTags.CAULDRONS)
             .onRegister(block -> Item.BY_BLOCK.put(block, Items.CAULDRON))
             .register();
     }
