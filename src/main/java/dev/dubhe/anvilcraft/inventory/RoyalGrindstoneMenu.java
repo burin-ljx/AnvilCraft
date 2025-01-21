@@ -40,6 +40,8 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
 
     public int usedGold = 0;
+    public int totalRepairCost = 0;
+    public int totalCurseCount = 0;
     public int removedRepairCost = 0;
     public int removedCurseCount = 0;
 
@@ -136,13 +138,14 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
         if (repairTool.isEmpty() || repairMaterial.isEmpty()) return ItemStack.EMPTY;
         ItemStack result = repairTool.copy();
         int repairCost = repairTool.getOrDefault(DataComponents.REPAIR_COST, 0);
+        this.totalRepairCost = repairCost;
         int goldUsed = 0;
         int goldUsable = Math.min(repairMaterial.getCount(),
             RESULT_MATERIAL.getDefaultMaxStackSize() - resultMaterialSlots.getItem(0).getCount());
-        this.removedRepairCost = Math.min(repairCost, goldUsable);
-        goldUsed += repairCost;
-        goldUsable -= repairCost;
-        int remainRepairCost = repairCost - this.removedRepairCost;
+        int removedRepairCost = Math.min(repairCost, goldUsable);
+        goldUsed += removedRepairCost;
+        goldUsable -= removedRepairCost;
+        int remainRepairCost = repairCost - removedRepairCost;
         if (remainRepairCost > 0) {
             result.set(DataComponents.REPAIR_COST, remainRepairCost);
         } else {
@@ -152,7 +155,12 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
         DataComponentType<ItemEnchantments> enchantmentComponent = result.is(Items.ENCHANTED_BOOK) ?
             DataComponents.STORED_ENCHANTMENTS : DataComponents.ENCHANTMENTS;
         ItemEnchantments enchantments = result.get(enchantmentComponent);
+        this.totalCurseCount = 0;
         if (enchantments != null) {
+            this.totalCurseCount = (int) enchantments.keySet()
+                .stream()
+                .filter(it -> it.is(EnchantmentTags.CURSE))
+                .count();
             ItemEnchantments.Mutable mutEnch = new ItemEnchantments.Mutable(enchantments);
             Iterator<Holder<Enchantment>> iterator = mutEnch.keySet().iterator();
             while (iterator.hasNext() && goldUsable >= GOLD_PER_CURSE) {
@@ -170,6 +178,7 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
         }
         this.usedGold = goldUsed;
         this.removedCurseCount = removedCurseCount;
+        this.removedRepairCost = removedRepairCost;
         return result;
     }
 
