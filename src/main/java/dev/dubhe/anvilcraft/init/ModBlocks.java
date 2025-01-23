@@ -3068,7 +3068,8 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_DIAMOND_TOOL,
-            ModBlockTags.STORAGE_BLOCKS_VOID_MATTER)
+            ModBlockTags.STORAGE_BLOCKS_VOID_MATTER,
+            Tags.Blocks.STORAGE_BLOCKS)
         .register();
 
     public static final BlockEntry<Block> EARTH_CORE_SHARD_BLOCK = REGISTRATE
@@ -3093,20 +3094,23 @@ public class ModBlocks {
         .tag(
             BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_DIAMOND_TOOL,
-            ModBlockTags.STORAGE_BLOCKS_EARTH_CORE_SHARD)
+            ModBlockTags.STORAGE_BLOCKS_EARTH_CORE_SHARD,
+            Tags.Blocks.STORAGE_BLOCKS)
         .register();
 
     public static final BlockEntry<NegativeMatterBlock> NEGATIVE_MATTER_BLOCK = REGISTRATE
         .block("negative_matter_block", NegativeMatterBlock::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
-            BlockTags.NEEDS_DIAMOND_TOOL)
+            BlockTags.NEEDS_DIAMOND_TOOL,
+            Tags.Blocks.STORAGE_BLOCKS)
         .properties(properties -> properties.lightLevel(state -> 1).noOcclusion())
         .blockstate((context, provider) -> provider.simpleBlock(
             context.get(),
             DangerUtil.genConfiguredModel("block/negative_matter_block").get()))
         .item()
         .initialProperties(Item.Properties::new)
+        .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ctx.get())
