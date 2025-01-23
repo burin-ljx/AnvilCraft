@@ -81,7 +81,7 @@ public class ItemTagLoader {
                 .add(findResourceKey(ModBlocks.SAPPHIRE_BLOCK.asItem()))
                 .add(findResourceKey(ModBlocks.TOPAZ_BLOCK.asItem()));
 
-        provider.addTag(ModItemTags.DEAD_TUBE)
+        provider.addTag(ModItemTags.DEAD_CORALS)
                 .add(findResourceKey(Items.DEAD_BRAIN_CORAL))
                 .add(findResourceKey(Items.DEAD_BUBBLE_CORAL))
                 .add(findResourceKey(Items.DEAD_FIRE_CORAL))

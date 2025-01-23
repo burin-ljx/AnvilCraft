@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "anvilcraft:tungsten_pressure_plate"
+      "tag": "c:plates/tungsten"
     },
     "B": {
       "item": "minecraft:netherite_scrap"

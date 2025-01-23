@@ -79,6 +79,7 @@ public class ModItems {
     public static final ItemEntry<GuideBookItem> GUIDE_BOOK = REGISTRATE
         .item("guide_book", GuideBookItem::new)
         .properties(p -> p.stacksTo(1))
+        .tag(ItemTags.BOOKSHELF_BOOKS)
         .model((ctx, provider) -> {
         })
         .lang("AnvilCraft Guide Book")
@@ -113,7 +114,9 @@ public class ModItems {
                 .save(provider);
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.PICKAXES, ItemTags.CLUSTER_MAX_HARVESTABLES)
+        .tag(ItemTags.PICKAXES,
+            ItemTags.CLUSTER_MAX_HARVESTABLES,
+            Tags.Items.MINING_TOOL_TOOLS)
         .register();
     public static final ItemEntry<? extends AxeItem> AMETHYST_AXE = REGISTRATE
         .item("amethyst_axe", AmethystAxeItem::new)
@@ -128,7 +131,8 @@ public class ModItems {
                 .save(provider);
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.AXES)
+        .tag(ItemTags.AXES,
+            Tags.Items.MELEE_WEAPON_TOOLS)
         .register();
     public static final ItemEntry<? extends HoeItem> AMETHYST_HOE = REGISTRATE
         .item("amethyst_hoe", AmethystHoeItem::new)
@@ -158,7 +162,8 @@ public class ModItems {
                 .save(provider);
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.SWORDS)
+        .tag(ItemTags.SWORDS,
+            Tags.Items.MELEE_WEAPON_TOOLS)
         .register();
     public static final ItemEntry<? extends ShovelItem> AMETHYST_SHOVEL = REGISTRATE
         .item("amethyst_shovel", AmethystShovelItem::new)
@@ -188,7 +193,8 @@ public class ModItems {
         })
         .properties(properties -> properties.durability(1561))
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.PICKAXES)
+        .tag(ItemTags.PICKAXES,
+            Tags.Items.MINING_TOOL_TOOLS)
         .register();
     public static final ItemEntry<? extends Item> ROYAL_STEEL_AXE = REGISTRATE
         .item("royal_steel_axe", RoyalAxeItem::new)
@@ -204,7 +210,8 @@ public class ModItems {
         })
         .properties(properties -> properties.durability(1561))
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.AXES)
+        .tag(ItemTags.AXES,
+            Tags.Items.MELEE_WEAPON_TOOLS)
         .register();
     public static final ItemEntry<? extends Item> ROYAL_STEEL_SHOVEL = REGISTRATE
         .item("royal_steel_shovel", RoyalShovelItem::new)
@@ -252,7 +259,8 @@ public class ModItems {
         })
         .properties(properties -> properties.durability(1561))
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.SWORDS)
+        .tag(ItemTags.SWORDS,
+            Tags.Items.MELEE_WEAPON_TOOLS)
         .register();
     public static final ItemEntry<EmberMetalPickaxeItem> EMBER_METAL_PICKAXE = REGISTRATE
         .item("ember_metal_pickaxe", EmberMetalPickaxeItem::new)
@@ -268,7 +276,8 @@ public class ModItems {
         })
         .model((ctx, provider) -> provider.handheld(ctx))
         .tag(ItemTags.PICKAXES,
-            ModItemTags.EXPLOSION_PROOF)
+            ModItemTags.EXPLOSION_PROOF,
+            Tags.Items.MINING_TOOL_TOOLS)
         .register();
     public static final ItemEntry<EmberMetalAxeItem> EMBER_METAL_AXE = REGISTRATE
         .item("ember_metal_axe", EmberMetalAxeItem::new)
@@ -283,7 +292,8 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_metal_axe"));
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.AXES)
+        .tag(ItemTags.AXES,
+            Tags.Items.MELEE_WEAPON_TOOLS)
         .register();
     public static final ItemEntry<EmberMetalShovelItem> EMBER_METAL_SHOVEL = REGISTRATE
         .item("ember_metal_shovel", EmberMetalShovelItem::new)
@@ -328,7 +338,8 @@ public class ModItems {
                 .save(provider, AnvilCraft.of("smithing/ember_metal_sword"));
         })
         .model((ctx, provider) -> provider.handheld(ctx))
-        .tag(ItemTags.SWORDS)
+        .tag(ItemTags.SWORDS,
+            Tags.Items.MELEE_WEAPON_TOOLS)
         .register();
     public static final ItemEntry<AnvilHammerItem> ANVIL_HAMMER = REGISTRATE
         .item("anvil_hammer", AnvilHammerItem::new)
@@ -569,6 +580,8 @@ public class ModItems {
 
     public static final ItemEntry<Item> MAGNET_INGOT = REGISTRATE
         .item("magnet_ingot", Item::new)
+        .tag(Tags.Items.INGOTS,
+            ModItemTags.MAGNET_INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.MAGNET_BLOCK)
@@ -587,7 +600,8 @@ public class ModItems {
     // 皇家钢系
     public static final ItemEntry<Item> ROYAL_STEEL_INGOT = REGISTRATE
         .item("royal_steel_ingot", Item::new)
-        .tag(ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(ItemTags.BEACON_PAYMENT_ITEMS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.ROYAL_STEEL_BLOCK)
@@ -608,6 +622,7 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> ROYAL_STEEL_NUGGET = REGISTRATE
         .item("royal_steel_nugget", Item::new)
+        .tag(Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItems.ROYAL_STEEL_INGOT)
@@ -622,7 +637,8 @@ public class ModItems {
     public static final ItemEntry<CursedItem> CURSED_GOLD_INGOT = REGISTRATE
         .item("cursed_gold_ingot", CursedItem::new)
         .tag(ItemTags.BEACON_PAYMENT_ITEMS,
-            ItemTags.PIGLIN_LOVED)
+            ItemTags.PIGLIN_LOVED,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.CURSED_GOLD_BLOCK)
@@ -645,7 +661,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<CursedItem> CURSED_GOLD_NUGGET = REGISTRATE
         .item("cursed_gold_nugget", CursedItem::new)
-        .tag(ItemTags.PIGLIN_LOVED)
+        .tag(ItemTags.PIGLIN_LOVED,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItems.CURSED_GOLD_INGOT)
@@ -657,7 +674,9 @@ public class ModItems {
         .register();
     public static final ItemEntry<TopazItem> TOPAZ = REGISTRATE
         .item("topaz", TopazItem::new)
-        .tag(ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(ItemTags.BEACON_PAYMENT_ITEMS,
+            Tags.Items.GEMS,
+            ModItemTags.GEMS_TOPAZ)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TOPAZ_BLOCK)
@@ -667,7 +686,9 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> RUBY = REGISTRATE
         .item("ruby", Item::new)
-        .tag(ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(ItemTags.BEACON_PAYMENT_ITEMS,
+            Tags.Items.GEMS,
+            ModItemTags.GEMS_RUBY)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.RUBY_BLOCK)
@@ -677,7 +698,9 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> SAPPHIRE = REGISTRATE
         .item("sapphire", Item::new)
-        .tag(ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(ItemTags.BEACON_PAYMENT_ITEMS,
+            Tags.Items.GEMS,
+            ModItemTags.GEMS_SAPPHIRE)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.SAPPHIRE_BLOCK)
@@ -696,6 +719,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> AMBER = REGISTRATE
         .item("amber", Item::new)
+        .tag(Tags.Items.GEMS,
+            ModItemTags.GEMS_AMBER)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.AMBER_BLOCK)
@@ -735,7 +760,8 @@ public class ModItems {
     public static final ItemEntry<Item> TUNGSTEN_NUGGET = REGISTRATE
         .item("tungsten_nugget", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.TUNGSTEN_NUGGETS, ModItemTags.TUNGSTEN_NUGGETS)
+        .tag(ModItemTags.TUNGSTEN_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.TUNGSTEN_INGOTS)
@@ -748,7 +774,8 @@ public class ModItems {
     public static final ItemEntry<Item> TUNGSTEN_INGOT = REGISTRATE
         .item("tungsten_ingot", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
-        .tag(ModItemTags.TUNGSTEN_INGOTS, ModItemTags.TUNGSTEN_INGOTS)
+        .tag(ModItemTags.TUNGSTEN_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TUNGSTEN_BLOCK)
@@ -807,7 +834,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> TITANIUM_NUGGET = REGISTRATE
         .item("titanium_nugget", Item::new)
-        .tag(ModItemTags.TITANIUM_NUGGETS, ModItemTags.TITANIUM_NUGGETS)
+        .tag(ModItemTags.TITANIUM_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.TITANIUM_INGOTS)
@@ -819,7 +847,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> TITANIUM_INGOT = REGISTRATE
         .item("titanium_ingot", Item::new)
-        .tag(ModItemTags.TITANIUM_INGOTS, ModItemTags.TITANIUM_INGOTS)
+        .tag(ModItemTags.TITANIUM_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TITANIUM_BLOCK)
@@ -878,7 +907,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> ZINC_NUGGET = REGISTRATE
         .item("zinc_nugget", Item::new)
-        .tag(ModItemTags.ZINC_NUGGETS, ModItemTags.ZINC_NUGGETS)
+        .tag(ModItemTags.ZINC_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.ZINC_INGOTS)
@@ -890,7 +920,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> ZINC_INGOT = REGISTRATE
         .item("zinc_ingot", Item::new)
-        .tag(ModItemTags.ZINC_INGOTS, ModItemTags.ZINC_INGOTS)
+        .tag(ModItemTags.ZINC_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.ZINC_BLOCK)
@@ -949,7 +980,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> TIN_NUGGET = REGISTRATE
         .item("tin_nugget", Item::new)
-        .tag(ModItemTags.TIN_NUGGETS, ModItemTags.TIN_NUGGETS)
+        .tag(ModItemTags.TIN_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.TIN_INGOTS)
@@ -961,7 +993,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> TIN_INGOT = REGISTRATE
         .item("tin_ingot", Item::new)
-        .tag(ModItemTags.TIN_INGOTS, ModItemTags.TIN_INGOTS)
+        .tag(ModItemTags.TIN_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.TIN_BLOCK)
@@ -1020,7 +1053,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> LEAD_NUGGET = REGISTRATE
         .item("lead_nugget", Item::new)
-        .tag(ModItemTags.LEAD_NUGGETS, ModItemTags.LEAD_NUGGETS)
+        .tag(ModItemTags.LEAD_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.LEAD_INGOTS)
@@ -1032,7 +1066,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> LEAD_INGOT = REGISTRATE
         .item("lead_ingot", Item::new)
-        .tag(ModItemTags.LEAD_INGOTS, ModItemTags.LEAD_INGOTS)
+        .tag(ModItemTags.LEAD_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.LEAD_BLOCK)
@@ -1091,7 +1126,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> SILVER_NUGGET = REGISTRATE
         .item("silver_nugget", Item::new)
-        .tag(ModItemTags.SILVER_NUGGETS, ModItemTags.SILVER_NUGGETS)
+        .tag(ModItemTags.SILVER_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.SILVER_INGOTS)
@@ -1103,7 +1139,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> SILVER_INGOT = REGISTRATE
         .item("silver_ingot", Item::new)
-        .tag(ModItemTags.SILVER_INGOTS, ModItemTags.SILVER_INGOTS)
+        .tag(ModItemTags.SILVER_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.SILVER_BLOCK)
@@ -1163,7 +1200,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> URANIUM_NUGGET = REGISTRATE
         .item("uranium_nugget", Item::new)
-        .tag(ModItemTags.URANIUM_NUGGETS, ModItemTags.URANIUM_NUGGETS)
+        .tag(ModItemTags.URANIUM_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.URANIUM_INGOTS)
@@ -1175,7 +1213,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> URANIUM_INGOT = REGISTRATE
         .item("uranium_ingot", Item::new)
-        .tag(ModItemTags.URANIUM_INGOTS, ModItemTags.URANIUM_INGOTS)
+        .tag(ModItemTags.URANIUM_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.URANIUM_BLOCK)
@@ -1234,7 +1273,8 @@ public class ModItems {
         .register();
     public static final ItemEntry<Item> COPPER_NUGGET = REGISTRATE
         .item("copper_nugget", Item::new)
-        .tag(ModItemTags.COPPER_NUGGETS, ModItemTags.COPPER_NUGGETS)
+        .tag(ModItemTags.COPPER_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(Ingredient.of(Items.COPPER_INGOT))
@@ -1251,7 +1291,8 @@ public class ModItems {
 
     public static final ItemEntry<Item> BRONZE_INGOT = REGISTRATE
         .item("bronze_ingot", Item::new)
-        .tag(ModItemTags.BRONZE_INGOTS, ModItemTags.BRONZE_INGOTS)
+        .tag(ModItemTags.BRONZE_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.BRONZE_BLOCK)
@@ -1275,7 +1316,8 @@ public class ModItems {
 
     public static final ItemEntry<Item> BRONZE_NUGGET = REGISTRATE
         .item("bronze_nugget", Item::new)
-        .tag(ModItemTags.BRONZE_NUGGETS, ModItemTags.BRONZE_NUGGETS)
+        .tag(ModItemTags.BRONZE_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.BRONZE_INGOTS)
@@ -1288,7 +1330,8 @@ public class ModItems {
 
     public static final ItemEntry<Item> BRASS_INGOT = REGISTRATE
         .item("brass_ingot", Item::new)
-        .tag(ModItemTags.BRASS_INGOTS, ModItemTags.BRASS_INGOTS)
+        .tag(ModItemTags.BRASS_INGOTS,
+            Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.BRASS_BLOCK)
@@ -1312,7 +1355,8 @@ public class ModItems {
 
     public static final ItemEntry<Item> BRASS_NUGGET = REGISTRATE
         .item("brass_nugget", Item::new)
-        .tag(ModItemTags.BRASS_NUGGETS, ModItemTags.BRASS_NUGGETS)
+        .tag(ModItemTags.BRASS_NUGGETS,
+            Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItemTags.BRASS_INGOTS)
@@ -1332,11 +1376,11 @@ public class ModItems {
         .recipe((ctx, provider) -> {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("ABA")
-                .define('A', ModBlocks.TUNGSTEN_PRESSURE_PLATE)
+                .define('A', ModItemTags.TUNGSTEN_PLATES)
                 .define('B', Items.NETHERITE_SCRAP)
                 .unlockedBy(
-                    AnvilCraftDatagen.hasItem(ModBlocks.TUNGSTEN_PRESSURE_PLATE),
-                    RegistrateRecipeProvider.has(ModBlocks.TUNGSTEN_PRESSURE_PLATE))
+                    AnvilCraftDatagen.hasItem(ModItemTags.TUNGSTEN_PLATES),
+                    RegistrateRecipeProvider.has(ModItemTags.TUNGSTEN_PLATES))
                 .unlockedBy(
                     AnvilCraftDatagen.hasItem(Items.NETHERITE_SCRAP),
                     RegistrateRecipeProvider.has(Items.NETHERITE_SCRAP))
@@ -1459,6 +1503,7 @@ public class ModItems {
     public static final ItemEntry<? extends Item> EMBER_METAL_INGOT = REGISTRATE
         .item("ember_metal_ingot", Item::new)
         .initialProperties(() -> new Item.Properties().fireResistant())
+        .tag(Tags.Items.INGOTS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModBlocks.EMBER_METAL_BLOCK)
@@ -1482,6 +1527,7 @@ public class ModItems {
 
     public static final ItemEntry<? extends Item> EMBER_METAL_NUGGET = REGISTRATE
         .item("ember_metal_nugget", Item::new)
+        .tag(Tags.Items.NUGGETS)
         .initialProperties(() -> new Item.Properties().fireResistant())
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
@@ -1518,6 +1564,7 @@ public class ModItems {
     public static final ItemEntry<Item> NEGATIVE_MATTER_NUGGET = REGISTRATE
         .item("negative_matter_nugget", Item::new)
         .initialProperties(Item.Properties::new)
+        .tag(Tags.Items.NUGGETS)
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 9)
                 .requires(ModItems.NEGATIVE_MATTER)
@@ -1531,10 +1578,12 @@ public class ModItems {
 
     public static final ItemEntry<SuperHeavyItem> NEUTRONIUM_INGOT = REGISTRATE
         .item("neutronium_ingot", SuperHeavyItem::new)
+        .tag(Tags.Items.INGOTS)
         .initialProperties(() -> new Item.Properties().fireResistant())
         .register();
     public static final ItemEntry<SuperHeavyItem> STABLE_NEUTRONIUM_INGOT = REGISTRATE
         .item("stable_neutronium_ingot", SuperHeavyItem::new)
+        .tag(Tags.Items.INGOTS)
         .initialProperties(() -> new Item.Properties().fireResistant())
         .recipe((ctx, provider) -> {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get(), 1)
@@ -1548,11 +1597,14 @@ public class ModItems {
         .register();
     public static final ItemEntry<SuperHeavyItem> CHARGED_NEUTRONIUM_INGOT = REGISTRATE
         .item("charged_neutronium_ingot", SuperHeavyItem::new)
+        .tag(Tags.Items.INGOTS)
         .initialProperties(() -> new Item.Properties().fireResistant())
         .register();
 
     public static final ItemEntry<BucketItem> OIL_BUCKET = REGISTRATE
         .item("oil_bucket", p -> new BucketItem(ModFluids.OIL.get(), p))
+        .tag(ModItemTags.BUCKETS,
+            ModItemTags.OIL_BUCKETS)
         .initialProperties(() -> new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET))
         .model(ModelProviderUtil::bucket)
         .register();
@@ -1571,6 +1623,8 @@ public class ModItems {
     private static ItemEntry<BucketItem> registerCementBucket(Color color) {
         return REGISTRATE
             .item("%s_cement_bucket".formatted(color), p -> new BucketItem(ModFluids.SOURCE_CEMENTS.get(color).get(), p))
+            .tag(ModItemTags.BUCKETS,
+                ModItemTags.CEMENT_BUCKETS)
             .properties(p -> p.stacksTo(1).craftRemainder(Items.BUCKET))
             .model(ModelProviderUtil::bucket)
             .register();
@@ -1578,6 +1632,7 @@ public class ModItems {
 
     public static ItemEntry<BucketItem> MELT_GEM_BUCKET = REGISTRATE
         .item("melt_gem_bucket", p -> new BucketItem(ModFluids.MELT_GEM.get(), p))
+        .tag(ModItemTags.BUCKETS)
         .properties(p -> p.stacksTo(1).craftRemainder(Items.BUCKET))
         .model(ModelProviderUtil::bucket)
         .register();

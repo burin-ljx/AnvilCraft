@@ -2,8 +2,10 @@ package dev.dubhe.anvilcraft.data.tags;
 
 import dev.dubhe.anvilcraft.init.ModFluidTags;
 
+import dev.dubhe.anvilcraft.init.ModFluids;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -28,5 +30,15 @@ public class FluidTagLoader {
                 .add(findResourceKey(Fluids.FLOWING_WATER))
                 .add(findResourceKey(Fluids.LAVA))
                 .add(findResourceKey(Fluids.FLOWING_LAVA));
+        provider.addTag(ModFluidTags.OIL)
+            .add(findResourceKey(ModFluids.OIL.get()))
+            .add(findResourceKey(ModFluids.FLOWING_OIL.get()));
+        TagsProvider.TagAppender<Fluid> appender = provider.addTag(ModFluidTags.CEMENT);
+        ModFluids.SOURCE_CEMENTS.forEach((color, cement) -> {
+            appender.add(findResourceKey(cement.get()));
+        });
+        ModFluids.FLOWING_CEMENTS.forEach((color, cement) -> {
+            appender.add(findResourceKey(cement.get()));
+        });
     }
 }
