@@ -1,12 +1,13 @@
 package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-
+import dev.dubhe.anvilcraft.block.state.Color;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
@@ -41,6 +42,17 @@ public class ModItemTags {
     public static final TagKey<Item> STORAGE_BLOCKS_BRASS = bindC("storage_blocks/brass");
     public static final TagKey<Item> STORAGE_BLOCKS_VOID_MATTER = bindC("storage_blocks/void_matter");
     public static final TagKey<Item> STORAGE_BLOCKS_EARTH_CORE_SHARD = bindC("storage_blocks/earth_core_shard");
+    public static final TagKey<Item> STORAGE_BLOCKS_MAGNET = bindC("storage_blocks/magnet");
+    public static final TagKey<Item> STORAGE_BLOCKS_TOPAZ = bindC("storage_blocks/topaz");
+    public static final TagKey<Item> STORAGE_BLOCKS_SAPPHIRE = bindC("storage_blocks/sapphire");
+    public static final TagKey<Item> STORAGE_BLOCKS_RUBY = bindC("storage_blocks/ruby");
+    public static final TagKey<Item> STORAGE_BLOCKS_AMBER = bindC("storage_blocks/amber");
+    public static final TagKey<Item> STORAGE_BLOCKS_RESIN = bindC("storage_blocks/resin");
+
+    public static final TagKey<Item> GEMS_TOPAZ = bindC("gems/topaz");
+    public static final TagKey<Item> GEMS_SAPPHIRE = bindC("gems/sapphire");
+    public static final TagKey<Item> GEMS_RUBY = bindC("gems/ruby");
+    public static final TagKey<Item> GEMS_AMBER = bindC("gems/amber");
 
     public static final TagKey<Item> TUNGSTEN_INGOTS = bindC("ingots/tungsten");
     public static final TagKey<Item> TITANIUM_INGOTS = bindC("ingots/titanium");
@@ -51,6 +63,7 @@ public class ModItemTags {
     public static final TagKey<Item> URANIUM_INGOTS = bindC("ingots/uranium");
     public static final TagKey<Item> BRONZE_INGOTS = bindC("ingots/bronze");
     public static final TagKey<Item> BRASS_INGOTS = bindC("ingots/brass");
+    public static final TagKey<Item> MAGNET_INGOTS = bindC("ingots/magnet");
 
     public static final TagKey<Item> TUNGSTEN_NUGGETS = bindC("nuggets/tungsten");
     public static final TagKey<Item> TITANIUM_NUGGETS = bindC("nuggets/titanium");
@@ -72,6 +85,8 @@ public class ModItemTags {
     public static final TagKey<Item> LEAD_ORES = bindC("ores/lead");
     public static final TagKey<Item> SILVER_ORES = bindC("ores/silver");
     public static final TagKey<Item> URANIUM_ORES = bindC("ores/uranium");
+    public static final TagKey<Item> VOID_MATTER_ORES = bindC("ores/void_matter");
+    public static final TagKey<Item> EARTH_CORE_SHARD_ORES = bindC("ores/earth_core_shard");
 
     public static final TagKey<Item> STORAGE_BLOCKS_RAW_TUNGSTEN = bindC("storage_blocks/raw_tungsten");
     public static final TagKey<Item> STORAGE_BLOCKS_RAW_TITANIUM = bindC("storage_blocks/raw_titanium");
@@ -90,7 +105,9 @@ public class ModItemTags {
     public static final TagKey<Item> RAW_SILVER = bindC("raw_materials/silver");
     public static final TagKey<Item> RAW_URANIUM = bindC("raw_materials/uranium");
 
-    public static final TagKey<Item> COAL_BLOCKS = bindC("storage_blocks/coal");
+    public static final TagKey<Item> BUCKETS = bindC("buckets");
+    public static final TagKey<Item> OIL_BUCKETS = bindC("buckets/oil");
+    public static final TagKey<Item> CEMENT_BUCKETS = bindC("buckets/cement");
 
     public static final TagKey<Item> VEGETABLES = bindC("vegetables");
     public static final TagKey<Item> SEEDS = bindC("seeds");
@@ -110,7 +127,7 @@ public class ModItemTags {
     public static final TagKey<Item> CAPACITOR = bind("capacitor");
     public static final TagKey<Item> GEMS = bind("gems");
     public static final TagKey<Item> GEM_BLOCKS = bind("gem_blocks");
-    public static final TagKey<Item> DEAD_TUBE = bind("dead_tube");
+    public static final TagKey<Item> DEAD_CORALS = bind("dead_corals");
     public static final TagKey<Item> VOID_RESISTANT = bind("void_resistant");
     public static final TagKey<Item> REINFORCED_CONCRETE = bind("reinforced_concrete");
     public static final TagKey<Item> SEEDS_PACK_CONTENT = bind("seeds_pack_content");
@@ -119,6 +136,8 @@ public class ModItemTags {
     public static final TagKey<Item> NETHERITE_BLOCK = bind("netherite_block");
     public static final TagKey<Item> EXPLOSION_PROOF = bind("explosion_proof");
 
+    public static final Object2ObjectMap<Color, TagKey<Item>> DYED_COLORS = initDyedTags();
+
     public static @NotNull TagKey<Item> bindC(String id) {
         return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", id));
     }
@@ -126,4 +145,13 @@ public class ModItemTags {
     public static @NotNull TagKey<Item> bind(String id) {
         return TagKey.create(Registries.ITEM, AnvilCraft.of(id));
     }
+
+    public static Object2ObjectMap<Color, TagKey<Item>> initDyedTags(){
+        Object2ObjectMap<Color, TagKey<Item>> map = new Object2ObjectOpenHashMap<>();
+        for (Color color : Color.values()) {
+            map.put(color, bindC("dyed/" + color));
+        }
+        return map;
+    }
+
 }

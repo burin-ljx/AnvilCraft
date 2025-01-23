@@ -89,7 +89,7 @@ public class ThermoManager {
         register(ThermoEntry.forever(2, ModBlocks.URANIUM_BLOCK.get(), false));
 
         register(ThermoEntry.simple(4, Blocks.MAGMA_BLOCK, Blocks.NETHERRACK, false));
-        register(ThermoEntry.simple(4, Blocks.LAVA_CAULDRON, ModBlocks.OBSIDIDAN_CAULDRON.get(), false));
+        register(ThermoEntry.simple(4, Blocks.LAVA_CAULDRON, ModBlocks.OBSIDIAN_CAULDRON.get(), false));
 
         register(ThermoEntry.predicate(
             4,
