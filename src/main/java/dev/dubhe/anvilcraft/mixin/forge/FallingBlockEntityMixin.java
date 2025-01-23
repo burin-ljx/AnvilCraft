@@ -2,7 +2,6 @@ package dev.dubhe.anvilcraft.mixin.forge;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilEvent;
-import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -68,7 +67,7 @@ abstract class FallingBlockEntityMixin extends Entity {
     )
     private void anvilFallOnGround(CallbackInfo ci, @Local BlockPos blockPos) {
         if (this.level().isClientSide()) return;
-        if (!this.blockState.is(BlockTags.ANVIL) || this.blockState.is(ModBlockTags.NON_MAGNETIC)) return;
+        if (!this.blockState.is(BlockTags.ANVIL)) return;
         FallingBlockEntity entity = (FallingBlockEntity) (Object) this;
         AnvilEvent.OnLand event = new AnvilEvent.OnLand(this.level(), blockPos, entity, this.anvilcraft$fallDistance);
         NeoForge.EVENT_BUS.post(event);
