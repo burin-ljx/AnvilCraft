@@ -1,9 +1,18 @@
 {
   "values": [
+    "anvilcraft:cake_base_block",
+    "anvilcraft:cream_block",
+    "anvilcraft:berry_cream_block",
+    "anvilcraft:chocolate_cream_block",
+    "anvilcraft:cake_block",
+    "anvilcraft:berry_cake_block",
+    "anvilcraft:chocolate_cake_block",
+    "anvilcraft:large_cake",
     "anvilcraft:chocolate",
     "anvilcraft:chocolate_black",
     "anvilcraft:chocolate_white",
     "anvilcraft:creamy_bread_roll",
-    "anvilcraft:beef_mushroom_stew"
+    "anvilcraft:beef_mushroom_stew",
+    "anvilcraft:canned_food"
   ]
 }

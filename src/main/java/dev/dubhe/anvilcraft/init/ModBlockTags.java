@@ -1,14 +1,16 @@
 package dev.dubhe.anvilcraft.init;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
-
+import dev.dubhe.anvilcraft.block.state.Color;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
-import org.jetbrains.annotations.NotNull;
-
+@MethodsReturnNonnullByDefault
 public class ModBlockTags {
 
     private static final String MEKANISM_MODID = "mekanism";
@@ -59,22 +61,38 @@ public class ModBlockTags {
     public static final TagKey<Block> STORAGE_BLOCKS_URANIUM = bindC("storage_blocks/uranium");
     public static final TagKey<Block> STORAGE_BLOCKS_BRONZE = bindC("storage_blocks/bronze");
     public static final TagKey<Block> STORAGE_BLOCKS_BRASS = bindC("storage_blocks/brass");
+    public static final TagKey<Block> STORAGE_BLOCKS_MAGNET = bindC("storage_blocks/magnet");
+    public static final TagKey<Block> STORAGE_BLOCKS_TOPAZ = bindC("storage_blocks/topaz");
+    public static final TagKey<Block> STORAGE_BLOCKS_SAPPHIRE = bindC("storage_blocks/sapphire");
+    public static final TagKey<Block> STORAGE_BLOCKS_RUBY = bindC("storage_blocks/ruby");
+    public static final TagKey<Block> STORAGE_BLOCKS_AMBER = bindC("storage_blocks/amber");
+    public static final TagKey<Block> STORAGE_BLOCKS_RESIN = bindC("storage_blocks/resin");
 
-    public static final TagKey<Block> INCORRECT_FOR_AMYTHEST_TOOL = bind("incorrect_for_amythest_tool");
+    public static final TagKey<Block> INCORRECT_FOR_AMETHYST_TOOL = bind("incorrect_for_amethyst_tool");
     public static final TagKey<Block> INCORRECT_FOR_EMBER_TOOL = bind("incorrect_for_ember_tool");
 
     //mekanism tags
     public static final TagKey<Block> MEKANISM_CARDBOARD_BOX_BLACKLIST = bindMekanism("cardboard_blacklist");
 
-    private static @NotNull TagKey<Block> bindC(String id) {
+    private static TagKey<Block> bindC(String id) {
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", id));
     }
 
-    private static @NotNull TagKey<Block> bindMekanism(String id){
+    private static TagKey<Block> bindMekanism(String id){
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MEKANISM_MODID, id));
     }
 
-    private static @NotNull TagKey<Block> bind(String id) {
+    private static TagKey<Block> bind(String id) {
         return TagKey.create(Registries.BLOCK, AnvilCraft.of(id));
+    }
+
+    public static final Object2ObjectMap<Color, TagKey<Block>> DYED_COLORS = initDyedTags();
+
+    public static Object2ObjectMap<Color, TagKey<Block>> initDyedTags(){
+        Object2ObjectMap<Color, TagKey<Block>> map = new Object2ObjectOpenHashMap<>();
+        for (Color color : Color.values()) {
+            map.put(color, bindC("dyed/" + color));
+        }
+        return map;
     }
 }

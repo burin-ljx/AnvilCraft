@@ -5,7 +5,9 @@ import com.google.common.collect.ImmutableMap;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.event.anvil.GiantAnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
+import dev.dubhe.anvilcraft.api.power.IPowerComponent;
 import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
+import dev.dubhe.anvilcraft.block.state.DirectionCube3x3PartHalf;
 import dev.dubhe.anvilcraft.block.state.GiantAnvilCube;
 import dev.dubhe.anvilcraft.entity.FallingGiantAnvilEntity;
 import dev.dubhe.anvilcraft.init.ModBlocks;
@@ -35,6 +37,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -238,7 +242,6 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
         builder.add(HALF, CUBE);
     }
 
-    @Nullable
     public static BlockState damage(BlockState state) {
         return state;
     }
@@ -302,6 +305,8 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
         BlockPos pos,
         RandomSource random
     ) {
+        BlockState ringState = level.getBlockState(pos.subtract(state.getValue(HALF).getOffset()).above(3));
+        if (ringState.hasProperty(AccelerationRingBlock.HALF) && ringState.getValue(AccelerationRingBlock.HALF) == DirectionCube3x3PartHalf.BOTTOM_CENTER && ringState.getValue(AccelerationRingBlock.SWITCH) == IPowerComponent.Switch.ON && !ringState.getValue(AccelerationRingBlock.OVERLOAD)) return;
         if (state.getValue(HALF) != Cube3x3PartHalf.BOTTOM_CENTER) return;
         for (Cube3x3PartHalf part : getParts()) {
             if (part.getOffsetY() != 0) continue;
@@ -324,7 +329,7 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
             }
         }
 
-        UPDATE_OFFSET.forEach((direction, offestList) -> offestList.forEach(offset -> {
+        UPDATE_OFFSET.forEach((direction, offsetList) -> offsetList.forEach(offset -> {
             BlockPos updatedPos = pos.offset(offset);
             BlockPos fromPos = updatedPos.relative(direction);
             level.neighborShapeChanged(direction,
@@ -335,7 +340,6 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
                 512
             );
         }));
-
         FallingBlockEntity fallingBlockEntity = FallingGiantAnvilEntity.fall(level, above, state1, false);
         this.falling(fallingBlockEntity);
     }
@@ -404,5 +408,15 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
             (syncId, inventory, player) ->
                 new AnvilMenu(syncId, inventory, ContainerLevelAccess.create(level, pos)),
             CONTAINER_TITLE);
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(HALF, state.getValue(HALF).rotate(rotation));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.setValue(HALF, state.getValue(HALF).mirror(mirror));
     }
 }

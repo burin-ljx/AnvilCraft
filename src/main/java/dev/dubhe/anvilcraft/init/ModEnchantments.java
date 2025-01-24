@@ -17,7 +17,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 
-@SuppressWarnings("unchecked")
 public class ModEnchantments {
 
     public static final ResourceKey<Enchantment> FELLING_KEY = key("felling");

@@ -12,7 +12,8 @@ import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModMenuTypes;
 import dev.dubhe.anvilcraft.inventory.BatchCrafterMenu;
 import dev.dubhe.anvilcraft.network.UpdateDisplayItemPacket;
-
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +23,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -46,9 +46,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.PacketDistributor;
-
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -59,6 +56,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
@@ -66,14 +64,12 @@ import java.util.stream.IntStream;
 public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
     implements IFilterBlockEntity, IPowerConsumer, IDiskCloneable, IHasDisplayItem {
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
-    private static final RandomSource RANDOM = RandomSource.create();
-
-    @Getter
-    @Setter
-    private PowerGrid grid;
 
     @Getter
     private final int inputPower = 1;
+    @Getter
+    @Setter
+    private PowerGrid grid;
 
     private final Deque<AutoCrafterCache> cache = new ArrayDeque<>();
     private final FilteredItemStackHandler itemHandler = new PollableFilteredItemStackHandler(9) {
@@ -98,7 +94,7 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
     private ItemStack displayItemStack = null;
 
     private boolean poweredBefore = false;
-    private long lastTimeCrafted = 0;
+    private int cooldown = 0;
 
     @Getter
     private final int id;
@@ -117,8 +113,9 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
         BlockState state = level.getBlockState(pos);
         level.updateNeighbourForOutputSignal(pos, state.getBlock());
         boolean powered = state.getValue(BatchCrafterBlock.POWERED);
-        if (powered && !poweredBefore && !level.isClientSide) {
-            craft(level);
+        this.cooldown = Math.max(0, this.cooldown - 1);
+        if (powered && !poweredBefore && !level.isClientSide && this.cooldown == 0) {
+            if (this.craft(level)) this.cooldown = AnvilCraft.config.batchCrafterCooldown;
         }
         poweredBefore = powered;
     }
@@ -134,16 +131,14 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
     }
 
     @SuppressWarnings("UnreachableCode")
-    private void craft(@NotNull Level level) {
-        if (craftingContainer.isEmpty()) return;
-        if (!canCraft()) return;
-        if (lastTimeCrafted > (level.getGameTime() + AnvilCraft.config.batchCrafterCooldown)) return;
-        lastTimeCrafted = level.getGameTime();
+    private boolean craft(@NotNull Level level) {
+        if (craftingContainer.isEmpty()) return false;
+        if (!canCraft()) return false;
         ItemStack result;
         Optional<AutoCrafterCache> cacheOptional =
             cache.stream().filter(recipe -> recipe.test(craftingContainer)).findFirst();
         Optional<RecipeHolder<CraftingRecipe>> optional;
-        NonNullList<ItemStack> craftRemaining;
+        List<ItemStack> craftRemaining;
         if (cacheOptional.isPresent()) {
             AutoCrafterCache crafterCache = cacheOptional.get();
             optional = crafterCache.getRecipe();
@@ -151,37 +146,35 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
         } else {
             optional =
                 level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingContainer.asCraftInput(), level);
-            craftRemaining = level.getRecipeManager()
+            NonNullList<ItemStack> remainingItems = level.getRecipeManager()
                 .getRemainingItemsFor(RecipeType.CRAFTING, craftingContainer.asCraftInput(), level);
-            AutoCrafterCache cache = new AutoCrafterCache(craftingContainer, optional, craftRemaining);
+            AutoCrafterCache cache = new AutoCrafterCache(craftingContainer, optional, remainingItems);
+            craftRemaining = remainingItems;
             this.cache.push(cache);
             while (this.cache.size() >= 10) {
                 this.cache.pop();
             }
         }
-        if (optional.isEmpty()) return;
+        if (optional.isEmpty()) return false;
         result = optional.get().value().assemble(craftingContainer.asCraftInput(), level.registryAccess());
         displayItemStack = result.copy();
         if (!level.isClientSide) {
             PacketDistributor.sendToAllPlayers((new UpdateDisplayItemPacket(displayItemStack, getPos())));
         }
-        if (!result.isItemEnabled(level.enabledFeatures())) return;
-        int times;
-        Optional<ItemStack> minStack = IntStream.range(0, itemHandler.getSlots())
+        if (!result.isItemEnabled(level.enabledFeatures())) return false;
+        int times = IntStream.range(0, itemHandler.getSlots())
             .mapToObj(itemHandler::getStackInSlot)
             .filter((s -> !s.isEmpty()))
-            .min((s1, s2) -> {
-                int a = s1.getCount();
-                int b = s2.getCount();
-                return Integer.compare(a, b);
-            });
-        if (minStack.isPresent()) {
-            times = minStack.get().getCount();
-        } else {
-            return;
-        }
+            .mapToInt(ItemStack::getCount)
+            .min()
+            .orElse(0);
+        if (times < 1) return false;
         result.setCount(result.getCount() * times);
-        craftRemaining.forEach(stack -> stack.setCount(stack.getCount() * times));
+        if (!craftRemaining.isEmpty()) {
+            craftRemaining = craftRemaining.stream()
+                .map(stack -> stack.copyWithCount(stack.getCount() * times))
+                .collect(Collectors.toList());
+        }
         IItemHandler cap = getLevel()
             .getCapability(
                 Capabilities.ItemHandler.BLOCK,
@@ -190,7 +183,7 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
         if (cap != null) {
             // 尝试向容器插入物品
             ItemStack remained = ItemHandlerHelper.insertItem(cap, result, true);
-            if (!remained.isEmpty()) return;
+            if (!remained.isEmpty()) return false;
             remained = ItemHandlerHelper.insertItem(cap, result, false);
             spawnItemEntity(remained);
             for (ItemStack stack : craftRemaining) {
@@ -201,7 +194,7 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
             // 尝试向世界喷出物品
             Vec3 center = getBlockPos().relative(getDirection()).getCenter();
             AABB aabb = new AABB(center.add(-0.125, -0.125, -0.125), center.add(0.125, 0.125, 0.125));
-            if (!getLevel().noCollision(aabb)) return;
+            if (!getLevel().noCollision(aabb)) return false;
 
             spawnItemEntity(result);
             for (ItemStack stack : craftRemaining) {
@@ -212,6 +205,7 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
             itemHandler.extractItem(i, times, false);
         }
         level.updateNeighborsAt(getBlockPos(), ModBlocks.BATCH_CRAFTER.get());
+        return true;
     }
 
     @Nullable
@@ -234,6 +228,8 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
             displayItemStack =
                 ct.contains("id") ? ItemStack.parse(provider, ct).orElse(ItemStack.EMPTY) : ItemStack.EMPTY;
         }
+        this.poweredBefore = tag.getBoolean("PoweredBefore");
+        this.cooldown = tag.getInt("Cooldown");
     }
 
     @Override
@@ -247,6 +243,8 @@ public class BatchCrafterBlockEntity extends BaseMachineBlockEntity
             this.displayItemStack.save(provider, item);
             tag.put("ResultItemStack", item);
         }
+        tag.putBoolean("PoweredBefore", this.poweredBefore);
+        tag.putInt("Cooldown", this.cooldown);
     }
 
     @Override

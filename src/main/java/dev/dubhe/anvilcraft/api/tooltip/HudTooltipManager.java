@@ -1,15 +1,17 @@
 package dev.dubhe.anvilcraft.api.tooltip;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.api.tooltip.impl.AffectRangeProviderImpl;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltip;
 import dev.dubhe.anvilcraft.api.tooltip.impl.HeliostatsTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.PowerComponentTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.impl.RubyPrismTooltipProvider;
+import dev.dubhe.anvilcraft.api.tooltip.impl.SpaceOvercompressorTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IAffectRangeProvider;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IBlockEntityTooltipProvider;
 import dev.dubhe.anvilcraft.api.tooltip.providers.IHandHeldItemTooltipProvider;
 import dev.dubhe.anvilcraft.init.ModItems;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,13 +21,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static dev.dubhe.anvilcraft.api.tooltip.TooltipRenderHelper.renderOutline;
 import static dev.dubhe.anvilcraft.api.tooltip.TooltipRenderHelper.renderTooltipWithItemIcon;
@@ -45,6 +43,7 @@ public class HudTooltipManager {
         INSTANCE.registerBlockEntityTooltip(new RubyPrismTooltipProvider());
         INSTANCE.registerHandHeldItemTooltip(new HeliostatsTooltip());
         INSTANCE.registerBlockEntityTooltip(new HeliostatsTooltipProvider());
+        INSTANCE.registerBlockEntityTooltip(new SpaceOvercompressorTooltipProvider());
         INSTANCE.registerHandHeldItemTooltip(ModItems.STRUCTURE_TOOL.get());
     }
 
@@ -141,31 +140,25 @@ public class HudTooltipManager {
 
     private IHandHeldItemTooltipProvider determineHandHeldItemTooltipProvider(ItemStack itemStack) {
         if (itemStack == null || itemStack.isEmpty()) return null;
-        ArrayList<IHandHeldItemTooltipProvider> pv = handItemProviders.stream()
+        return handItemProviders.stream()
             .filter(it -> it.accepts(itemStack))
-            .sorted(Comparator.comparingInt(IHandHeldItemTooltipProvider::priority))
-            .collect(Collectors.toCollection(ArrayList::new));
-        if (pv.isEmpty()) return null;
-        return pv.getFirst();
+            .min(Comparator.comparingInt(IHandHeldItemTooltipProvider::priority))
+            .orElse(null);
     }
 
     private IBlockEntityTooltipProvider determineBlockEntityTooltipProvider(BlockEntity entity) {
         if (entity == null) return null;
-        ArrayList<IBlockEntityTooltipProvider> blockEntityTooltipProviders = blockEntityProviders.stream()
+        return blockEntityProviders.stream()
             .filter(it -> it.accepts(entity))
-            .sorted(Comparator.comparingInt(IBlockEntityTooltipProvider::priority))
-            .collect(Collectors.toCollection(ArrayList::new));
-        if (blockEntityTooltipProviders.isEmpty()) return null;
-        return blockEntityTooltipProviders.getFirst();
+            .min(Comparator.comparingInt(IBlockEntityTooltipProvider::priority))
+            .orElse(null);
     }
 
     private IAffectRangeProvider determineAffectRangeProvider(BlockEntity entity) {
         if (entity == null) return null;
-        ArrayList<IAffectRangeProvider> pv = affectRangeProviders.stream()
+        return affectRangeProviders.stream()
             .filter(it -> it.accepts(entity))
-            .sorted(Comparator.comparingInt(IAffectRangeProvider::priority))
-            .collect(Collectors.toCollection(ArrayList::new));
-        if (pv.isEmpty()) return null;
-        return pv.getFirst();
+            .min(Comparator.comparingInt(IAffectRangeProvider::priority))
+            .orElse(null);
     }
 }

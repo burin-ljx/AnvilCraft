@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.recipe.multiblock;
 
 import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 
+import dev.dubhe.anvilcraft.recipe.IDatagen;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,14 +19,17 @@ import net.minecraft.world.level.Level;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MultiblockRecipe implements Recipe<MultiblockInput> {
+public class MultiblockRecipe implements Recipe<MultiblockInput>, IDatagen {
     public final BlockPattern pattern;
     public final ItemStack result;
 
@@ -94,11 +98,11 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
         }
         // 旋转90
         flag = true;
-        input.rotate();
         for (int x = 0; x < size && flag; x++) {
             for (int y = 0; y < size && flag; y++) {
                 for (int z = 0; z < size && flag; z++) {
-                    if (!pattern.getPredicate(x, y, z).test(input.getBlockState(z, y, size - 1 - x))) {
+                    if (!pattern.getPredicate(x, y, z).test(
+                        input.getBlockState(z, y, size - 1 - x).rotate(Rotation.CLOCKWISE_90))) {
                         flag = false;
                     }
                 }
@@ -109,11 +113,11 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
         }
         // 旋转180
         flag = true;
-        input.rotate();
         for (int x = 0; x < size && flag; x++) {
             for (int y = 0; y < size && flag; y++) {
                 for (int z = 0; z < size && flag; z++) {
-                    if (!pattern.getPredicate(x, y, z).test(input.getBlockState(size - 1 - x, y, size - 1 - z))) {
+                    if (!pattern.getPredicate(x, y, z).test(
+                        input.getBlockState(size - 1 - x, y, size - 1 - z).rotate(Rotation.CLOCKWISE_180))) {
                         flag = false;
                     }
                 }
@@ -124,22 +128,66 @@ public class MultiblockRecipe implements Recipe<MultiblockInput> {
         }
         // 旋转270
         flag = true;
-        input.rotate();
         for (int x = 0; x < size && flag; x++) {
             for (int y = 0; y < size && flag; y++) {
                 for (int z = 0; z < size && flag; z++) {
-                    if (!pattern.getPredicate(x, y, z).test(input.getBlockState(size - 1 - z, y, x))) {
+                    if (!pattern.getPredicate(x, y, z).test(
+                        input.getBlockState(size - 1 - z, y, x).rotate(Rotation.COUNTERCLOCKWISE_90))) {
                         flag = false;
                     }
                 }
             }
         }
-        if (flag) {
-            return true;
+        return flag;
+    }
+
+    @Override
+    public String toDatagen() {
+        StringBuilder codeBuilder = new StringBuilder("MultiblockRecipe.builder(\"%s\", %d)"
+            .formatted(BuiltInRegistries.ITEM.getKey(result.getItem()), result.getCount()));
+        codeBuilder.append("\n");
+
+        for (List<String> layer : this.pattern.getLayers()) {
+            codeBuilder.append("    .layer(");
+            codeBuilder.append(layer.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(", ")));
+            codeBuilder.append(")");
+            codeBuilder.append("\n");
         }
-        // 旋转到无旋转
-        input.rotate();
-        return false;
+        this.pattern.getSymbols().forEach((symbol, predicate) -> {
+            codeBuilder.append("    .symbol(");
+            codeBuilder.append("'").append(symbol).append("'");
+            codeBuilder.append(", ");
+            if (predicate.getProperties().isEmpty()) {
+                codeBuilder.append("\"");
+                codeBuilder.append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()));
+                codeBuilder.append("\"");
+                codeBuilder.append(")");
+            } else {
+                codeBuilder.append("BlockPredicateWithState.of(");
+                codeBuilder.append("\"");
+                codeBuilder.append(BuiltInRegistries.BLOCK.getKey(predicate.getBlock()));
+                codeBuilder.append("\"");
+                codeBuilder.append(")");
+                codeBuilder.append("\n");
+                predicate.getProperties().forEach((property, value) -> {
+                    codeBuilder.append("        .hasState(");
+                    codeBuilder.append("\"").append(property.getName()).append("\"");
+                    codeBuilder.append(", ");
+                    codeBuilder.append("\"").append(BlockPredicateWithState.getNameOf(value)).append("\"");
+                    codeBuilder.append(")");
+                    codeBuilder.append("\n");
+                });
+                codeBuilder.append("    )");
+            }
+            codeBuilder.append("\n");
+        });
+        codeBuilder.append("    .save(provider);");
+        return codeBuilder.toString();
+    }
+
+    @Override
+    public String getSuggestedName() {
+        return BuiltInRegistries.ITEM.getKey(this.result.getItem()).getPath();
     }
 
     @Override

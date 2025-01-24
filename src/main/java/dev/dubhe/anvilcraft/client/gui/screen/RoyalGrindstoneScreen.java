@@ -2,13 +2,11 @@ package dev.dubhe.anvilcraft.client.gui.screen;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.inventory.RoyalGrindstoneMenu;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-
 import org.jetbrains.annotations.NotNull;
 
 public class RoyalGrindstoneScreen extends AbstractContainerScreen<RoyalGrindstoneMenu> {
@@ -41,24 +39,27 @@ public class RoyalGrindstoneScreen extends AbstractContainerScreen<RoyalGrindsto
 
     protected void renderLabels(GuiGraphics guiGraphics) {
         if (this.menu.getSlot(2).hasItem()) {
+            Component usedGoldText = Component.literal("" + this.menu.usedGold);
+            Component removedCurseCountText = Component.translatable(
+                "screen.anvilcraft.royal_grindstone.remove_curse_count",
+                this.menu.removedCurseCount, this.menu.totalCurseCount);
+            Component removedRepairCostText = Component.translatable(
+                "screen.anvilcraft.royal_grindstone.remove_repair_cost",
+                this.menu.removedRepairCost, this.menu.totalRepairCost);
             drawLabel(
-                    (int) (92 + 4.5 - (this.font.width(Component.literal("" + this.menu.usedGold)) / 2f)),
-                    38,
-                    Component.literal("" + this.menu.usedGold),
+                (int) (92 + 4.5 - (this.font.width(usedGoldText) / 2f)),
+                38,
+                usedGoldText,
+                guiGraphics);
+            drawLabel(
+                    170 - this.font.width(removedCurseCountText),
+                    13,
+                    removedCurseCountText,
                     guiGraphics);
             drawLabel(
-                    112,
-                    19,
-                    Component.literal(Component.translatable("screen.anvilcraft.royal_grindstone.remove_curse_count")
-                            .getString()
-                            .replace("%i", "" + this.menu.removedCurseCount)),
-                    guiGraphics);
-            drawLabel(
-                    112,
+                    170 - this.font.width(removedRepairCostText),
                     58,
-                    Component.literal(Component.translatable("screen.anvilcraft.royal_grindstone.remove_repair_cost")
-                            .getString()
-                            .replace("%i", "" + this.menu.removedRepairCost)),
+                    removedRepairCostText,
                     guiGraphics);
         }
     }

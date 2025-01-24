@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.init;
 
+import dev.dubhe.anvilcraft.block.entity.AccelerationRingBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ActiveSilencerBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.BatchCrafterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ChargeCollectorBlockEntity;
@@ -24,6 +25,7 @@ import dev.dubhe.anvilcraft.block.entity.ResentfulAmberBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.RubyLaserBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.RubyPrismBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.SimpleChuteBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.TeslaTowerBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ThermoelectricConverterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.TransmissionPoleBlockEntity;
@@ -181,8 +183,18 @@ public class ModBlockEntities {
         .register();
 
     public static final BlockEntityEntry<TeslaTowerBlockEntity> TESLA_TOWER = REGISTRATE
-            .blockEntity("tesla_tower", TeslaTowerBlockEntity::createBlockEntity)
-            .validBlocks(ModBlocks.TESLA_TOWER)
+        .blockEntity("tesla_tower", TeslaTowerBlockEntity::createBlockEntity)
+        .validBlocks(ModBlocks.TESLA_TOWER)
+        .register();
+
+    public static final BlockEntityEntry<SpaceOvercompressorBlockEntity> SPACE_OVERCOMPRESSOR = REGISTRATE
+        .<SpaceOvercompressorBlockEntity>blockEntity("space_overcompressor", SpaceOvercompressorBlockEntity::new)
+        .validBlocks(ModBlocks.SPACE_OVERCOMPRESSOR)
+        .register();
+
+    public static final BlockEntityEntry<AccelerationRingBlockEntity> ACCELERATION_RING = REGISTRATE
+            .blockEntity("acceleration_ring", AccelerationRingBlockEntity::createBlockEntity)
+            .validBlocks(ModBlocks.ACCELERATION_RING)
             .register();
 
     public static void register() {

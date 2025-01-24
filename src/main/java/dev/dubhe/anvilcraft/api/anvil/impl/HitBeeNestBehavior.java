@@ -4,18 +4,11 @@ import dev.dubhe.anvilcraft.api.anvil.IAnvilBehavior;
 import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
 import dev.dubhe.anvilcraft.init.ModBlocks;
-
+import dev.dubhe.anvilcraft.util.CauldronUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.List;
-
-import static dev.dubhe.anvilcraft.util.AnvilUtil.returnItems;
 
 public class HitBeeNestBehavior implements IAnvilBehavior {
     @Override
@@ -29,24 +22,11 @@ public class HitBeeNestBehavior implements IAnvilBehavior {
         if (!state.hasBlockEntity()) return false;
         int honeyLevel = state.getValue(BeehiveBlock.HONEY_LEVEL);
         if (honeyLevel < BeehiveBlock.MAX_HONEY_LEVELS) return false;
-        BlockPos potPos = pos.below();
-        BlockState pot = level.getBlockState(potPos);
-        if (pot.is(Blocks.CAULDRON)) {
-            level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 2));
-            level.setBlockAndUpdate(potPos, ModBlocks.HONEY_CAULDRON.getDefaultState());
-            level.setBlockAndUpdate(potPos, level.getBlockState(potPos).setValue(LayeredCauldronBlock.LEVEL, 1));
-        } else {
-            if (pot.is(ModBlocks.HONEY_CAULDRON.get())) {
-                int cauldronHoneyLevel = pot.getValue(HoneyCauldronBlock.LEVEL);
-                level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 2));
-                if (cauldronHoneyLevel < HoneyCauldronBlock.MAX_FILL_LEVEL) {
-                    level.setBlockAndUpdate(potPos, pot.setValue(HoneyCauldronBlock.LEVEL, cauldronHoneyLevel + 1));
-                } else {
-                    level.setBlockAndUpdate(potPos, Blocks.CAULDRON.defaultBlockState());
-                    returnItems(level, potPos, List.of(Items.HONEY_BLOCK.getDefaultInstance()));
-                }
-            }
-        }
-        return false;
+        BlockPos posBelowHive = pos.below();
+        int filled = CauldronUtil.fill(level, posBelowHive, ModBlocks.HONEY_CAULDRON.get(), 1, true);
+        if (filled <= 0) return false;
+        CauldronUtil.fill(level, posBelowHive, ModBlocks.HONEY_CAULDRON.get(), 1, false);
+        level.setBlockAndUpdate(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, 2));
+        return true;
     }
 }

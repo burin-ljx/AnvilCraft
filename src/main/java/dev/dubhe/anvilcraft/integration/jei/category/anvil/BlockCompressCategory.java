@@ -95,7 +95,7 @@ public class BlockCompressCategory implements IRecipeCategory<RecipeHolder<Block
         for (Either<TagKey<Block>, Block> input : recipe.inputs) {
             input.ifLeft(tag -> {
                 builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
-                    .addIngredients(Ingredient.of(TagKey.create(Registries.ITEM, tag.location())));
+                    .addIngredients(BlockTagUtil.toIngredient(tag));
             }).ifRight(block -> {
                 builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
                     .addItemStack(new ItemStack(block));

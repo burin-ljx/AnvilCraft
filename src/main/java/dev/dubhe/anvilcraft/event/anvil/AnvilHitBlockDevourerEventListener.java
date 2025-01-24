@@ -32,7 +32,7 @@ public class AnvilHitBlockDevourerEventListener {
         Block block = state.getBlock();
         if (block instanceof BlockDevourerBlock devourerBlock && !state.getValue(BlockDevourerBlock.TRIGGERED)) {
             int range = (int) event.getFallDistance() + 2;
-            range = Math.min(range, 3);
+            range = Math.min(range, 4);
             level.setBlock(pos, state.setValue(BlockDevourerBlock.TRIGGERED, true), 2);
             if (state.getValue(BlockDevourerBlock.FACING) == Direction.DOWN
                     && level.isOutsideBuildHeight(pos.below())) {

@@ -12,6 +12,7 @@ import dev.dubhe.anvilcraft.api.anvil.impl.ItemCompressBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ItemCrushBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ItemMeshBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.ItemStampingBehavior;
+import dev.dubhe.anvilcraft.api.anvil.impl.MassInjectBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.RedstoneEMPBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.SuperHeatingBehavior;
 import dev.dubhe.anvilcraft.api.anvil.impl.TimeWarpBehavior;
@@ -90,6 +91,7 @@ public interface IAnvilBehavior {
         registerBehavior(Blocks.CAULDRON, new ItemCompressBehavior());
         registerBehavior(Blocks.WATER_CAULDRON, new BoilingBehavior());
         registerBehavior(ModBlocks.STAMPING_PLATFORM.get(), new ItemStampingBehavior());
+        registerBehavior(ModBlocks.SPACE_OVERCOMPRESSOR.get(), new MassInjectBehavior());
         registerBehavior(Blocks.SCAFFOLDING, new ItemMeshBehavior());
     }
 }

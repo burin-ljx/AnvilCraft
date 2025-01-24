@@ -25,8 +25,8 @@ public class ScreenLang {
         provider.add("screen.anvilcraft.filter.scroll_to_change", "Scroll mouse to change count");
         provider.add("screen.anvilcraft.filter.shift_to_scroll_faster", "Hold Shift to scroll faster");
         provider.add("screen.anvilcraft.slot.disable.tooltip", "Use item clicks to set filter");
-        provider.add("screen.anvilcraft.royal_grindstone.remove_curse_count", "Removed %i curse");
-        provider.add("screen.anvilcraft.royal_grindstone.remove_repair_cost", "Removed %i repair cost");
+        provider.add("screen.anvilcraft.royal_grindstone.remove_curse_count", "Removed curses: %s / %s");
+        provider.add("screen.anvilcraft.royal_grindstone.remove_repair_cost", "Removed repair cost: %s / %se");
         provider.add("screen.anvilcraft.royal_grindstone.title", "Remove curse and repair cost");
         provider.add(
                 "screen.anvilcraft.royal_steel_upgrade_smithing_template", "Royal Steel Upgrade");
@@ -77,6 +77,8 @@ public class ScreenLang {
         provider.add("tooltip.anvilcraft.heliostats.unspecified_irradiation_block", "  Unspecified irradiation block");
         provider.add("tooltip.anvilcraft.heliostats.unknown", "  Unknown reason");
 
+        provider.add("tooltip.anvilcraft.space_overcompressor.stored_mass", "Stored Mass: %s");
+
         provider.add(
                 "screen.anvilcraft.ember_metal_upgrade_smithing_template", "Ember Metal Upgrade");
         provider.add(
@@ -95,6 +97,12 @@ public class ScreenLang {
         provider.add("screen.anvilcraft.structure_tool.to_data_gen", "To Data Gen");
         provider.add("screen.anvilcraft.structure_tool.to_kubejs", "To KubeJS");
         provider.add("screen.anvilcraft.structure_tool.to_json", "To JSON");
+        provider.add("screen.anvilcraft.structure_tool.regular_recipe",
+            "Put any normal item to generate multiblock crafting recipe");
+        provider.add("screen.anvilcraft.structure_tool.conversion_recipe",
+            "Put another structure tool to generate multiblock conversion recipe");
+        provider.add("screen.anvilcraft.structure_tool.conversion_output",
+            "The area selected by it will be the output of recipe");
 
         provider.add("screen.anvilcraft.anvil_hammer.title", "Modifying Block");
 

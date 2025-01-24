@@ -169,7 +169,7 @@ public abstract class BaseChuteBlockEntity
                             ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
                         if (!remaining.isEmpty()) continue;
                         ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
-                        itemEntity.kill();
+                        itemEntity.discard();
                         break;
                     }
                     if (prevSize > itemEntities.size()) {

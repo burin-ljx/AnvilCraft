@@ -1,6 +1,6 @@
 {
   "type": "anvilcraft:super_heating",
-  "block_result": "anvilcraft:lava_cauldron",
+  "block_result": "minecraft:lava_cauldron",
   "ingredients": [
     {
       "tag": "c:stones"
