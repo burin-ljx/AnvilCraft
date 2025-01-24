@@ -1,0 +1,40 @@
+{
+  "type": "anvilcraft:multiblock",
+  "pattern": {
+    "layers": [
+      [
+        "ABA",
+        "B B",
+        "ABA"
+      ],
+      [
+        "CDC",
+        "D D",
+        "CDC"
+      ],
+      [
+        "ABA",
+        "B B",
+        "ABA"
+      ]
+    ],
+    "symbols": {
+      "A": {
+        "block": "minecraft:copper_block"
+      },
+      "B": {
+        "block": "anvilcraft:heavy_iron_block"
+      },
+      "C": {
+        "block": "anvilcraft:magnetoelectric_core"
+      },
+      "D": {
+        "block": "anvilcraft:tungsten_block"
+      }
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "anvilcraft:acceleration_ring"
+  }
+}
