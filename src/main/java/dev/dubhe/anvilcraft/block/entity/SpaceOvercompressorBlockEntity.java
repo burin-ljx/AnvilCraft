@@ -37,7 +37,11 @@ public class SpaceOvercompressorBlockEntity extends BlockEntity {
     }
 
     public SpaceOvercompressorBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.SPACE_OVERCOMPRESSOR.get(), pos, blockState);
+        this(ModBlockEntities.SPACE_OVERCOMPRESSOR.get(), pos, blockState);
+    }
+
+    public static SpaceOvercompressorBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        return new SpaceOvercompressorBlockEntity(type, pos, state);
     }
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(9);
