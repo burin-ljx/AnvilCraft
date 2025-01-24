@@ -3134,7 +3134,9 @@ public class ModBlocks {
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_DIAMOND_TOOL,
             Tags.Blocks.STORAGE_BLOCKS)
-        .properties(properties -> properties.lightLevel(state -> 1).noOcclusion())
+        .properties(properties -> properties.lightLevel(state -> 7)
+            .noOcclusion()
+            .emissiveRendering(ModBlocks::always))
         .blockstate((context, provider) -> provider.simpleBlock(
             context.get(),
             DangerUtil.genConfiguredModel("block/negative_matter_block").get()))
@@ -3708,5 +3710,9 @@ public class ModBlocks {
 
     public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
+    }
+
+    public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        return true;
     }
 }

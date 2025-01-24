@@ -21,6 +21,7 @@
     "HopperBlockMixin",
     "InventoryMixin",
     "ItemEntityMixin",
+    "LivingEntityMixin",
     "PistonBaseBlockMixin",
     "PistonMovingBlockEntityMixin",
     "PistonStructureResolverMixin",
