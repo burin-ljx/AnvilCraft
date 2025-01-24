@@ -1,18 +1,13 @@
-package dev.dubhe.anvilcraft.block.pressurePlate;
+package dev.dubhe.anvilcraft.block.plate;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Predicate;
 

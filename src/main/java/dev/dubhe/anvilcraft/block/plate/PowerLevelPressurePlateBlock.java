@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.block.pressurePlate;
+package dev.dubhe.anvilcraft.block.plate;
 
 import com.google.common.collect.Sets;
 import com.mojang.serialization.MapCodec;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BasePressurePlateBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockSetType;

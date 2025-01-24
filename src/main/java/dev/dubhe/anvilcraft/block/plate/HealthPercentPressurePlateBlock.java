@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.block.pressurePlate;
+package dev.dubhe.anvilcraft.block.plate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;

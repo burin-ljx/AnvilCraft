@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.block.pressurePlate;
+package dev.dubhe.anvilcraft.block.plate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -12,10 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
-import org.antlr.v4.runtime.misc.IntegerList;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;

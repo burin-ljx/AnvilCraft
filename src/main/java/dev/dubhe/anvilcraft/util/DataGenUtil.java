@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.util;
 
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import dev.dubhe.anvilcraft.block.pressurePlate.PowerLevelPressurePlateBlock;
+import dev.dubhe.anvilcraft.block.plate.PowerLevelPressurePlateBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
