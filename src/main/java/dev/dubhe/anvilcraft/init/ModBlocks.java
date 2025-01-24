@@ -1,5 +1,7 @@
 package dev.dubhe.anvilcraft.init;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.IPowerComponent.Switch;
 import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
@@ -23,16 +25,6 @@ import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
-import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
-import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
-import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
-import dev.dubhe.anvilcraft.block.SlidingRailBlock;
-import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
-import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
-import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.DischargerBlock;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
 import dev.dubhe.anvilcraft.block.EmberGrindstone;
@@ -48,7 +40,10 @@ import dev.dubhe.anvilcraft.block.GiantAnvilBlock;
 import dev.dubhe.anvilcraft.block.GlowingMetalBlock;
 import dev.dubhe.anvilcraft.block.HeaterBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronBeamBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronPlateBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
 import dev.dubhe.anvilcraft.block.HeliostatsBlock;
 import dev.dubhe.anvilcraft.block.HollowMagnetBlock;
 import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
@@ -56,16 +51,19 @@ import dev.dubhe.anvilcraft.block.ImpactPileBlock;
 import dev.dubhe.anvilcraft.block.IncandescentMetalBlock;
 import dev.dubhe.anvilcraft.block.InductionLightBlock;
 import dev.dubhe.anvilcraft.block.ItemCollectorBlock;
+import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
 import dev.dubhe.anvilcraft.block.JewelCraftingTable;
 import dev.dubhe.anvilcraft.block.LargeCakeBlock;
 import dev.dubhe.anvilcraft.block.LavaCauldronBlock;
 import dev.dubhe.anvilcraft.block.LoadMonitorBlock;
 import dev.dubhe.anvilcraft.block.MagnetBlock;
 import dev.dubhe.anvilcraft.block.MagneticChuteBlock;
+import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
 import dev.dubhe.anvilcraft.block.MeltGemCauldron;
 import dev.dubhe.anvilcraft.block.MengerSpongeBlock;
 import dev.dubhe.anvilcraft.block.MineralFountainBlock;
 import dev.dubhe.anvilcraft.block.MobAmberBlock;
+import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import dev.dubhe.anvilcraft.block.NestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ObsidianCauldron;
 import dev.dubhe.anvilcraft.block.OilCauldronBlock;
@@ -86,12 +84,16 @@ import dev.dubhe.anvilcraft.block.RoyalSmithingTableBlock;
 import dev.dubhe.anvilcraft.block.RubyLaserBlock;
 import dev.dubhe.anvilcraft.block.RubyPrismBlock;
 import dev.dubhe.anvilcraft.block.SimpleChuteBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
 import dev.dubhe.anvilcraft.block.SpaceOvercompressorBlock;
 import dev.dubhe.anvilcraft.block.SpectralAnvilBlock;
 import dev.dubhe.anvilcraft.block.StampingPlatformBlock;
 import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
+import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
+import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.block.state.Cube3x3PartHalf;
@@ -107,10 +109,10 @@ import dev.dubhe.anvilcraft.item.PlaceInWaterBlockItem;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 import dev.dubhe.anvilcraft.item.TeslaTowerItem;
 import dev.dubhe.anvilcraft.util.DangerUtil;
-
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -154,11 +156,6 @@ import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.common.Tags;
-
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
-import com.tterrag.registrate.util.entry.BlockEntry;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -2476,7 +2473,7 @@ public class ModBlocks {
                     .setRolls(ConstantValue.exactly(1.0f))
                     .add(LootItem.lootTableItem(ModBlocks.MOB_AMBER_BLOCK))
                     .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
-                        .include(DataComponents.BLOCK_ENTITY_DATA)));
+                        .include(ModComponents.SAVED_ENTITY)));
             ctx.add(prov, builder);
         })
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -2495,7 +2492,7 @@ public class ModBlocks {
                     .setRolls(ConstantValue.exactly(1.0f))
                     .add(LootItem.lootTableItem(ModBlocks.RESENTFUL_AMBER_BLOCK))
                     .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
-                        .include(DataComponents.BLOCK_ENTITY_DATA)));
+                        .include(ModComponents.SAVED_ENTITY)));
             ctx.add(prov, builder);
         })
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -3201,7 +3198,7 @@ public class ModBlocks {
     public static final Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> CEMENT_CAULDRONS = registerAllCementCauldrons();
 
     private static Object2ObjectMap<Color, BlockEntry<ReinforcedConcreteBlock>> registerReinforcedConcretes() {
-        Object2ObjectMap<Color, BlockEntry<ReinforcedConcreteBlock>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BlockEntry<ReinforcedConcreteBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteBlock(color);
             map.put(color, entry);
@@ -3254,7 +3251,7 @@ public class ModBlocks {
     }
 
     private static Object2ObjectMap<Color, BlockEntry<SlabBlock>> registerReinforcedConcreteSlabs() {
-        Object2ObjectMap<Color, BlockEntry<SlabBlock>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BlockEntry<SlabBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteSlabBlock(color, REINFORCED_CONCRETES.get(color));
             map.put(color, entry);
@@ -3301,7 +3298,7 @@ public class ModBlocks {
     }
 
     private static Object2ObjectMap<Color, BlockEntry<StairBlock>> registerReinforcedConcreteStairs() {
-        Object2ObjectMap<Color, BlockEntry<StairBlock>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BlockEntry<StairBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteStairBlock(color, REINFORCED_CONCRETES.get(color));
             map.put(color, entry);
@@ -3348,7 +3345,7 @@ public class ModBlocks {
     }
 
     private static Object2ObjectMap<Color, BlockEntry<WallBlock>> registerReinforcedConcreteWalls() {
-        Object2ObjectMap<Color, BlockEntry<WallBlock>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BlockEntry<WallBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteWallBlock(color, REINFORCED_CONCRETES.get(color));
             map.put(color, entry);
@@ -3395,7 +3392,7 @@ public class ModBlocks {
     }
 
     private static Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> registerAllCementCauldrons() {
-        Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerCementCauldron(color);
             map.put(color, entry);
@@ -3597,7 +3594,7 @@ public class ModBlocks {
     public static final Object2ObjectMap<Color, BlockEntry<LiquidBlock>> CEMENTS = registerAllCementLiquidBlock();
 
     private static Object2ObjectMap<Color, BlockEntry<LiquidBlock>> registerAllCementLiquidBlock() {
-        Object2ObjectMap<Color, BlockEntry<LiquidBlock>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BlockEntry<LiquidBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerCementLiquidBlock(color);
             map.put(color, entry);
