@@ -3,7 +3,7 @@ package dev.dubhe.anvilcraft.block;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.block.state.Orientation;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -23,7 +23,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.TurtleEggBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,16 +41,15 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import static dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer.anvilCraftBlockPlacer;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammerChangeable {
 
     public static final VoxelShape NORTH_UP_SHAPE =
@@ -90,15 +91,15 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
     }
 
     @Override
-    protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(ORIENTATION).add(TRIGGERED);
     }
 
     @Override
-    protected void onPlace(@NotNull BlockState state,
+    protected void onPlace(BlockState state,
                            Level level,
-                           @NotNull BlockPos pos,
-                           @NotNull BlockState oldState,
+                           BlockPos pos,
+                           BlockState oldState,
                            boolean movedByPiston) {
         if (!level.isClientSide) {
             checkIfTriggered(level, state, pos);
@@ -107,10 +108,10 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
 
     @Override
     public void tick(
-        @NotNull BlockState state,
-        @NotNull ServerLevel level,
-        @NotNull BlockPos pos,
-        @NotNull RandomSource random) {
+        BlockState state,
+        ServerLevel level,
+        BlockPos pos,
+        RandomSource random) {
         super.tick(state, level, pos, random);
         if (!state.getValue(TRIGGERED)) return;
         if (!level.hasNeighborSignal(pos)) {
@@ -120,11 +121,11 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
 
     @Override
     public void neighborChanged(
-        @NotNull BlockState state,
+        BlockState state,
         Level level,
-        @NotNull BlockPos pos,
-        @NotNull Block neighborBlock,
-        @NotNull BlockPos neighborPos,
+        BlockPos pos,
+        Block neighborBlock,
+        BlockPos neighborPos,
         boolean movedByPiston) {
         if (!level.isClientSide) {
             checkIfTriggered(level, state, pos);
@@ -144,16 +145,16 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
     }
 
     @Override
-    public @Nonnull RenderShape getRenderShape(@Nonnull BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public @NotNull VoxelShape getShape(
-        @NotNull BlockState state,
-        @NotNull BlockGetter level,
-        @NotNull BlockPos pos,
-        @NotNull CollisionContext context) {
+    public VoxelShape getShape(
+        BlockState state,
+        BlockGetter level,
+        BlockPos pos,
+        CollisionContext context) {
         return switch (state.getValue(ORIENTATION)) {
             case NORTH_UP -> NORTH_UP_SHAPE;
             case SOUTH_UP -> SOUTH_UP_SHAPE;
@@ -172,7 +173,7 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         Orientation orientation;
         Direction horizontalDirection = context.getHorizontalDirection();
         if (context.getNearestLookingDirection() == Direction.UP) {
@@ -345,7 +346,7 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
     }
 
     @Override
-    public boolean change(Player player, BlockPos blockPos, @NotNull Level level, ItemStack anvilHammer) {
+    public boolean change(Player player, BlockPos blockPos, Level level, ItemStack anvilHammer) {
         BlockState state = defaultBlockState();
         state = state.setValue(
             ORIENTATION,
@@ -358,5 +359,15 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
     @Override
     public @Nullable Property<?> getChangeableProperty(BlockState blockState) {
         return ORIENTATION;
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(ORIENTATION, state.getValue(ORIENTATION).rotate(rotation));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.setValue(ORIENTATION, state.getValue(ORIENTATION).mirror(mirror));
     }
 }
