@@ -128,9 +128,9 @@ import dev.dubhe.anvilcraft.util.DataGenUtil;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -175,14 +175,16 @@ import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.common.Tags;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 import static dev.dubhe.anvilcraft.api.power.IPowerComponent.OVERLOAD;
 import static dev.dubhe.anvilcraft.api.power.IPowerComponent.SWITCH;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 @SuppressWarnings({"unused", "CodeBlock2Expr"})
 public class ModBlocks {
 
@@ -3245,7 +3247,7 @@ public class ModBlocks {
 
     public static final Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> CEMENT_CAULDRONS = registerAllCementCauldrons();
 
-    private static @NotNull Object2ObjectMap<Color, BlockEntry<ReinforcedConcreteBlock>> registerReinforcedConcretes() {
+    private static Object2ObjectMap<Color, BlockEntry<ReinforcedConcreteBlock>> registerReinforcedConcretes() {
         Object2ObjectMap<Color, BlockEntry<ReinforcedConcreteBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteBlock(color);
@@ -3254,7 +3256,7 @@ public class ModBlocks {
         return map;
     }
 
-    private static @NotNull BlockEntry<ReinforcedConcreteBlock> registerReinforcedConcreteBlock(@NotNull Color color) {
+    private static BlockEntry<ReinforcedConcreteBlock> registerReinforcedConcreteBlock(Color color) {
         return REGISTRATE
             .block("reinforced_concrete_" + color, ReinforcedConcreteBlock::new)
             .initialProperties(() -> Blocks.TERRACOTTA)
@@ -3298,7 +3300,7 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull Object2ObjectMap<Color, BlockEntry<SlabBlock>> registerReinforcedConcreteSlabs() {
+    private static Object2ObjectMap<Color, BlockEntry<SlabBlock>> registerReinforcedConcreteSlabs() {
         Object2ObjectMap<Color, BlockEntry<SlabBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteSlabBlock(color, REINFORCED_CONCRETES.get(color));
@@ -3307,8 +3309,8 @@ public class ModBlocks {
         return map;
     }
 
-    private static @NotNull BlockEntry<SlabBlock> registerReinforcedConcreteSlabBlock(
-        @NotNull Color color, BlockEntry<ReinforcedConcreteBlock> parent) {
+    private static BlockEntry<SlabBlock> registerReinforcedConcreteSlabBlock(
+        Color color, BlockEntry<ReinforcedConcreteBlock> parent) {
         return REGISTRATE
             .block("reinforced_concrete_" + color + "_slab", SlabBlock::new)
             .initialProperties(() -> Blocks.TERRACOTTA)
@@ -3345,7 +3347,7 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull Object2ObjectMap<Color, BlockEntry<StairBlock>> registerReinforcedConcreteStairs() {
+    private static Object2ObjectMap<Color, BlockEntry<StairBlock>> registerReinforcedConcreteStairs() {
         Object2ObjectMap<Color, BlockEntry<StairBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteStairBlock(color, REINFORCED_CONCRETES.get(color));
@@ -3354,8 +3356,8 @@ public class ModBlocks {
         return map;
     }
 
-    private static @NotNull BlockEntry<StairBlock> registerReinforcedConcreteStairBlock(
-        @NotNull Color color, BlockEntry<ReinforcedConcreteBlock> parent) {
+    private static BlockEntry<StairBlock> registerReinforcedConcreteStairBlock(
+        Color color, BlockEntry<ReinforcedConcreteBlock> parent) {
         return REGISTRATE
             .block(
                 "reinforced_concrete_" + color + "_stair",
@@ -3392,7 +3394,7 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull Object2ObjectMap<Color, BlockEntry<WallBlock>> registerReinforcedConcreteWalls() {
+    private static Object2ObjectMap<Color, BlockEntry<WallBlock>> registerReinforcedConcreteWalls() {
         Object2ObjectMap<Color, BlockEntry<WallBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerReinforcedConcreteWallBlock(color, REINFORCED_CONCRETES.get(color));
@@ -3401,8 +3403,8 @@ public class ModBlocks {
         return map;
     }
 
-    private static @NotNull BlockEntry<WallBlock> registerReinforcedConcreteWallBlock(
-        @NotNull Color color, BlockEntry<ReinforcedConcreteBlock> parent) {
+    private static BlockEntry<WallBlock> registerReinforcedConcreteWallBlock(
+        Color color, BlockEntry<ReinforcedConcreteBlock> parent) {
         return REGISTRATE
             .block("reinforced_concrete_" + color + "_wall", WallBlock::new)
             .initialProperties(() -> Blocks.TERRACOTTA)
@@ -3439,7 +3441,7 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> registerAllCementCauldrons() {
+    private static Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> registerAllCementCauldrons() {
         Object2ObjectMap<Color, BlockEntry<CementCauldronBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerCementCauldron(color);
@@ -3448,7 +3450,7 @@ public class ModBlocks {
         return map;
     }
 
-    private static @NotNull BlockEntry<CementCauldronBlock> registerCementCauldron(Color color) {
+    private static BlockEntry<CementCauldronBlock> registerCementCauldron(Color color) {
         return REGISTRATE
             .block("%s_cement_cauldron".formatted(color), p -> new CementCauldronBlock(p, color))
             .initialProperties(() -> Blocks.CAULDRON)
@@ -3472,7 +3474,7 @@ public class ModBlocks {
             .register();
     }
 
-    private static @NotNull BlockEntry<? extends TimeCountedPressurePlateBlock> registerOtherCopperPressurePlate(String prefix, @NotNull Block block, int tickCount) {
+    private static BlockEntry<? extends TimeCountedPressurePlateBlock> registerOtherCopperPressurePlate(String prefix, Block block, int tickCount) {
         ResourceLocation location = BuiltInRegistries.BLOCK.getKey(block);
         String id = prefix + "copper" + "_pressure_plate";
         return REGISTRATE
@@ -3499,8 +3501,8 @@ public class ModBlocks {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static @NotNull BlockEntry<? extends PowerLevelPressurePlateBlock> registerPressurePlate(
-        String type, @NotNull Supplier<? extends Block> block,
+    private static BlockEntry<? extends PowerLevelPressurePlateBlock> registerPressurePlate(
+        String type, Supplier<? extends Block> block,
         NonNullFunction<BlockBehaviour.Properties, ? extends PowerLevelPressurePlateBlock> plateBlockFactory,
         Item... ingredients
     ) {
@@ -3544,8 +3546,8 @@ public class ModBlocks {
     }
 
     @SafeVarargs
-    private static @NotNull BlockEntry<? extends PowerLevelPressurePlateBlock> registerPressurePlate(
-        String type, @NotNull Supplier<? extends Block> block,
+    private static BlockEntry<? extends PowerLevelPressurePlateBlock> registerPressurePlate(
+        String type, Supplier<? extends Block> block,
         NonNullFunction<BlockBehaviour.Properties, ? extends PowerLevelPressurePlateBlock> plateBlockFactory,
         TagKey<Item>... ingredients
     ) {
@@ -3649,7 +3651,7 @@ public class ModBlocks {
 
     public static final Object2ObjectMap<Color, BlockEntry<LiquidBlock>> CEMENTS = registerAllCementLiquidBlock();
 
-    private static @NotNull Object2ObjectMap<Color, BlockEntry<LiquidBlock>> registerAllCementLiquidBlock() {
+    private static Object2ObjectMap<Color, BlockEntry<LiquidBlock>> registerAllCementLiquidBlock() {
         Object2ObjectMap<Color, BlockEntry<LiquidBlock>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var entry = registerCementLiquidBlock(color);
@@ -3658,7 +3660,7 @@ public class ModBlocks {
         return map;
     }
 
-    private static @NotNull BlockEntry<LiquidBlock> registerCementLiquidBlock(Color color) {
+    private static BlockEntry<LiquidBlock> registerCementLiquidBlock(Color color) {
         return REGISTRATE
             .block("%s_cement".formatted(color), p -> new LiquidBlock(ModFluids.SOURCE_CEMENTS.get(color).get(), p))
             .properties(it -> it
