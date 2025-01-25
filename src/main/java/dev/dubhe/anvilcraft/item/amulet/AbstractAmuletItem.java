@@ -1,5 +1,6 @@
-package dev.dubhe.anvilcraft.item;
+package dev.dubhe.anvilcraft.item.amulet;
 
+import dev.dubhe.anvilcraft.init.ModItems;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,6 +42,5 @@ public abstract class AbstractAmuletItem extends Item {
         if(entity.hasData(IMMUNE_TO_LIGHTNING)) {
             entity.setData(IMMUNE_TO_LIGHTNING, false);
         }
-
     }
 }

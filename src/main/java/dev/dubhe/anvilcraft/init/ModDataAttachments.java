@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.init;
 
 import com.mojang.serialization.Codec;
+import dev.dubhe.anvilcraft.util.AmuletTypes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,6 +31,7 @@ public class ModDataAttachments {
         "zombificated_by_curse", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).build());
 
     public static void register(IEventBus eventBus) {
+        AmuletTypes.initDataAttachments(ATTACHMENT_TYPES);
         ATTACHMENT_TYPES.register(eventBus);
     }
 }

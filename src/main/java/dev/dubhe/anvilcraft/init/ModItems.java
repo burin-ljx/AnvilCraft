@@ -2,6 +2,8 @@ package dev.dubhe.anvilcraft.init;
 
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
@@ -23,7 +25,8 @@ import dev.dubhe.anvilcraft.item.EmberMetalPickaxeItem;
 import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
-import dev.dubhe.anvilcraft.item.EmeraldAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.EmeraldAmuletItem;
 import dev.dubhe.anvilcraft.item.EmptyCapacitorItem;
 import dev.dubhe.anvilcraft.item.GeodeItem;
 import dev.dubhe.anvilcraft.item.GuideBookItem;
@@ -37,12 +40,12 @@ import dev.dubhe.anvilcraft.item.RoyalPickaxeItem;
 import dev.dubhe.anvilcraft.item.RoyalShovelItem;
 import dev.dubhe.anvilcraft.item.RoyalSwordItem;
 import dev.dubhe.anvilcraft.item.RoyalUpgradeTemplateItem;
-import dev.dubhe.anvilcraft.item.RubyAmuletItem;
-import dev.dubhe.anvilcraft.item.SapphireAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.RubyAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.SapphireAmuletItem;
 import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
 import dev.dubhe.anvilcraft.item.SuperHeavyItem;
-import dev.dubhe.anvilcraft.item.TopazAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
@@ -433,19 +436,22 @@ public class ModItems {
         })
         .register();
 
-    public static final ItemEntry<EmeraldAmuletItem> EMERALD_AMULET = REGISTRATE
-            .item("emerald_amulet", EmeraldAmuletItem::new)
-            //这里不知道加个什么tag好 .tag(ModItemTags.？？？)
+    public static <T extends AbstractAmuletItem> ItemEntry<T> createAmuletItem(String type, NonNullFunction<Item.Properties, T> factory) {
+        return REGISTRATE
+            .item(type + "_amulet", factory)
+            .properties(properties -> properties.stacksTo(1))
+            .tag(ModItemTags.AMULET)
             .register();
-    public static final ItemEntry<TopazAmuletItem> TOPAZ_AMULET = REGISTRATE
-            .item("topaz_amulet", TopazAmuletItem::new)
-            .register();
-    public static final ItemEntry<RubyAmuletItem> RUBY_AMULET = REGISTRATE
-            .item("ruby_amulet", RubyAmuletItem::new)
-            .register();
-    public static final ItemEntry<SapphireAmuletItem> SAPPHIRE_AMULET = REGISTRATE
-            .item("sapphire_amulet", SapphireAmuletItem::new)
-            .register();
+    }
+
+    public static final ItemEntry<EmeraldAmuletItem> EMERALD_AMULET =
+        createAmuletItem("emerald", EmeraldAmuletItem::new);
+    public static final ItemEntry<TopazAmuletItem> TOPAZ_AMULET =
+        createAmuletItem("topaz", TopazAmuletItem::new);
+    public static final ItemEntry<RubyAmuletItem> RUBY_AMULET =
+        createAmuletItem("ruby", RubyAmuletItem::new);
+    public static final ItemEntry<SapphireAmuletItem> SAPPHIRE_AMULET =
+        createAmuletItem("sapphire", SapphireAmuletItem::new);
 
 
     public static final ItemEntry<CapacitorItem> CAPACITOR = REGISTRATE

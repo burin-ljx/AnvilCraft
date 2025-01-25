@@ -3,19 +3,24 @@ package dev.dubhe.anvilcraft.event;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 
 import dev.dubhe.anvilcraft.recipe.anvil.cache.RecipeCaches;
+import dev.dubhe.anvilcraft.util.AmuletTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingUseTotemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +57,24 @@ public class PlayerEventListener {
     public static void onJoinedServer(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             RecipeCaches.sync(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerUsingTotem(LivingUseTotemEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && player.getInventory().contains(ModItems.AMULET_BOX.asStack())) {
+            Inventory inventory = player.getInventory();
+
+            boolean isConsumeAmuletBox;
+            if (inventory.contains(Items.TOTEM_OF_UNDYING.getDefaultInstance())) {
+                inventory.removeItem(Items.TOTEM_OF_UNDYING.getDefaultInstance());
+                isConsumeAmuletBox = false;
+            } else {
+                inventory.removeItem(ModItems.AMULET_BOX.asStack());
+                isConsumeAmuletBox = true;
+            }
+
+            AmuletTypes.startRaffle(player, event.getSource(), isConsumeAmuletBox);
         }
     }
 }
