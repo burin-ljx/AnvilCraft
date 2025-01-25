@@ -61,10 +61,11 @@ public class AnvilCraftKubeJsPlugin implements KubeJSPlugin {
     public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
         registry.register(AnvilCraft.of("block_compress"), BlockCompressRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("block_crush"), BlockCrushRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("item_crush"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("boiling"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("cooking"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("item_compress"), ItemProcessRecipeSchema.SCHEMA);
-        registry.register(AnvilCraft.of("item_crush"), ItemProcessRecipeSchema.SCHEMA);
+        registry.register(AnvilCraft.of("unpack"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("stamping"), ItemProcessRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("super_heating"), SuperHeatingRecipeSchema.SCHEMA);
         registry.register(AnvilCraft.of("item_inject"), ItemInjectRecipeSchema.SCHEMA);

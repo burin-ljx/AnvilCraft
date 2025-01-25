@@ -11,6 +11,7 @@ import dev.dubhe.anvilcraft.recipe.anvil.ConcreteRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.CookingRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCompressRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCrushRecipe;
+import dev.dubhe.anvilcraft.recipe.anvil.UnpackRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.MassInjectRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.MeshRecipe;
@@ -47,6 +48,11 @@ public class ModRecipeTypes {
             registerType("item_crush");
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ItemCrushRecipe>> ITEM_CRUSH_SERIALIZERS =
             RECIPE_SERIALIZERS.register("item_crush", ItemCrushRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<UnpackRecipe>> UNPACK_TYPE =
+            registerType("unpack");
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<UnpackRecipe>> UNPACK_SERIALIZERS =
+            RECIPE_SERIALIZERS.register("unpack", UnpackRecipe.Serializer::new);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<BlockCompressRecipe>> BLOCK_COMPRESS_TYPE =
             registerType("block_compress");

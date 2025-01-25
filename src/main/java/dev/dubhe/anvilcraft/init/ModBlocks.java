@@ -26,6 +26,7 @@ import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
+import dev.dubhe.anvilcraft.block.CrushingTableBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
@@ -280,6 +281,38 @@ public class ModBlocks {
                 .save(provider);
         })
         .register();
+    public static final BlockEntry<? extends Block> CRUSHING_TABLE = REGISTRATE
+            .block("crushing_table", CrushingTableBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate((ctx, provider) -> {
+            })
+            .simpleItem()
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .recipe((ctx, provider) -> {
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get())
+                        .requires(ModBlocks.STAMPING_PLATFORM)
+                        .requires(Items.GRINDSTONE)
+                        .unlockedBy(
+                                "has_" + Items.GRINDSTONE,
+                                AnvilCraftDatagen.has(Items.GRINDSTONE))
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Tags.Items.INGOTS_IRON))
+                        .save(provider, AnvilCraft.of("shapeless_crushing_table_recipe"));
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                        .pattern("BAB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('A', Items.GRINDSTONE)
+                        .define('B', Tags.Items.INGOTS_IRON)
+                        .unlockedBy(
+                                "has_" + Items.GRINDSTONE,
+                                AnvilCraftDatagen.has(Items.GRINDSTONE))
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Tags.Items.INGOTS_IRON))
+                        .save(provider, AnvilCraft.of("shaped_crushing_table_recipe"));
+
+            })
+            .register();
     public static final BlockEntry<? extends Block> CORRUPTED_BEACON = REGISTRATE
         .block("corrupted_beacon", CorruptedBeaconBlock::new)
         .initialProperties(() -> Blocks.BEACON)
