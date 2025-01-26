@@ -1,7 +1,8 @@
 package dev.dubhe.anvilcraft.init;
 
 import com.mojang.serialization.Codec;
-import dev.dubhe.anvilcraft.util.AmuletTypes;
+import dev.dubhe.anvilcraft.util.AmuletUtil;
+import net.minecraft.nbt.CompoundTag;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,8 +31,10 @@ public class ModDataAttachments {
     public static final Supplier<AttachmentType<Boolean>> ZOMBIFICATED_BY_CURSE = ATTACHMENT_TYPES.register(
         "zombificated_by_curse", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).build());
 
+    public static final Supplier<AttachmentType<CompoundTag>> AMULET_RAFFLE_PROBABILITY = ATTACHMENT_TYPES.register(
+        "amulet_raffle_probability", () -> AttachmentType.builder(CompoundTag::new).serialize(CompoundTag.CODEC).build());
+
     public static void register(IEventBus eventBus) {
-        AmuletTypes.initDataAttachments(ATTACHMENT_TYPES);
         ATTACHMENT_TYPES.register(eventBus);
     }
 }

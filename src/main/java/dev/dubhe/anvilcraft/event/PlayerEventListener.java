@@ -6,11 +6,14 @@ import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 
+import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
 import dev.dubhe.anvilcraft.recipe.anvil.cache.RecipeCaches;
-import dev.dubhe.anvilcraft.util.AmuletTypes;
+import dev.dubhe.anvilcraft.util.AmuletUtil;
+import dev.dubhe.anvilcraft.util.InventoryUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -20,10 +23,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingUseTotemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.UUID;
 
 
 @EventBusSubscriber(modid = AnvilCraft.MOD_ID)
@@ -74,7 +81,23 @@ public class PlayerEventListener {
                 isConsumeAmuletBox = true;
             }
 
-            AmuletTypes.startRaffle(player, event.getSource(), isConsumeAmuletBox);
+            AmuletUtil.startRaffle(player, event.getSource(), isConsumeAmuletBox);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerHurt(LivingIncomingDamageEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            DamageSource source = event.getSource();
+            Inventory inventory = player.getInventory();
+
+            ItemStack amulet = InventoryUtil.getFirstItem(inventory, ModItems.COMRADE_AMULET);
+            try {
+                UUID causingEntityUUID = Objects.requireNonNull(source.getEntity()).getUUID();
+                if (!amulet.equals(ItemStack.EMPTY) && ComradeAmuletItem.canIgnorePlayer(amulet, causingEntityUUID)) {
+                    event.getContainer().setNewDamage(0);
+                }
+            } catch (NullPointerException ignored) {}
         }
     }
 }

@@ -1,5 +1,7 @@
 package dev.dubhe.anvilcraft.util;
 
+import com.google.common.collect.HashBiMap;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;

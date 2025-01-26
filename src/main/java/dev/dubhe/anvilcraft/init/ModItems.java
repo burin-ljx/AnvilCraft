@@ -26,6 +26,7 @@ import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
 import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.EmeraldAmuletItem;
 import dev.dubhe.anvilcraft.item.EmptyCapacitorItem;
 import dev.dubhe.anvilcraft.item.GeodeItem;
@@ -452,6 +453,8 @@ public class ModItems {
         createAmuletItem("ruby", RubyAmuletItem::new);
     public static final ItemEntry<SapphireAmuletItem> SAPPHIRE_AMULET =
         createAmuletItem("sapphire", SapphireAmuletItem::new);
+    public static final ItemEntry<ComradeAmuletItem> COMRADE_AMULET =
+        createAmuletItem("comrade", ComradeAmuletItem::new);
 
 
     public static final ItemEntry<CapacitorItem> CAPACITOR = REGISTRATE
