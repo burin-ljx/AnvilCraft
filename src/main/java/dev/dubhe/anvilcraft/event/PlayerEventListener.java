@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.event;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.init.ModDataAttachments;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 
@@ -14,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -91,13 +93,20 @@ public class PlayerEventListener {
             DamageSource source = event.getSource();
             Inventory inventory = player.getInventory();
 
-            ItemStack amulet = InventoryUtil.getFirstItem(inventory, ModItems.COMRADE_AMULET);
+            ItemStack comrade = InventoryUtil.getFirstItem(inventory, ModItems.COMRADE_AMULET);
             try {
                 UUID causingEntityUUID = Objects.requireNonNull(source.getEntity()).getUUID();
-                if (!amulet.equals(ItemStack.EMPTY) && ComradeAmuletItem.canIgnorePlayer(amulet, causingEntityUUID)) {
+                if (!comrade.equals(ItemStack.EMPTY) && ComradeAmuletItem.canIgnorePlayer(comrade, causingEntityUUID)) {
                     event.getContainer().setNewDamage(0);
                 }
             } catch (NullPointerException ignored) {}
+
+            if (
+                source.type().equals(player.damageSources().damageTypes.get(DamageTypes.FALL))
+                && player.getData(ModDataAttachments.NO_FALL_DAMAGE)
+            ) {
+                event.getContainer().setNewDamage(0);
+            }
         }
     }
 }

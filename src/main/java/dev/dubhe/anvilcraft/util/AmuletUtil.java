@@ -4,6 +4,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.init.ModDataAttachments;
+import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.PlayerTeam;
+import net.neoforged.fml.loading.FMLLoader;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -51,11 +53,18 @@ public class AmuletUtil {
             || source.getEntity().getType().equals(EntityType.ELDER_GUARDIAN),
             ModItems.SAPPHIRE_AMULET
         ),
-        //ANVIL(
-        //    "anvil", (sources, source) ->
-        //    source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL)),
-        //    ModItems.EMERALD_AMULET
-        //),
+        ANVIL(
+            "anvil", (sources, source) ->
+            source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
+            //|| source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
+            || Objects.requireNonNull(source.getWeaponItem()).is(ModItemTags.ANVIL_HAMMER),
+            ModItems.ANVIL_AMULET
+        ),
+        COGWHEEL(
+            "cogwheel", (sources, source) ->
+            false,  // 还没搞懂怎么让代码在没create的时候不报错，先false掉
+            ModItems.COGWHEEL_AMULET
+        ),
         COMRADE(
             "comrade", (sources, source) -> {
                 if (source.getEntity() instanceof Player murder && source.getDirectEntity() instanceof Player victim) {
@@ -70,7 +79,32 @@ public class AmuletUtil {
                 return false;
             },
             ModItems.COMRADE_AMULET
-        );
+        ),
+        FEATHER(
+            "feather", (sources, source) ->
+            source.type().equals(sources.damageTypes.get(DamageTypes.FALL)),
+            ModItems.FEATHER_AMULET
+        ),
+        CAT(
+            "cat", (sources, source) ->
+            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.CREEPER)
+            || source.getEntity().getType().equals(EntityType.PHANTOM),
+            ModItems.CAT_AMULET
+        ),
+        DOG(
+            "dog", (sources, source) ->
+            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.SKELETON)
+            || source.getEntity().getType().equals(EntityType.STRAY)
+            || source.getEntity().getType().equals(EntityType.WITHER_SKELETON)
+            || source.getEntity().getType().equals(EntityType.BOGGED),
+            ModItems.DOG_AMULET
+        ),
+        SILENCE(
+            "silence", (sources, source) ->
+            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.WARDEN),
+            ModItems.SILENCE_AMULET
+        ),
+        ;
 
         @Getter
         private final String typeId;

@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.init;
 
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.dubhe.anvilcraft.AnvilCraft;
@@ -26,7 +27,11 @@ import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
 import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.AnvilAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.CatAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.CogwheelAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.DogAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.EmeraldAmuletItem;
 import dev.dubhe.anvilcraft.item.EmptyCapacitorItem;
 import dev.dubhe.anvilcraft.item.GeodeItem;
@@ -41,14 +46,17 @@ import dev.dubhe.anvilcraft.item.RoyalPickaxeItem;
 import dev.dubhe.anvilcraft.item.RoyalShovelItem;
 import dev.dubhe.anvilcraft.item.RoyalSwordItem;
 import dev.dubhe.anvilcraft.item.RoyalUpgradeTemplateItem;
+import dev.dubhe.anvilcraft.item.amulet.FeatherAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.RubyAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.SapphireAmuletItem;
 import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
 import dev.dubhe.anvilcraft.item.SuperHeavyItem;
+import dev.dubhe.anvilcraft.item.amulet.SilenceAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
+import dev.dubhe.anvilcraft.recipe.JewelCraftingRecipe;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -65,12 +73,17 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+
+import java.util.function.Supplier;
 
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 
@@ -348,7 +361,7 @@ public class ModItems {
     public static final ItemEntry<AnvilHammerItem> ANVIL_HAMMER = REGISTRATE
         .item("anvil_hammer", AnvilHammerItem::new)
         .properties(properties -> properties.durability(35))
-        .tag(ItemTags.MACE_ENCHANTABLE)
+        .tag(ItemTags.MACE_ENCHANTABLE, ModItemTags.ANVIL_HAMMER)
         .model((ctx, provider) -> {
         })
         .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
@@ -380,7 +393,7 @@ public class ModItems {
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.ROYAL_STEEL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/royal_anvil_hammer"));
         })
-        .tag(ItemTags.MACE_ENCHANTABLE)
+        .tag(ItemTags.MACE_ENCHANTABLE, ModItemTags.ANVIL_HAMMER)
         .properties(properties -> properties.durability(150))
         .model((ctx, provider) -> {
         })
@@ -397,7 +410,7 @@ public class ModItems {
                 .unlocks("hasitem", AnvilCraftDatagen.has(ModBlocks.EMBER_METAL_BLOCK))
                 .save(provider, AnvilCraft.of("smithing/ember_anvil_hammer"));
         })
-        .tag(ItemTags.MACE_ENCHANTABLE)
+        .tag(ItemTags.MACE_ENCHANTABLE, ModItemTags.ANVIL_HAMMER)
         .properties(properties -> properties.durability(2031))
         .model((ctx, provider) -> {
         })
@@ -437,24 +450,82 @@ public class ModItems {
         })
         .register();
 
-    public static <T extends AbstractAmuletItem> ItemEntry<T> createAmuletItem(String type, NonNullFunction<Item.Properties, T> factory) {
+    public static <T extends AbstractAmuletItem> ItemEntry<T> createAmuletItem(
+        String type, NonNullFunction<Item.Properties, T> factory,
+        NonNullConsumer<JewelCraftingRecipe.Builder> builderConsumer
+    ) {
         return REGISTRATE
             .item(type + "_amulet", factory)
             .properties(properties -> properties.stacksTo(1))
             .tag(ModItemTags.AMULET)
+            .recipe((ctx, provider) -> {
+                JewelCraftingRecipe.Builder builder = JewelCraftingRecipe.builder()
+                    .requires(ModBlocks.SILVER_BLOCK, 4);
+
+                builderConsumer.accept(builder);
+
+                builder.requires(ModItems.ROYAL_STEEL_INGOT)
+                    .result(new ItemStack(ctx.get()))
+                    .save(provider);
+            })
             .register();
     }
 
     public static final ItemEntry<EmeraldAmuletItem> EMERALD_AMULET =
-        createAmuletItem("emerald", EmeraldAmuletItem::new);
+        createAmuletItem(
+            "emerald", EmeraldAmuletItem::new,
+            builder -> builder.requires(Items.EMERALD_BLOCK)
+        );
     public static final ItemEntry<TopazAmuletItem> TOPAZ_AMULET =
-        createAmuletItem("topaz", TopazAmuletItem::new);
+        createAmuletItem(
+            "topaz", TopazAmuletItem::new,
+            builder -> builder.requires(ModBlocks.TOPAZ_BLOCK)
+        );
     public static final ItemEntry<RubyAmuletItem> RUBY_AMULET =
-        createAmuletItem("ruby", RubyAmuletItem::new);
+        createAmuletItem(
+            "ruby", RubyAmuletItem::new,
+            builder -> builder.requires(ModBlocks.RUBY_BLOCK)
+        );
     public static final ItemEntry<SapphireAmuletItem> SAPPHIRE_AMULET =
-        createAmuletItem("sapphire", SapphireAmuletItem::new);
+        createAmuletItem(
+            "sapphire", SapphireAmuletItem::new,
+            builder -> builder.requires(ModBlocks.SAPPHIRE_BLOCK)
+        );
+    public static final ItemEntry<AnvilAmuletItem> ANVIL_AMULET =
+        createAmuletItem(
+            "anvil", AnvilAmuletItem::new,
+            builder -> builder.requires(Items.ANVIL)
+        );
+    public static final ItemEntry<CogwheelAmuletItem> COGWHEEL_AMULET =
+        createAmuletItem(
+            "cogwheel", CogwheelAmuletItem::new,
+            builder -> builder.requires(Items.EMERALD_BLOCK, 4)
+        );
     public static final ItemEntry<ComradeAmuletItem> COMRADE_AMULET =
-        createAmuletItem("comrade", ComradeAmuletItem::new);
+        createAmuletItem(
+            "comrade", ComradeAmuletItem::new,
+            builder -> builder.requires(Items.NAME_TAG, 4)
+        );
+    public static final ItemEntry<FeatherAmuletItem> FEATHER_AMULET =
+        createAmuletItem(
+            "feather", FeatherAmuletItem::new,
+            builder -> builder.requires(Items.FEATHER, 16).requires(Items.PHANTOM_MEMBRANE, 4)
+        );
+    public static final ItemEntry<CatAmuletItem> CAT_AMULET =
+        createAmuletItem(
+            "cat", CatAmuletItem::new,
+            builder -> builder.requires(Items.SALMON, 16).requires(Items.COD, 16)
+        );
+    public static final ItemEntry<DogAmuletItem> DOG_AMULET =
+        createAmuletItem(
+            "dog", DogAmuletItem::new,
+            builder -> builder.requires(Items.BONE, 16).requires(ItemTags.MEAT, 16)
+        );
+    public static final ItemEntry<SilenceAmuletItem> SILENCE_AMULET =
+        createAmuletItem(
+            "silence", SilenceAmuletItem::new,
+            builder -> builder.requires(Items.ECHO_SHARD, 16)
+        );
 
 
     public static final ItemEntry<CapacitorItem> CAPACITOR = REGISTRATE

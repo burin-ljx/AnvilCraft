@@ -36,6 +36,7 @@ public class InventoryUtil {
 
         return ItemStack.EMPTY;
     }
+
     public static NonNullList<ItemStack> getItems(Inventory inventory, Item item) {
         NonNullList<ItemStack> items = NonNullList.of(ItemStack.EMPTY);
 
@@ -46,5 +47,15 @@ public class InventoryUtil {
         }
 
         return items;
+    }
+
+    public static boolean hasItem(Inventory inventory, Item item) {
+        return !getFirstItem(inventory, item).equals(ItemStack.EMPTY);
+    }
+    public static boolean hasItem(Inventory inventory, Supplier<Item> item) {
+        return !getFirstItem(inventory, item).equals(ItemStack.EMPTY);
+    }
+    public static boolean hasItem(Inventory inventory, ItemEntry<? extends Item> item) {
+        return !getFirstItem(inventory, item).equals(ItemStack.EMPTY);
     }
 }
