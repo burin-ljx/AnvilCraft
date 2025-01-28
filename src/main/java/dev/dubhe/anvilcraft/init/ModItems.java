@@ -496,11 +496,11 @@ public class ModItems {
             "anvil", AnvilAmuletItem::new,
             builder -> builder.requires(Items.ANVIL)
         );
-    public static final ItemEntry<CogwheelAmuletItem> COGWHEEL_AMULET =
-        createAmuletItem(
-            "cogwheel", CogwheelAmuletItem::new,
-            builder -> builder.requires(Items.EMERALD_BLOCK, 4)
-        );
+    //public static final ItemEntry<CogwheelAmuletItem> COGWHEEL_AMULET =
+    //    createAmuletItem(
+    //        "cogwheel", CogwheelAmuletItem::new,
+    //        builder -> builder.requires(AllItems.PRECISION_MECHANISM, 16)
+    //    );
     public static final ItemEntry<ComradeAmuletItem> COMRADE_AMULET =
         createAmuletItem(
             "comrade", ComradeAmuletItem::new,

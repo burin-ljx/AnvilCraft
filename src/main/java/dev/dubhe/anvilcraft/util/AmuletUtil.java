@@ -62,11 +62,19 @@ public class AmuletUtil {
             || Objects.requireNonNull(source.getWeaponItem()).is(ModItemTags.ANVIL_HAMMER),
             ModItems.ANVIL_AMULET
         ),
-        COGWHEEL(
-            "cogwheel", (sources, source) ->
-            false,  // 还没搞懂怎么让代码在没create的时候不报错，先false掉
-            ModItems.COGWHEEL_AMULET
-        ),
+        //COGWHEEL(
+        //    "cogwheel", (sources, source) ->
+        //    source.type().equals(sources.damageTypes.get(AllDamageTypes.CRUSH))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.CUCKOO_SURPRISE))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.FAN_FIRE))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.FAN_LAVA))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.DRILL))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.ROLLER))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.SAW))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.POTATO_CANNON))
+        //    || source.type().equals(sources.damageTypes.get(AllDamageTypes.RUN_OVER)),
+        //    ModItems.COGWHEEL_AMULET
+        //),
         COMRADE(
             "comrade", (sources, source) -> {
                 if (source.getEntity() instanceof Player murder && source.getDirectEntity() instanceof Player victim) {
