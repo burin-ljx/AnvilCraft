@@ -2,8 +2,10 @@ package dev.dubhe.anvilcraft.event;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
+import dev.dubhe.anvilcraft.entity.FallingGiantAnvilEntity;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModDataAttachments;
+import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 
@@ -15,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -91,7 +94,17 @@ public class PlayerEventListener {
     public static void onPlayerHurt(LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
             DamageSource source = event.getSource();
+            DamageSources sources = player.damageSources();
             Inventory inventory = player.getInventory();
+
+            if ((
+                source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
+                || (source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_BLOCK)) && source.getEntity() instanceof FallingGiantAnvilEntity)
+                || Objects.requireNonNull(source.getWeaponItem()).is(ModItemTags.ANVIL_HAMMER))
+                && player.getData(ModDataAttachments.STEEL_HEAD)
+            ) {
+                event.getContainer().setNewDamage(0);
+            }
 
             ItemStack comrade = InventoryUtil.getFirstItem(inventory, ModItems.COMRADE_AMULET);
             try {
@@ -102,7 +115,7 @@ public class PlayerEventListener {
             } catch (NullPointerException ignored) {}
 
             if (
-                source.type().equals(player.damageSources().damageTypes.get(DamageTypes.FALL))
+                source.type().equals(sources.damageTypes.get(DamageTypes.FALL))
                 && player.getData(ModDataAttachments.NO_FALL_DAMAGE)
             ) {
                 event.getContainer().setNewDamage(0);

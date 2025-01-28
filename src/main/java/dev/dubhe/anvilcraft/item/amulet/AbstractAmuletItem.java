@@ -16,7 +16,9 @@ import static dev.dubhe.anvilcraft.init.ModDataAttachments.AMULET_MAX;
 import static dev.dubhe.anvilcraft.init.ModDataAttachments.DISCOUNT_RATE;
 import static dev.dubhe.anvilcraft.init.ModDataAttachments.IMMUNE_TO_LIGHTNING;
 import static dev.dubhe.anvilcraft.init.ModDataAttachments.NO_FALL_DAMAGE;
+import static dev.dubhe.anvilcraft.init.ModDataAttachments.QUIETER;
 import static dev.dubhe.anvilcraft.init.ModDataAttachments.SCARE_ENTITIES;
+import static dev.dubhe.anvilcraft.init.ModDataAttachments.STEEL_HEAD;
 
 public abstract class AbstractAmuletItem extends Item {
 
@@ -49,6 +51,12 @@ public abstract class AbstractAmuletItem extends Item {
         }
         if (entity.hasData(NO_FALL_DAMAGE)) {
             entity.setData(NO_FALL_DAMAGE, false);
+        }
+        if (entity.hasData(QUIETER)) {
+            entity.setData(QUIETER, false);
+        }
+        if (entity.hasData(STEEL_HEAD)) {
+            entity.setData(STEEL_HEAD, false);
         }
         if (entity.hasData(SCARE_ENTITIES)) {
             CompoundTag root = entity.getData(ModDataAttachments.SCARE_ENTITIES);

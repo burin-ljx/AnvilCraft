@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.util;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.dubhe.anvilcraft.entity.FallingGiantAnvilEntity;
 import dev.dubhe.anvilcraft.init.ModDamageTypes;
 import dev.dubhe.anvilcraft.init.ModDataAttachments;
 import dev.dubhe.anvilcraft.init.ModItemTags;
@@ -16,6 +17,7 @@ import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.fml.loading.FMLLoader;
 
@@ -56,7 +58,7 @@ public class AmuletUtil {
         ANVIL(
             "anvil", (sources, source) ->
             source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
-            //|| source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
+            || (source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_BLOCK)) && source.getEntity() instanceof FallingGiantAnvilEntity)
             || Objects.requireNonNull(source.getWeaponItem()).is(ModItemTags.ANVIL_HAMMER),
             ModItems.ANVIL_AMULET
         ),
