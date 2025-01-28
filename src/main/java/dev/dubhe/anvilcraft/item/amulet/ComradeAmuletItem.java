@@ -57,7 +57,7 @@ public class ComradeAmuletItem extends AbstractAmuletItem {
 
         HashBiMap<String, UUID> signedPlayers = getSignedPlayers(stack);
         for (String playerName : signedPlayers.keySet()) {
-            tooltipComponents.add(Component.literal(playerName));
+            tooltipComponents.add(Component.literal("- " + playerName));
         }
     }
 
