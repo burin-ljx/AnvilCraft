@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -229,14 +230,11 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
                 .sorted(ENTITY_SORTER)
                 .filter(entity -> vector2d.distance(entity.position().x,entity.position().z) <= 0.25)
                 .findFirst();
-        boolean isFallingGiantAnvil = false;
         if (fallingGiantAnvilEntity.isPresent()) {
             if (giantAnvilPos != null && fallingGiantAnvilEntity.get().position().distanceTo(getBlockPos().getCenter()) < giantAnvilPos.getCenter().distanceTo(getBlockPos().getCenter())) {
-                isFallingGiantAnvil = true;
                 giantAnvilPos = BlockPos.containing(fallingGiantAnvilEntity.get().position());
             }
             else if(giantAnvilPos == null) {
-                isFallingGiantAnvil = true;
                 giantAnvilPos = BlockPos.containing(fallingGiantAnvilEntity.get().position());
             }
         }
@@ -255,11 +253,11 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
             }
             checkPos.move(-3, 1, 0);
         }
-        BlockPos newPos = getBlockPos().below(4);
-        for (Cube3x3PartHalf part : Cube3x3PartHalf.values()) {
-            if (!isFallingGiantAnvil)
-                level.setBlock(giantAnvilPos.offset(part.getOffset()), Blocks.AIR.defaultBlockState(), 2);
+        Block block = level.getBlockState(giantAnvilPos.below()).getBlock();
+        if(block instanceof GiantAnvilBlock giantAnvilBlock){
+            giantAnvilBlock.removePartsAndUpdate(level, giantAnvilPos.below());
         }
+        BlockPos newPos = getBlockPos().below(4);
         for (Cube3x3PartHalf part : Cube3x3PartHalf.values()) {
             level.setBlockAndUpdate(newPos.offset(part.getOffset()), ModBlocks.GIANT_ANVIL.getDefaultState()
                     .setValue(GiantAnvilBlock.HALF, part)
