@@ -511,7 +511,7 @@
   "screen.anvilcraft.item_collector.range": "Gamme",
   "screen.anvilcraft.item_collector.title": "Collecteur d'objets",
   "screen.anvilcraft.royal_grindstone.remove_curse_count": "Removed curses: %s / %s",
-  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %se",
+  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %s",
   "screen.anvilcraft.royal_grindstone.title": "Supprimer les pénalités de malédiction et d'enchantement",
   "screen.anvilcraft.royal_steel_upgrade_smithing_template": "Royal Steel Upgrade",
   "screen.anvilcraft.slot.disable.tooltip": "Utiliser les clics sur les éléments pour définir le filtre",
