@@ -13,7 +13,7 @@
         {
           "function": "minecraft:copy_components",
           "include": [
-            "minecraft:block_entity_data"
+            "anvilcraft:saved_entity"
           ],
           "source": "block_entity"
         }
