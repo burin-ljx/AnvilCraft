@@ -5,16 +5,20 @@ import dev.dubhe.anvilcraft.api.entity.EntityHelper;
 import dev.dubhe.anvilcraft.api.entity.attribute.EntityReachAttribute;
 import dev.dubhe.anvilcraft.init.ModItems;
 
+import dev.dubhe.anvilcraft.util.EntityUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 
@@ -81,6 +85,19 @@ public class CrabClawItem extends Item {
                 customData.putBoolean(DUAL_CRAB_CLAW_MARKER, true);
             }
         }
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+        if (target instanceof Shulker shulker && shulker.isAlive()) {
+            if (!player.level().isClientSide) {
+                EntityUtil.setShulkerOpen(shulker);
+            }
+
+            return InteractionResult.sidedSuccess(player.level().isClientSide);
+        }
+
+        return InteractionResult.PASS;
     }
 
     @Override
