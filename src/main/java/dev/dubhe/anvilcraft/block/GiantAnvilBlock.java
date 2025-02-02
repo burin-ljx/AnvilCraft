@@ -318,17 +318,17 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
         if (!state1.is(this) || !state1.hasProperty(HALF) || state1.getValue(HALF) != Cube3x3PartHalf.MID_CENTER) {
             return;
         }
+        this.removePartsAndUpdate(level, pos);
+        FallingBlockEntity fallingBlockEntity = FallingGiantAnvilEntity.fall(level, above, state1, false);
+        this.falling(fallingBlockEntity);
+    }
 
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = 0; dy <= 2; dy++) {
-                for (int dz = -1; dz <= 1; dz++) {
-                    BlockPos bp = pos.offset(dx, dy, dz);
-                    BlockState blockState = level.getBlockState(bp);
-                    level.setBlock(bp, blockState.getFluidState().createLegacyBlock(), 3, 0);
-                }
-            }
+    public void removePartsAndUpdate(Level level, BlockPos pos){
+        for (Cube3x3PartHalf part : getParts()) {
+            BlockPos bp = pos.offset(part.getOffset());
+            BlockState blockState = level.getBlockState(bp);
+            level.setBlock(bp, blockState.getFluidState().createLegacyBlock(), 3, 0);
         }
-
         UPDATE_OFFSET.forEach((direction, offsetList) -> offsetList.forEach(offset -> {
             BlockPos updatedPos = pos.offset(offset);
             BlockPos fromPos = updatedPos.relative(direction);
@@ -340,8 +340,6 @@ public class GiantAnvilBlock extends AbstractMultiplePartBlock<Cube3x3PartHalf> 
                 512
             );
         }));
-        FallingBlockEntity fallingBlockEntity = FallingGiantAnvilEntity.fall(level, above, state1, false);
-        this.falling(fallingBlockEntity);
     }
 
     protected void falling(FallingBlockEntity entity) {
