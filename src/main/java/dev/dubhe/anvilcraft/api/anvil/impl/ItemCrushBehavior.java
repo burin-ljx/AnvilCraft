@@ -22,7 +22,7 @@ public class ItemCrushBehavior implements IAnvilBehavior {
                 ModRecipeTypes.ITEM_CRUSH_TYPE.get(),
                 level,
                 hitBlockPos,
-                hitBlockPos.getCenter().add(0, 0.25, 0)
+                hitBlockPos.getCenter().add(0.0, -0.125, 0.0)
         );
     }
 }
