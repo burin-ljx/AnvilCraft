@@ -17,7 +17,7 @@ import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemCrushRecipe;
 import dev.dubhe.anvilcraft.recipe.anvil.StampingRecipe;
 
-public class ItemCrushRecipeloader {
+public class ItemCrushRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {
         ItemCrushRecipe.builder()
                 .requires(Tags.Items.CROPS_WHEAT)

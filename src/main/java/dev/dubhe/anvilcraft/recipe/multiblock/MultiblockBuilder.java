@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.recipe.multiblock;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +42,10 @@ public class MultiblockBuilder extends AbstractRecipeBuilder<MultiblockRecipe> {
 
     public MultiblockBuilder symbol(char symbol, Block block) {
         return symbol(symbol, BlockPredicateWithState.of(block));
+    }
+
+    public MultiblockBuilder symbol(char symbol, Holder<Block> block) {
+        return symbol(symbol, block.value());
     }
 
     public MultiblockBuilder symbol(char symbol, String block) {

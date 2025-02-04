@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.JsonOps;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.block.AccelerationRingBlock;
 import dev.dubhe.anvilcraft.block.GiantAnvilBlock;
 import dev.dubhe.anvilcraft.block.LargeCakeBlock;
 import dev.dubhe.anvilcraft.block.OverseerBlock;
@@ -130,42 +131,7 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         }));
         jsonButton = addRenderableWidget(new ImageButton(offsetX + 122, offsetY + 53, 46, 16, SPRITES, button -> {
             Recipe<?> recipe = toRecipe();
-            if (recipe != null) {
-                String defaultName = switch (recipe) {
-                    case IDatagen datagenRecipe -> datagenRecipe.getSuggestedName();
-                    default -> Integer.toHexString(recipe.hashCode());
-                };
-                String pathString = getFilePath(defaultName, "*.json");
-                if (pathString != null) {
-                    Path path = Paths.get(pathString);
-                    JsonElement json = Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).getOrThrow();
-                    try {
-                        String jsonString = AnvilCraft.GSON.toJson(json);
-                        Files.writeString(
-                            path,
-                            jsonString,
-                            StandardCharsets.UTF_8,
-                            StandardOpenOption.CREATE,
-                            StandardOpenOption.WRITE);
-                        minecraft.player.displayClientMessage(
-                            Component.translatable("message.anvilcraft.file_saved", pathString),
-                            false
-                        );
-                    } catch (IOException e) {
-                        AnvilCraft.LOGGER.error("Saving {} has error", path, e);
-                        minecraft.player.displayClientMessage(
-                            Component.translatable("message.anvilcraft.file_save_failed", pathString, e.getMessage())
-                                .withStyle(ChatFormatting.RED),
-                            false
-                        );
-                    }
-                } else {
-                    minecraft.player.displayClientMessage(Component.translatable("message.anvilcraft.no_file_selected")
-                            .withStyle(ChatFormatting.RED),
-                        false
-                    );
-                }
-            } else {
+            if (recipe == null) {
                 minecraft.player.displayClientMessage(
                     Component.translatable("message.anvilcraft.code_gen_filed")
                         .withStyle(ChatFormatting.RED),
@@ -173,6 +139,41 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
                 );
                 minecraft.player.displayClientMessage(
                     Component.translatable("message.anvilcraft.code_gen_check")
+                        .withStyle(ChatFormatting.RED),
+                    false
+                );
+                return;
+            }
+            String defaultName = switch (recipe) {
+                case IDatagen datagenRecipe -> datagenRecipe.getSuggestedName();
+                default -> Integer.toHexString(recipe.hashCode());
+            };
+            String pathString = getFilePath(defaultName, "*.json");
+            if (pathString == null) {
+                minecraft.player.displayClientMessage(Component.translatable("message.anvilcraft.no_file_selected")
+                        .withStyle(ChatFormatting.RED),
+                    false
+                );
+                return;
+            }
+            Path path = Paths.get(pathString);
+            JsonElement json = Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).getOrThrow();
+            try {
+                String jsonString = AnvilCraft.GSON.toJson(json);
+                Files.writeString(
+                    path,
+                    jsonString,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.WRITE);
+                minecraft.player.displayClientMessage(
+                    Component.translatable("message.anvilcraft.file_saved", pathString),
+                    false
+                );
+            } catch (IOException e) {
+                AnvilCraft.LOGGER.error("Error occurred when saving file {}: {}", path, e);
+                minecraft.player.displayClientMessage(
+                    Component.translatable("message.anvilcraft.file_save_failed", pathString, e.getMessage())
                         .withStyle(ChatFormatting.RED),
                     false
                 );
@@ -340,7 +341,7 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         BlockStateProperties.LAYERS,
         BlockStateProperties.LIT,
         BlockStateProperties.LEVEL_CAULDRON,
-        BlockStateProperties.UP,
+        BlockStateProperties.SLAB_TYPE,
         // about part of multipart blocks
         BlockStateProperties.BED_PART,
         BlockStateProperties.DOUBLE_BLOCK_HALF,
@@ -350,7 +351,8 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         TransmissionPoleBlock.HALF,
         TeslaTowerBlock.HALF,
         OverseerBlock.HALF,
-        LargeCakeBlock.HALF
+        LargeCakeBlock.HALF,
+        AccelerationRingBlock.HALF
     );
 
     private BlockPredicateWithState buildPredicate(BlockState state, boolean recordAllStates) {

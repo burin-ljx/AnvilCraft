@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.recipe.IDatagen;
 import dev.dubhe.anvilcraft.recipe.anvil.builder.AbstractRecipeBuilder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -85,7 +86,7 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDat
         return ItemStack.EMPTY;
     }
 
-    @SuppressWarnings("deprecated")
+    @SuppressWarnings("deprecation")
     @Override
     public boolean matches(MultiblockInput input, Level level) {
         int size = input.size();
@@ -250,6 +251,10 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDat
             return this.symbol(symbol, BlockPredicateWithState.of(block));
         }
 
+        public Builder symbol(char symbol, Holder<Block> block) {
+            return this.symbol(symbol, block.value());
+        }
+
         public Builder symbol(char symbol, String blockName) {
             return this.symbol(symbol, BlockPredicateWithState.of(blockName));
         }
@@ -263,6 +268,10 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDat
             return this.inputSymbol(symbol, BlockPredicateWithState.of(block));
         }
 
+        public Builder inputSymbol(char symbol, Holder<Block> block) {
+            return this.inputSymbol(symbol, block.value());
+        }
+
         public Builder inputSymbol(char symbol, String blockName) {
             return this.inputSymbol(symbol, BlockPredicateWithState.of(blockName));
         }
@@ -274,6 +283,10 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDat
 
         public Builder outputSymbol(char symbol, Block block) {
             return this.outputSymbol(symbol, BlockPredicateWithState.of(block));
+        }
+
+        public Builder outputSymbol(char symbol, Holder<Block> block) {
+            return this.outputSymbol(symbol, block.value());
         }
 
         public Builder outputSymbol(char symbol, String blockName) {
