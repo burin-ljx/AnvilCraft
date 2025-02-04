@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.util.CodecUtil;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -35,6 +36,16 @@ public class BlockPredicateWithState implements Predicate<BlockState> {
     private final Block block;
     private final Map<Property<?>, Comparable<?>> properties;
     private BlockState defaultState;
+
+    private static Method setValueMethod = null;
+
+    static {
+        try {
+            setValueMethod = BlockState.class.getMethod("setValue", Property.class, Comparable.class);
+        } catch (NoSuchMethodException e) {
+            AnvilCraft.LOGGER.warn("No such method: BlockState#setValue");
+        }
+    }
 
     public static final Codec<BlockPredicateWithState> CODEC = Raw.CODEC_RAW
         .comapFlatMap(raw -> {
@@ -96,6 +107,11 @@ public class BlockPredicateWithState implements Predicate<BlockState> {
         return new BlockPredicateWithState(block);
     }
 
+    @Contract("_ -> new")
+    public static @NotNull BlockPredicateWithState of(Holder<Block> block) {
+        return of(block.value());
+    }
+
     public static BlockPredicateWithState of(String blockName) {
         return of(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(blockName)));
     }
@@ -121,19 +137,15 @@ public class BlockPredicateWithState implements Predicate<BlockState> {
     public BlockState getDefaultState() {
         if (this.defaultState == null) {
             this.defaultState = this.block.defaultBlockState();
-            try {
-                Method setValueMethod = BlockState.class.getMethod("setValue", Property.class, Comparable.class);
-                this.properties.forEach((property, value) -> {
-                    try {
-                        this.defaultState = (BlockState) setValueMethod.invoke(this.defaultState, property, value);
-                    } catch (Exception e) {
-                        AnvilCraft.LOGGER.warn("Invalid property or value: " +
-                            "property:{}, value:{}", property, value);
-                    }
-                });
-            } catch (Exception e) {
-                AnvilCraft.LOGGER.warn("No such method: BlockState#setValue");
-            }
+            if (setValueMethod == null) return this.defaultState;
+            this.properties.forEach((property, value) -> {
+                try {
+                    this.defaultState = (BlockState) setValueMethod.invoke(this.defaultState, property, value);
+                } catch (Exception e) {
+                    AnvilCraft.LOGGER.warn("Invalid property or value: " +
+                        "property:{}, value:{}", property, value);
+                }
+            });
         }
         return this.defaultState;
     }

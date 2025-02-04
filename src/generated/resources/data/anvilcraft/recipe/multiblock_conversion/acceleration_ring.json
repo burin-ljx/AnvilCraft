@@ -1,0 +1,246 @@
+{
+  "type": "anvilcraft:multiblock_conversion",
+  "inputPattern": {
+    "layers": [
+      [
+        "ABA",
+        "B B",
+        "ABA"
+      ],
+      [
+        "CDC",
+        "D D",
+        "CDC"
+      ],
+      [
+        "ABA",
+        "B B",
+        "ABA"
+      ]
+    ],
+    "symbols": {
+      "A": {
+        "block": "minecraft:copper_block"
+      },
+      "B": {
+        "block": "anvilcraft:heavy_iron_block"
+      },
+      "C": {
+        "block": "anvilcraft:magnetoelectric_core"
+      },
+      "D": {
+        "block": "anvilcraft:tungsten_block"
+      }
+    }
+  },
+  "outputPattern": {
+    "layers": [
+      [
+        "ABC",
+        "DEF",
+        "GHI"
+      ],
+      [
+        "JKL",
+        "MNO",
+        "PQR"
+      ],
+      [
+        "STU",
+        "VWX",
+        "YZ["
+      ]
+    ],
+    "symbols": {
+      "A": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_wn"
+        }
+      },
+      "B": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_n"
+        }
+      },
+      "C": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_en"
+        }
+      },
+      "D": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_w"
+        }
+      },
+      "E": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_center"
+        }
+      },
+      "F": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_e"
+        }
+      },
+      "G": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_ws"
+        }
+      },
+      "H": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_s"
+        }
+      },
+      "I": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "bottom_es"
+        }
+      },
+      "J": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_wn"
+        }
+      },
+      "K": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_n"
+        }
+      },
+      "L": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_en"
+        }
+      },
+      "M": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_w"
+        }
+      },
+      "N": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_center"
+        }
+      },
+      "O": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_e"
+        }
+      },
+      "P": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_ws"
+        }
+      },
+      "Q": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_s"
+        }
+      },
+      "R": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "mid_es"
+        }
+      },
+      "S": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_wn"
+        }
+      },
+      "T": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_n"
+        }
+      },
+      "U": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_en"
+        }
+      },
+      "V": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_w"
+        }
+      },
+      "W": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_center"
+        }
+      },
+      "X": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_e"
+        }
+      },
+      "Y": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_ws"
+        }
+      },
+      "Z": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_s"
+        }
+      },
+      "[": {
+        "block": "anvilcraft:acceleration_ring",
+        "properties": {
+          "facing": "up",
+          "half": "top_es"
+        }
+      }
+    }
+  }
+}

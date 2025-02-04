@@ -27,7 +27,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public abstract class AbstractStateAddableMultiplePartBlock<P extends Enum<P> & IStateAddableMultiplePartBlockState<P, E>, T extends Property<E>, E extends Comparable<E>> extends Block {
+public abstract class AbstractStateAddableMultiplePartBlock<
+        P extends Enum<P> & IStateAddableMultiplePartBlockState<P, E>,
+        T extends Property<E>,
+        E extends Comparable<E>
+    > extends Block {
     final P mainPart;
 
     public AbstractStateAddableMultiplePartBlock(Properties properties) {

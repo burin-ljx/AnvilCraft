@@ -29,16 +29,6 @@ import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
 import dev.dubhe.anvilcraft.block.CrushingTableBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
-import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
-import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
-import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
-import dev.dubhe.anvilcraft.block.SlidingRailBlock;
-import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
-import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
-import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.DischargerBlock;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
 import dev.dubhe.anvilcraft.block.EmberGrindstone;
@@ -54,7 +44,10 @@ import dev.dubhe.anvilcraft.block.GiantAnvilBlock;
 import dev.dubhe.anvilcraft.block.GlowingMetalBlock;
 import dev.dubhe.anvilcraft.block.HeaterBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronBeamBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronPlateBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
 import dev.dubhe.anvilcraft.block.HeliostatsBlock;
 import dev.dubhe.anvilcraft.block.HollowMagnetBlock;
 import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
@@ -62,16 +55,19 @@ import dev.dubhe.anvilcraft.block.ImpactPileBlock;
 import dev.dubhe.anvilcraft.block.IncandescentMetalBlock;
 import dev.dubhe.anvilcraft.block.InductionLightBlock;
 import dev.dubhe.anvilcraft.block.ItemCollectorBlock;
+import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
 import dev.dubhe.anvilcraft.block.JewelCraftingTable;
 import dev.dubhe.anvilcraft.block.LargeCakeBlock;
 import dev.dubhe.anvilcraft.block.LavaCauldronBlock;
 import dev.dubhe.anvilcraft.block.LoadMonitorBlock;
 import dev.dubhe.anvilcraft.block.MagnetBlock;
 import dev.dubhe.anvilcraft.block.MagneticChuteBlock;
+import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
 import dev.dubhe.anvilcraft.block.MeltGemCauldron;
 import dev.dubhe.anvilcraft.block.MengerSpongeBlock;
 import dev.dubhe.anvilcraft.block.MineralFountainBlock;
 import dev.dubhe.anvilcraft.block.MobAmberBlock;
+import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import dev.dubhe.anvilcraft.block.NestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ObsidianCauldron;
 import dev.dubhe.anvilcraft.block.OilCauldronBlock;
@@ -92,12 +88,16 @@ import dev.dubhe.anvilcraft.block.RoyalSmithingTableBlock;
 import dev.dubhe.anvilcraft.block.RubyLaserBlock;
 import dev.dubhe.anvilcraft.block.RubyPrismBlock;
 import dev.dubhe.anvilcraft.block.SimpleChuteBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
 import dev.dubhe.anvilcraft.block.SpaceOvercompressorBlock;
 import dev.dubhe.anvilcraft.block.SpectralAnvilBlock;
 import dev.dubhe.anvilcraft.block.StampingPlatformBlock;
 import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
+import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
+import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
 import dev.dubhe.anvilcraft.block.plate.EntityCountPressurePlateBlock;
 import dev.dubhe.anvilcraft.block.plate.EntityTypePressurePlateBlock;
@@ -123,7 +123,6 @@ import dev.dubhe.anvilcraft.item.HeliostatsItem;
 import dev.dubhe.anvilcraft.item.PlaceInWaterBlockItem;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 import dev.dubhe.anvilcraft.item.TeslaTowerItem;
-import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
 import dev.dubhe.anvilcraft.util.DangerUtil;
 import dev.dubhe.anvilcraft.util.DataGenUtil;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
@@ -1500,17 +1499,6 @@ public class ModBlocks {
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .loot(AbstractStateAddableMultiplePartBlock::loot)
         .properties(BlockBehaviour.Properties::noOcclusion)
-        .recipe((ctx, provider) -> {
-            MultiblockRecipe.builder("anvilcraft:acceleration_ring", 1)
-                .layer("ABA", "B B", "ABA")
-                .layer("CDC", "D D", "CDC")
-                .layer("ABA", "B B", "ABA")
-                .symbol('A', "minecraft:copper_block")
-                .symbol('B', "anvilcraft:heavy_iron_block")
-                .symbol('C', "anvilcraft:magnetoelectric_core")
-                .symbol('D', "anvilcraft:tungsten_block")
-                .save(provider);
-        })
         .item(AbstractStateAddableMultiplePartBlockItem<DirectionCube3x3PartHalf, DirectionProperty, Direction>::new)
         .build()
         .blockstate((ctx, provider) -> {

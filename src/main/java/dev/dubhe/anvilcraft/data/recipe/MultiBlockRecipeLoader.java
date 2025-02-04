@@ -21,40 +21,40 @@ public class MultiBlockRecipeLoader {
                 .layer("JGJ", "HDI", "JFJ")
                 .layer("EEE", "EDE", "EEE")
                 .layer("ACA", "BAB", "ACA")
-                .symbol('A', ModBlocks.POLISHED_HEAVY_IRON_BLOCK.get())
+                .symbol('A', ModBlocks.POLISHED_HEAVY_IRON_BLOCK)
                 .symbol(
                         'B',
-                        BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM.get())
+                        BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM)
                                 .hasState(HeavyIronBeamBlock.AXIS, Direction.Axis.X))
                 .symbol(
                         'C',
-                        BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM.get())
+                        BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM)
                                 .hasState(HeavyIronBeamBlock.AXIS, Direction.Axis.Z))
-                .symbol('D', ModBlocks.HEAVY_IRON_COLUMN.get())
-                .symbol('E', ModBlocks.HEAVY_IRON_PLATE.get())
+                .symbol('D', ModBlocks.HEAVY_IRON_COLUMN)
+                .symbol('E', ModBlocks.HEAVY_IRON_PLATE)
                 .symbol(
                         'F',
-                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS.get())
+                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
                                 .hasState(StairBlock.FACING, Direction.NORTH)
                                 .hasState(StairBlock.HALF, Half.BOTTOM))
                 .symbol(
                         'G',
-                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS.get())
+                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
                                 .hasState(StairBlock.FACING, Direction.SOUTH)
                                 .hasState(StairBlock.HALF, Half.BOTTOM))
                 .symbol(
                         'H',
-                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS.get())
+                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
                                 .hasState(StairBlock.FACING, Direction.EAST)
                                 .hasState(StairBlock.HALF, Half.BOTTOM))
                 .symbol(
                         'I',
-                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS.get())
+                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
                                 .hasState(StairBlock.FACING, Direction.WEST)
                                 .hasState(StairBlock.HALF, Half.BOTTOM))
                 .symbol(
                         'J',
-                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_SLAB.get())
+                        BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_SLAB)
                                 .hasState(SlabBlock.TYPE, SlabType.BOTTOM))
                 .save(provider, AnvilCraft.of("multiblock/giant_anvil_1"));
 
@@ -62,10 +62,10 @@ public class MultiBlockRecipeLoader {
                 .layer("AAA", "AAA", "AAA")
                 .layer("CCC", "CBC", "CCC")
                 .layer("DDD", "DDD", "DDD")
-                .symbol('A', ModBlocks.CUT_HEAVY_IRON_BLOCK.get())
-                .symbol('B', ModBlocks.HEAVY_IRON_COLUMN.get())
-                .symbol('C', ModBlocks.HEAVY_IRON_PLATE.get())
-                .symbol('D', ModBlocks.POLISHED_HEAVY_IRON_BLOCK.get())
+                .symbol('A', ModBlocks.CUT_HEAVY_IRON_BLOCK)
+                .symbol('B', ModBlocks.HEAVY_IRON_COLUMN)
+                .symbol('C', ModBlocks.HEAVY_IRON_PLATE)
+                .symbol('D', ModBlocks.POLISHED_HEAVY_IRON_BLOCK)
                 .save(provider, AnvilCraft.of("multiblock/giant_anvil_2"));
 
         MultiblockRecipe.builder(ModBlocks.MENGER_SPONGE)
@@ -73,7 +73,7 @@ public class MultiBlockRecipeLoader {
                 .layer("A A", " B ", "A A")
                 .layer("AAA", "A A", "AAA")
                 .symbol('A', Blocks.SPONGE)
-                .symbol('B', ModBlocks.VOID_MATTER_BLOCK.get())
+                .symbol('B', ModBlocks.VOID_MATTER_BLOCK)
                 .save(provider);
 
         MultiblockRecipe.builder(Blocks.DIAMOND_BLOCK)
@@ -87,9 +87,9 @@ public class MultiBlockRecipeLoader {
                 .layer("AAA", "AAA", "AAA")
                 .layer(" B ", "BBB", " B ")
                 .layer("   ", " C ", "   ")
-                .symbol('A', ModBlocks.CAKE_BLOCK.get())
-                .symbol('B', ModBlocks.BERRY_CAKE_BLOCK.get())
-                .symbol('C', ModBlocks.CHOCOLATE_CAKE_BLOCK.get())
+                .symbol('A', ModBlocks.CAKE_BLOCK)
+                .symbol('B', ModBlocks.BERRY_CAKE_BLOCK)
+                .symbol('C', ModBlocks.CHOCOLATE_CAKE_BLOCK)
                 .save(provider);
 
         MultiblockRecipe.builder(ModBlocks.MENGER_SPONGE)
@@ -183,7 +183,17 @@ public class MultiBlockRecipeLoader {
                         "AAAAAAAAA",
                         "A AA AA A",
                         "AAAAAAAAA")
-                .symbol('A', "anvilcraft:menger_sponge")
+                .symbol('A', ModBlocks.MENGER_SPONGE)
                 .save(provider, AnvilCraft.of("multiblock/menger_sponge_2"));
+
+        MultiblockRecipe.builder(ModBlocks.ACCELERATION_RING, 1)
+            .layer("ABA", "B B", "ABA")
+            .layer("CDC", "D D", "CDC")
+            .layer("ABA", "B B", "ABA")
+            .symbol('A', Blocks.COPPER_BLOCK)
+            .symbol('B', ModBlocks.HEAVY_IRON_BLOCK)
+            .symbol('C', ModBlocks.MAGNETO_ELECTRIC_CORE_BLOCK)
+            .symbol('D', ModBlocks.TUNGSTEN_BLOCK)
+            .save(provider);
     }
 }
