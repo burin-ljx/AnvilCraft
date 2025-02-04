@@ -15,6 +15,7 @@ public class JeiLang {
         provider.add("gui.anvilcraft.category.block_crush", "Block Crush");
 
         provider.add("gui.anvilcraft.category.item_compress", "Item Compress");
+        provider.add("gui.anvilcraft.category.item_crush", "Item Crush");
         provider.add("gui.anvilcraft.category.unpack", "Unpack");
 
         provider.add("gui.anvilcraft.category.cooking", "Cooking");
