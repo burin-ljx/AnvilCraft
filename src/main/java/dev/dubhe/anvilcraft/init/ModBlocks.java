@@ -28,6 +28,17 @@ import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
+import dev.dubhe.anvilcraft.block.CrushingTableBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
+import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
+import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
+import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
+import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
+import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.DischargerBlock;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
 import dev.dubhe.anvilcraft.block.EmberGrindstone;
@@ -43,10 +54,7 @@ import dev.dubhe.anvilcraft.block.GiantAnvilBlock;
 import dev.dubhe.anvilcraft.block.GlowingMetalBlock;
 import dev.dubhe.anvilcraft.block.HeaterBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronBeamBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronPlateBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
-import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
 import dev.dubhe.anvilcraft.block.HeliostatsBlock;
 import dev.dubhe.anvilcraft.block.HollowMagnetBlock;
 import dev.dubhe.anvilcraft.block.HoneyCauldronBlock;
@@ -54,19 +62,16 @@ import dev.dubhe.anvilcraft.block.ImpactPileBlock;
 import dev.dubhe.anvilcraft.block.IncandescentMetalBlock;
 import dev.dubhe.anvilcraft.block.InductionLightBlock;
 import dev.dubhe.anvilcraft.block.ItemCollectorBlock;
-import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
 import dev.dubhe.anvilcraft.block.JewelCraftingTable;
 import dev.dubhe.anvilcraft.block.LargeCakeBlock;
 import dev.dubhe.anvilcraft.block.LavaCauldronBlock;
 import dev.dubhe.anvilcraft.block.LoadMonitorBlock;
 import dev.dubhe.anvilcraft.block.MagnetBlock;
 import dev.dubhe.anvilcraft.block.MagneticChuteBlock;
-import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
 import dev.dubhe.anvilcraft.block.MeltGemCauldron;
 import dev.dubhe.anvilcraft.block.MengerSpongeBlock;
 import dev.dubhe.anvilcraft.block.MineralFountainBlock;
 import dev.dubhe.anvilcraft.block.MobAmberBlock;
-import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
 import dev.dubhe.anvilcraft.block.NestingShulkerBoxBlock;
 import dev.dubhe.anvilcraft.block.ObsidianCauldron;
 import dev.dubhe.anvilcraft.block.OilCauldronBlock;
@@ -87,16 +92,12 @@ import dev.dubhe.anvilcraft.block.RoyalSmithingTableBlock;
 import dev.dubhe.anvilcraft.block.RubyLaserBlock;
 import dev.dubhe.anvilcraft.block.RubyPrismBlock;
 import dev.dubhe.anvilcraft.block.SimpleChuteBlock;
-import dev.dubhe.anvilcraft.block.SlidingRailBlock;
-import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
 import dev.dubhe.anvilcraft.block.SpaceOvercompressorBlock;
 import dev.dubhe.anvilcraft.block.SpectralAnvilBlock;
 import dev.dubhe.anvilcraft.block.StampingPlatformBlock;
 import dev.dubhe.anvilcraft.block.SupercriticalNestingShulkerBoxBlock;
-import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
-import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
 import dev.dubhe.anvilcraft.block.plate.EntityCountPressurePlateBlock;
 import dev.dubhe.anvilcraft.block.plate.EntityTypePressurePlateBlock;
@@ -280,6 +281,38 @@ public class ModBlocks {
                 .save(provider);
         })
         .register();
+    public static final BlockEntry<? extends Block> CRUSHING_TABLE = REGISTRATE
+            .block("crushing_table", CrushingTableBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate((ctx, provider) -> {
+            })
+            .simpleItem()
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .recipe((ctx, provider) -> {
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get())
+                        .requires(ModBlocks.STAMPING_PLATFORM)
+                        .requires(Items.GRINDSTONE)
+                        .unlockedBy(
+                                "has_" + Items.GRINDSTONE,
+                                AnvilCraftDatagen.has(Items.GRINDSTONE))
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Tags.Items.INGOTS_IRON))
+                        .save(provider, AnvilCraft.of("shapeless_crushing_table_recipe"));
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                        .pattern("BAB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('A', Items.GRINDSTONE)
+                        .define('B', Tags.Items.INGOTS_IRON)
+                        .unlockedBy(
+                                "has_" + Items.GRINDSTONE,
+                                AnvilCraftDatagen.has(Items.GRINDSTONE))
+                        .unlockedBy(
+                                AnvilCraftDatagen.hasItem(Items.IRON_INGOT), AnvilCraftDatagen.has(Tags.Items.INGOTS_IRON))
+                        .save(provider, AnvilCraft.of("shaped_crushing_table_recipe"));
+
+            })
+            .register();
     public static final BlockEntry<? extends Block> CORRUPTED_BEACON = REGISTRATE
         .block("corrupted_beacon", CorruptedBeaconBlock::new)
         .initialProperties(() -> Blocks.BEACON)
