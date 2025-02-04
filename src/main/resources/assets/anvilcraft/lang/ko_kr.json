@@ -511,7 +511,7 @@
   "screen.anvilcraft.item_collector.range": "범위",
   "screen.anvilcraft.item_collector.title": "아이템 수집기",
   "screen.anvilcraft.royal_grindstone.remove_curse_count": "Removed curses: %s / %s",
-  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %se",
+  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %s",
   "screen.anvilcraft.royal_grindstone.title": "저주와 인챈트 페널티를 제거합니다",
   "screen.anvilcraft.royal_steel_upgrade_smithing_template": "Royal Steel Upgrade",
   "screen.anvilcraft.slot.disable.tooltip": "항목 클릭을 사용하여 필터 설정",
