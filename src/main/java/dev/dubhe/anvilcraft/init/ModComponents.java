@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.item.DiskItem;
 import dev.dubhe.anvilcraft.item.HasMobBlockItem;
 import dev.dubhe.anvilcraft.item.HeliostatsItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
+import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -38,6 +39,10 @@ public class ModComponents {
         register("display_item",
             b -> b.persistent(IExtraItemDisplay.StoredItem.CODEC)
             .networkSynchronized(IExtraItemDisplay.StoredItem.STREAM_CODEC));
+
+    public static final DataComponentType<ComradeAmuletItem.SignedPlayers> SIGNED_PLAYERS =
+        register("signed_player", b -> b.persistent(ComradeAmuletItem.SignedPlayers.CODEC)
+            .networkSynchronized(ComradeAmuletItem.SignedPlayers.STREAM_CODEC));
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();

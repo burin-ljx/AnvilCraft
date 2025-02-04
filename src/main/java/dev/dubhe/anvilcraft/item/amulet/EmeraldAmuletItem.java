@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.item;
+package dev.dubhe.anvilcraft.item.amulet;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

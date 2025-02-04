@@ -31,33 +31,5 @@ public class JewelCraftingRecipeLoader {
             .requires(ModItemTags.TITANIUM_INGOTS)
             .result(new ItemStack(Items.ELYTRA))
             .save(provider);
-
-        JewelCraftingRecipe.builder()
-            .requires(ModBlocks.SILVER_BLOCK, 4)
-            .requires(Blocks.EMERALD_BLOCK)
-            .requires(ModItems.ROYAL_STEEL_INGOT)
-            .result(new ItemStack(ModItems.EMERALD_AMULET.asItem()))
-            .save(provider);
-
-        JewelCraftingRecipe.builder()
-                .requires(ModBlocks.SILVER_BLOCK, 4)
-                .requires(ModBlocks.TOPAZ_BLOCK)
-                .requires(ModItems.ROYAL_STEEL_INGOT)
-                .result(new ItemStack(ModItems.TOPAZ_AMULET.asItem()))
-                .save(provider);
-
-        JewelCraftingRecipe.builder()
-                .requires(ModBlocks.SILVER_BLOCK, 4)
-                .requires(ModBlocks.RUBY_BLOCK)
-                .requires(ModItems.ROYAL_STEEL_INGOT)
-                .result(new ItemStack(ModItems.RUBY_AMULET.asItem()))
-                .save(provider);
-
-        JewelCraftingRecipe.builder()
-                .requires(ModBlocks.SILVER_BLOCK, 4)
-                .requires(ModBlocks.SAPPHIRE_BLOCK)
-                .requires(ModItems.ROYAL_STEEL_INGOT)
-                .result(new ItemStack(ModItems.SAPPHIRE_AMULET.asItem()))
-                .save(provider);
     }
 }
