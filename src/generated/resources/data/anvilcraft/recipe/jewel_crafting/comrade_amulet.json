@@ -1,0 +1,36 @@
+{
+  "type": "anvilcraft:jewel_crafting",
+  "ingredients": [
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "anvilcraft:silver_block"
+    },
+    {
+      "item": "minecraft:name_tag"
+    },
+    {
+      "item": "minecraft:name_tag"
+    },
+    {
+      "item": "minecraft:name_tag"
+    },
+    {
+      "item": "minecraft:name_tag"
+    },
+    {
+      "item": "anvilcraft:royal_steel_ingot"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "anvilcraft:comrade_amulet"
+  }
+}
