@@ -5,7 +5,7 @@ import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.util.ColorUtil;
 import dev.dubhe.anvilcraft.util.ModClientFluidTypeExtensionImpl;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
@@ -66,7 +66,7 @@ public class ModFluids {
     public static final Object2ObjectMap<Color, BaseFlowingFluid.Properties> CEMENT_PROPERTIES = createAllCementProperties();
 
     private static Object2ObjectMap<Color, DeferredHolder<FluidType, FluidType>> registerAllCementTypes() {
-        Object2ObjectMap<Color, DeferredHolder<FluidType, FluidType>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, DeferredHolder<FluidType, FluidType>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var type = registerCementType(color);
             map.put(color, type);
@@ -87,7 +87,7 @@ public class ModFluids {
     }
 
     private static Object2ObjectMap<Color, DeferredHolder<Fluid, BaseFlowingFluid>> registerAllSourceCement() {
-        Object2ObjectMap<Color, DeferredHolder<Fluid, BaseFlowingFluid>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, DeferredHolder<Fluid, BaseFlowingFluid>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var holder = registerSourceCement(color);
             map.put(color, holder);
@@ -99,8 +99,9 @@ public class ModFluids {
         return FLUIDS.register("%s_cement".formatted(color), () -> new BaseFlowingFluid.Source(ModFluids.CEMENT_PROPERTIES.get(color)));
     }
 
+
     private static Object2ObjectMap<Color, DeferredHolder<Fluid, BaseFlowingFluid>> registerAllFlowingCement() {
-        Object2ObjectMap<Color, DeferredHolder<Fluid, BaseFlowingFluid>> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, DeferredHolder<Fluid, BaseFlowingFluid>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var holder = registerFlowingCement(color);
             map.put(color, holder);
@@ -113,7 +114,7 @@ public class ModFluids {
     }
 
     private static Object2ObjectMap<Color, BaseFlowingFluid.Properties> createAllCementProperties() {
-        Object2ObjectMap<Color, BaseFlowingFluid.Properties> map = new Object2ObjectOpenHashMap<>();
+        Object2ObjectMap<Color, BaseFlowingFluid.Properties> map = new Object2ObjectLinkedOpenHashMap<>();
         for (Color color : Color.values()) {
             var properties = createCementProperties(color);
             map.put(color, properties);

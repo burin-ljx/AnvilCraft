@@ -3,6 +3,7 @@ package dev.dubhe.anvilcraft.item;
 import dev.dubhe.anvilcraft.block.entity.HasMobBlockEntity;
 import dev.dubhe.anvilcraft.init.ModComponents;
 
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -57,11 +58,10 @@ public class HasMobBlockItem extends BlockItem {
     ) {
         super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (!HasMobBlockItem.hasMob(stack)) return;
-        Entity entity = HasMobBlockItem.getMobFromItem(context.level(), stack);
-        if (entity != null) {
-            tooltipComponents.add(
-                    Component.literal("- ").append(entity.getDisplayName()).withStyle(ChatFormatting.DARK_GRAY));
-        }
+        Optional.ofNullable(context.level())
+            .map(level -> HasMobBlockItem.getMobFromItem(level, stack))
+            .ifPresent(entity -> tooltipComponents.add(
+                Component.literal("- ").append(entity.getDisplayName()).withStyle(ChatFormatting.DARK_GRAY)));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class HasMobBlockItem extends BlockItem {
     /**
      * 获取物品中的实体
      */
-    public static @Nullable Entity getMobFromItem(Level level, @NotNull ItemStack stack) {
+    public static @Nullable Entity getMobFromItem(Level level, ItemStack stack) {
         if (!hasMob(stack)) return null;
         SavedEntity savedEntity = stack.get(ModComponents.SAVED_ENTITY);
         // make idea happy
@@ -93,8 +93,8 @@ public class HasMobBlockItem extends BlockItem {
     /**
      * 向物品中存入实体
      */
-    public static void saveMobInItem(
-            @NotNull Level level, @NotNull Mob entity, @NotNull Player player, @NotNull ItemStack stack) {
+    @SuppressWarnings("deprecation")
+    public static void saveMobInItem(Level level, Mob entity, Player player, ItemStack stack) {
         stack = stack.split(1);
         if (level.isClientSide()) {
             Item item = stack.getItem();
@@ -137,6 +137,7 @@ public class HasMobBlockItem extends BlockItem {
         public static final StreamCodec<ByteBuf, SavedEntity> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.COMPOUND_TAG, o -> o.tag, ByteBufCodecs.BOOL, o -> o.isMonster, SavedEntity::new);
 
+        @Getter
         private final CompoundTag tag;
         private final boolean isMonster;
 
@@ -145,6 +146,7 @@ public class HasMobBlockItem extends BlockItem {
             this.isMonster = isMonster;
         }
 
+        @Nullable
         public Entity toEntity(Level level) {
             Optional<EntityType<?>> optional = EntityType.by(tag);
             if (optional.isEmpty()) return null;

@@ -511,7 +511,7 @@
   "screen.anvilcraft.item_collector.range": "Reichweite",
   "screen.anvilcraft.item_collector.title": "Gegenstandssammler",
   "screen.anvilcraft.royal_grindstone.remove_curse_count": "Removed curses: %s / %s",
-  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %se",
+  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %s",
   "screen.anvilcraft.royal_grindstone.title": "Entfernt Flüche und Reparaturstrafen",
   "screen.anvilcraft.royal_steel_upgrade_smithing_template": "Royal Steel Upgrade",
   "screen.anvilcraft.slot.disable.tooltip": "Klicke mit einem Gegenstand, um den Filter einzustellen",

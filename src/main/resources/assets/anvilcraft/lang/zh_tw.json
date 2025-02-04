@@ -511,7 +511,7 @@
   "screen.anvilcraft.item_collector.range": "範圍",
   "screen.anvilcraft.item_collector.title": "物品收集器",
   "screen.anvilcraft.royal_grindstone.remove_curse_count": "Removed curses: %s / %s",
-  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %se",
+  "screen.anvilcraft.royal_grindstone.remove_repair_cost": "Removed repair cost: %s / %s",
   "screen.anvilcraft.royal_grindstone.title": "祛除詛咒和附魔懲罰",
   "screen.anvilcraft.royal_steel_upgrade_smithing_template": "Royal Steel Upgrade",
   "screen.anvilcraft.slot.disable.tooltip": "持有物品點擊以設定過濾",
