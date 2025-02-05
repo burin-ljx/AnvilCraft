@@ -35,6 +35,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -97,10 +98,10 @@ public class PlayerEventListener {
             DamageSources sources = player.damageSources();
             Inventory inventory = player.getInventory();
 
-            if ((
-                source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
+            if (
+                (source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
                 || (source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_BLOCK)) && source.getEntity() instanceof FallingGiantAnvilEntity)
-                || Objects.requireNonNull(source.getWeaponItem()).is(ModItemTags.ANVIL_HAMMER))
+                || Optional.ofNullable(source.getWeaponItem()).filter(item -> item.is(ModItemTags.ANVIL_HAMMER)).isPresent())
                 && player.getData(ModDataAttachments.STEEL_HEAD)
             ) {
                 event.getContainer().setNewDamage(0);
