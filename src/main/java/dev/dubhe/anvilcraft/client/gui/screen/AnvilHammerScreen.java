@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
+import dev.dubhe.anvilcraft.block.multipart.IMultiPartBlockModelHolder;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
@@ -130,6 +131,9 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                         detectionStart,
                         detectionEnd,
                         state,
+                        state.getBlock() instanceof IMultiPartBlockModelHolder holder
+                            ? holder.mapRealModelHolderBlock(state)
+                            : state,
                         Component.literal(
                             "%s".formatted(
                                 PROPERTY_TOSTRING.invokeWithArguments(
@@ -265,7 +269,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             float y = center.y;
             RenderHelper.renderBlock(
                 guiGraphics,
-                value.state,
+                value.modelBlock,
                 x,
                 y - 4f,
                 100,
@@ -333,7 +337,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
             float y = value.center.y;
             RenderHelper.renderBlock(
                 guiGraphics,
-                value.state,
+                value.modelBlock,
                 x,
                 y - 4f,
                 -100,
@@ -576,6 +580,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         float detectionAngleStart,
         float detectionAngleEnd,
         BlockState state,
+        BlockState modelBlock,
         Component description
     ) {
     }
