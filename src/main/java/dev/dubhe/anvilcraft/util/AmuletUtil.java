@@ -17,49 +17,47 @@ import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.scores.PlayerTeam;
-import net.neoforged.fml.loading.FMLLoader;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
+@ParametersAreNonnullByDefault
 public class AmuletUtil {
-    public enum Types {
+    public enum Type {
         EMERALD(
             "emerald", (sources, source) ->
-            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.IRON_GOLEM)
-            || source.getEntity().getType().equals(EntityType.PILLAGER),
+            DamageSourceUtil.isEntityMatchTypes(source, EntityType.IRON_GOLEM, EntityType.PILLAGER),
             ModItems.EMERALD_AMULET
         ),
         TOPAZ(
             "topaz", (sources, source) ->
-            source.type().equals(sources.damageTypes.get(DamageTypes.LIGHTNING_BOLT)),
+            DamageSourceUtil.isMatchTypes(source, sources, DamageTypes.LIGHTNING_BOLT),
             ModItems.TOPAZ_AMULET
         ),
         RUBY(
             "ruby", (sources, source) ->
-            source.type().equals(sources.damageTypes.get(DamageTypes.ON_FIRE))
-            || source.type().equals(sources.damageTypes.get(DamageTypes.CAMPFIRE))
-            || source.type().equals(sources.damageTypes.get(DamageTypes.LAVA))
-            || source.type().equals(sources.damageTypes.get(DamageTypes.HOT_FLOOR))
-            || source.type().equals(sources.damageTypes.get(ModDamageTypes.LASER)),
+            DamageSourceUtil.isMatchTypes(
+                source, sources,
+                DamageTypes.ON_FIRE, DamageTypes.CAMPFIRE, DamageTypes.LAVA, DamageTypes.HOT_FLOOR, ModDamageTypes.LASER
+            ),
             ModItems.RUBY_AMULET
         ),
         SAPPHIRE(
             "sapphire", (sources, source) ->
-            source.type().equals(sources.damageTypes.get(DamageTypes.DROWN))
-            || source.type().equals(sources.damageTypes.get(DamageTypes.DRY_OUT))
-            || Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.GUARDIAN)
-            || source.getEntity().getType().equals(EntityType.ELDER_GUARDIAN),
+            DamageSourceUtil.isMatchTypes(source, sources, DamageTypes.DROWN, DamageTypes.DRY_OUT)
+            || DamageSourceUtil.isEntityMatchTypes(source, EntityType.GUARDIAN, EntityType.ELDER_GUARDIAN),
             ModItems.SAPPHIRE_AMULET
         ),
         ANVIL(
             "anvil", (sources, source) ->
-            source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_ANVIL))
+            DamageSourceUtil.isMatchTypes(source, sources, DamageTypes.FALLING_ANVIL)
             || (source.type().equals(sources.damageTypes.get(DamageTypes.FALLING_BLOCK)) && source.getEntity() instanceof FallingGiantAnvilEntity)
-            || Objects.requireNonNull(source.getWeaponItem()).is(ModItemTags.ANVIL_HAMMER),
+            || Optional.ofNullable(source.getWeaponItem())
+                .filter(item -> item.is(ModItemTags.ANVIL_HAMMER))
+                .isPresent(),
             ModItems.ANVIL_AMULET
         ),
         //COGWHEEL(
@@ -78,12 +76,9 @@ public class AmuletUtil {
         COMRADE(
             "comrade", (sources, source) -> {
                 if (source.getEntity() instanceof Player murder && source.getDirectEntity() instanceof Player victim) {
-                    PlayerTeam team = victim.getTeam();
-                    if (team != null) {
-                        return team.getPlayers().contains(murder.getScoreboardName());
-                    } else {
-                        return true;
-                    }
+                    return Optional.ofNullable(victim.getTeam())
+                        .map(team -> team.getPlayers().contains(murder.getScoreboardName()))
+                        .orElse(true);
                 }
 
                 return false;
@@ -92,26 +87,25 @@ public class AmuletUtil {
         ),
         FEATHER(
             "feather", (sources, source) ->
-            source.type().equals(sources.damageTypes.get(DamageTypes.FALL)),
+            DamageSourceUtil.isMatchTypes(source, sources, DamageTypes.FALL),
             ModItems.FEATHER_AMULET
         ),
         CAT(
             "cat", (sources, source) ->
-            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.CREEPER)
-            || source.getEntity().getType().equals(EntityType.PHANTOM),
+            DamageSourceUtil.isEntityMatchTypes(source, EntityType.CREEPER, EntityType.PHANTOM),
             ModItems.CAT_AMULET
         ),
         DOG(
             "dog", (sources, source) ->
-            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.SKELETON)
-            || source.getEntity().getType().equals(EntityType.STRAY)
-            || source.getEntity().getType().equals(EntityType.WITHER_SKELETON)
-            || source.getEntity().getType().equals(EntityType.BOGGED),
+            DamageSourceUtil.isEntityMatchTypes(
+                source,
+                EntityType.SKELETON, EntityType.STRAY, EntityType.WITHER_SKELETON, EntityType.BOGGED
+            ),
             ModItems.DOG_AMULET
         ),
         SILENCE(
             "silence", (sources, source) ->
-            Objects.requireNonNull(source.getEntity()).getType().equals(EntityType.WARDEN),
+            DamageSourceUtil.isEntityMatchTypes(source, EntityType.WARDEN),
             ModItems.SILENCE_AMULET
         ),
         ;
@@ -122,7 +116,7 @@ public class AmuletUtil {
         @Getter
         private final ItemEntry<? extends AbstractAmuletItem> entry;
 
-        Types(String typeId, BiPredicate<DamageSources, DamageSource> predicate, ItemEntry<? extends AbstractAmuletItem> entry) {
+        Type(String typeId, BiPredicate<DamageSources, DamageSource> predicate, ItemEntry<? extends AbstractAmuletItem> entry) {
             this.typeId = typeId;
             this.predicate = predicate;
             this.entry = entry;
@@ -131,16 +125,15 @@ public class AmuletUtil {
         public boolean isValid(DamageSources sources, DamageSource source) {
             try {
                 return this.predicate.test(sources, source);
-            } catch (Throwable ignored) {
-            }
+            } catch (Throwable ignored) {}
 
             return false;
         }
     }
 
-    public static Types getType(Player player, DamageSource source) {
+    public static @Nullable Type getType(Player player, DamageSource source) {
         DamageSources sources = player.damageSources();
-        for (Types type : Types.values()) {
+        for (Type type : Type.values()) {
             if (type.isValid(sources, source)) {
                 return type;
             }
@@ -151,7 +144,7 @@ public class AmuletUtil {
 
     public static int getRaffleProbability(Player player, DamageSource source, boolean isConsumeAmuletBox) {
         DamageSources sources = player.damageSources();
-        for (Types type : Types.values()) {
+        for (Type type : Type.values()) {
             if (type.isValid(sources, source)) {
                 return getRaffleProbability(player, type, isConsumeAmuletBox);
             }
@@ -160,10 +153,10 @@ public class AmuletUtil {
         return 0;
     }
 
-    public static int getStoredRaffleProbability(Player player, Types type) {
+    public static int getStoredRaffleProbability(Player player, Type type) {
         return player.getData(ModDataAttachments.AMULET_RAFFLE_PROBABILITY).getInt(type.getTypeId());
     }
-    public static int getRaffleProbability(Player player, Types type, boolean isConsumeAmuletBox) {
+    public static int getRaffleProbability(Player player, Type type, boolean isConsumeAmuletBox) {
         if (!hasAmuletInInventory(player, type)) {
             return getStoredRaffleProbability(player, type) + (isConsumeAmuletBox ? 20 : 5);
         } else {
@@ -173,13 +166,13 @@ public class AmuletUtil {
 
     public static void setRaffleProbability(Player player, DamageSource source, NonNullUnaryOperator<Integer> modifier) {
         DamageSources sources = player.damageSources();
-        for (Types type : Types.values()) {
+        for (Type type : Type.values()) {
             if (type.isValid(sources, source)) {
                 setRaffleProbability(player, type, modifier);
             }
         }
     }
-    public static void setRaffleProbability(Player player, Types type, NonNullUnaryOperator<Integer> modifier) {
+    public static void setRaffleProbability(Player player, Type type, NonNullUnaryOperator<Integer> modifier) {
         CompoundTag root = player.getData(ModDataAttachments.AMULET_RAFFLE_PROBABILITY);
         if (!hasAmuletInInventory(player, type)) {
             root.putInt(type.getTypeId(), modifier.apply(root.getInt(type.getTypeId())));
@@ -189,7 +182,7 @@ public class AmuletUtil {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean hasAmuletInInventory(Player player, Types type) {
+    public static boolean hasAmuletInInventory(Player player, Type type) {
         return player.getInventory().hasAnyOf(Collections.singleton(type.getEntry().asItem()));
     }
 
@@ -200,7 +193,7 @@ public class AmuletUtil {
         if (raffleProbability > random.nextIntBetweenInclusive(0, 100)) {
             AmuletUtil.setRaffleProbability(player, source, value -> 0);
 
-            Types type = getType(player, source);
+            Type type = getType(player, source);
             if (type != null) {
                 player.getInventory().add(type.getEntry().asStack());
             }
