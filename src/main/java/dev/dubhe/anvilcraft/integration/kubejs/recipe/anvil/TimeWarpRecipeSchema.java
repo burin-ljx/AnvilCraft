@@ -22,6 +22,13 @@ import java.util.List;
 public interface TimeWarpRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class TimeWarpKubeRecipe extends KubeRecipe {
+        public TimeWarpKubeRecipe requires(Ingredient[] ingredient) {
+            for (Ingredient ingredient1 : ingredient) {
+                requires(ingredient1);
+            }
+            return this;
+        }
+
         public TimeWarpKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -102,6 +109,9 @@ public interface TimeWarpRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, EXACT_INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID, FROM_WATER, REQUIRED_FLUID_LEVEL)
         .factory(new KubeRecipeFactory(AnvilCraft.of("time_warp"), TimeWarpKubeRecipe.class, TimeWarpKubeRecipe::new))
         .constructor(INGREDIENTS, EXACT_INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID, FROM_WATER, REQUIRED_FLUID_LEVEL)
+        .constructor(INGREDIENTS, RESULTS)
+        .constructor(INGREDIENTS, RESULTS, CAULDRON)
+        .constructor(INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID, REQUIRED_FLUID_LEVEL)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

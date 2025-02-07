@@ -38,6 +38,7 @@ public interface SqueezingRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(INPUT_BLOCK, RESULT_BLOCK, CAULDRON)
         .factory(new KubeRecipeFactory(AnvilCraft.of("squeezing"), SqueezingKubeRecipe.class, SqueezingKubeRecipe::new))
         .constructor(INPUT_BLOCK, RESULT_BLOCK, CAULDRON)
+        .constructor(INPUT_BLOCK, RESULT_BLOCK)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

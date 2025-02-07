@@ -21,6 +21,13 @@ import java.util.List;
 public interface BulgingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class BulgingKubeRecipe extends KubeRecipe {
+        public BulgingKubeRecipe requires(Ingredient[] ingredient) {
+            for (Ingredient ingredient1 : ingredient) {
+                requires(ingredient1);
+            }
+            return this;
+        }
+
         public BulgingKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -80,6 +87,8 @@ public interface BulgingRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID, FROM_WATER)
         .factory(new KubeRecipeFactory(AnvilCraft.of("bulging"), BulgingKubeRecipe.class, BulgingKubeRecipe::new))
         .constructor(INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID, FROM_WATER)
+        .constructor(INGREDIENTS, RESULTS)
+        .constructor(INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

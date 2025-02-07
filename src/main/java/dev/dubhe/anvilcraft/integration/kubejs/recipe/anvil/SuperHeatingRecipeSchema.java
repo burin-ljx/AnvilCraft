@@ -21,6 +21,13 @@ import java.util.List;
 public interface SuperHeatingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class SuperHeatingKubeRecipe extends KubeRecipe {
+        public SuperHeatingKubeRecipe requires(Ingredient[] ingredient) {
+            for (Ingredient ingredient1 : ingredient) {
+                requires(ingredient1);
+            }
+            return this;
+        }
+
         public SuperHeatingKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -59,6 +66,7 @@ public interface SuperHeatingRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, RESULTS, BLOCK_RESULT)
         .factory(new KubeRecipeFactory(AnvilCraft.of("super_heating"), SuperHeatingRecipeSchema.class, SuperHeatingKubeRecipe::new))
         .constructor(INGREDIENTS, RESULTS, BLOCK_RESULT)
+        .constructor(INGREDIENTS, RESULTS)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

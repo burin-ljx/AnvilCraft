@@ -58,6 +58,7 @@ public interface MeshRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(INPUT, RESULT, RESULT_AMOUNT)
         .factory(new KubeRecipeFactory(AnvilCraft.of("mesh"), MeshKubeRecipe.class, MeshKubeRecipe::new))
         .constructor(INPUT, RESULT, RESULT_AMOUNT)
+        .constructor(INPUT, RESULT)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

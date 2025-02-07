@@ -14,6 +14,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface BlockCompressRecipeSchema {
@@ -23,6 +24,13 @@ public interface BlockCompressRecipeSchema {
         public BlockCompressKubeRecipe input(Block block) {
             if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
             getValue(INPUTS).add(Either.right(block));
+            save();
+            return this;
+        }
+
+        public BlockCompressKubeRecipe input(Block[] block) {
+            if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
+            getValue(INPUTS).addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>right).toList());
             save();
             return this;
         }

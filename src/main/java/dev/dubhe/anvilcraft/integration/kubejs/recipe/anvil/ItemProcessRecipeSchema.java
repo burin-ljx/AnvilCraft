@@ -18,6 +18,13 @@ import java.util.List;
 public interface ItemProcessRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class ItemProcessKubeRecipe extends KubeRecipe {
+        public ItemProcessKubeRecipe requires(Ingredient[] ingredient) {
+            for (Ingredient ingredient1 : ingredient) {
+                requires(ingredient1);
+            }
+            return this;
+        }
+
         public ItemProcessKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
