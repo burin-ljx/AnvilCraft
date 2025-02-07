@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import com.mojang.datafixers.util.Either;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
@@ -20,32 +21,19 @@ import java.util.List;
 public interface BlockCompressRecipeSchema {
 
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class BlockCompressKubeRecipe extends KubeRecipe {
-        public BlockCompressKubeRecipe input(Block block) {
-            if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
-            getValue(INPUTS).add(Either.right(block));
-            save();
-            return this;
-        }
+    class BlockCompressKubeRecipe extends AnvilCraftKubeRecipe {
 
         public BlockCompressKubeRecipe input(Block... block) {
-            if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
-            getValue(INPUTS).addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>right).toList());
-            save();
-            return this;
-        }
-
-        public BlockCompressKubeRecipe inputTag(TagKey<Block> block) {
-            if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
-            getValue(INPUTS).add(Either.left(block));
+            computeIfAbsent(INPUTS, ArrayList::new)
+                .addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>right).toList());
             save();
             return this;
         }
 
         @SafeVarargs
         public final BlockCompressKubeRecipe inputTag(TagKey<Block>... block) {
-            if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
-            getValue(INPUTS).addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>left).toList());
+            computeIfAbsent(INPUTS, ArrayList::new)
+                .addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>left).toList());
             save();
             return this;
         }

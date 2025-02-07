@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -16,15 +17,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface BulgingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class BulgingKubeRecipe extends KubeRecipe {
+    class BulgingKubeRecipe extends AnvilCraftKubeRecipe {
         public BulgingKubeRecipe requires(Ingredient... ingredient) {
-            for (Ingredient ingredient1 : ingredient) {
-                requires(ingredient1);
-            }
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
             return this;
         }
 
@@ -35,10 +36,6 @@ public interface BulgingRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public BulgingKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public BulgingKubeRecipe result(ItemStack stack, float chance) {
@@ -57,7 +54,7 @@ public interface BulgingRecipeSchema {
             save();
             return this;
         }
-        
+
         public BulgingKubeRecipe produceFluid(boolean produceFluid) {
             setValue(PRODUCE_FLUID, produceFluid);
             save();
@@ -69,7 +66,7 @@ public interface BulgingRecipeSchema {
             save();
             return this;
         }
-        
+
         public BulgingKubeRecipe fromWater(boolean fromWater) {
             setValue(FROM_WATER, fromWater);
             save();

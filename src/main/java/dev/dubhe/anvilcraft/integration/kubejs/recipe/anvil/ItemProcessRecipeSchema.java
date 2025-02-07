@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -13,15 +14,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface ItemProcessRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class ItemProcessKubeRecipe extends KubeRecipe {
+    class ItemProcessKubeRecipe extends AnvilCraftKubeRecipe {
         public ItemProcessKubeRecipe requires(Ingredient... ingredient) {
-            for (Ingredient ingredient1 : ingredient) {
-                requires(ingredient1);
-            }
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
             return this;
         }
 
@@ -32,10 +33,6 @@ public interface ItemProcessRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public ItemProcessKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public ItemProcessKubeRecipe result(ItemStack stack, float chance) {

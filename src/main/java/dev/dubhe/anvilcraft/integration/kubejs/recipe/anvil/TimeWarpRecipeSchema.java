@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -22,9 +23,10 @@ import java.util.List;
 
 public interface TimeWarpRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class TimeWarpKubeRecipe extends KubeRecipe {
+    class TimeWarpKubeRecipe extends AnvilCraftKubeRecipe {
         public TimeWarpKubeRecipe requires(Ingredient... ingredient) {
-            setValue(INGREDIENTS, Arrays.stream(ingredient).toList());
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
             return this;
         }
 
@@ -37,10 +39,6 @@ public interface TimeWarpRecipeSchema {
             return this;
         }
 
-        public TimeWarpKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
-        }
-
         public TimeWarpKubeRecipe exactRequires(Ingredient ingredient, int count) {
             if (getValue(EXACT_INGREDIENTS) == null) setValue(EXACT_INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -50,8 +48,11 @@ public interface TimeWarpRecipeSchema {
             return this;
         }
 
-        public TimeWarpKubeRecipe exactRequires(Ingredient ingredient) {
-            return exactRequires(ingredient, 1);
+        public TimeWarpKubeRecipe exactRequires(Ingredient... ingredient) {
+            for (Ingredient ingredient1 : ingredient) {
+                exactRequires(ingredient1, 1);
+            }
+            return this;
         }
 
         public TimeWarpKubeRecipe result(ItemStack stack, float chance) {
@@ -100,9 +101,9 @@ public interface TimeWarpRecipeSchema {
     RecipeKey<List<Ingredient>> EXACT_INGREDIENTS = IngredientComponent.INGREDIENT.asList().inputKey("exactIngredients").defaultOptional();
     RecipeKey<List<ChanceItemStack>> RESULTS = AnvilCraftRecipeComponents.CHANCE_ITEM_STACK.asList().inputKey("results").defaultOptional();
     RecipeKey<Block> CAULDRON = BlockComponent.BLOCK.outputKey("cauldron").defaultOptional();
-    RecipeKey<Boolean> PRODUCE_FLUID = BooleanComponent.BOOLEAN.otherKey("produce_fluid").optional(false);
-    RecipeKey<Boolean> CONSUME_FLUID = BooleanComponent.BOOLEAN.otherKey("consume_fluid").optional(false);
-    RecipeKey<Boolean> FROM_WATER = BooleanComponent.BOOLEAN.otherKey("from_water").optional(false);
+    RecipeKey<Boolean> PRODUCE_FLUID = BooleanComponent.BOOLEAN.otherKey("produce_fluid").optional(false).alwaysWrite();
+    RecipeKey<Boolean> CONSUME_FLUID = BooleanComponent.BOOLEAN.otherKey("consume_fluid").optional(false).alwaysWrite();
+    RecipeKey<Boolean> FROM_WATER = BooleanComponent.BOOLEAN.otherKey("from_water").optional(false).alwaysWrite();
     RecipeKey<Integer> REQUIRED_FLUID_LEVEL = NumberComponent.INT.otherKey("requiredFluidLevel").optional(0);
 
     RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, EXACT_INGREDIENTS, RESULTS, CAULDRON, PRODUCE_FLUID, CONSUME_FLUID, FROM_WATER, REQUIRED_FLUID_LEVEL)

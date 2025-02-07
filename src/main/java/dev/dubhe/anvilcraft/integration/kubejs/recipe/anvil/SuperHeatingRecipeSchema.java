@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
@@ -16,15 +17,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface SuperHeatingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class SuperHeatingKubeRecipe extends KubeRecipe {
+    class SuperHeatingKubeRecipe extends AnvilCraftKubeRecipe {
         public SuperHeatingKubeRecipe requires(Ingredient... ingredient) {
-            for (Ingredient ingredient1 : ingredient) {
-                requires(ingredient1);
-            }
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
             return this;
         }
 
@@ -35,10 +36,6 @@ public interface SuperHeatingRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public SuperHeatingKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public SuperHeatingKubeRecipe result(ChanceItemStack stack) {

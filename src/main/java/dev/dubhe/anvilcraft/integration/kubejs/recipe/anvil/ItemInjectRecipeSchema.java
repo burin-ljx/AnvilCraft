@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
@@ -12,15 +13,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface ItemInjectRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class ItemInjectKubeRecipe extends KubeRecipe {
+    class ItemInjectKubeRecipe extends AnvilCraftKubeRecipe {
         public ItemInjectKubeRecipe requires(Ingredient... ingredient) {
-            for (Ingredient ingredient1 : ingredient) {
-                requires(ingredient1);
-            }
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
             return this;
         }
 
@@ -31,10 +32,6 @@ public interface ItemInjectRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public ItemInjectKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public ItemInjectKubeRecipe inputBlock(Block block) {
