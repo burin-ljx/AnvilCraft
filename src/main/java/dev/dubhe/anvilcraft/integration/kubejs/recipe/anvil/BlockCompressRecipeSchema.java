@@ -28,7 +28,7 @@ public interface BlockCompressRecipeSchema {
             return this;
         }
 
-        public BlockCompressKubeRecipe input(Block[] block) {
+        public BlockCompressKubeRecipe input(Block... block) {
             if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
             getValue(INPUTS).addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>right).toList());
             save();
@@ -38,6 +38,14 @@ public interface BlockCompressRecipeSchema {
         public BlockCompressKubeRecipe inputTag(TagKey<Block> block) {
             if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
             getValue(INPUTS).add(Either.left(block));
+            save();
+            return this;
+        }
+
+        @SafeVarargs
+        public final BlockCompressKubeRecipe inputTag(TagKey<Block>... block) {
+            if (getValue(INPUTS) == null) setValue(INPUTS, new ArrayList<>());
+            getValue(INPUTS).addAll(Arrays.stream(block).map(Either::<TagKey<Block>, Block>left).toList());
             save();
             return this;
         }

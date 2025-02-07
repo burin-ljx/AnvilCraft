@@ -17,15 +17,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface TimeWarpRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class TimeWarpKubeRecipe extends KubeRecipe {
-        public TimeWarpKubeRecipe requires(Ingredient[] ingredient) {
-            for (Ingredient ingredient1 : ingredient) {
-                requires(ingredient1);
-            }
+        public TimeWarpKubeRecipe requires(Ingredient... ingredient) {
+            setValue(INGREDIENTS, Arrays.stream(ingredient).toList());
             return this;
         }
 

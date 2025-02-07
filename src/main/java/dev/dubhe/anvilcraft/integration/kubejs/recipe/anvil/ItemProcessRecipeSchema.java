@@ -18,7 +18,7 @@ import java.util.List;
 public interface ItemProcessRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class ItemProcessKubeRecipe extends KubeRecipe {
-        public ItemProcessKubeRecipe requires(Ingredient[] ingredient) {
+        public ItemProcessKubeRecipe requires(Ingredient... ingredient) {
             for (Ingredient ingredient1 : ingredient) {
                 requires(ingredient1);
             }

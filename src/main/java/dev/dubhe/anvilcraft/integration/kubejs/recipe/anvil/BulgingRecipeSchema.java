@@ -21,7 +21,7 @@ import java.util.List;
 public interface BulgingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class BulgingKubeRecipe extends KubeRecipe {
-        public BulgingKubeRecipe requires(Ingredient[] ingredient) {
+        public BulgingKubeRecipe requires(Ingredient... ingredient) {
             for (Ingredient ingredient1 : ingredient) {
                 requires(ingredient1);
             }

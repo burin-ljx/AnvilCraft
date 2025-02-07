@@ -17,7 +17,7 @@ import java.util.List;
 public interface ItemInjectRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class ItemInjectKubeRecipe extends KubeRecipe {
-        public ItemInjectKubeRecipe requires(Ingredient[] ingredient) {
+        public ItemInjectKubeRecipe requires(Ingredient... ingredient) {
             for (Ingredient ingredient1 : ingredient) {
                 requires(ingredient1);
             }

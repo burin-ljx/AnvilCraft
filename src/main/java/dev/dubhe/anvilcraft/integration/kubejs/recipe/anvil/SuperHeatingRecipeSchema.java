@@ -21,7 +21,7 @@ import java.util.List;
 public interface SuperHeatingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
     class SuperHeatingKubeRecipe extends KubeRecipe {
-        public SuperHeatingKubeRecipe requires(Ingredient[] ingredient) {
+        public SuperHeatingKubeRecipe requires(Ingredient... ingredient) {
             for (Ingredient ingredient1 : ingredient) {
                 requires(ingredient1);
             }
