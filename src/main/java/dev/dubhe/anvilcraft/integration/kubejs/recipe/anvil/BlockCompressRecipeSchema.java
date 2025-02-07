@@ -5,12 +5,13 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import dev.latvian.mods.kubejs.script.ConsoleJS;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -42,6 +43,16 @@ public interface BlockCompressRecipeSchema {
             setValue(RESULT, block);
             save();
             return this;
+        }
+
+        @Override
+        protected void validate() {
+            if (computeIfAbsent(INPUTS, ArrayList::new).isEmpty()) {
+                throw new KubeRuntimeException("Inputs is Empty!");
+            }
+            if (getValue(RESULT) == null) {
+                throw new KubeRuntimeException("Result is Empty!");
+            }
         }
     }
 

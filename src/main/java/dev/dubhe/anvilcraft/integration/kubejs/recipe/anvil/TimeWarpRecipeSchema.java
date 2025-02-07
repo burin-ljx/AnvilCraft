@@ -5,6 +5,7 @@ import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
@@ -96,10 +97,20 @@ public interface TimeWarpRecipeSchema {
             save();
             return this;
         }
+
+        @Override
+        protected void validate() {
+            if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Inputs is Empty!");
+            }
+            if (computeIfAbsent(RESULTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Result is Empty!");
+            }
+        }
     }
 
     RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.asList().inputKey("ingredients").defaultOptional();
-    RecipeKey<List<Ingredient>> EXACT_INGREDIENTS = IngredientComponent.INGREDIENT.asList().inputKey("exactIngredients").defaultOptional();
+    RecipeKey<List<Ingredient>> EXACT_INGREDIENTS = IngredientComponent.INGREDIENT.asList().otherKey("exactIngredients").defaultOptional();
     RecipeKey<List<ChanceItemStack>> RESULTS = AnvilCraftRecipeComponents.CHANCE_ITEM_STACK.asList().inputKey("results").defaultOptional();
     RecipeKey<Block> CAULDRON = BlockComponent.BLOCK.outputKey("cauldron").optional(Blocks.CAULDRON).alwaysWrite();
     RecipeKey<Boolean> PRODUCE_FLUID = BooleanComponent.BOOLEAN.otherKey("produce_fluid").optional(false).alwaysWrite();

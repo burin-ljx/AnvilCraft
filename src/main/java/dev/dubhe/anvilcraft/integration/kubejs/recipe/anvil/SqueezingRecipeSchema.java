@@ -1,7 +1,9 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
@@ -11,7 +13,7 @@ import net.minecraft.world.level.block.Block;
 
 public interface SqueezingRecipeSchema {
     @SuppressWarnings("unused")
-    class SqueezingKubeRecipe extends KubeRecipe {
+    class SqueezingKubeRecipe extends AnvilCraftKubeRecipe {
         public SqueezingKubeRecipe inputBlock(Block block) {
             setValue(INPUT_BLOCK, block);
             save();
@@ -28,6 +30,16 @@ public interface SqueezingRecipeSchema {
             setValue(CAULDRON, cauldron);
             save();
             return this;
+        }
+
+        @Override
+        protected void validate() {
+            if (getValue(INPUT_BLOCK) == null) {
+                throw new KubeRuntimeException("input is empty!");
+            }
+            if (getValue(RESULT_BLOCK) == null) {
+                throw new KubeRuntimeException("result_block is empty!");
+            }
         }
     }
 

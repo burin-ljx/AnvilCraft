@@ -1,9 +1,10 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
 import dev.latvian.mods.kubejs.recipe.component.ItemStackComponent;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 public interface MeshRecipeSchema {
     @SuppressWarnings({"unused"})
-    class MeshKubeRecipe extends KubeRecipe {
+    class MeshKubeRecipe extends AnvilCraftKubeRecipe {
         public MeshKubeRecipe input(Ingredient ingredient) {
             setValue(INPUT, ingredient);
             save();
@@ -49,6 +50,18 @@ public interface MeshRecipeSchema {
             return resultAmount(UniformGenerator.between(min, max));
         }
 
+        @Override
+        protected void validate() {
+            if (getValue(INPUT) == null) {
+                throw new KubeRuntimeException("input is empty!");
+            }
+            if (getValue(RESULT) == null) {
+                throw new KubeRuntimeException("result is empty!");
+            }
+            if (getValue(RESULT_AMOUNT) == null) {
+                throw new KubeRuntimeException("result_amount is empty!");
+            }
+        }
     }
 
     RecipeKey<Ingredient> INPUT = IngredientComponent.INGREDIENT.inputKey("input").defaultOptional();

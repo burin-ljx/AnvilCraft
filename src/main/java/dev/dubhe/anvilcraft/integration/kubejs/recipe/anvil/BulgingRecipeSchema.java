@@ -5,6 +5,7 @@ import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
@@ -72,6 +73,16 @@ public interface BulgingRecipeSchema {
             setValue(FROM_WATER, fromWater);
             save();
             return this;
+        }
+
+        @Override
+        protected void validate() {
+            if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Inputs is Empty!");
+            }
+            if (computeIfAbsent(RESULTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Result is Empty!");
+            }
         }
     }
 
