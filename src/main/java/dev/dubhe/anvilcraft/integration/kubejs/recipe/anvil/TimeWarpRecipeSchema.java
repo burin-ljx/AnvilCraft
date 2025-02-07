@@ -16,6 +16,7 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +101,7 @@ public interface TimeWarpRecipeSchema {
     RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.asList().inputKey("ingredients").defaultOptional();
     RecipeKey<List<Ingredient>> EXACT_INGREDIENTS = IngredientComponent.INGREDIENT.asList().inputKey("exactIngredients").defaultOptional();
     RecipeKey<List<ChanceItemStack>> RESULTS = AnvilCraftRecipeComponents.CHANCE_ITEM_STACK.asList().inputKey("results").defaultOptional();
-    RecipeKey<Block> CAULDRON = BlockComponent.BLOCK.outputKey("cauldron").defaultOptional();
+    RecipeKey<Block> CAULDRON = BlockComponent.BLOCK.outputKey("cauldron").optional(Blocks.CAULDRON).alwaysWrite();
     RecipeKey<Boolean> PRODUCE_FLUID = BooleanComponent.BOOLEAN.otherKey("produce_fluid").optional(false).alwaysWrite();
     RecipeKey<Boolean> CONSUME_FLUID = BooleanComponent.BOOLEAN.otherKey("consume_fluid").optional(false).alwaysWrite();
     RecipeKey<Boolean> FROM_WATER = BooleanComponent.BOOLEAN.otherKey("from_water").optional(false).alwaysWrite();
