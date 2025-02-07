@@ -19,5 +19,6 @@ public abstract class AnvilCraftKubeRecipe extends KubeRecipe {
     @Override
     public void afterLoaded() {
         super.afterLoaded();
+        this.validate();
     }
 }
