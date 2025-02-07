@@ -53,13 +53,13 @@ public interface MeshRecipeSchema {
         @Override
         protected void validate() {
             if (getValue(INPUT) == null) {
-                throw new KubeRuntimeException("input is empty!");
+                throw new KubeRuntimeException("input is empty!").source(sourceLine);
             }
             if (getValue(RESULT) == null) {
-                throw new KubeRuntimeException("result is empty!");
+                throw new KubeRuntimeException("result is empty!").source(sourceLine);
             }
             if (getValue(RESULT_AMOUNT) == null) {
-                throw new KubeRuntimeException("result_amount is empty!");
+                throw new KubeRuntimeException("result_amount is empty!").source(sourceLine);
             }
         }
     }

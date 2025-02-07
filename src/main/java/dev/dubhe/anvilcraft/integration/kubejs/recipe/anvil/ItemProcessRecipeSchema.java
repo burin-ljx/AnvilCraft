@@ -50,10 +50,10 @@ public interface ItemProcessRecipeSchema {
         @Override
         protected void validate() {
             if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
-                throw new KubeRuntimeException("Ingredients is Empty!");
+                throw new KubeRuntimeException("Ingredients is Empty!").source(sourceLine);
             }
             if (computeIfAbsent(RESULTS, ArrayList::new).isEmpty()){
-                throw new KubeRuntimeException("Ingredients is Empty!");
+                throw new KubeRuntimeException("Ingredients is Empty!").source(sourceLine);
             }
         }
     }

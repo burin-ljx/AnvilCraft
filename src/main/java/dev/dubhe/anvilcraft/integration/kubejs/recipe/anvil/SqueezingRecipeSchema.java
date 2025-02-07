@@ -35,10 +35,10 @@ public interface SqueezingRecipeSchema {
         @Override
         protected void validate() {
             if (getValue(INPUT_BLOCK) == null) {
-                throw new KubeRuntimeException("input is empty!");
+                throw new KubeRuntimeException("input is empty!").source(sourceLine);
             }
             if (getValue(RESULT_BLOCK) == null) {
-                throw new KubeRuntimeException("result_block is empty!");
+                throw new KubeRuntimeException("result_block is empty!").source(sourceLine);
             }
         }
     }

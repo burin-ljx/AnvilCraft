@@ -59,10 +59,10 @@ public interface SuperHeatingRecipeSchema {
         @Override
         protected void validate() {
             if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
-                throw new KubeRuntimeException("Inputs is Empty!");
+                throw new KubeRuntimeException("Inputs is Empty!").source(sourceLine);
             }
             if (computeIfAbsent(RESULTS, ArrayList::new).isEmpty()){
-                throw new KubeRuntimeException("Result is Empty!");
+                throw new KubeRuntimeException("Result is Empty!").source(sourceLine);
             }
         }
     }

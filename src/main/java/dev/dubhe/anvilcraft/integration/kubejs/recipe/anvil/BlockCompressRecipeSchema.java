@@ -48,10 +48,10 @@ public interface BlockCompressRecipeSchema {
         @Override
         protected void validate() {
             if (computeIfAbsent(INPUTS, ArrayList::new).isEmpty()) {
-                throw new KubeRuntimeException("Inputs is Empty!");
+                throw new KubeRuntimeException("Inputs is Empty!").source(sourceLine);
             }
             if (getValue(RESULT) == null) {
-                throw new KubeRuntimeException("Result is Empty!");
+                throw new KubeRuntimeException("Result is Empty!").source(sourceLine);
             }
         }
     }
