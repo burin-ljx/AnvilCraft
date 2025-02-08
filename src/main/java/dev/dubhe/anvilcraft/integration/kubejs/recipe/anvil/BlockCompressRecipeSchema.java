@@ -11,7 +11,6 @@ import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.script.ConsoleJS;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 

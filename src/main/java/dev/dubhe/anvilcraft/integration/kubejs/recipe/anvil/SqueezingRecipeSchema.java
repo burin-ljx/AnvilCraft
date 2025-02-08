@@ -4,12 +4,12 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public interface SqueezingRecipeSchema {
     @SuppressWarnings("unused")
@@ -34,6 +34,9 @@ public interface SqueezingRecipeSchema {
 
         @Override
         protected void validate() {
+            if (getValue(CAULDRON) == null || getValue(CAULDRON) == Blocks.AIR) {
+                throw new KubeRuntimeException("input is empty!").source(sourceLine);
+            }
             if (getValue(INPUT_BLOCK) == null) {
                 throw new KubeRuntimeException("input is empty!").source(sourceLine);
             }
