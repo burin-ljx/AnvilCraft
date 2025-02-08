@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.block;
+package dev.dubhe.anvilcraft.block.multipart;
 
 import dev.dubhe.anvilcraft.block.state.IMultiplePartBlockState;
 import dev.dubhe.anvilcraft.util.Util;
@@ -30,7 +30,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class AbstractMultiplePartBlock<P extends Enum<P> & IMultiplePartBlockState<P>> extends Block {
+public abstract class AbstractMultiplePartBlock<P extends Enum<P> & IMultiplePartBlockState<P>>
+    extends Block
+    implements IMultiPartBlockModelHolder
+{
     public AbstractMultiplePartBlock(Properties properties) {
         super(properties);
     }

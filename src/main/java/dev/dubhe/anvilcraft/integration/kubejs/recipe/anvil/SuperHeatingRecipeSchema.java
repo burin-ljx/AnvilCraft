@@ -1,10 +1,11 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
 import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
@@ -16,11 +17,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface SuperHeatingRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class SuperHeatingKubeRecipe extends KubeRecipe {
+    class SuperHeatingKubeRecipe extends AnvilCraftKubeRecipe {
+        public SuperHeatingKubeRecipe requires(Ingredient... ingredient) {
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
+            return this;
+        }
+
         public SuperHeatingKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -28,10 +36,6 @@ public interface SuperHeatingRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public SuperHeatingKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public SuperHeatingKubeRecipe result(ChanceItemStack stack) {
@@ -50,6 +54,16 @@ public interface SuperHeatingRecipeSchema {
             save();
             return this;
         }
+
+        @Override
+        protected void validate() {
+            if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Inputs is Empty!").source(sourceLine);
+            }
+            if (computeIfAbsent(RESULTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Result is Empty!").source(sourceLine);
+            }
+        }
     }
 
     RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.asList().inputKey("ingredients").defaultOptional();
@@ -59,6 +73,7 @@ public interface SuperHeatingRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, RESULTS, BLOCK_RESULT)
         .factory(new KubeRecipeFactory(AnvilCraft.of("super_heating"), SuperHeatingRecipeSchema.class, SuperHeatingKubeRecipe::new))
         .constructor(INGREDIENTS, RESULTS, BLOCK_RESULT)
+        .constructor(INGREDIENTS, RESULTS)
         .constructor(new IDRecipeConstructor())
         .constructor();
 }

@@ -1,10 +1,11 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftRecipeComponents;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
 import dev.dubhe.anvilcraft.recipe.ChanceItemStack;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
@@ -13,11 +14,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface ItemProcessRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class ItemProcessKubeRecipe extends KubeRecipe {
+    class ItemProcessKubeRecipe extends AnvilCraftKubeRecipe {
+        public ItemProcessKubeRecipe requires(Ingredient... ingredient) {
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
+            return this;
+        }
+
         public ItemProcessKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -25,10 +33,6 @@ public interface ItemProcessRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public ItemProcessKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public ItemProcessKubeRecipe result(ItemStack stack, float chance) {
@@ -40,6 +44,16 @@ public interface ItemProcessRecipeSchema {
 
         public ItemProcessKubeRecipe result(ItemStack stack) {
             return result(stack, 1.0f);
+        }
+
+        @Override
+        protected void validate() {
+            if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Ingredients is Empty!").source(sourceLine);
+            }
+            if (computeIfAbsent(RESULTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Ingredients is Empty!").source(sourceLine);
+            }
         }
     }
     

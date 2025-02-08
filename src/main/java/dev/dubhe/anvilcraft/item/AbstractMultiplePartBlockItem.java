@@ -1,6 +1,6 @@
 package dev.dubhe.anvilcraft.item;
 
-import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
+import dev.dubhe.anvilcraft.block.multipart.AbstractMultiplePartBlock;
 import dev.dubhe.anvilcraft.block.state.IMultiplePartBlockState;
 
 import net.minecraft.core.BlockPos;

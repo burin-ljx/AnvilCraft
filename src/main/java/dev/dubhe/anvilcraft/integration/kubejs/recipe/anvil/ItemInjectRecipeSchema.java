@@ -1,8 +1,9 @@
 package dev.dubhe.anvilcraft.integration.kubejs.recipe.anvil;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.integration.kubejs.recipe.AnvilCraftKubeRecipe;
 import dev.dubhe.anvilcraft.integration.kubejs.recipe.IDRecipeConstructor;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BlockComponent;
 import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
@@ -12,11 +13,18 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public interface ItemInjectRecipeSchema {
     @SuppressWarnings({"DataFlowIssue", "unused"})
-    class ItemInjectKubeRecipe extends KubeRecipe {
+    class ItemInjectKubeRecipe extends AnvilCraftKubeRecipe {
+        public ItemInjectKubeRecipe requires(Ingredient... ingredient) {
+            computeIfAbsent(INGREDIENTS, ArrayList::new).addAll(Arrays.stream(ingredient).toList());
+            save();
+            return this;
+        }
+
         public ItemInjectKubeRecipe requires(Ingredient ingredient, int count) {
             if (getValue(INGREDIENTS) == null) setValue(INGREDIENTS, new ArrayList<>());
             for (int i = 0; i < count; i++) {
@@ -24,10 +32,6 @@ public interface ItemInjectRecipeSchema {
             }
             save();
             return this;
-        }
-
-        public ItemInjectKubeRecipe requires(Ingredient ingredient) {
-            return requires(ingredient, 1);
         }
 
         public ItemInjectKubeRecipe inputBlock(Block block) {
@@ -40,6 +44,19 @@ public interface ItemInjectRecipeSchema {
             setValue(OUTPUT_BLOCK, block);
             save();
             return this;
+        }
+
+        @Override
+        protected void validate() {
+            if (computeIfAbsent(INGREDIENTS, ArrayList::new).isEmpty()){
+                throw new KubeRuntimeException("Ingredients is Empty!").source(sourceLine);
+            }
+            if (getValue(INPUT_BLOCK) == null){
+                throw new KubeRuntimeException("input_block is Empty!").source(sourceLine);
+            }
+            if (getValue(OUTPUT_BLOCK) == null){
+                throw new KubeRuntimeException("output_block is Empty!").source(sourceLine);
+            }
         }
     }
 

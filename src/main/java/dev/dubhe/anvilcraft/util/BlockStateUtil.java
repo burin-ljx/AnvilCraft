@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
-import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
+import dev.dubhe.anvilcraft.block.multipart.AbstractMultiplePartBlock;
 import dev.dubhe.anvilcraft.mixin.accessor.CropBlockAccessor;
 import dev.dubhe.anvilcraft.mixin.accessor.GrowingPlantAccessor;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
