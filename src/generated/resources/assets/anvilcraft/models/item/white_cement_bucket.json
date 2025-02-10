@@ -1,9 +1,6 @@
 {
-  "parent": "neoforge:item/bucket_drip",
-  "cover_is_mask": true,
-  "fluid": "anvilcraft:white_cement",
-  "loader": "neoforge:fluid_container",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "cover": "neoforge:item/mask/bucket_fluid_cover_drip"
+    "layer0": "anvilcraft:item/white_cement_bucket"
   }
 }

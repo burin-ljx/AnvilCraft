@@ -4,7 +4,6 @@ import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
@@ -29,7 +28,6 @@ import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
 import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.AnvilAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.CatAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.CogwheelAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.DogAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.EmeraldAmuletItem;
@@ -57,7 +55,6 @@ import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
 import dev.dubhe.anvilcraft.recipe.JewelCraftingRecipe;
-import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.component.DataComponents;
@@ -79,11 +76,7 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-
-import java.util.function.Supplier;
 
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 
@@ -1686,7 +1679,6 @@ public class ModItems {
         .tag(ModItemTags.BUCKETS,
             ModItemTags.OIL_BUCKETS)
         .initialProperties(() -> new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET))
-        .model(ModelProviderUtil::bucket)
         .register();
 
     public static final Object2ObjectMap<Color, ItemEntry<BucketItem>> CEMENT_BUCKETS = registerAllCementBuckets();
@@ -1706,7 +1698,6 @@ public class ModItems {
             .tag(ModItemTags.BUCKETS,
                 ModItemTags.CEMENT_BUCKETS)
             .properties(p -> p.stacksTo(1).craftRemainder(Items.BUCKET))
-            .model(ModelProviderUtil::bucket)
             .register();
     }
 
@@ -1714,7 +1705,6 @@ public class ModItems {
         .item("melt_gem_bucket", p -> new BucketItem(ModFluids.MELT_GEM.get(), p))
         .tag(ModItemTags.BUCKETS)
         .properties(p -> p.stacksTo(1).craftRemainder(Items.BUCKET))
-        .model(ModelProviderUtil::bucket)
         .register();
 
     public static void register() {
